@@ -1,0 +1,6 @@
+query FeaturesQuery($limit: Int!, $offset: Int!) {
+    features(limit: $limit, offset: $offset) {
+        label
+        uri
+    }
+}
