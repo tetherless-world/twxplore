@@ -20,6 +20,13 @@ to install lerna, then
     
 to link together the `packages` and install their dependencies.
 
+### Building the library
+
+The library package is configured to use the library's `dist` rather than its `src`, which means it needs to be built before first use and whenever it's changed.
+
+    cd packages/lib
+    npm run build
+
 ## Running
 
 All of the web applications are structured similarly. After completing the one-time setup, 

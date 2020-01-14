@@ -1,7 +1,7 @@
 {
   "name": "twxplore-gui-lib",
   "version": "1.0.0",
-  "description": "Paradicms GUI library",
+  "description": "twxplore GUI library",
   "devDependencies": {
     "@graphql-codegen/cli": "1.2.0",
     "@graphql-codegen/fragment-matcher": "1.2.0",
