@@ -13,7 +13,7 @@ object Feature {
   implicit object FeatureRdfReader extends RdfReader[Feature] {
     override def read(resource: Resource): Feature =
       Feature(
-        geometry = Rdf.read(resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
+        geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
         label = Option(resource.getProperty(RDFS.label)).map(statement => statement.getObject.asLiteral().getString),
         uri = Uri.parse(resource.getURI)
       )
@@ -22,9 +22,9 @@ object Feature {
   implicit object FeatureRdfWriter extends RdfWriter[Feature] {
     override def write(value: Feature): Resource = {
       val resource = ResourceFactory.createResource(value.uri.toString)
-      resource.addProperty(RDF.`type`, resource.getModel.createResource("http://www.opengis.net/ont/sf#Feature"))
-      value.label.foreach(label => resource.addProperty(RDFS.label, label))
-      resource.addProperty(Geo.AS_WKT_PROP, ResourceFactory.createTypedLiteral(value.wkt, WKTDatatype.INSTANCE))
+      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
+      if (value.label.isDefined) resource.addProperty(RDFS.label, value.label.get)
+      resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](value.geometry))
     }
   }
 }
