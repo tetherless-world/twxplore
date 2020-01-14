@@ -3,15 +3,15 @@ WORKDIR /app
 COPY /build.sbt .
 COPY /project/ ./project
 COPY /service/lib/ ./service/lib/
-COPY /service/generic/ ./service/generic/
-RUN sbt "project generic" playUpdateSecret dist
+COPY /service/geo/ ./service/geo/
+RUN sbt "project geo" playUpdateSecret dist
 
 
 FROM openjdk:11-jre
 
-COPY --from=build /app/service/generic/target/universal/generic-1.0.0-SNAPSHOT.zip /
-RUN unzip -q generic-1.0.0-SNAPSHOT.zip && mv /generic-1.0.0-SNAPSHOT /app && chmod +x /app/bin/generic
+COPY --from=build /app/service/geo/target/universal/geo-1.0.0-SNAPSHOT.zip /
+RUN unzip -q geo-1.0.0-SNAPSHOT.zip && mv /geo-1.0.0-SNAPSHOT /app && chmod +x /app/bin/geo
 
 EXPOSE 9000
 
-CMD ["/app/bin/generic"]
+CMD ["/app/bin/geo"]
