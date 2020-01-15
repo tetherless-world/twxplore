@@ -7,7 +7,7 @@ export const Home: React.FunctionComponent<{}> = () => (
     <Frame
         activeNavItem={ActiveNavbarItem.Home}
         documentTitle="Home"
-        cardTitle="Institutions"
+        cardTitle="Features"
     >
         <FeaturesList/>
     </Frame>);
