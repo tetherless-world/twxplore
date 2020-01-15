@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.utils.rdf.Rdf
 import models.domain.Feature
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
-import org.apache.jena.query.{Query, QueryExecution, QueryExecutionFactory, QueryFactory}
+import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
 import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConverters._
@@ -20,9 +20,12 @@ class TwksStore(serverBaseUrl: String) extends Store {
         s"""
            |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
            |PREFIX rdf: <${RDF.getURI}>
+           |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
            |SELECT (COUNT(DISTINCT ?feature) AS ?count)
            |WHERE {
            |  ?feature rdf:type geo:Feature .
+           |  ?feature geo:hasDefaultGeometry ?geometry .
+           |  ?geometry rdf:type sf:Geometry .
            |}
            |""".stripMargin)
       withQueryExecution(query) {
@@ -40,12 +43,11 @@ class TwksStore(serverBaseUrl: String) extends Store {
          |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
          |CONSTRUCT {
          |  ?feature ?featureP ?featureO .
+         |  ?feature rdf:type geo:Feature .
          |  ?geometry ?geometryP ?geometryO .
          |} WHERE {
          |  VALUES ?feature { ${featureUris.map(featureUri => "<" + featureUri.toString() + ">").mkString(" ")} }
-         |  ?feature rdf:type geo:Feature .
          |  ?feature geo:hasDefaultGeometry ?geometry .
-         |  ?geometry rdf:type sf:Geometry .
          |  ?feature ?featureP ?featureO .
          |  ?geometry ?geometryP ?geometryO .
          |}
@@ -55,7 +57,6 @@ class TwksStore(serverBaseUrl: String) extends Store {
       model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
   }
-
 
   private def getFeatureUris(limit: Int, offset: Int): List[Uri] = {
     val query = QueryFactory.create(
@@ -68,7 +69,7 @@ class TwksStore(serverBaseUrl: String) extends Store {
          |""".stripMargin)
     withQueryExecution(query) {
       queryExecution =>
-        queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("object").asResource().getURI))
+        queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
     }
   }
 
