@@ -8,7 +8,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-case class Geometry(label: Option[String], uri: Uri, wkt: String)
+final case class Geometry(label: Option[String], uri: Uri, wkt: String)
 
 object Geometry {
   TypeMapper.getInstance().registerDatatype(WKTDatatype.INSTANCE)

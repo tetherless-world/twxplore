@@ -1,19 +1,29 @@
 import * as React from "react";
 import {ListGroup, ListGroupItem} from "reactstrap";
-import {ApolloQueryWrapper} from "twxplore/gui/geo/api/ApolloQueryWrapper";
 import * as query from "twxplore/gui/geo/api/queries/FeaturesQuery.graphql";
+import {useQuery} from '@apollo/react-hooks'
+import {ApolloException, FatalErrorModal} from "twxplore-gui-lib";
+import * as ReactLoader from "react-loader";
 import {FeaturesQuery, FeaturesQueryVariables} from "twxplore/gui/geo/api/queries/types/FeaturesQuery";
 
-export const FeaturesList: React.FunctionComponent<{}> = () =>
-    <ApolloQueryWrapper<FeaturesQuery, FeaturesQueryVariables> query={query} variables={{limit: 10, offset: 0}}>
-        {({data}) =>
-            <ListGroup>
-                {data.features.map(feature =>
-                    <ListGroupItem key={feature.uri}>
-                        {feature.label}
-                    </ListGroupItem>
-                )}
-            </ListGroup>
-        }
-    </ApolloQueryWrapper>
+export const FeaturesList: React.FunctionComponent<{}> = () => {
+    const {loading, data, error} = useQuery<FeaturesQuery, FeaturesQueryVariables>(query, {
+        variables: {limit: 10, offset: 0},
+    });
 
+    if (error) {
+        return <FatalErrorModal exception={new ApolloException(error)}/>;
+    } else if (loading) {
+        return <ReactLoader loaded={false}/>;
+    }
+
+    return (
+        <ListGroup>
+            {data!.features.map(feature =>
+                <ListGroupItem key={feature.uri}>
+                    {feature.label}
+                </ListGroupItem>
+            )}
+        </ListGroup>
+    );
+}
