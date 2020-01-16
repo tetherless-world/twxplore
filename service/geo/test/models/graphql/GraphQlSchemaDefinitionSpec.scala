@@ -30,8 +30,22 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            |{"data":{"features":[{"uri":"${TestData.feature.uri.toString()}"}]}}
            |""".stripMargin))
     }
-  }
 
+    "get feature by uri" in {
+      val query =
+        graphql"""
+         query FeaturesQuery {
+           featureByUri(featureUri: "http://example.com/feature") {
+               uri
+           }
+         }
+       """
+      executeQuery(query) must be(Json.parse(
+        s"""
+           |{"data":{"featureByUri":{"uri":"${TestData.feature.uri.toString()}"}}}
+           |""".stripMargin))
+    }
+  }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
@@ -39,5 +53,4 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       userContext = new GraphQlSchemaContext(FakeRequest(), TestStore)
     )
     Await.result(futureResult, 10.seconds)
-  }
-}
+}}

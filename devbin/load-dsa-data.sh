@@ -1,5 +1,4 @@
 #!/bin/bash
-
 cd "$(dirname "$0")"
 DSA_DIR=$PWD/../../dsa_whyis
 TWKS_DIR=$PWD/../../twks
