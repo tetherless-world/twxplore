@@ -28,6 +28,6 @@ After starting (possibly TWKS only), you can load data from various sources.
 The script `devbin/load-dsa-data.sh` loads data from the DSA project. In order to run you must
 
 1. Check out twks as a sibling of the current checkout e.g., `~/projects/twks` and `~/projects/twxplore`.
-1. Build twks: `cd ~/projects/twks && mvn package -Dmaven.test.skip`
+1. Build twks: `cd ~/projects/twks/java && mvn package -Dmaven.test.skip`
 1. Check out the private DSA repository as a sibling of the current checkout named `dsa_whyis` e.g., ~/projects/dsa_whyis`
 1. Run the `devbin/load-dsa-data.sh` script
