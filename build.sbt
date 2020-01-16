@@ -12,12 +12,8 @@ parallelExecution in ThisBuild := false
 
 
 // Resolvers
-if ((Path.userHome / ".m2").isDirectory) {
-  resolvers in ThisBuild += Resolver.mavenLocal
-} else {
-  resolvers in ThisBuild += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-  // updateOptions := updateOptions.value.withLatestSnapshots(false)
-}
+resolvers in ThisBuild += Resolver.mavenLocal
+resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 
 // Projects
