@@ -34,13 +34,13 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "get feature by uri" in {
       val query =
         graphql"""
-         query FeaturesQuery {
-           featureByUri(uri: "http://example.com/feature") {
+         query FeaturesQuery($$uri: String!) {
+           featureByUri(uri: $$uri) {
                uri
            }
          }
        """
-      executeQuery(query) must be(Json.parse(
+      executeQuery(query, vars = Json.obj("uri" -> TestData.feature.uri.toString)) must be(Json.parse(
         s"""
            |{"data":{"featureByUri":{"uri":"${TestData.feature.uri.toString()}"}}}
            |""".stripMargin))

@@ -52,7 +52,6 @@ object GraphQlSchemaDefinition {
     }
   }
   // Argument types
-  implicit val geometryFormat = Json.format[Geometry]
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
 
   // Query types
