@@ -45,6 +45,22 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            |{"data":{"featureByUri":{"uri":"${TestData.feature.uri.toString()}"}}}
            |""".stripMargin))
     }
+
+    "get features by geometry" in {
+      val query =
+        graphql"""
+          query FeaturesQuery($$geometry: GeometryFieldsInput!) {
+            featuresContaining(geometry: $$geometry) {
+              uri
+            }
+          }
+        """
+        val result = executeQuery(query, vars = Json.obj("geometry" -> Json.obj("wkt" -> TestData.geometry.wkt, "uri" -> TestData.geometry.uri.toString, "label" -> TestData.geometry.label)))
+        result must be(Json.parse(
+          s"""
+             |{"data":{"featuresContaining":[{"uri":"${TestData.feature.uri.toString()}"}]}}
+             |""".stripMargin))
+    }
   }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
