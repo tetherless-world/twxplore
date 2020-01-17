@@ -34,9 +34,8 @@ class TwksStore(serverBaseUrl: String) extends Store {
     }
   }
 
-  def getFeatureByUri(featureUri: Uri): Feature = {
+  def getFeatureByUri(featureUri: Uri): Feature =
     getFeaturesByUris(List(featureUri)).head
-  }
 
   private def getFeaturesByUris(featureUris: List[Uri]): List[Feature] = {
     // Should be safe to inject featureUris since they've already been parsed as URIs

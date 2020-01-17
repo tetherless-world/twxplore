@@ -35,7 +35,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
          query FeaturesQuery {
-           featureByUri(featureUri: "http://example.com/feature") {
+           featureByUri(uri: "http://example.com/feature") {
                uri
            }
          }

@@ -23,7 +23,8 @@ object GraphQlSchemaDefinition {
   // Scalar argument types
   val LimitArgument = Argument("limit", IntType, description = "Limit")
   val OffsetArgument = Argument("offset", IntType, description = "Offset")
-  val featureUriArgument = Argument("featureUri", UriType, description= "featureUri")
+  val UriArgument = Argument("uri", UriType, description= "URI")
+
 
   // Domain model types, in dependence order
   implicit val GeometryInputType = deriveInputObjectType[Geometry](
@@ -45,7 +46,7 @@ object GraphQlSchemaDefinition {
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
     Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument ::  Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("featureByUri", FeatureType, arguments = featureUriArgument ::  Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("featureUri")))
+    Field("featureByUri", FeatureType, arguments = UriArgument ::  Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri")))
     //    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry")) )
   ))
 
