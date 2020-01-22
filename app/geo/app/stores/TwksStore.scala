@@ -1,13 +1,8 @@
 package stores
 import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
-<<<<<<< HEAD:service/geo/app/stores/TwksStore.scala
-import edu.rpi.tw.twxplore.lib.utils.rdf.Rdf
-import models.domain.{Feature, Geometry}
-=======
 import edu.rpi.tw.twxplore.lib.base.utils.rdf.Rdf
-import models.domain.Feature
->>>>>>> Reorg:app/geo/app/stores/TwksStore.scala
+import models.domain.{Feature, Geometry}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
