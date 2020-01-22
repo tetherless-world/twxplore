@@ -6,6 +6,8 @@ services:
       dockerfile: app/geo/Dockerfile
     container_name: geo-app
     stdin_open: true
+    ports:
+      - 127.0.0.1:8081:80
   twks-server:
     container_name: twks-server
     image: tetherlessworld/twks-server
