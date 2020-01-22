@@ -1,7 +1,6 @@
-logs/
-/null/
-/project/project/
-/project/target/
-/root/
-/target/
 .idea/
+logs/
+null/
+/project/project/
+/root/
+target/

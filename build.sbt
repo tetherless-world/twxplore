@@ -18,7 +18,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geo, serviceLib)
+  .aggregate(geoApp, serviceLib)
   .settings(
     skip in publish := true
   )
@@ -42,7 +42,7 @@ lazy val serviceLib =
     name := "service-lib"
   )
 
-lazy val geo = (project in file("service/geo"))
+lazy val geoApp = (project in file("app/geo"))
   .dependsOn(serviceLib)
   .enablePlugins(PlayScala)
   .settings(
@@ -50,6 +50,7 @@ lazy val geo = (project in file("service/geo"))
       organization.value %% "service-lib" % version.value,
       "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
     ),
+    name := "geo-app",
     routesGenerator := InjectedRoutesGenerator,
     // Adds additional packages into Twirl
     //TwirlKeys.templateImports += "com.example.controllers._"
