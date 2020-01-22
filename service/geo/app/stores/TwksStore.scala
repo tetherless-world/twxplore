@@ -2,10 +2,10 @@ package stores
 import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.utils.rdf.Rdf
-import models.domain.Feature
+import models.domain.{Feature, Geometry}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
-import org.apache.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.{RDF, RDFS}
 
 import scala.collection.JavaConverters._
 
@@ -33,6 +33,30 @@ class TwksStore(serverBaseUrl: String) extends Store {
           queryExecution.execSelect().next().get("count").asLiteral().getInt
     }
   }
+
+  override def getFeaturesContaining(geometry: Geometry): List[Feature] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX rdfs: <${RDFS.getURI}>
+         |SELECT ?feature ?featureLabel ?featureGeometry ?featureGeometryLabel ?featureGeometryWkt
+         |WHERE {
+         |  ?feature geo:hasDefaultGeometry ?featureGeometry .
+         |  ?feature rdfs:label ?featureLabel .
+         |  ?featureGeometry geo:asWKT ?featureGeometryWkt .
+         |  ?featureGeometry rdfs:label ?featureGeometryLabel .
+         |  FILTER(geof:sfContains(?featureGeometryWkt, <${geometry.uri}>)) .
+         |}
+         |""".stripMargin)
+    withQueryExecution(query) {
+      queryExecution =>
+        val model = queryExecution.execConstruct()
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
+    }
+  }
+
 
   def getFeatureByUri(featureUri: Uri): Feature =
     getFeaturesByUris(List(featureUri)).head
