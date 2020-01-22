@@ -18,13 +18,13 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, serviceLib)
+  .aggregate(geoApp, baseLib)
   .settings(
     skip in publish := true
   )
 
-lazy val serviceLib =
-  (project in file("service/lib")).settings(
+lazy val baseLib =
+  (project in file("lib/scala/base")).settings(
     libraryDependencies ++= Seq(
       filters,
       guice,
@@ -39,15 +39,15 @@ lazy val serviceLib =
       "org.scalatest" %% "scalatest" % "3.0.8" % Test,
       "org.slf4j" % "slf4j-simple" % "1.7.25" % Test
     ),
-    name := "service-lib"
+    name := "base-lib"
   )
 
 lazy val geoApp = (project in file("app/geo"))
-  .dependsOn(serviceLib)
+  .dependsOn(baseLib)
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(
-      organization.value %% "service-lib" % version.value,
+      organization.value %% "base-lib" % version.value,
       "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
     ),
     name := "geo-app",
