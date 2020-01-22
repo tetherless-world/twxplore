@@ -5,7 +5,7 @@ COPY /build.sbt .
 COPY /project/ ./project
 COPY /lib/scala ./lib/scala/
 COPY /app/geo/ ./app/geo/
-RUN sbt "project geo" playUpdateSecret dist
+RUN sbt "project geoApp" playUpdateSecret dist
 
 # Build front end
 FROM tiangolo/node-frontend:10 as build-gui
