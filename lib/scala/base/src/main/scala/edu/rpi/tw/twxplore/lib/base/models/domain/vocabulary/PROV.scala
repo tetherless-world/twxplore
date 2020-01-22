@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.models.domain.vocabulary
+package edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary
 
 import org.apache.jena.rdf.model.ResourceFactory
 

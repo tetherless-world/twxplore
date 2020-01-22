@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.models.domain.vocabulary
+package edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary
 
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI.{GEO_URI, SF_URI}
 import org.apache.jena.shared.PrefixMapping

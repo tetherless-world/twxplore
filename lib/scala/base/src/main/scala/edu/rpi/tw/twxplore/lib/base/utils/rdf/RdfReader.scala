@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.utils.rdf
+package edu.rpi.tw.twxplore.lib.base.utils.rdf
 
 import org.apache.jena.rdf.model.Resource
 

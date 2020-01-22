@@ -1,7 +1,7 @@
 package models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.utils.rdf.{RdfReader, RdfWriter}
+import edu.rpi.tw.twxplore.lib.base.utils.rdf.{RdfReader, RdfWriter}
 import org.apache.jena.datatypes.TypeMapper
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
