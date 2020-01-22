@@ -1,20 +1,13 @@
 version: "3"
-#networks:
-#  default:
-#    external:
-#      name: twxplore
 services:
-#  generic-gui:
-#    build:
-#      context: .
-#      dockerfile: gui/packages/generic/Dockerfile
-#    container_name: generic-gui
-  geo-service:
+  geo-app:
     build:
       context: .
-      dockerfile: service/geo/Dockerfile
-    container_name: geo-service
+      dockerfile: app/geo/Dockerfile
+    container_name: geo-app
     stdin_open: true
+    ports:
+      - 127.0.0.1:8081:80
   twks-server:
     container_name: twks-server
     image: tetherlessworld/twks-server

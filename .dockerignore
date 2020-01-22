@@ -1,0 +1,6 @@
+.circleci
+.git
+.gitignore
+node_modules
+*.md
+target
