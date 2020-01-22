@@ -1,5 +1,5 @@
-var configBase = require("../lib/webpack.config.base");
-var configDevServer = require("../lib/webpack.config.devServer");
+var configBase = require("../../../lib/ts/base/webpack.config.base");
+var configDevServer = require("../../../lib/ts/base/webpack.config.devServer");
 var path = require('path');
 var merge = require("webpack-merge");
 var webpack = require('webpack');
@@ -41,7 +41,7 @@ module.exports = function (env, argv) {
     resolve: {
       alias: {
         // https://github.com/facebook/react/issues/13991
-        react: path.resolve("..", "..", "node_modules", "react")
+        react: path.resolve("..", "..", "..", "node_modules", "react")
       }
     }
   });
