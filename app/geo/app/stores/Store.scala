@@ -1,7 +1,7 @@
 package stores
 
-import models.domain.{Feature, Geometry}
 import edu.rpi.tw.twks.uri.Uri
+import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
 
 trait Store {
   def getFeatures(limit: Int, offset: Int): List[Feature]

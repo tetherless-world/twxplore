@@ -2,7 +2,7 @@ package stores
 import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.utils.rdf.Rdf
-import models.domain.{Feature, Geometry}
+import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}

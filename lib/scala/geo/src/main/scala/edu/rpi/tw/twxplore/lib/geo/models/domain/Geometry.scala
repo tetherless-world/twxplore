@@ -1,4 +1,4 @@
-package models.domain
+package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.utils.rdf.{RdfReader, RdfWriter}
