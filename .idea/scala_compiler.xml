@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="root,service-lib,twxplore,twxplore_2" />
-    <profile name="sbt 2" modules="geo">
+    <profile name="sbt 1" modules="base-lib,geo-lib,root,tree-cli,tree-lib,twxplore,twxplore_6329" />
+    <profile name="sbt 2" modules="geo-app">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
       <parameters>

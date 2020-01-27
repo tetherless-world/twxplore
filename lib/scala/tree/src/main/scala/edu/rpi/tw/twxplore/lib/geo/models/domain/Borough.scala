@@ -1,6 +1,5 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
-import org.scala_tools.time.Imports._
 import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.utils.rdf.{Rdf, RdfReader, RdfWriter}
 import org.apache.jena.geosparql.implementation.vocabulary.Geo

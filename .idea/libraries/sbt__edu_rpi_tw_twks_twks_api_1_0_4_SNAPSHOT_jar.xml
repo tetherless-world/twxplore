@@ -3,11 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/edu/rpi/tw/twks/twks-api/1.0.4-SNAPSHOT/twks-api-1.0.4-SNAPSHOT.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/oss.sonatype.org/content/repositories/snapshots/edu/rpi/tw/twks/twks-api/1.0.4-SNAPSHOT/twks-api-1.0.4-20191211.182556-7-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/oss.sonatype.org/content/repositories/snapshots/edu/rpi/tw/twks/twks-api/1.0.4-SNAPSHOT/twks-api-1.0.4-20191211.182556-7-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

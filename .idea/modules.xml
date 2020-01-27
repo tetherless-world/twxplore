@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/geo.iml" filepath="$PROJECT_DIR$/.idea/modules/geo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/base-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/base-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/geo-app.iml" filepath="$PROJECT_DIR$/.idea/modules/geo-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/geo-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/geo-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/root.iml" filepath="$PROJECT_DIR$/.idea/modules/root.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/service-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tree-cli.iml" filepath="$PROJECT_DIR$/.idea/modules/tree-cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tree-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/tree-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/twxplore.iml" filepath="$PROJECT_DIR$/.idea/modules/twxplore.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/twxplore-build.iml" filepath="$PROJECT_DIR$/.idea/modules/twxplore-build.iml" />
     </modules>
