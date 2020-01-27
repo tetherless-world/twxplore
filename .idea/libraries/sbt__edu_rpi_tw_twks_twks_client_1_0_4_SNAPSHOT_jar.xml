@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="sbt: edu.rpi.tw.twks:twks-client:1.0.4-SNAPSHOT:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/oss.sonatype.org/content/repositories/snapshots/edu/rpi/tw/twks/twks-client/1.0.4-SNAPSHOT/twks-client-1.0.4-20191211.182558-7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/oss.sonatype.org/content/repositories/snapshots/edu/rpi/tw/twks/twks-client/1.0.4-SNAPSHOT/twks-client-1.0.4-20191211.182558-7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/oss.sonatype.org/content/repositories/snapshots/edu/rpi/tw/twks/twks-client/1.0.4-SNAPSHOT/twks-client-1.0.4-20191211.182558-7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
