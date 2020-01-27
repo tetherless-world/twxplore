@@ -18,7 +18,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib, geoLib)
+  .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
   .settings(
     skip in publish := true
   )
@@ -64,4 +64,30 @@ lazy val geoLib =
     .dependsOn(baseLib)
     .settings(
       name := "geo-lib"
+    )
+
+lazy val treeCli = (project in file("cli/tree"))
+  .dependsOn(treeLib)
+  .enablePlugins(AssemblyPlugin)
+  .settings(
+    assemblyMergeStrategy in assembly := {
+      case "logback.xml" => MergeStrategy.first
+      case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
+    },
+    assemblyOutputPath in assembly := baseDirectory.value / "dist" / ("tree-cli.jar"),
+    mainClass in assembly := Some("edu.rpi.tw.twxplore.cli.tree.TreeCli"),
+    libraryDependencies ++= Seq(
+      "com.beust" % "jcommander" % "1.78"
+    ),
+    name := "tree-cli",
+    publish / skip := true
+  )
+
+lazy val treeLib =
+  (project in file("lib/scala/tree"))
+    .dependsOn(geoLib)
+    .settings(
+      name := "tree-lib"
     )
