@@ -18,7 +18,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib)
+  .aggregate(geoApp, baseLib, geoLib)
   .settings(
     skip in publish := true
   )
@@ -43,11 +43,10 @@ lazy val baseLib =
   )
 
 lazy val geoApp = (project in file("app/geo"))
-  .dependsOn(baseLib)
+  .dependsOn(geoLib)
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(
-      organization.value %% "base-lib" % version.value,
       "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
     ),
     name := "geo-app",
@@ -59,3 +58,10 @@ lazy val geoApp = (project in file("app/geo"))
     // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
     skip in publish := true
   )
+
+lazy val geoLib =
+  (project in file("lib/scala/geo"))
+    .dependsOn(baseLib)
+    .settings(
+      name := "geo-lib"
+    )

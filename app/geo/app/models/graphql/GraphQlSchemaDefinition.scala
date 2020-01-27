@@ -1,12 +1,12 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
-import models.domain.{Feature, Geometry}
+import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import play.api.libs.json
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, IntType, ListType, OptionType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, InputField, IntType, ListType, ScalarAlias, Schema, StringType, fields}
 
 object GraphQlSchemaDefinition {
   // Scalar Formats
