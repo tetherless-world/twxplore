@@ -32,6 +32,7 @@ lazy val baseLib =
       "com.typesafe.play" %% "play" % playVersion,
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
       "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
+      "io.github.tetherless-world" %% "scena" % "1.0.0-SNAPSHOT",
       "org.apache.jena" % "jena-geosparql" % "3.13.1",
       "org.sangria-graphql" %% "sangria" % "1.4.2",
       "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",

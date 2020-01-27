@@ -1,8 +1,8 @@
 package stores
 import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.utils.rdf.Rdf
 import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import io.github.tetherlessworld.scena.Rdf
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
