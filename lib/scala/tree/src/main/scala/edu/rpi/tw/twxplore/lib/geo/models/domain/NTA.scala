@@ -6,4 +6,6 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-final case class NTA(nta: Int, ntaName: String)
+import scala.collection.mutable.ListBuffer
+
+final case class NTA(nta: String, ntaName: String, blocks: ListBuffer[Block], borough: String, postCode: Int, community: Int, councilDistrict: Int)

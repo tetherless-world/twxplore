@@ -6,5 +6,5 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-final case class Postcode(code: Int)
+final case class Postcode(code: Int, city: City)
 

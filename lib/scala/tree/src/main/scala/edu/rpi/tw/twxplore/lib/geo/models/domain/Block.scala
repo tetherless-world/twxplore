@@ -6,5 +6,5 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-final case class Block(id: Int)
+final case class Block(id: Int, nta: String)
 

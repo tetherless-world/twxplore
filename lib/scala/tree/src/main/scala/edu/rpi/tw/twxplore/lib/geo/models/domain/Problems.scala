@@ -13,4 +13,5 @@ case object RootGrate extends Problems
 case object RootLights extends Problems
 case object RootOther extends Problems
 case object RootStone extends Problems
+case object Sneakers extends Problems
 case object WiresRope extends Problems

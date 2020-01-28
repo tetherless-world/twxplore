@@ -6,6 +6,6 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-final case class ZipCity(city: String, zipcode: Int)
+final case class ZipCity(city: String)
 
 

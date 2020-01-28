@@ -6,5 +6,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
-final case class State(state: String)
+import scala.collection.mutable.ListBuffer
+
+final case class State(state: String, cities: ListBuffer[City])
 
