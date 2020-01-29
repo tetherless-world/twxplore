@@ -3,10 +3,9 @@ package edu.rpi.tw.twxplore.cli.tree.command
 import java.nio.file.Paths
 import java.util.Date
 
-import util.control.Breaks._
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
-import edu.rpi.tw.twxplore.lib.geo.models.domain.{Alive, Block, Borough, BranchLights, BranchOther, BranchShoe, CensusTract, City, CurbLoc, Damage, Dead, Fair, Good, Guards, Harmful, Health, Helpful, MetalGrates, NTA, NYCParksStaff, NoDamage, OffsetFromCurb, OnCurb, OneOrTwo, Poor, Postcode, Problems, RootGrate, RootLights, RootOther, RootStone, Sidewalk, Sneakers, State, Status, Steward, Stones, Stump, ThreeOrFour, Tree, TreeSpecies, TreesCountStaff, TrunkLights, TrunkOther, TrunkWire, Unsure, UserType, Volunteer, WiresRope, ZipCity}
+import edu.rpi.tw.twxplore.lib.geo.models.domain._
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -23,9 +22,275 @@ object EtlCommand extends Command {
 
   val args = new Args()
 
-  def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
-    val result: String = str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
-    result
+  private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
+    str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
+  }
+
+  class LineProcessor {
+    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
+    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
+    var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
+    var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
+    var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
+    var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
+    val city: City = City("New York City", List[Borough](), List[Postcode](), "New York")
+    val state: State = State("New York", List[City](city))
+
+    def processAddress(address: String): String = address
+
+    def processBBL(bbl: String): Option[Long] = {
+      bbl match {
+        case "" => None
+        case _ => Some(bbl.toLong)
+      }
+    }
+
+    def processBin(bin: String): Option[Int] = {
+      bin match {
+        case "" => None
+        case _ => Some(bin.toInt)
+      }
+    }
+
+    def processBlock(block: String, nta: String): Block = {
+      blockMap.get(block.toInt) match {
+        case Some(b) => b
+        case _ => {
+          val new_block = Block(block.toInt, nta)
+          var block_list = ntaMap(nta).blocks.to[ListBuffer]
+          block_list += new_block
+          ntaMap(nta).blocks = block_list.toList
+          blockMap += ( block.toInt -> new_block)
+          new_block
+        }
+      }
+    }
+
+    def processBoroCt(boro_ct: String): Int = boro_ct.toInt
+
+    def processBorough(borough_str: String, borocode: String): Borough = {
+      boroughMap.get(borocode.toInt) match {
+        case Some(b) => b
+        case _ => {
+          val borough = Borough(borough_str, borocode.toInt, List[NTA]())
+          var borough_list = city.boroughs.to[ListBuffer]
+          borough_list += borough
+          city.boroughs = borough_list.toList
+          boroughMap += (borocode.toInt -> borough)
+          borough
+        }
+      }
+    }
+
+    def processCensusTract(censusTract: String): Option[CensusTract] = {
+      censusTract match {
+        case "" => None
+        case _ =>  Some(CensusTract(censusTract.toInt, "none"))
+      }
+    }
+
+    def processCouncilDistrict(cncldist: String): Int = cncldist.toInt
+
+    def processCommunity(community: String): Int = community.toInt
+
+    def processCreatedAt(date: String): Date = {
+      val dateFormatter = new java.text.SimpleDateFormat("MM/d/yyyy")
+      dateFormatter.parse(date)
+    }
+
+    def processCurbLoc(curbLoc: String): CurbLoc = {
+      curbLoc match {
+        case "OnCurb" => OnCurb
+        case "OffsetFromCurb" => OffsetFromCurb
+      }
+    }
+
+    def processDBH(dbh: String): Int = dbh.toInt
+
+    def processGuards(guards: String): Option[Guards] = {
+      guards match {
+        case "Helpful" => Some(Helpful)
+        case "Harmful" => Some(Harmful)
+        case "Unsure" =>  Some(Unsure)
+        case _ => None
+      }
+    }
+
+    def processHealth(health: String): Option[Health] = {
+      health match {
+        case "Fair" => Some(Fair)
+        case "Good" => Some(Good)
+        case "Poor" => Some(Poor)
+        case _ => None
+      }
+    }
+
+    def processLatitude(latitude: String): Float = latitude.toFloat
+
+    def processLongitude(longitude: String): Float = longitude.toFloat
+
+    def processNTA(nta: String, ntaName: String, borough: Int, postCode: Int, community: Int, councilDistrict: Int): NTA = {
+      ntaMap.get(nta) match {
+        case Some(n) => n
+        case _ => {
+          val new_nta = NTA(nta, ntaName, List[Block](), borough, postCode, community, councilDistrict)
+          val ntaList = boroughMap(borough).ntaList.to[ListBuffer]
+          ntaList += new_nta
+          boroughMap(borough).ntaList = ntaList.toList
+          ntaMap += (nta -> new_nta)
+          new_nta
+        }
+      }
+    }
+
+    def processPostcode(postcode: String): Postcode = {
+      postalCode.get(postcode.toInt) match {
+        case Some(p) => p
+        case _ => {
+          val new_postcode = Postcode(postcode.toInt, city.name)
+          var postalCodes = city.postcodes.to[ListBuffer]
+          postalCodes += new_postcode
+          city.postcodes = postalCodes.toList
+          postalCode += (postcode.toInt -> new_postcode)
+          new_postcode
+        }
+      }
+    }
+
+    def processProblems(problems_str: String): List[Problems] = {
+      val problems = problems_str.split("\\+").map(_.trim).toList
+      val problemList = problems.flatMap ({
+        case "BranchLights" => Some(BranchLights)
+        case "BranchOther" => Some(BranchOther)
+        case "BranchShoe" => Some(BranchShoe)
+        case "MetalGrates" => Some(MetalGrates)
+        case "Stones" => Some(Stones)
+        case "TrunkLights" => Some(TrunkLights)
+        case "TrunkOther" => Some(TrunkOther)
+        case "TrunkWire" => Some(TrunkWire)
+        case "RootGrate" => Some(RootGrate)
+        case "RootLights" => Some(RootLights)
+        case "RootOther" => Some(RootOther)
+        case "RootStone" => Some(RootStone)
+        case "Sneakers" => Some(Sneakers)
+        case "WiresRope" => Some(WiresRope)
+        case _ => None
+      })
+      problemList
+    }
+
+    def processSidewalk(sidewalk: String): Option[Sidewalk] = {
+      sidewalk match {
+        case "NoDamage" => Some(NoDamage)
+        case "Damage" => Some(Damage)
+        case _ => None
+      }
+    }
+
+    def processStateAssembly(stateAssembly: String): Int = stateAssembly.toInt
+
+    def processStateSenate(stateSenate: String): Int = stateSenate.toInt
+
+    def processStatus(status: String): Status = {
+      status match {
+        case "Alive" => Alive
+        case "Dead" => Dead
+        case "Stump" => Stump
+      }
+    }
+
+    def processSteward(steward: String): Option[Steward] = {
+      steward match {
+        case "1or2" => Some(OneOrTwo)
+        case "3or4" => Some(ThreeOrFour)
+        case _ => None
+      }
+    }
+
+    def processStumpDiameter(dia: String): Int = dia.toInt
+
+    def processTreeId(treeId: String): Int = treeId.toInt
+
+    def processTreeSpecies(ltn_name: String, cmn_name: String) = {
+      treeSpeciesMap.get(ltn_name) match {
+        case Some(t) => Some(t)
+        case _ => {
+          ltn_name match {
+            case "" => None
+            case _ => {
+              val tempSpecies = Some(TreeSpecies(ltn_name, cmn_name))
+              treeSpeciesMap += (ltn_name -> tempSpecies.get)
+              tempSpecies
+            }
+          }
+        }
+      }
+    }
+
+    def processUserType(userType: String): UserType = {
+      userType match {
+        case "TreesCount Staff" => TreesCountStaff
+        case "Volunteer" => Volunteer
+        case "NYC Parks Staff" => NYCParksStaff
+      }
+    }
+
+    def processXStatePlane(x_sp: String): Float = x_sp.toFloat
+
+    def processYStatePlane(y_sp: String): Float = y_sp.toFloat
+
+    def processZipCity(zipcity: String): ZipCity = ZipCity(zipcity)
+
+    def process(line: String): Tree = {
+      val problemStart: Int = line.indexOf("\"")
+      var cols: Array[String] = new Array[String](3)
+      if (problemStart != -1) {
+        val problemEnd: Int = line.indexOf("\"", problemStart + 1)
+        val new_line = replaceComma(line, problemStart, problemEnd)
+        cols = new_line.split(",", -1).map(_.trim)
+      } else {
+        cols = line.split(",", -1).map(_.trim)
+      }
+
+      val borough = processBorough(cols(29), cols(28))
+      val NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt)
+      val block = processBlock(cols(1), cols(33))
+
+      Tree(
+        id = processTreeId(cols(0)),
+        createdAt = processCreatedAt(cols(2)),
+        dbh = processDBH(cols(3)) ,
+        stump = processStumpDiameter(cols(4)),
+        block = block,
+        curbLoc = processCurbLoc(cols(5)),
+        status = processStatus(cols(6)),
+        health = processHealth(cols(7)),
+        species = processTreeSpecies(cols(8), cols(9)),
+        steward = processSteward(cols(10)),
+        guards = processGuards(cols(11)),
+        sidewalk = processSidewalk(cols(12)),
+        userType = processUserType(cols(13)),
+        problems = processProblems(cols(14)),
+        address = processAddress(cols(24)),
+        postcode = processPostcode(cols(25)),
+        zipCity = processZipCity(cols(26)),
+        community = processCommunity(cols(27)),
+        borough = borough,
+        cncldist = processCouncilDistrict(cols(30)),
+        stateAssembly = processStateAssembly(cols(31)),
+        stateSenate = processStateSenate(cols(32)),
+        NTA = NTA,
+        boroughCount = processBoroCt(cols(35)),
+        state = state,
+        latitude = processLatitude(cols(37)),
+        longitude = processLongitude(cols(38)),
+        x_sp = processXStatePlane(cols(39)),
+        y_sp = processYStatePlane(cols(40)),
+        censusTract = processCensusTract(cols(42)),
+        bin = processBin(cols(43)),
+        bbl = processBBL(cols(44))
+      )
+    }
   }
 
   def apply(): Unit = {
@@ -33,220 +298,42 @@ object EtlCommand extends Command {
     val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
     val source = scala.io.Source.fromFile(args.dataDirectoryPath)
     var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-    var treeSpeciesList: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
-    var boroughList: mutable.HashMap[Int, Borough] = new mutable.HashMap()
-    var ntaList: mutable.HashMap[String, NTA] = new mutable.HashMap()
-    var blockList: mutable.HashMap[Int, Block] = new mutable.HashMap()
-    var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-    val state: State = State("New York", new ListBuffer[City])
-    val city: City = City("New York City", new ListBuffer[Borough], new ListBuffer[Postcode], state.state)
-    state.cities += city
-    var line_no = 0
+    val lineProcessor = new LineProcessor()
 
-    for(line <- source.getLines) {
-      line_no += 1
-      breakable {
-        if(line_no == 1)
-          break
-        val problemStart: Int = line.indexOf("\"")
-        var cols: Array[String] = new Array[String](3)
-        if (problemStart != -1) {
-          val problemEnd: Int = line.indexOf("\"", problemStart + 1)
-          val new_line = replaceComma(line, problemStart, problemEnd)
-          cols = new_line.split(",", -1).map(_.trim)
-        } else {
-          cols = line.split(",", -1).map(_.trim)
-        }
-
-        val treeId: Int = cols(0).toInt
-        val dateFormatter = new java.text.SimpleDateFormat("MM/d/yyyy")
-        val createdAt: Date = dateFormatter.parse(cols(2))
-        val treeDbh: Int = cols(3).toInt
-        val stumpDia: Int = cols(4).toInt
-
-        val curbLoc: CurbLoc = cols(5) match {
-          case "OnCurb" => OnCurb
-          case "OffsetFromCurb" => OffsetFromCurb
-        }
-
-        val status: Status = cols(6) match {
-          case "Alive" => Alive
-          case "Dead" => Dead
-          case "Stump" => Stump
-        }
-
-        val health: Option[Health] = cols(7) match {
-          case "Fair" => Some(Fair)
-          case "Good" => Some(Good)
-          case "Poor" => Some(Poor)
-          case _ => None
-        }
-
-        val treeSpecies: Option[TreeSpecies] = treeSpeciesList.get(cols(8)) match {
-          case Some(t) => Some(t)
-          case _ => {
-            val newTreeSpecies: Option[TreeSpecies] = cols(8) match {
-              case "" => None
-              case _ => {
-                val tempSpecies = Some(TreeSpecies(cols(8), cols(9)))
-                treeSpeciesList += (cols(8) -> tempSpecies.get)
-                tempSpecies
-              }
-            }
-            newTreeSpecies
+    for((line, line_no) <- source.getLines.zipWithIndex) {
+      line_no match {
+        case 0 => {}
+        case _ => {
+          val problemStart: Int = line.indexOf("\"")
+          var cols: Array[String] = new Array[String](3)
+          if (problemStart != -1) {
+            val problemEnd: Int = line.indexOf("\"", problemStart + 1)
+            val new_line = replaceComma(line, problemStart, problemEnd)
+            cols = new_line.split(",", -1).map(_.trim)
+          } else {
+            cols = line.split(",", -1).map(_.trim)
           }
+          val Tree = lineProcessor.process(line)
+          treeList += Tree
         }
-
-
-
-        val steward: Option[Steward] = cols(10) match {
-          case "1or2" => Some(OneOrTwo)
-          case "3or4" => Some(ThreeOrFour)
-          case _ => None
-        }
-
-        val guards: Option[Guards] = cols(11) match {
-          case "Helpful" => Some(Helpful)
-          case "Harmful" => Some(Harmful)
-          case "Unsure" =>  Some(Unsure)
-          case _ => None
-        }
-
-        val sidewalk: Option[Sidewalk] = cols(12) match {
-          case "NoDamage" => Some(NoDamage)
-          case "Damage" => Some(Damage)
-          case _ => None
-        }
-
-        val userType: UserType = cols(13) match {
-          case "TreesCount Staff" => TreesCountStaff
-          case "Volunteer" => Volunteer
-          case "NYC Parks Staff" => NYCParksStaff
-        }
-
-        val problems = cols(14).split("\\+").map(_.trim)
-        var problemList: ListBuffer[Option[Problems]] = new ListBuffer[Option[Problems]]()
-        if (problems(0) != "") {
-          for (item <- problems) {
-            val problem: Option[Problems] = item match {
-              case "BranchLights" => Some(BranchLights)
-              case "BranchOther" => Some(BranchOther)
-              case "BranchShoe" => Some(BranchShoe)
-              case "MetalGrates" => Some(MetalGrates)
-              case "Stones" => Some(Stones)
-              case "TrunkLights" => Some(TrunkLights)
-              case "TrunkOther" => Some(TrunkOther)
-              case "TrunkWire" => Some(TrunkWire)
-              case "RootGrate" => Some(RootGrate)
-              case "RootLights" => Some(RootLights)
-              case "RootOther" => Some(RootOther)
-              case "RootStone" => Some(RootStone)
-              case "Sneakers" => Some(Sneakers)
-              case "WiresRope" => Some(WiresRope)
-              case "None" => None
-            }
-            problemList += problem
-          }
-        }
-
-        val address: String = cols(24)
-        val postcode: Postcode = postalCode.get(cols(25).toInt) match {
-          case Some(p) => p
-          case _ => Postcode(cols(25).toInt, city)
-        }
-
-        val zipCity: ZipCity = ZipCity(cols(26))
-        val borough: Borough = boroughList.get(cols(28).toInt) match {
-          case Some(b) => b
-          case _ => Borough(cols(29), cols(28).toInt, new ListBuffer[NTA])
-        }
-        val community: Int = cols(27).toInt
-
-        val cncldist: Int = cols(30).toInt
-        val nta: NTA = ntaList.get(cols(33)) match {
-          case Some(n) => n
-          case _ => NTA(cols(33), cols(34), new ListBuffer[Block], borough.borough, cols(25).toInt, community, cncldist)
-        }
-
-        val block: Block = blockList.get(cols(1).toInt) match {
-          case Some(b) => b
-          case _ => Block(cols(1).toInt, nta.nta)
-        }
-
-        if(!boroughList.contains(cols(28).toInt)) {
-          city.boroughs += borough
-          boroughList += (cols(28).toInt -> borough)
-        }
-
-        if(!blockList.contains(cols(1).toInt)){
-          nta.blocks += block
-          blockList += (cols(1).toInt -> block)
-        }
-
-        if(!ntaList.contains(cols(33))) {
-          borough.ntaList += nta
-          ntaList += (cols(33)-> nta)
-        }
-
-        val stateAssembly: Int = cols(31).toInt
-        val stateSenate: Int = cols(32).toInt
-        val boro_ct: Int = cols(35).toInt
-        val latitude: Float = cols(37).toFloat
-        val longitude: Float = cols(38).toFloat
-        val x_sp: Float = cols(39).toFloat
-        val y_sp: Float = cols(40).toFloat
-        val censusTract: Option[CensusTract] = cols(42) match {
-          case "" => None
-          case _ =>  Some(CensusTract(cols(42).toInt, "none"))
-        }
-        val bin: Option[Int] = cols(43) match {
-          case "" => None
-          case _ => Some(cols(43).toInt)
-        }
-        val bbl: Option[Long] = cols(44) match {
-          case "" => None
-          case _ => Some(cols(44).toLong)
-        }
-
-        val Tree: Tree = new Tree(treeId,
-          createdAt,
-          treeDbh,
-          stumpDia,
-          block,
-          curbLoc,
-          status,
-          health,
-          treeSpecies,
-          steward,
-          guards,
-          sidewalk,
-          userType,
-          problemList,
-          address,
-          postcode,
-          zipCity,
-          community,
-          borough,
-          cncldist,
-          stateAssembly,
-          stateSenate,
-          nta,
-          boro_ct,
-          state,
-          latitude,
-          longitude,
-          x_sp,
-          y_sp,
-          censusTract,
-          bin,
-          bbl
-        )
-        treeList += Tree
       }
     }
 
-    println(treeSpeciesList)
-    println(s"There are ${treeSpeciesList.size} different tree species!")
+    println(lineProcessor.city.postcodes)
+
+    lineProcessor.boroughMap.foreach {
+      case (key, value) => {
+        println(s"${value.borough} Borough: ${value.ntaList.length}")
+
+        value.ntaList.sorted.foreach {
+          case (nta) => {
+
+            print(nta.nta + ": " + nta.ntaName + ", ")
+          }
+        }
+        println("\n")
+      }
+    }
 //    val pipeline = Pipelines.pipelines.get(pipelineName)
 //    if (!pipeline.isDefined) {
 //      logger.error(s"no such pipeline `${pipelineName}`, valid: ${Pipelines.pipelines.keySet.mkString(" ")}")

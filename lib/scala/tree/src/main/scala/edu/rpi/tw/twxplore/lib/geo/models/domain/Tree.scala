@@ -2,15 +2,6 @@ package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import java.util.Date
 
-import com.google.api.client.util.DateTime
-import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.utils.rdf.{Rdf, RdfReader, RdfWriter}
-import org.apache.jena.geosparql.implementation.vocabulary.Geo
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.{RDF, RDFS}
-
-import scala.collection.mutable.ListBuffer
-
 final case class Tree(id: Int,
                       createdAt: Date,
                       dbh: Int,
@@ -24,7 +15,7 @@ final case class Tree(id: Int,
                       guards: Option[Guards],
                       sidewalk: Option[Sidewalk],
                       userType: UserType,
-                      problems: ListBuffer[Option[Problems]],
+                      problems: List[Problems],
                       address: String,
                       postcode: Postcode,
                       zipCity: ZipCity,
@@ -37,7 +28,7 @@ final case class Tree(id: Int,
                       boroughCount: Int,
                       state: State,
                       latitude: Float,
-                      Longitude: Float,
+                      longitude: Float,
                       x_sp: Float,
                       y_sp: Float,
                       censusTract: Option[CensusTract],

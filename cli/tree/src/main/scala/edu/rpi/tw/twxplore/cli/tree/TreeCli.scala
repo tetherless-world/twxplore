@@ -28,14 +28,12 @@ object CliMain {
     }
 
     val commandName = jCommander.getParsedCommand
-    println(commandName)
     if (commandName == null) {
       jCommander.usage()
       return
     }
 
     val command = commands(commandName)
-    println(command)
     command()
   }
 }
