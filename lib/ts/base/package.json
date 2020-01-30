@@ -1,5 +1,5 @@
 {
-  "name": "twxplore-gui-lib",
+  "name": "twxplore-base-lib",
   "version": "1.0.0",
   "description": "twxplore GUI library",
   "devDependencies": {
