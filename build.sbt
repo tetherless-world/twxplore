@@ -40,7 +40,7 @@ lazy val baseLib =
       "org.scalatest" %% "scalatest" % "3.0.8" % Test,
       "org.slf4j" % "slf4j-simple" % "1.7.25" % Test
     ),
-    name := "base-lib"
+    name := "twxplore-base-lib"
   )
 
 lazy val geoApp = (project in file("app/geo"))
@@ -64,7 +64,7 @@ lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib)
     .settings(
-      name := "geo-lib"
+      name := "twxplore-geo-lib"
     )
 
 lazy val treeCli = (project in file("cli/tree"))
@@ -90,5 +90,5 @@ lazy val treeLib =
   (project in file("lib/scala/tree"))
     .dependsOn(geoLib)
     .settings(
-      name := "tree-lib"
+      name := "twxplore-tree-lib"
     )
