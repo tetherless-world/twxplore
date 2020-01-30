@@ -11,7 +11,6 @@ object CliMain {
 
   def main(args: Array[String]): Unit = {
     val commands = Map(EtlCommand.name -> EtlCommand)
-
     val jCommanderBuilder = JCommander.newBuilder()
     val globalArgs = new GlobalArgs
     jCommanderBuilder.addObject(globalArgs)
@@ -19,6 +18,7 @@ object CliMain {
       jCommanderBuilder.addCommand(command.name, command.args)
     }
     val jCommander = jCommanderBuilder.build()
+
 
     jCommander.parse(args:_*)
 
@@ -34,7 +34,6 @@ object CliMain {
     }
 
     val command = commands(commandName)
-
     command()
   }
 }
