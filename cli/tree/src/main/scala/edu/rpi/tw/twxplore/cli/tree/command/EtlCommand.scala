@@ -140,9 +140,7 @@ object EtlCommand extends Command {
         case Some(p) => p
         case _ => {
           val new_postcode = Postcode(postcode.toInt, city.name)
-          var postalCodes = city.postcodes.to[ListBuffer]
-          postalCodes += new_postcode
-          city.postcodes = postalCodes.toList
+          city = city.addPostcode(new_postcode)
           postalCode += (postcode.toInt -> new_postcode)
           new_postcode
         }
@@ -248,6 +246,7 @@ object EtlCommand extends Command {
 
     def processRegions(line: String): Unit = {
       val cols = convertToCols(line)
+      processPostcode(cols(25))
       processBorough(cols(29), cols(28))
       processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt)
       processBlock(cols(1), cols(33))
