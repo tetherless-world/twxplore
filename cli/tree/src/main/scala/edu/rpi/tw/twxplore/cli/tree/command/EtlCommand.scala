@@ -33,8 +33,8 @@ object EtlCommand extends Command {
     var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
     var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
     var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-    val city: City = City("New York City", List[Borough](), List[Postcode](), "New York")
-    val state: State = State("New York", List[City](city))
+    var city: City = City("New York City", List[Borough](), List[Postcode](), "New York")
+    var state: State = State("New York", List[City]())
 
     def processAddress(address: String): String = address
 
@@ -57,9 +57,7 @@ object EtlCommand extends Command {
         case Some(b) => b
         case _ => {
           val new_block = Block(block.toInt, nta)
-          var block_list = ntaMap(nta).blocks.to[ListBuffer]
-          block_list += new_block
-          ntaMap(nta).blocks = block_list.toList
+          ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block
         }
@@ -73,9 +71,6 @@ object EtlCommand extends Command {
         case Some(b) => b
         case _ => {
           val borough = Borough(borough_str, borocode.toInt, List[NTA]())
-          var borough_list = city.boroughs.to[ListBuffer]
-          borough_list += borough
-          city.boroughs = borough_list.toList
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -134,9 +129,6 @@ object EtlCommand extends Command {
         case Some(n) => n
         case _ => {
           val new_nta = NTA(nta, ntaName, List[Block](), borough, postCode, community, councilDistrict)
-          val ntaList = boroughMap(borough).ntaList.to[ListBuffer]
-          ntaList += new_nta
-          boroughMap(borough).ntaList = ntaList.toList
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -241,7 +233,7 @@ object EtlCommand extends Command {
 
     def processZipCity(zipcity: String): ZipCity = ZipCity(zipcity)
 
-    def process(line: String): Tree = {
+    def convertToCols(line: String): Array[String] = {
       val problemStart: Int = line.indexOf("\"")
       var cols: Array[String] = new Array[String](3)
       if (problemStart != -1) {
@@ -251,17 +243,40 @@ object EtlCommand extends Command {
       } else {
         cols = line.split(",", -1).map(_.trim)
       }
+      cols
+    }
 
-      val borough = processBorough(cols(29), cols(28))
-      val NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt)
-      val block = processBlock(cols(1), cols(33))
+    def processRegions(line: String): Unit = {
+      val cols = convertToCols(line)
+      processBorough(cols(29), cols(28))
+      processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt)
+      processBlock(cols(1), cols(33))
+    }
+
+    def generateNTAList(): Unit = {
+      for ((key, nta) <- ntaMap){
+        boroughMap(nta.borough) = boroughMap(nta.borough).addNTA(nta)
+      }
+    }
+
+    def generateBoroughList(): Unit = {
+      for ((key, borough) <- boroughMap){
+        city = city.addBorough(borough)
+      }
+    }
+
+    def generateCityList(): Unit = state = state.addCity(city)
+
+
+    def process(line: String): Tree = {
+      val cols = convertToCols(line)
 
       Tree(
         id = processTreeId(cols(0)),
         createdAt = processCreatedAt(cols(2)),
         dbh = processDBH(cols(3)) ,
         stump = processStumpDiameter(cols(4)),
-        block = block,
+        block = processBlock(cols(1), cols(33)),
         curbLoc = processCurbLoc(cols(5)),
         status = processStatus(cols(6)),
         health = processHealth(cols(7)),
@@ -275,11 +290,11 @@ object EtlCommand extends Command {
         postcode = processPostcode(cols(25)),
         zipCity = processZipCity(cols(26)),
         community = processCommunity(cols(27)),
-        borough = borough,
+        borough = processBorough(cols(29), cols(28)),
         cncldist = processCouncilDistrict(cols(30)),
         stateAssembly = processStateAssembly(cols(31)),
         stateSenate = processStateSenate(cols(32)),
-        NTA = NTA,
+        NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt),
         boroughCount = processBoroCt(cols(35)),
         state = state,
         latitude = processLatitude(cols(37)),
@@ -304,6 +319,19 @@ object EtlCommand extends Command {
       line_no match {
         case 0 => {}
         case _ => {
+          lineProcessor.processRegions(line)
+        }
+      }
+    }
+
+    lineProcessor.generateNTAList()
+    lineProcessor.generateBoroughList()
+    lineProcessor.generateCityList()
+
+    for((line, line_no) <- source.getLines.zipWithIndex) {
+      line_no match {
+        case 0 => {}
+        case _ => {
           val problemStart: Int = line.indexOf("\"")
           var cols: Array[String] = new Array[String](3)
           if (problemStart != -1) {
@@ -317,6 +345,7 @@ object EtlCommand extends Command {
           treeList += Tree
         }
       }
+
     }
 
     println(lineProcessor.city.postcodes)
