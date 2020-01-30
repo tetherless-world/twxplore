@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "twxplore geo GUI",
   "dependencies": {
-    "twxplore-base-lib": "1.0.0"
+    "@tetherless-world/twxplore-base-lib": "1.0.0"
   },
   "license": "Apache 2",
   "scripts": {
