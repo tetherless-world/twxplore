@@ -33,8 +33,8 @@ object EtlCommand extends Command {
     var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
     var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
     var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-    var city: City = City("New York City", List[Borough](), List[Postcode](), "New York")
-    var state: State = State("New York", List[City]())
+    var city: City = City("New York City", List[Int](), List[Int](), "New York")
+    var state: State = State("New York", List[String]())
 
     def processAddress(address: String): String = address
 
@@ -70,7 +70,7 @@ object EtlCommand extends Command {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, List[NTA]())
+          val borough = Borough(borough_str, borocode.toInt, List[String]())
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -128,7 +128,7 @@ object EtlCommand extends Command {
       ntaMap.get(nta) match {
         case Some(n) => n
         case _ => {
-          val new_nta = NTA(nta, ntaName, List[Block](), borough, postCode, community, councilDistrict)
+          val new_nta = NTA(nta, ntaName, List[Int](), borough, postCode, community, councilDistrict)
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -326,8 +326,10 @@ object EtlCommand extends Command {
     lineProcessor.generateNTAList()
     lineProcessor.generateBoroughList()
     lineProcessor.generateCityList()
+    source.close()
+    val source2 = scala.io.Source.fromFile(args.dataDirectoryPath)
 
-    for((line, line_no) <- source.getLines.zipWithIndex) {
+    for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
         case _ => {
@@ -347,6 +349,8 @@ object EtlCommand extends Command {
 
     }
 
+    source2.close()
+
     println(lineProcessor.city.postcodes)
 
     lineProcessor.boroughMap.foreach {
@@ -356,12 +360,13 @@ object EtlCommand extends Command {
         value.ntaList.sorted.foreach {
           case (nta) => {
 
-            print(nta.nta + ": " + nta.ntaName + ", ")
+            print(nta + ": " + lineProcessor.ntaMap(nta).ntaName + ", ")
           }
         }
         println("\n")
       }
     }
+    println(treeList(0))
 //    val pipeline = Pipelines.pipelines.get(pipelineName)
 //    if (!pipeline.isDefined) {
 //      logger.error(s"no such pipeline `${pipelineName}`, valid: ${Pipelines.pipelines.keySet.mkString(" ")}")
