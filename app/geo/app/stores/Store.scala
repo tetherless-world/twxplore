@@ -1,8 +1,10 @@
 package stores
 
+import com.google.inject.ImplementedBy
 import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
 
+@ImplementedBy(classOf[TwksStore])
 trait Store {
   def getFeatures(limit: Int, offset: Int): List[Feature]
   def getFeaturesCount(): Int
