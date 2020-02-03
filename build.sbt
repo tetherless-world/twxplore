@@ -32,6 +32,7 @@ lazy val baseLib =
       "com.typesafe.play" %% "play" % playVersion,
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
       "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
+      "io.github.tetherless-world" %% "scena" % "1.0.0-SNAPSHOT",
       "org.apache.jena" % "jena-geosparql" % "3.13.1",
       "org.sangria-graphql" %% "sangria" % "1.4.2",
       "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",
@@ -39,7 +40,7 @@ lazy val baseLib =
       "org.scalatest" %% "scalatest" % "3.0.8" % Test,
       "org.slf4j" % "slf4j-simple" % "1.7.25" % Test
     ),
-    name := "base-lib"
+    name := "twxplore-base-lib"
   )
 
 lazy val geoApp = (project in file("app/geo"))
@@ -63,7 +64,7 @@ lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib)
     .settings(
-      name := "geo-lib"
+      name := "twxplore-geo-lib"
     )
 
 lazy val treeCli = (project in file("cli/tree"))
@@ -89,5 +90,5 @@ lazy val treeLib =
   (project in file("lib/scala/tree"))
     .dependsOn(geoLib)
     .settings(
-      name := "tree-lib"
+      name := "twxplore-tree-lib"
     )
