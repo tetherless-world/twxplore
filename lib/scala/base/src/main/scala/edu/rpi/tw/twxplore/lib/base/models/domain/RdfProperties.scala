@@ -3,7 +3,7 @@ package edu.rpi.tw.twxplore.lib.base.models.domain
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.vocabulary.RDF
 
-trait RdfProperties extends PropertyGetters {
+trait RdfProperties extends PropertyGetters with PropertySetters {
   /**
    * Get the first rdf:type of a resource.
    */
@@ -24,7 +24,6 @@ trait RdfProperties extends PropertyGetters {
    * Set the rdf:types of a resource, clearing out other types.
    */
   final def types_=(typeResources: List[Resource]): Unit = {
-    resource.removeAll(RDF.`type`)
-    typeResources.foreach(typeResource => resource.addProperty(RDF.`type`, typeResource))
+    setProperty(RDF.`type`, typeResources)
   }
 }

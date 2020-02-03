@@ -3,11 +3,11 @@ package edu.rpi.tw.twxplore.lib.base.models.domain
 import org.apache.jena.rdf.model.ResourceFactory
 import org.apache.jena.vocabulary.RDFS
 
-trait RdfsProperties extends PropertyGetters {
+trait RdfsProperties extends PropertyGetters with PropertySetters {
   /**
    * Get the first rdfs:label of a resource.
    */
-  final def `label` = labels.headOption
+  final def label = labels.headOption
 
   /**
    * Get all rdfs:label's of a resource.
@@ -23,8 +23,5 @@ trait RdfsProperties extends PropertyGetters {
   /**
    * Set the rdfs:labels of a resource, clearing out other labels.
    */
-  final def labels_=(labels: List[String]): Unit = {
-    resource.removeAll(RDFS.label)
-    labels.foreach(label => resource.addProperty(RDFS.label, ResourceFactory.createPlainLiteral(label)))
-  }
+  final def labels_=(labels: List[String]) = setProperty(RDFS.label, labels.map(label => ResourceFactory.createPlainLiteral(label)))
 }
