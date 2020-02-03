@@ -1,13 +1,14 @@
 package models.graphql
 
+import edu.rpi.tw.twxplore.lib.geo.models.domain.TestData
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.{TestData, TestStore}
+import stores.TestStore
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
