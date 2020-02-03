@@ -4,6 +4,7 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 
 // Constants
+val scenaVersion = "1.0.0-SNAPSHOT"
 val playVersion = "2.8.0"
 
 
@@ -34,7 +35,7 @@ lazy val baseLib =
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
         "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
-        "io.github.tetherless-world" %% "scena" % "1.0.0-SNAPSHOT",
+        "io.github.tetherless-world" %% "scena" % scenaVersion,
         "org.apache.jena" % "jena-geosparql" % "3.13.1",
         "org.sangria-graphql" %% "sangria" % "1.4.2",
         "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",
@@ -90,8 +91,9 @@ lazy val testLib =
   (project in file("lib/scala/test"))
     .settings(
       libraryDependencies ++= Seq(
+        "io.github.tetherless-world" %% "scena" % scenaVersion,
         "org.scalatest" %% "scalatest" % "3.0.8",
-        "org.slf4j" % "slf4j-simple" % "1.7.25"
+        "org.slf4j" % "slf4j-simple" % "1.7.25",
       ),
       name := "twxplore-test-lib"
     )
