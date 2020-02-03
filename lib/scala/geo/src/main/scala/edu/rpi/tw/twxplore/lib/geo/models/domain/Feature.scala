@@ -1,22 +1,26 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
+import edu.rpi.tw.twxplore.lib.base.models.domain.{RdfProperties, RdfsProperties}
 import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.RDFS
 
 final case class Feature(geometry: Geometry, label: Option[String], uri: Uri)
 
 object Feature {
-  import edu.rpi.tw.twxplore.lib.base.models.domain.RdfResourceWrapper._
-  import edu.rpi.tw.twxplore.lib.base.models.domain.RdfsResourceWrapper._
+
+  // Mix in whichever enrichments we want
+  implicit class FeatureResource(val resource: Resource)
+    extends RdfProperties
+      with RdfsProperties
 
   implicit object FeatureRdfReader extends RdfReader[Feature] {
     override def read(resource: Resource): Feature =
       Feature(
         geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
-        label = Option(resource.getProperty(RDFS.label)).map(statement => statement.getObject.asLiteral().getString),
+        label = resource.label,
+        // Option(resource.getProperty(RDFS.label)).map(statement => statement.getObject.asLiteral().getString),
         uri = Uri.parse(resource.getURI)
       )
   }
