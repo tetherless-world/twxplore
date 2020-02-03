@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.models.domain.{RdfProperties, RdfsProperties}
 import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
+import org.apache.jena.rdf.model.{Model, Resource}
 
 final case class Feature(geometry: Geometry, label: Option[String], uri: Uri)
 
@@ -26,12 +26,12 @@ object Feature {
   }
 
   implicit object FeatureRdfWriter extends RdfWriter[Feature] {
-    override def write(value: Feature): Resource = {
-      val resource = ResourceFactory.createResource(value.uri.toString)
+    override def write(model: Model, value: Feature): Resource = {
+      val resource = model.createResource(value.uri.toString)
       resource.`type` = Geo.FEATURE_RES
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
       if (value.label.isDefined) resource.label = value.label.get
-      resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](value.geometry))
+      resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](model, value.geometry))
     }
   }
 }
