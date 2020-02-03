@@ -34,5 +34,7 @@ final case class Tree(id: Int,
                       censusTract: Option[CensusTract],
                       bin: Option[Int],
                       bbl: Option[Long]
-                     )
+                     ){
+  val uri = "urn:treedata:tree:" + id
+}
 

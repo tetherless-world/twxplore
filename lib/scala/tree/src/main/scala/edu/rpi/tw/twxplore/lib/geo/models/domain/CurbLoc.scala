@@ -1,5 +1,9 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
-sealed trait CurbLoc
+import edu.rpi.tw.twks.uri.Uri
+
+sealed trait CurbLoc{
+  val uri = Uri.parse("urn:treedata:curbLoc")
+}
 case object OffsetFromCurb extends CurbLoc
 case object OnCurb extends CurbLoc

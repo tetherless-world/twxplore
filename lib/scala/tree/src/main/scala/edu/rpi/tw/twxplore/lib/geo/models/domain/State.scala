@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.RDFS
 
 final case class State(state: String, cities: List[String]){
+  val uri = "urn:treedata:state:" + state
   def addCity(city: City): State = {
     State(state, cities :+ city.name)
   }

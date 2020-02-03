@@ -1,5 +1,6 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
+import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, Schema, TREE}
 import edu.rpi.tw.twxplore.lib.geo.models.domain.Block.BlockRdfReader
 import edu.rpi.tw.twxplore.lib.geo.models.domain.Borough.BoroughRdfReader
@@ -8,6 +9,7 @@ import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{DCTerms, RDFS}
 
 final case class NTA(nta: String, ntaName: String, blocks: List[Int], borough: Int, postCode: Int, community: Int, councilDistrict: Int) extends Ordered[NTA]{
+  val uri = Uri.parse("urn:treedata:nta")
   def compare(that: NTA) = this.nta compare that.nta
   def addBlock(block: Block): NTA = {
     NTA(nta, ntaName, blocks :+ block.id, borough, postCode, community, councilDistrict)

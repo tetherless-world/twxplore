@@ -1,11 +1,13 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
+import edu.rpi.tw.twks.uri.Uri
 import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, TREE}
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{DCTerms, RDFS}
 
 final case class City(name: String, boroughs: List[Int], postcodes: List[Int], state: String){
+  val uri = Uri.parse("urn:treedata:city:" + name)
   def addBorough(borough: Borough): City = {
     City(name, boroughs :+ borough.borocode, postcodes, state)
   }

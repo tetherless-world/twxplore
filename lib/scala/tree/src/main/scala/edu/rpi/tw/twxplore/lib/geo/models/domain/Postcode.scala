@@ -6,7 +6,9 @@ import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.DCTerms
 
-final case class Postcode(code: Int, city: String)
+final case class Postcode(code: Int, city: String){
+  val uri = "urn:treedata:postcode"
+}
 
 object Postcode {
   implicit object PostcodeRdfReader extends RdfReader[Postcode] {

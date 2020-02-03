@@ -1,6 +1,8 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
-sealed trait Problems
+sealed trait Problems{
+  val uri = "urn:treedata:problems"
+}
 case object BranchLights extends Problems
 case object BranchOther extends Problems
 case object BranchShoe extends Problems
