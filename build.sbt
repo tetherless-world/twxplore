@@ -44,7 +44,7 @@ lazy val baseLib =
     )
 
 lazy val geoApp = (project in file("app/geo"))
-  .dependsOn(geoLib)
+  .dependsOn(geoLib % "compile->compile;test->test")
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(
