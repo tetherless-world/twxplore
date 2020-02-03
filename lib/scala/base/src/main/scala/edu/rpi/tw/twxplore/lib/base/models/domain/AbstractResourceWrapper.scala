@@ -21,6 +21,9 @@ abstract class AbstractResourceWrapper(protected val resource: Resource) {
   protected final def getPropertyObjectLiterals(property: Property): List[Literal] =
     getPropertyObjects(property).flatMap(object_ => if (object_.isLiteral) Some(object_.asLiteral()) else None)
 
+  protected final def getPropertyObjectResources(property: Property): List[Resource] =
+    getPropertyObjects(property).flatMap(node => if (node.isResource) Some(node.asResource()) else None)
+
   protected final def getPropertyObjectString(property: Property): Option[String] =
     getPropertyObjectLiteral(property).map(literal => literal.getString)
 

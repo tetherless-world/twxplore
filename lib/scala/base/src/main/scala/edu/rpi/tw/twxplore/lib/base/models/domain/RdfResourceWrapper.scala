@@ -15,7 +15,7 @@ object RdfResourceWrapper {
     /**
      * Get all rdf:type's of a resource.
      */
-    final def types = getPropertyObjects(RDF.`type`).flatMap(node => if (node.isResource) Some(node.asResource()) else None)
+    final def types = getPropertyObjectResources(RDF.`type`)
 
     /**
      * Set the rdf:type of of a resource, clearing out other types.
