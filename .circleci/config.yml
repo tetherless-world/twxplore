@@ -37,20 +37,25 @@ jobs:
             sbt clean update package test
             cp app/geo/target/test-reports/*.xml ~/project/test-results/scala
             # cp lib/scala/base/target/test-reports/*.xml ~/project/test-results/scala
+      - store_test_results:
+          path: test-results
+      - run:
+          name: Publish (master branch only)
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sbt publishSigned
+            fi
+      - run:
+          name: Clear secret data before caching
+          command: |
+            rm -fr ~/.sbt/gpg
+            rm ~/.sbt/1.0/sonatype.sbt
       - save_cache:
           key: sbt-cache-v1
           paths:
             - "~/.ivy2/cache"
             - "~/.sbt"
             - "~/.m2"
-      - store_test_results:
-          path: test-results
-      - run:
-          name: Publish (master branch only)
-          command: |
-            #if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              sbt publishSigned
-            #fi
   ts:
     working_directory: ~/project
     docker:
