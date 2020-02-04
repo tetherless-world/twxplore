@@ -1,3 +1,5 @@
+import sbt.Keys.publish
+
 organization in ThisBuild := "io.github.tetherless-world"
 scalaVersion in ThisBuild := "2.12.10"
 version in ThisBuild := "1.0.0-SNAPSHOT"
@@ -6,6 +8,32 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 // Constants
 val scenaVersion = "1.0.0-SNAPSHOT"
 val playVersion = "2.8.0"
+
+
+// Publish settings
+// Adapted from https://leonard.io/blog/2017/01/an-in-depth-guide-to-deploying-to-maven-central/ and
+// https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html
+developers in ThisBuild := List(
+  Developer("gordom6",
+    "Minor Gordon",
+    "gordom6@rpi.edu",
+    url("https://github.com/gordom6")),
+  Developer("KristoferKwan",
+    "Kristofer Kwan",
+    "kwank@rpi.edu",
+    url("https://github.com/KristoferKwan"))
+)
+homepage in ThisBuild := Some(url("https://github.com/tetherless-world/twxplore"))
+licenses in ThisBuild += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+publishMavenStyle in ThisBuild := true
+publishTo in ThisBuild := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
+scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/tetherless-world/twxplore"), "git@github.com:tetherless-world/twxplore.git"))
+useGpg in ThisBuild := false
 
 
 // Test settings
@@ -21,7 +49,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 lazy val root = project
   .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
 
 lazy val baseLib =
@@ -58,14 +86,15 @@ lazy val geoApp = (project in file("app/geo"))
 
     // Adds additional packages into conf/routes
     // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
-    skip in publish := true
+    publish / skip := true
   )
 
 lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib, testLib % "test->compile")
     .settings(
-      name := "twxplore-geo-lib"
+      name := "twxplore-geo-lib",
+      publish / skip := true
     )
 
 lazy val treeCli = (project in file("cli/tree"))
@@ -102,5 +131,6 @@ lazy val treeLib =
   (project in file("lib/scala/tree"))
     .dependsOn(geoLib)
     .settings(
-      name := "twxplore-tree-lib"
+      name := "twxplore-tree-lib",
+      publish / skip := true
     )
