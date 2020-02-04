@@ -4,11 +4,14 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 trait TreeTermsProperties extends PropertyGetters with PropertySetters {
+  //final def createdAt =
   final def dbh = getPropertyObjectInt(TREE.dbh)
 
   final def stump = getPropertyObjectInt(TREE.stump)
 
   final def block = getPropertyObjectString(TREE.block)
+  final def blockUri = getPropertyObjectUri(TREE.block)
+  final def blocksUri = getPropertyObjectUris(TREE.block)
 
   final def curbLoc = getPropertyObjectString(TREE.curbLoc)
 
@@ -47,10 +50,12 @@ trait TreeTermsProperties extends PropertyGetters with PropertySetters {
   final def bin = getPropertyObjectInt(TREE.bin)
 
   //Setters
-  final def boroughsUri_=(uris: List[Uri]) = setPropertyUris(TREE.borough, uris)
-  final def NTAUris_=(uris: List[Uri]) = setPropertyUris(TREE.NTA, uris)
+  final def boroughsUri_=(uris: List[Uri]) = addPropertyUris(TREE.borough, uris)
+  final def blocksUri_=(uris: List[Uri]) = addPropertyUris(TREE.block, uris)
+  final def blockUri_=(uri: Uri) = this.blocksUri = List(uri)
+  final def NTAUris_=(uris: List[Uri]) = addPropertyUris(TREE.NTA, uris)
   final def NTAUri_=(uri: Uri) = this.NTAUris = List(uri)
-  final def common_=(value: String) = setPropertyLiteral(TREE.common, value)
-  final def latin_=(value: String) = setPropertyLiteral(TREE.latin, value)
+  final def common_=(value: String) = addPropertyLiteral(TREE.common, value)
+  final def latin_=(value: String) = addPropertyLiteral(TREE.latin, value)
 
 }

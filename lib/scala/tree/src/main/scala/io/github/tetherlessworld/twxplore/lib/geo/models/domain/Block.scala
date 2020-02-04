@@ -24,10 +24,8 @@ object Block {
 
   implicit object BlockRdfWriter extends RdfWriter[Block] {
     override def write(model: Model, value: Block): Resource = {
-      val resource = model.getResource(value.uri.toString) match {
-        case null => ResourceFactory.createResource(value.uri.toString)
-        case resource => resource
-      }
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.identifier = value.id.toString
       resource.NTAUri = value.nta
 

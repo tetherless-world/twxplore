@@ -1,11 +1,18 @@
 package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
+import java.util.Date
+
 import edu.rpi.tw.twks.uri.Uri
 import org.apache.jena.rdf.model.{Literal, Property, RDFNode, Resource}
 
 import scala.collection.JavaConverters._
 
 trait PropertyGetters {
+  protected final def getPropertyObjectDates(property: Property): List[Date] = {
+    val dateFormatter = new java.text.SimpleDateFormat("MM/d/yyyy")
+    getPropertyObjectStrings(property).map(date => dateFormatter.parse(date))
+  }
+
   protected final def getPropertyObjectUris(property: Property): List[Uri] =
     getPropertyObjects(property).flatMap(object_ => if (object_.isURIResource) Some(Uri.parse(object_.asResource().getURI)) else None)
 

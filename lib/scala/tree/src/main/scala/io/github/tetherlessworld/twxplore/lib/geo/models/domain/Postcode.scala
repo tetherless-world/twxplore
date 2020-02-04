@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Postcode(code: Int, city: Uri) {
-  val uri = Uri.parse("urn:treedata:postcode")
+  val uri = Uri.parse("urn:treedata:postcode:" + code.toString)
 }
 
 object Postcode {
@@ -23,11 +23,8 @@ object Postcode {
   }
   implicit object PostcodeRdfWriter extends RdfWriter[Postcode] {
     override def write(model: Model, value: Postcode): Resource = {
-
-      val resource = model.getResource(value.uri.toString) match {
-        case null => ResourceFactory.createResource(value.uri.toString)
-        case resource => resource
-      }
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
 
       resource.cityUri = value.city
       resource.identifier = value.code.toString

@@ -29,11 +29,8 @@ object Borough {
 
   implicit object BoroughRdfWriter extends RdfWriter[Borough] {
     override def write(model: Model, value: Borough): Resource = {
-
-      val resource = model.getResource(value.uri.toString) match {
-        case null => ResourceFactory.createResource(value.uri.toString)
-        case resource => resource
-      }
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
 
       resource.label = value.borough
       resource.identifier = value.borocode.toString

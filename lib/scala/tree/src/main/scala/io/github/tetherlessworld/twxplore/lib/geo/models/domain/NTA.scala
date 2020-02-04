@@ -2,20 +2,17 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{SIO, Schema, TREE}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Block.BlockRdfReader
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.{DCTerms, RDFS}
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
-final case class NTA(nta: String, ntaName: String, blocks: List[Int], borough: Option[Uri], postCode: Int) extends Ordered[NTA] {
-  val uri = Uri.parse("urn:treedata:nta:") + nta
+final case class NTA(nta: String, ntaName: String, blocks: List[Uri], borough: Option[Uri], postCode: Uri) extends Ordered[NTA] {
+  val uri = Uri.parse("urn:treedata:resource:nta:" + nta)
 
   def compare(that: NTA) = this.nta compare that.nta
 
   def addBlock(block: Block): NTA = {
-    NTA(nta, ntaName, blocks :+ block.id, borough, postCode, community, councilDistrict)
+    NTA(nta, ntaName, blocks :+ block.uri, borough, postCode)
   }
 }
 
@@ -26,34 +23,25 @@ object NTA {
 
   implicit object NTARdfReader extends RdfReader[NTA] {
     override def read(resource: Resource): NTA = {
-      val blockResources = resource.listProperties(SIO.isLocationOf)
-      val blockList = List[Int]()
-      while(blockResources.hasNext){
-        blockList :+ BlockRdfReader.read(blockResources.next.getResource).id
-      }
       NTA(
         nta = resource.identifier.get,
         ntaName = resource.label.get,
         borough = resource.boroughUri,
-        postCode = resource.getProperty(Schema.postalCode).getObject.asLiteral().getInt,
-        blocks = blockList,
-        community = resource.getProperty(SIO.hasAttribute, TREE.URI + "Community").getObject().asLiteral().getInt,
-        councilDistrict = resource.getProperty(SIO.hasAttribute, TREE.URI + "CouncilDistrict").getObject().asLiteral().getInt
+        postCode = resource.postalCodeUri.get,
+        blocks = resource.blocksUri,
       )
     }
   }
 
   implicit object NTARdfWriter extends RdfWriter[NTA] {
-    override def write(value: NTA): Resource = {
-      val resource = ResourceFactory.createResource(TREE.URI + "NTA")
-      resource.addProperty(RDFS.label, value.ntaName)
-      resource.addProperty(DCTerms.identifier, value.nta)
-      resource.addProperty(Schema.postalCode, value.postCode.toString)
-      resource.addProperty(SIO.hasAttribute, TREE.URI + "Community").addProperty(SIO.hasValue, value.community.toString)
-      resource.addProperty(SIO.hasAttribute, TREE.URI + "CouncilDistrict").addProperty(SIO.hasValue, value.councilDistrict.toString)
-      for( block <- value.blocks) {
-        resource.addProperty(SIO.isLocationOf, block.toString)
-      }
+    override def write(model: Model, value: NTA): Resource = {
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
+
+      resource.label = value.ntaName
+      resource.identifier = value.nta
+      resource.postalCodeUri = value.postCode
+      resource.blocksUri = value.blocks
       resource
     }
   }

@@ -11,6 +11,20 @@ trait PropertySetters {
     }
   }
 
+  protected def addProperty[RdfNodeT <: RDFNode](property: Property, values: List[RdfNodeT]): Unit = {
+    for (value <- values) {
+      resource.addProperty(property, value)
+    }
+  }
+
+  protected def addPropertyUris(property: Property, uris: List[Uri]) = {
+    addProperty(property, uris.map(uri => ResourceFactory.createResource(uri.toString)))
+  }
+
+  protected def addPropertyUri(property: Property, uri: Uri) = {
+    addPropertyUris(property, List(uri))
+  }
+
   protected def setPropertyUris(property: Property, uris: List[Uri]) = {
     setProperty(property, uris.map(uri => ResourceFactory.createResource(uri.toString)))
   }
@@ -19,10 +33,21 @@ trait PropertySetters {
     setPropertyUris(property, List(uri))
   }
 
-
-  protected def setPropertyLiteral[RdfNodeT <: RDFNode](property: Property, value: RdfNodeT) = {
-    setProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
+  protected def addPropertyLiteral[T](property: Property, value: T) = {
+    addProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
   }
+
+//  protected def addPropertyLiteral[RdfNodeT <: RDFNode](property: Property, value: RdfNodeT) = {
+//    addProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
+//  }
+
+  protected def setPropertyLiteral[T](property: Property, value: T) = {
+    addProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
+  }
+
+//  protected def setPropertyLiteral[RdfNodeT <: RDFNode](property: Property, value: RdfNodeT) = {
+//    setProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
+//  }
 
   protected val resource: Resource
 }

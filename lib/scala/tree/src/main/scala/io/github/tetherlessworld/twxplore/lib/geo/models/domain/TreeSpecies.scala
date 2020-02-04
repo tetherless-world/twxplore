@@ -13,8 +13,8 @@ object TreeSpecies {
   implicit class TreeSpeciesResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
 
-  implicit object TreeSpeciesRdfReader extends RdfReader[domain.TreeSpecies] {
-    override def read(resource: Resource): domain.TreeSpecies = {
+  implicit object TreeSpeciesRdfReader extends RdfReader[TreeSpecies] {
+    override def read(resource: Resource): TreeSpecies = {
       TreeSpecies(
         common = resource.common.get,
         latin = resource.latin.get
@@ -22,12 +22,10 @@ object TreeSpecies {
     }
   }
 
-  implicit object TreeSpeciesRdfWriter extends RdfWriter[State] {
-    override def write(model: Model, value: domain.TreeSpecies): Resource = {
-      val resource = model.getResource(value.uri.toString) match {
-        case null => ResourceFactory.createResource(value.uri.toString)
-        case resource => resource
-      }
+  implicit object TreeSpeciesRdfWriter extends RdfWriter[TreeSpecies] {
+    override def write(model: Model, value: TreeSpecies): Resource = {
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.common = value.common
       resource.latin = value.latin
 

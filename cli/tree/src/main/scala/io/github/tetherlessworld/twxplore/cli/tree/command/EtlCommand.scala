@@ -5,6 +5,7 @@ import java.util.Date
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
+import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
@@ -30,13 +31,14 @@ object EtlCommand extends Command {
 
   class LineProcessor {
     var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-    var treeSpeciesMap: mutable.HashMap[String, models.domain.TreeSpecies] = new mutable.HashMap()
+    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
     var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
     var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
     var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
     var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-    var city: City = City("New York City", List[Int](), List[Int](), "New York")
-    var state: State = State("New York", List[String]())
+    var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
+    var state: State = State("New York", List[Uri]())
+    val uri = "urn:treedata:resource"
 
     def processAddress(address: String): String = address
 
@@ -58,7 +60,7 @@ object EtlCommand extends Command {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, nta)
+          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block
@@ -72,7 +74,7 @@ object EtlCommand extends Command {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, List[String]())
+          val borough = Borough(borough_str, borocode.toInt, List[Uri]())
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -126,11 +128,13 @@ object EtlCommand extends Command {
 
     def processLongitude(longitude: String): Float = longitude.toFloat
 
-    def processNTA(nta: String, ntaName: String, borough: Int, postCode: Int, community: Int, councilDistrict: Int): NTA = {
+    def processNTA(nta: String, ntaName: String, borough: Int, postCode: Int): NTA = {
       ntaMap.get(nta) match {
         case Some(n) => n
         case _ => {
-          val new_nta = NTA(nta, ntaName, List[Int](), borough, postCode, community, councilDistrict)
+          val boroughUri = Some(Uri.parse(uri + "borough:" + borough.toString))
+          val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
+          val new_nta = NTA(nta, ntaName, List[Uri](), boroughUri, postcodeUri)
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -141,7 +145,7 @@ object EtlCommand extends Command {
       postalCode.get(postcode.toInt) match {
         case Some(p) => p
         case _ => {
-          val new_postcode = Postcode(postcode.toInt, city.name)
+          val new_postcode = Postcode(postcode.toInt, city.uri)
           city = city.addPostcode(new_postcode)
           postalCode += (postcode.toInt -> new_postcode)
           new_postcode
@@ -250,13 +254,15 @@ object EtlCommand extends Command {
       val cols = convertToCols(line)
       processPostcode(cols(25))
       processBorough(cols(29), cols(28))
-      processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt)
+      processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt)
       processBlock(cols(1), cols(33))
     }
 
     def generateNTAList(): Unit = {
+
       for ((key, nta) <- ntaMap){
-        boroughMap(nta.borough) = boroughMap(nta.borough).addNTA(nta)
+        val boroughId = nta.borough.get.toString.substring(nta.borough.get.toString.lastIndexOf(":")+ 1).toInt
+        boroughMap(boroughId) = boroughMap(boroughId).addNTA(nta)
       }
     }
 
@@ -295,7 +301,7 @@ object EtlCommand extends Command {
         cncldist = processCouncilDistrict(cols(30)),
         stateAssembly = processStateAssembly(cols(31)),
         stateSenate = processStateSenate(cols(32)),
-        NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt, cols(27).toInt, cols(30).toInt),
+        NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt),
         boroughCount = processBoroCt(cols(35)),
         state = state,
         latitude = processLatitude(cols(37)),
@@ -359,16 +365,16 @@ object EtlCommand extends Command {
       case (key, value) => {
         println(s"${value.borough} Borough: ${value.ntaList.length}")
 
-        value.ntaList.sorted.foreach {
+        value.ntaList.foreach {
           case (nta) => {
-
-            print(nta + ": " + lineProcessor.ntaMap(nta).ntaName + ", ")
+            val ntaId = nta.toString.substring(nta.toString.lastIndexOf(":")+ 1)
+            print(nta + ": " + lineProcessor.ntaMap(ntaId).ntaName + ", ")
           }
         }
         println("\n")
       }
     }
-    println(treeList(0))
+    println(treeList.head)
 //    val pipeline = Pipelines.pipelines.get(pipelineName)
 //    if (!pipeline.isDefined) {
 //      logger.error(s"no such pipeline `${pipelineName}`, valid: ${Pipelines.pipelines.keySet.mkString(" ")}")
