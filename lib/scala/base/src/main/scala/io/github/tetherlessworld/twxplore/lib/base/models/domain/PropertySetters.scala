@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
 import org.apache.jena.rdf.model.{Property, RDFNode, Resource, ResourceFactory}

@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.vocabulary.RDF

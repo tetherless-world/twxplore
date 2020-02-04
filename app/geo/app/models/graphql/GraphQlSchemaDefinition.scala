@@ -1,7 +1,7 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import play.api.libs.json
 import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import sangria.macros.derive._

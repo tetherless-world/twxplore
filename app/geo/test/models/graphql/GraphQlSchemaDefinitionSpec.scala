@@ -1,6 +1,6 @@
 package models.graphql
 
-import edu.rpi.tw.twxplore.lib.geo.models.domain.TestData
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.TestData
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest

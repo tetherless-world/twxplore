@@ -1,17 +1,19 @@
-package edu.rpi.tw.twxplore.lib.geo.models.domain
+package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain._
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, Schema, TREE}
-import edu.rpi.tw.twxplore.lib.geo.models.domain.Block.BlockRdfReader
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{SIO, Schema, TREE}
+import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Block.BlockRdfReader
 import org.apache.jena.rdf.model.{Resource, ResourceFactory}
 import org.apache.jena.vocabulary.{DCTerms, RDFS}
 
 //Nta
-final case class NTA(nta: String, ntaName: String, blocks: List[Int], borough: Option[Uri], postCode: Int) extends Ordered[NTA]{
+final case class NTA(nta: String, ntaName: String, blocks: List[Int], borough: Option[Uri], postCode: Int) extends Ordered[NTA] {
   val uri = Uri.parse("urn:treedata:nta:") + nta
+
   def compare(that: NTA) = this.nta compare that.nta
+
   def addBlock(block: Block): NTA = {
     NTA(nta, ntaName, blocks :+ block.id, borough, postCode, community, councilDistrict)
   }

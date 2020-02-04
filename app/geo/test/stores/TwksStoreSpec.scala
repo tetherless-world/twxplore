@@ -1,6 +1,6 @@
 package stores
 
-import edu.rpi.tw.twxplore.lib.geo.models.domain.TestData
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.TestData
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksStoreSpec extends WordSpec with Matchers{

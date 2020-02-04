@@ -1,11 +1,11 @@
-package edu.rpi.tw.twxplore.lib.geo.models.domain
+package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Postcode(code: Int, city: Uri){
+final case class Postcode(code: Int, city: Uri) {
   val uri = Uri.parse("urn:treedata:postcode")
 }
 

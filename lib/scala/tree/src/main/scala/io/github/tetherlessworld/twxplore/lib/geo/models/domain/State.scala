@@ -1,12 +1,13 @@
-package edu.rpi.tw.twxplore.lib.geo.models.domain
+package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class State(state: String, cities: List[Uri]){
+final case class State(state: String, cities: List[Uri]) {
   val uri = "urn:treedata:state:" + state
+
   def addCity(city: City): State = {
     State(state, cities :+ city.uri)
   }

@@ -2,7 +2,7 @@ package stores
 
 import com.google.inject.ImplementedBy
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 
 @ImplementedBy(classOf[TwksStore])
 trait Store {

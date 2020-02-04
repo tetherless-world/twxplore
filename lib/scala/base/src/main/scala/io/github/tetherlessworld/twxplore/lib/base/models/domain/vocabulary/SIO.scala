@@ -1,4 +1,5 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary
+package io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary
+
 import org.apache.jena.rdf.model.ResourceFactory
 
 object SIO {

@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.base.controllers.graphql
+package io.github.tetherlessworld.twxplore.lib.base.controllers.graphql
 
 import akka.actor.ActorSystem
 import play.api.libs.json._

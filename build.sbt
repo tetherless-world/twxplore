@@ -1,4 +1,4 @@
-organization in ThisBuild := "edu.rpi.tw.twxplore"
+organization in ThisBuild := "io.github.tetherlessworld.twxplore"
 scalaVersion in ThisBuild := "2.12.10"
 version in ThisBuild := "1.0.0-SNAPSHOT"
 
@@ -79,7 +79,7 @@ lazy val treeCli = (project in file("cli/tree"))
         oldStrategy(x)
     },
     assemblyOutputPath in assembly := baseDirectory.value / "dist" / ("tree-cli.jar"),
-    mainClass in assembly := Some("edu.rpi.tw.twxplore.cli.tree.TreeCli"),
+    mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.tree.TreeCli"),
     libraryDependencies ++= Seq(
       "com.beust" % "jcommander" % "1.78"
     ),

@@ -1,7 +1,7 @@
-package edu.rpi.tw.twxplore.lib.geo.models.domain
+package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.SIO
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.SIO
 import org.apache.jena.rdf.model.{Literal, Property, RDFNode, Resource}
 import org.apache.jena.vocabulary.{DCTerms, RDFS}
 

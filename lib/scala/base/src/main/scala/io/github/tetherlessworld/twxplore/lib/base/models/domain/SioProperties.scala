@@ -1,6 +1,6 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.SIO
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.SIO
 import org.apache.jena.rdf.model.ResourceFactory
 
 trait SioProperties extends PropertyGetters with PropertySetters {

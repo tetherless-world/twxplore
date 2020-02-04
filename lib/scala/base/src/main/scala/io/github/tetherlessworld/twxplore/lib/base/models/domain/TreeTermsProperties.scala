@@ -1,13 +1,17 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 trait TreeTermsProperties extends PropertyGetters with PropertySetters {
   final def dbh = getPropertyObjectInt(TREE.dbh)
+
   final def stump = getPropertyObjectInt(TREE.stump)
+
   final def block = getPropertyObjectString(TREE.block)
+
   final def curbLoc = getPropertyObjectString(TREE.curbLoc)
+
   final def status = getPropertyObjectString(TREE.status)
   final def health = getPropertyObjectString(TREE.health)
   final def species = getPropertyObjectString(TREE.species)

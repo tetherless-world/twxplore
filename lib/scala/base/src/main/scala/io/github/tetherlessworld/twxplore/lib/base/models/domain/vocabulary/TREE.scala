@@ -1,4 +1,4 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary
+package io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary
 
 import org.apache.jena.rdf.model.ResourceFactory
 
@@ -8,7 +8,7 @@ object TREE {
 
   val dbh = ResourceFactory.createProperty(propertyURI + "dbh")
   val stump = ResourceFactory.createProperty(propertyURI + "stump")
-  val block = ResourceFactory.createProperty(propertyURI + "block")//
+  val block = ResourceFactory.createProperty(propertyURI + "block") //
   val curbLoc = ResourceFactory.createProperty(propertyURI + "curbLoc")
   val status = ResourceFactory.createProperty(propertyURI + "status")
   val health = ResourceFactory.createProperty(propertyURI + "health")

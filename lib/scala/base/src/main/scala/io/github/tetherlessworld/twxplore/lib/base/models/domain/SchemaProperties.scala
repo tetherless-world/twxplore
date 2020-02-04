@@ -1,13 +1,17 @@
-package edu.rpi.tw.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.Schema
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.Schema
 
 trait SchemaProperties extends PropertyGetters with PropertySetters {
   final def address = getPropertyObjectString(Schema.address)
+
   final def city = getPropertyObjectString(Schema.city)
+
   final def latitude = getPropertyObjectFloat(Schema.latitude)
+
   final def longitude = getPropertyObjectFloat(Schema.longitude)
+
   final def postalCode = getPropertyObjectInt(Schema.postalCode)
   final def state = getPropertyObjectString(Schema.state)
 

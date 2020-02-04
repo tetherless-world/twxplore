@@ -1,9 +1,9 @@
-package edu.rpi.tw.twxplore.lib.geo.models.domain
+package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import java.util.Date
 
-import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.RdfReader
+import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.Resource
 
 final case class Tree(id: Int,
@@ -14,7 +14,7 @@ final case class Tree(id: Int,
                       curbLoc: CurbLoc,
                       status: Status,
                       health: Option[Health],
-                      species: Option[TreeSpecies],
+                      species: Option[domain.TreeSpecies],
                       steward: Option[Steward],
                       guards: Option[Guards],
                       sidewalk: Option[Sidewalk],

@@ -1,16 +1,18 @@
-package edu.rpi.tw.twxplore.cli.tree.command
+package io.github.tetherlessworld.twxplore.cli.tree.command
 
 import java.nio.file.Paths
 import java.util.Date
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
-import edu.rpi.tw.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 object EtlCommand extends Command {
+
   @Parameters(commandDescription = "Run an extract-transform-load (ETL) pipeline")
   class Args {
     @Parameter(names = Array("-o", "--data-directory-path"))
@@ -28,7 +30,7 @@ object EtlCommand extends Command {
 
   class LineProcessor {
     var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
+    var treeSpeciesMap: mutable.HashMap[String, models.domain.TreeSpecies] = new mutable.HashMap()
     var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
     var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
     var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
@@ -270,10 +272,10 @@ object EtlCommand extends Command {
     def process(line: String): Tree = {
       val cols = convertToCols(line)
 
-      Tree(
+      domain.Tree(
         id = processTreeId(cols(0)),
         createdAt = processCreatedAt(cols(2)),
-        dbh = processDBH(cols(3)) ,
+        dbh = processDBH(cols(3)),
         stump = processStumpDiameter(cols(4)),
         block = processBlock(cols(1), cols(33)),
         curbLoc = processCurbLoc(cols(5)),

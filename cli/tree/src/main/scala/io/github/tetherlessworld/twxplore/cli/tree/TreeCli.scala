@@ -1,9 +1,10 @@
-package edu.rpi.tw.twxplore.cli.tree
+package io.github.tetherlessworld.twxplore.cli.tree
 
 import com.beust.jcommander.{JCommander, Parameter}
-import edu.rpi.tw.twxplore.cli.tree.command.EtlCommand
+import io.github.tetherlessworld.twxplore.cli.tree.command.EtlCommand
 
 object CliMain {
+
   class GlobalArgs {
     @Parameter(names = Array("-h", "--help"))
     var help: Boolean = false
