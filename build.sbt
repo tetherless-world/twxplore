@@ -33,6 +33,7 @@ publishTo in ThisBuild := Some(
     Opts.resolver.sonatypeStaging
 )
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/tetherless-world/twxplore"), "git@github.com:tetherless-world/twxplore.git"))
+skip in publish := true // Don't publish the default project ('twxplore')
 useGpg in ThisBuild := false
 
 
@@ -49,7 +50,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 lazy val root = project
   .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
   .settings(
-    publish / skip := true
+    skip in publish := true
   )
 
 lazy val baseLib =
@@ -86,7 +87,7 @@ lazy val geoApp = (project in file("app/geo"))
 
     // Adds additional packages into conf/routes
     // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
-    publish / skip := true
+    skip in publish := true
   )
 
 lazy val geoLib =
@@ -94,7 +95,7 @@ lazy val geoLib =
     .dependsOn(baseLib, testLib % "test->compile")
     .settings(
       name := "twxplore-geo-lib",
-      publish / skip := true
+      skip in publish := true
     )
 
 lazy val treeCli = (project in file("cli/tree"))
@@ -113,7 +114,7 @@ lazy val treeCli = (project in file("cli/tree"))
       "com.beust" % "jcommander" % "1.78"
     ),
     name := "tree-cli",
-    publish / skip := true
+    skip in publish := true
   )
 
 lazy val testLib =
@@ -132,5 +133,5 @@ lazy val treeLib =
     .dependsOn(geoLib)
     .settings(
       name := "twxplore-tree-lib",
-      publish / skip := true
+      skip in publish := true
     )
