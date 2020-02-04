@@ -1,38 +1,38 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, TREE}
+import edu.rpi.tw.twks.uri.Uri
+import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.RDFS
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class State(state: String, cities: List[String]){
+final case class State(state: String, cities: List[Uri]){
   val uri = "urn:treedata:state:" + state
   def addCity(city: City): State = {
-    State(state, cities :+ city.name)
+    State(state, cities :+ city.uri)
   }
 }
 
 object State {
+  implicit class BoroughResource(val resource: Resource)
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+
   implicit object StateRdfReader extends RdfReader[State] {
     override def read(resource: Resource): State = {
-      val cityResources = resource.listProperties(SIO.isLocationOf)
-      val cities = List[String]()
-      while(cityResources.hasNext) {
-        cities :+ cityResources.next.getResource.getProperty(RDFS.label).getLiteral().getString
-      }
       State(
-        state = resource.getProperty(RDFS.label).getObject.asLiteral().getString,
-        cities = cities
+        state = resource.label.get,
+        cities = resource.citiesUri
       )
     }
   }
   implicit object StateRdfWriter extends RdfWriter[State] {
-    override def write(value: State): Resource = {
-      val resource = ResourceFactory.createResource(TREE.URI + "State")
-      resource.addProperty(RDFS.label, value.state)
-      for( city <- value.cities) {
-        resource.addProperty(SIO.isLocationOf, ResourceFactory.createResource(TREE.URI + "City")).addProperty(RDFS.label, city)
+    override def write(model: Model, value: State): Resource = {
+      val resource = model.getResource(value.uri.toString) match {
+        case null => ResourceFactory.createResource(value.uri.toString)
+        case resource => resource
       }
+      resource.label = value.state
+      resource.citiesUri = value.cities
+
       resource
     }
   }

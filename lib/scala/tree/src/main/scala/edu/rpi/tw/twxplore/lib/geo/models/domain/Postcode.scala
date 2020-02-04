@@ -1,28 +1,37 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, TREE}
-import edu.rpi.tw.twxplore.lib.geo.models.domain.City.CityRdfReader
+import edu.rpi.tw.twks.uri.Uri
+import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.DCTerms
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Postcode(code: Int, city: String){
-  val uri = "urn:treedata:postcode"
+final case class Postcode(code: Int, city: Uri){
+  val uri = Uri.parse("urn:treedata:postcode")
 }
 
 object Postcode {
+  implicit class PostcodeResource(val resource: Resource)
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties
+
   implicit object PostcodeRdfReader extends RdfReader[Postcode] {
     override def read(resource: Resource): Postcode = {
       Postcode(
-        code = resource.getProperty(DCTerms.identifier).getObject().asLiteral().getInt,
-        city = CityRdfReader.read(resource.getProperty(SIO.isAssociatedWith).getResource()).name
+        code = resource.identifier.get.toInt,
+        city = resource.cityUri.get
       )
     }
   }
   implicit object PostcodeRdfWriter extends RdfWriter[Postcode] {
-    override def write(value: Postcode): Resource = {
-      val resource = ResourceFactory.createResource(TREE.URI + "Postcode")
-      resource.addProperty(SIO.isAssociatedWith, value.city)
+    override def write(model: Model, value: Postcode): Resource = {
+
+      val resource = model.getResource(value.uri.toString) match {
+        case null => ResourceFactory.createResource(value.uri.toString)
+        case resource => resource
+      }
+
+      resource.cityUri = value.city
+      resource.identifier = value.code.toString
+
       resource
     }
   }

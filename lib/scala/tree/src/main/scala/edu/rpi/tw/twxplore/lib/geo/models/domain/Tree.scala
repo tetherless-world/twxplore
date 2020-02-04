@@ -2,6 +2,10 @@ package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import java.util.Date
 
+import edu.rpi.tw.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.scena.RdfReader
+import org.apache.jena.rdf.model.Resource
+
 final case class Tree(id: Int,
                       createdAt: Date,
                       dbh: Int,
@@ -36,5 +40,19 @@ final case class Tree(id: Int,
                       bbl: Option[Long]
                      ){
   val uri = "urn:treedata:tree:" + id
+}
+
+object TreeSpecies {
+  implicit class TreeSpeciesResource(val resource: Resource)
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+
+  implicit object TreeRdfReader extends RdfReader[Tree] {
+    override def read(resource: Resource): Tree = {
+      TreeSpecies(
+        common = resource.common.get,
+        latin = resource.latin.get
+      )
+    }
+  }
 }
 

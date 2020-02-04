@@ -1,42 +1,43 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, TREE}
+import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.{DCTerms, RDFS}
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Borough(borough: String, borocode: Int, ntaList: List[String]){
+final case class Borough(borough: String, borocode: Int, ntaList: List[Uri]){
   val uri = Uri.parse("urn:treedata:borough:" + borocode)
   def addNTA(nta: NTA): Borough = {
-    Borough(borough, borocode, ntaList :+ nta.nta)
+    Borough(borough, borocode, ntaList :+ nta.uri)
   }
 }
 
 object Borough {
+  implicit class BoroughResource(val resource: Resource)
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+
   implicit object BoroughRdfReader extends RdfReader[Borough] {
     override def read(resource: Resource): Borough = {
-      val ntaResources = resource.listProperties(SIO.isLocationOf)
-      val ntaList = List[String]()
-      while(ntaResources.hasNext){
-        ntaList :+ ntaResources.next().getResource.getProperty(DCTerms.identifier).getObject.asLiteral().toString
-      }
       Borough(
-        borough = resource.getProperty(RDFS.label).getObject.asLiteral().getString,
-        borocode = resource.getProperty(DCTerms.identifier).getObject().asLiteral().getInt,
-        ntaList = ntaList
+        borough = resource.label.get,
+        borocode = resource.identifier.get.toInt,
+        ntaList = resource.NTAUris
       )
     }
   }
 
   implicit object BoroughRdfWriter extends RdfWriter[Borough] {
-    override def write(value: Borough): Resource = {
-      val resource = ResourceFactory.createResource(TREE.URI + "borough")
-      resource.addProperty(RDFS.label, value.borough)
-      resource.addProperty(DCTerms.identifier, value.borocode.toString)
-      for( nta <- value.ntaList) {
-        resource.addProperty(SIO.isLocationOf, ResourceFactory.createResource(TREE.URI + "NTA")).addProperty(DCTerms.identifier, nta)
+    override def write(model: Model, value: Borough): Resource = {
+
+      val resource = model.getResource(value.uri.toString) match {
+        case null => ResourceFactory.createResource(value.uri.toString)
+        case resource => resource
       }
+
+      resource.label = value.borough
+      resource.identifier = value.borocode.toString
+      resource.NTAUris = value.ntaList
+
       resource
     }
   }

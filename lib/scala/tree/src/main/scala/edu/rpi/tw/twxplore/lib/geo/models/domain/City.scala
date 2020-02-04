@@ -1,57 +1,49 @@
 package edu.rpi.tw.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import edu.rpi.tw.twxplore.lib.base.models.domain.vocabulary.{SIO, TREE}
+import edu.rpi.tw.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
-import org.apache.jena.rdf.model.{Resource, ResourceFactory}
-import org.apache.jena.vocabulary.{DCTerms, RDFS}
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class City(name: String, boroughs: List[Int], postcodes: List[Int], state: String){
+final case class City(name: String, boroughs: List[Uri], postcodes: List[Uri], state: Uri){
   val uri = Uri.parse("urn:treedata:city:" + name)
   def addBorough(borough: Borough): City = {
-    City(name, boroughs :+ borough.borocode, postcodes, state)
+    City(name, boroughs :+ borough.uri, postcodes, state)
   }
 
   def addPostcode(postcode: Postcode): City = {
-    City(name, boroughs, postcodes :+ postcode.code, state)
+    City(name, boroughs, postcodes :+ postcode.uri, state)
   }
 }
 
 object City {
+
+  implicit class CityResource(val resource: Resource)
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties
+
   implicit object CityRdfReader extends RdfReader[City] {
     override def read(resource: Resource): City = {
-      val boroughResources = resource.listProperties(SIO.isLocationOf)
-      val postcodeResources = resource.listProperties(SIO.isAssociatedWith)
-      val boroughs = List[Int]()
-      val postcodes = List[Int]()
-      while(boroughResources.hasNext){
-//        boroughs :+ BoroughRdfReader.read(boroughResources.next().getResource()).borocode
-        boroughs :+ boroughResources.next().getObject().asResource().getProperty(DCTerms.identifier).getObject.asLiteral().toString
-      }
-      while(postcodeResources.hasNext){
-//        postcodes :+ PostcodeRdfReader.read(boroughResources.next().getResource()).code
-        postcodes :+ postcodeResources.next().getObject().asResource().getProperty(DCTerms.identifier).getObject.asLiteral().toString
-      }
       City(
-        name = resource.getProperty(RDFS.label).getObject.asLiteral().getString,
-        boroughs = boroughs,
-        postcodes = postcodes,
-        state = resource.getProperty(SIO.isLocationIn).getObject.asResource().getProperty(RDFS.label).getObject.asLiteral().getString
+        name = resource.label.get,
+        boroughs = resource.boroughsUri,
+        postcodes = resource.postalCodesUri,
+        state = resource.stateUri.get
       )
     }
   }
 
   implicit object CityRdfWriter extends RdfWriter[City] {
-    override def write(value: City): Resource = {
-      val resource = ResourceFactory.createResource(TREE.URI + "City")
-      resource.addProperty(RDFS.label, value.name)
-      resource.addProperty(SIO.isLocationIn, value.state)
-      for(borough <- value.boroughs){
-        resource.addProperty(SIO.isLocationOf, ResourceFactory.createResource(TREE.URI + "borough").addProperty(DCTerms.identifier, borough.toString))
+    override def write(model: Model, value: City): Resource = {
+
+      val resource = model.getResource(value.uri.toString) match {
+        case null => ResourceFactory.createResource(value.uri.toString)
+        case resource => resource
       }
-      for(postcode <- value.postcodes){
-        resource.addProperty(SIO.isAssociatedWith, ResourceFactory.createResource(TREE.URI + "postcode").addProperty(DCTerms.identifier, postcode.toString))
-      }
+
+      resource.label = value.name
+      resource.stateUri = value.state
+      resource.boroughsUri = value.boroughs
+      resource.postalCodesUri = value.postcodes
       resource
     }
   }

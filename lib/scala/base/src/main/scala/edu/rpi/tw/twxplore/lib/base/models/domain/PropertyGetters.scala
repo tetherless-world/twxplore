@@ -1,10 +1,17 @@
 package edu.rpi.tw.twxplore.lib.base.models.domain
 
+import edu.rpi.tw.twks.uri.Uri
 import org.apache.jena.rdf.model.{Literal, Property, RDFNode, Resource}
 
 import scala.collection.JavaConverters._
 
 trait PropertyGetters {
+  protected final def getPropertyObjectUris(property: Property): List[Uri] =
+    getPropertyObjects(property).flatMap(object_ => if (object_.isURIResource) Some(Uri.parse(object_.asResource().getURI)) else None)
+
+  protected final def getPropertyObjectUri(property: Property): Option[Uri] =
+    getPropertyObject(property).flatMap(object_ => if (!object_.isURIResource) Some(Uri.parse(object_.asResource().getURI)) else None)
+
   protected final def getPropertyObject(property: Property): Option[RDFNode] =
     Option(resource.getProperty(property)).map(statement => statement.getObject)
 
@@ -13,6 +20,9 @@ trait PropertyGetters {
 
   protected final def getPropertyObjectInt(property: Property): Option[Int] =
     getPropertyObjectLiteral(property).map(literal => literal.getInt)
+
+  protected final def getPropertyObjectFloat(property: Property): Option[Float] =
+    getPropertyObjectLiteral(property).map(literal => literal.getFloat)
 
   protected final def getPropertyObjectLiteral(property: Property): Option[Literal] =
     getPropertyObject(property).flatMap(object_ => if (object_.isLiteral) Some(object_.asLiteral()) else None)
