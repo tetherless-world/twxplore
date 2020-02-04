@@ -30,6 +30,24 @@ jobs:
             - "~/.m2"
       - store_test_results:
           path: test-results
+      - run:
+          name: Publish (master branch only)
+          command: |
+            #if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo "Configuring GPG"
+              # See https://discuss.circleci.com/t/gpg-keys-as-environment-variables/28641/3
+              echo -e "$OSSRH_GPG_KEY" | gpg --import
+              mkdir ~/.sbt/gpg
+              gpg -a --export-secret-keys >~/.sbt/gpg/secring.asc
+              # gpg -a --export >~/.sbt/gpg/pubring.asc
+              echo "Configuring sbt plugins"
+              mkdir -p ~/.sbt/1.0/plugins
+              echo 'addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")' >~/.sbt/1.0/plugins/pgp.sbt
+              echo "credentials += Credentials(\"Sonatype Nexus Repository Manager\", \"oss.sonatype.org\", \"$SONATYPE_USERNAME\", \"$SONATYPE_PASSWORD\")" >>~/.sbt/1.0/sonatype.sbt
+              echo "pgpPassphrase := Some(Array[Char]())" >>~/.sbt/1.0/sonatype.sbt
+              echo "Publishing"
+              sbt publishSigned
+            #fi
   ts:
     working_directory: ~/project
     docker:
