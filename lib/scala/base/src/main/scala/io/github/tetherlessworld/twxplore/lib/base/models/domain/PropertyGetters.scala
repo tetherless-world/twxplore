@@ -8,6 +8,11 @@ import org.apache.jena.rdf.model.{Literal, Property, RDFNode, Resource}
 import scala.collection.JavaConverters._
 
 trait PropertyGetters {
+  protected final def getPropertyObjectDate(property: Property): Option[Date] = {
+    val dateFormatter = new java.text.SimpleDateFormat("MM/d/yyyy")
+    getPropertyObjectString(property).map(date => dateFormatter.parse(date))
+  }
+
   protected final def getPropertyObjectDates(property: Property): List[Date] = {
     val dateFormatter = new java.text.SimpleDateFormat("MM/d/yyyy")
     getPropertyObjectStrings(property).map(date => dateFormatter.parse(date))
@@ -30,6 +35,9 @@ trait PropertyGetters {
 
   protected final def getPropertyObjectFloat(property: Property): Option[Float] =
     getPropertyObjectLiteral(property).map(literal => literal.getFloat)
+
+  protected final def getPropertyObjectLong(property: Property): Option[Long] =
+    getPropertyObjectLiteral(property).map(literal => literal.getLong)
 
   protected final def getPropertyObjectLiteral(property: Property): Option[Literal] =
     getPropertyObject(property).flatMap(object_ => if (object_.isLiteral) Some(object_.asLiteral()) else None)
