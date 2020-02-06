@@ -1,4 +1,4 @@
-import io.github.tetherlessworld.twxplore.lib.tree.TreeDataCsvTransformer
+package io.github.tetherlessworld.twxplore.lib.test
 
 class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
   "TreeDataCsvTranformerSpec" can {
