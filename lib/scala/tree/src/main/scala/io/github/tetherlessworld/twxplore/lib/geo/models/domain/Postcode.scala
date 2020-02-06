@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Postcode(code: Int, city: Uri) {
-  val uri = Uri.parse("urn:treedata:postcode:" + code.toString)
+  val uri = Uri.parse("urn:treedata:resource:postcode:" + code.toString)
 }
 
 object Postcode {

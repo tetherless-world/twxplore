@@ -1,12 +1,9 @@
-package io.github.tetherlessworld.twxplore.cli.tree.command
+package io.github.tetherlessworld.twxplore.lib.tree
 
-import java.io.FileWriter
-import java.nio.file.{Files, Paths}
 import java.util.Date
 
-import com.beust.jcommander.{Parameter, Parameters}
-import com.typesafe.scalalogging.Logger
 import edu.rpi.tw.twks.uri.Uri
+import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import org.apache.jena.rdf.model.ModelFactory
@@ -14,33 +11,31 @@ import org.apache.jena.rdf.model.ModelFactory
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-object EtlCommand extends Command {
-
-  @Parameters(commandDescription = "Run an extract-transform-load (ETL) pipeline")
-  class Args {
-    @Parameter(names = Array("-o", "--data-directory-path"))
-    var dataDirectoryPath: String = "data"
-
-    @Parameter(description = "pipeline name", required = true)
-    var pipelineName: String = null
-  }
-
-  val args = new Args()
-
+case class TreeDataCsvTransformer(filename: String) {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
   }
+  var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
+  var treeMap: mutable.HashMap[Int, Tree] = new mutable.HashMap()
+  var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
+  var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
+  var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
+  var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
+  var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
+  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
+  var state: State = State("New York", List[Uri]())
+  val uri = "urn:treedata:resource"
 
   class LineProcessor {
-    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
-    var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
-    var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
-    var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
-    var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-    var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
-    var state: State = State("New York", List[Uri]())
-    val uri = "urn:treedata:resource"
+//    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
+//    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
+//    var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
+//    var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
+//    var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
+//    var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
+//    var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
+//    var state: State = State("New York", List[Uri]())
+//    val uri = "urn:treedata:resource"
 
     def processAddress(address: String): String = address
 
@@ -317,43 +312,47 @@ object EtlCommand extends Command {
     }
   }
 
-  def apply(): Unit = {
-    val pipelineName = args.pipelineName.toLowerCase()
-    val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
-    TreeDataCsvTransformer(args.dataDirectoryPath).parseCSV()
+  def parseCSV(): Unit = {
+    val source = scala.io.Source.fromFile(filename)
+    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
+    val lineProcessor = new LineProcessor()
 
-
-    val pipeline = Pipelines.pipelines.get(pipelineName)
-    if (!pipeline.isDefined) {
-      logger.error(s"no such pipeline `${pipelineName}`, valid: ${Pipelines.pipelines.keySet.mkString(" ")}")
-      return
+    for((line, line_no) <- source.getLines.zipWithIndex) {
+      line_no match {
+        case 0 => {}
+        case _ => {
+          lineProcessor.processRegions(line)
+        }
+      }
     }
 
+    lineProcessor.generateNTAList()
+    lineProcessor.generateBoroughList()
+    lineProcessor.generateCityList()
+    source.close()
+    val source2 = scala.io.Source.fromFile(filename)
     val model = ModelFactory.createDefaultModel()
-
-    val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
-
-    val extractedDataDirectoryPath = dataDirectoryPath.resolve("extracted").resolve(pipelineName)
-    Files.createDirectories(extractedDataDirectoryPath)
-
-    pipeline.get.extractor.extract(extractedDataDirectoryPath)
-
-    val transformedDataDirectoryPath = dataDirectoryPath.resolve("transformed").resolve(pipelineName)
-    Files.createDirectories(transformedDataDirectoryPath)
-    val transformedFilePath = transformedDataDirectoryPath.resolve(pipelineName + ".ttl")
-
-    for (thing <- pipeline.get.transformer.transform(extractedDataDirectoryPath)) {
-      thing.toResource(model)
+    for((line, line_no) <- source2.getLines.zipWithIndex) {
+      line_no match {
+        case 0 => {}
+        case _ => {
+          val problemStart: Int = line.indexOf("\"")
+          var cols: Array[String] = new Array[String](3)
+          if (problemStart != -1) {
+            val problemEnd: Int = line.indexOf("\"", problemStart + 1)
+            val new_line = replaceComma(line, problemStart, problemEnd)
+            cols = new_line.split(",", -1).map(_.trim)
+          } else {
+            cols = line.split(",", -1).map(_.trim)
+          }
+          val Tree = lineProcessor.process(line)
+          treeList += Tree
+          treeMap += (Tree.id -> Tree)
+          Rdf.write[Tree](model, Tree)
+        }
+      }
     }
-
-    val fileWriter = new FileWriter(transformedFilePath.toFile)
-    try {
-      model.write(fileWriter, "TURTLE")
-    } finally {
-      fileWriter.close()
-    }
+    source2.close()
+    model.write(System.out, "TTL")
   }
-
-  private val logger = Logger(getClass.getName)
-  val name = "etl"
 }

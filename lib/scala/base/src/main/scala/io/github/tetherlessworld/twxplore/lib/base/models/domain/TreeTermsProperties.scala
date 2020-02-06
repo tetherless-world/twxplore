@@ -1,5 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
+import java.util.Date
+
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
@@ -45,6 +47,26 @@ trait TreeTermsProperties extends PropertyGetters with PropertySetters {
   final def boroughsUri_=(uris: List[Uri]) = addPropertyUris(TREE.borough, uris)
   final def blocksUri_=(uris: List[Uri]) = addPropertyUris(TREE.block, uris)
   final def blockUri_=(uri: Uri) = this.blocksUri = List(uri)
+  final def createdAt_=(value: Date) = addPropertyLiteral(TREE.createdAt, value)
+  final def dbh_=(value: Int) = addPropertyLiteral(TREE.dbh, value)
+  final def stump_=(value: Int) = addPropertyLiteral(TREE.stump, value)
+  final def curbLoc_=(value: String) = addPropertyLiteral(TREE.curbLoc, value)
+  final def status_=(value: String) = addPropertyLiteral(TREE.status, value)
+  final def health_=(value: String) = addPropertyLiteral(TREE.health, value)
+  final def steward_=(value: String) = addPropertyLiteral(TREE.steward, value)
+  final def guards_=(value: String) = addPropertyLiteral(TREE.guards, value)
+  final def sidewalk_=(value: String) = addPropertyLiteral(TREE.sidewalk, value)
+  final def userType_=(value: String) = addPropertyLiteral(TREE.userType, value)
+  final def problems_=(values: List[String]) =  addPropertyLiterals(TREE.problems, values)
+  final def community_=(value: Int) = addPropertyLiteral(TREE.community, value)
+  final def cncldist_=(value: Int) = addPropertyLiteral(TREE.cncldist, value)
+  final def stateAssembly_=(value: Int) = addPropertyLiteral(TREE.stateAssembly, value)
+  final def stateSenate_=(value: Int) = addPropertyLiteral(TREE.stateSenate, value)
+  final def boroughCount_=(value: Int) = addPropertyLiteral(TREE.boroughCount, value)
+  final def x_sp_=(value: Float) = addPropertyLiteral(TREE.x_sp, value)
+  final def y_sp_=(value: Float) = addPropertyLiteral(TREE.y_sp, value)
+  final def bin_=(value: Int) = addPropertyLiteral(TREE.bin, value)
+  final def bbl_=(value: Long) = addPropertyLiteral(TREE.bbl, value)
   final def NTAUris_=(uris: List[Uri]) = addPropertyUris(TREE.NTA, uris)
   final def NTAUri_=(uri: Uri) = this.NTAUris = List(uri)
   final def common_=(value: String) = addPropertyLiteral(TREE.common, value)

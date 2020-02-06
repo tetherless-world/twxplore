@@ -36,7 +36,6 @@ class TwksStoreSpec extends WordSpec with Matchers{
         }
       }
     }
-
   }
 
 }

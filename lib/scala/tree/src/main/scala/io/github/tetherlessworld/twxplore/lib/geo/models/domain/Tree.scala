@@ -2,10 +2,11 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import java.util.Date
 
-import io.github.tetherlessworld.scena.{Rdf, RdfReader}
+import edu.rpi.tw.twks.uri.Uri
+import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
-import org.apache.jena.rdf.model.Resource
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Tree(id: Int,
                       createdAt: Date,
@@ -40,7 +41,7 @@ final case class Tree(id: Int,
                       bin: Option[Int],
                       bbl: Option[Long]
                      ){
-  val uri = "urn:treedata:tree:" + id
+  val uri = Uri.parse("urn:treedata:resource:tree:" + id)
 }
 
 object Tree {
@@ -127,6 +128,64 @@ object Tree {
         bin = resource.bin,
         bbl = Some(resource.bbl.get.toLong)
       )
+    }
+  }
+
+  implicit object TreeRdfWriter extends RdfWriter[Tree] {
+    override def write(model: Model, value: Tree): Resource = {
+      val resource = Option(model.getResource(value.uri.toString))
+        .getOrElse(ResourceFactory.createResource(value.uri.toString))
+
+      resource.identifier = value.id.toString
+      resource.createdAt = value.createdAt
+      resource.dbh = value.dbh
+
+      resource.stump = value.stump
+
+      val block = Rdf.write[Block](model, value.block)
+      resource.addProperty(TREE.block, block)
+
+      resource.curbLoc = value.curbLoc.label
+      resource.status = value.status.label
+      if (value.status.label == "Alive") {
+        //println(value.status.label, value.id)
+        if(value.health != None) resource.health = value.health.get.label
+        if(value.species != None) {
+          val species = Rdf.write[TreeSpecies](model, value.species.get)
+          resource.addProperty(TREE.species, species)
+        }
+        if(value.guards != None) resource.guards = value.guards.get.label
+        if(value.sidewalk != None)  resource.sidewalk = value.sidewalk.get.label
+      }
+      resource.userType = value.userType.label
+      resource.problems = value.problems.map(problem => problem.label)
+      resource.address = value.address
+      val postcode = Rdf.write[Postcode](model, value.postcode)
+      resource.addProperty(TREE.postcode, postcode)
+      val zipCity = Rdf.write[ZipCity](model, value.zipCity)
+      resource.addProperty(TREE.zipCity, zipCity)
+      resource.community = value.community
+      val borough = Rdf.write[Borough](model, value.borough)
+      resource.addProperty(TREE.borough, borough)
+      resource.cncldist = value.cncldist
+      resource.stateAssembly = value.stateAssembly
+      resource.stateSenate = value.stateSenate
+      val NTA = Rdf.write[NTA](model, value.NTA)
+      resource.addProperty(TREE.NTA, NTA)
+      resource.boroughCount = value.boroughCount
+      val state = Rdf.write[State](model, value.state)
+      resource.addProperty(TREE.state, state)
+      resource.latitude = value.latitude
+      resource.longitude = value.longitude
+      resource.x_sp = value.x_sp
+      resource.y_sp = value.y_sp
+      if (value.censusTract != None) {
+        val censusTract = Rdf.write[CensusTract](model, value.censusTract.get)
+        resource.addProperty(TREE.censusTract, censusTract)
+      }
+      if(value.bin != None) resource.bin = value.bin.get
+      if(value.bbl != None) resource bbl = value.bbl.get
+      resource
     }
   }
 }

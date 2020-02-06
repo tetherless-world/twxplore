@@ -18,7 +18,10 @@ trait PropertySetters {
   }
 
   protected def addPropertyUris(property: Property, uris: List[Uri]) = {
-    addProperty(property, uris.map(uri => ResourceFactory.createResource(uri.toString)))
+    addProperty(property, uris.map(uri => {
+      Option(resource.getModel.getResource(uri.toString))
+        .getOrElse(ResourceFactory.createResource(uri.toString))
+    }))
   }
 
   protected def addPropertyUri(property: Property, uri: Uri) = {
@@ -26,7 +29,10 @@ trait PropertySetters {
   }
 
   protected def setPropertyUris(property: Property, uris: List[Uri]) = {
-    setProperty(property, uris.map(uri => ResourceFactory.createResource(uri.toString)))
+    setProperty(property, uris.map(uri => {
+      Option(resource.getModel.getResource(uri.toString))
+        .getOrElse(ResourceFactory.createResource(uri.toString))
+    }))
   }
 
   protected def setPropertyUri(property: Property, uri: Uri) = {
@@ -37,6 +43,9 @@ trait PropertySetters {
     addProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
   }
 
+  protected def addPropertyLiterals[T](property: Property, values: List[T]) = {
+    addProperty(property, values.map(value => ResourceFactory.createPlainLiteral(value.toString)))
+  }
 //  protected def addPropertyLiteral[RdfNodeT <: RDFNode](property: Property, value: RdfNodeT) = {
 //    addProperty(property, List(ResourceFactory.createPlainLiteral(value.toString)))
 //  }

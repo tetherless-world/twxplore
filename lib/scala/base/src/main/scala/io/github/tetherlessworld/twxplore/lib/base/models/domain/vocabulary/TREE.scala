@@ -4,7 +4,8 @@ import org.apache.jena.rdf.model.ResourceFactory
 
 object TREE {
   val URI = "urn:treedata:"
-  val propertyURI = "urn:treedata:property:"
+  val resourceURI = URI + "resource:"
+  val propertyURI = URI + "property:"
   val createdAt = ResourceFactory.createProperty(propertyURI + "createdAt")
   val dbh = ResourceFactory.createProperty(propertyURI + "dbh")
   val stump = ResourceFactory.createProperty(propertyURI + "stump")
@@ -38,11 +39,16 @@ object TREE {
   val censusTract = ResourceFactory.createProperty(propertyURI + "censusTract")
   val bin = ResourceFactory.createProperty(propertyURI + "bin")
   val bbl = ResourceFactory.createProperty(propertyURI + "bbl")
-  val blockResource = ResourceFactory.createResource(URI + "block")
-  val speciesResource = ResourceFactory.createResource(URI + "species")
-  val problemsResource = ResourceFactory.createResource(URI + "problems")
-  val postcodeResource = ResourceFactory.createResource(URI + "postcode")
-  val boroughResource = ResourceFactory.createResource(URI + "borough")
-  val NTAResource = ResourceFactory.createResource(URI + "NTA")
-  val stateResource = ResourceFactory.createResource(URI + "state")
+
+
+  val censusTractResource = ResourceFactory.createResource(resourceURI + "censusTract")
+  val userTypeResource = ResourceFactory.createResource(resourceURI + "userType")
+  val zipCityResource = ResourceFactory.createResource(resourceURI + "zipCity")
+  val blockResource = ResourceFactory.createResource(resourceURI + "block")
+  val speciesResource = ResourceFactory.createResource(resourceURI + "species")
+  val problemsResource = ResourceFactory.createResource(resourceURI + "problems")
+  val postcodeResource = ResourceFactory.createResource(resourceURI + "postcode")
+  val boroughResource = ResourceFactory.createResource(resourceURI + "borough")
+  val NTAResource = ResourceFactory.createResource(resourceURI + "NTA")
+  val stateResource = ResourceFactory.createResource(resourceURI + "state")
 }
