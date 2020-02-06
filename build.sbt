@@ -34,7 +34,7 @@ publishTo in ThisBuild := Some(
 )
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/tetherless-world/twxplore"), "git@github.com:tetherless-world/twxplore.git"))
 skip in publish := true // Don't publish the default project ('twxplore')
-useGpg in ThisBuild := false
+//useGpg in ThisBuild := false
 
 
 // Test settings
