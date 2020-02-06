@@ -1,6 +1,6 @@
 package io.github.tetherlessworld.twxplore.lib.base.models.graphql
 
-import io.lemonlabs.uri.Uri
+import edu.rpi.tw.twks.uri.Uri
 import sangria.schema.{Argument, IntType, ScalarAlias, StringType}
 
 abstract class AbstractGraphQlSchemaDefinition {
