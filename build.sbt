@@ -77,9 +77,6 @@ lazy val geoApp = (project in file("app/geo"))
   .dependsOn(geoLib % "compile->compile;test->test")
   .enablePlugins(PlayScala)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
-    ),
     name := "geo-app",
     routesGenerator := InjectedRoutesGenerator,
     // Adds additional packages into Twirl
@@ -122,7 +119,8 @@ lazy val testLib =
     .settings(
       libraryDependencies ++= Seq(
         organization.value %% "scena" % scenaVersion,
-        "org.scalatest" %% "scalatest" % "3.0.8",
+        // "org.scalatest" %% "scalatest" % "3.0.8",
+        "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3",
         "org.slf4j" % "slf4j-simple" % "1.7.25",
       ),
       name := "twxplore-test-lib"
