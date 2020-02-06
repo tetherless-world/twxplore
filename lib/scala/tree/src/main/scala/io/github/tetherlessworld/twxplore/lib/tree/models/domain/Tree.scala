@@ -24,6 +24,7 @@ final case class Tree(id: Int,
                       problems: List[Problems],
                       address: String,
                       postcode: Postcode,
+                      city: City,
                       zipCity: ZipCity,
                       community: Int,
                       borough: Borough,
@@ -111,6 +112,7 @@ object Tree {
         }),
         address = resource.address.get,
         postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(TREE.postcode)),
+        city = Rdf.read[City](resource.getPropertyResourceValue(TREE.city)),
         zipCity = Rdf.read[ZipCity](resource.getPropertyResourceValue(TREE.zipCity)),
         community = resource.community.get,
         borough = Rdf.read[Borough](resource.getPropertyResourceValue(TREE.borough)),
@@ -164,6 +166,8 @@ object Tree {
       resource.addProperty(TREE.postcode, postcode)
       val zipCity = Rdf.write[ZipCity](model, value.zipCity)
       resource.addProperty(TREE.zipCity, zipCity)
+      val city = Rdf.write[City](model, value.city)
+      resource.addProperty(TREE.city, city)
       resource.community = value.community
       val borough = Rdf.write[Borough](model, value.borough)
       resource.addProperty(TREE.borough, borough)

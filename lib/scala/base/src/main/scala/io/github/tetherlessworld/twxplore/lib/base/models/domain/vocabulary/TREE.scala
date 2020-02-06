@@ -24,6 +24,7 @@ object TREE {
   val address = ResourceFactory.createProperty(propertyURI + "address")
   val postcode = ResourceFactory.createProperty(propertyURI + "postcode")
   val zipCity = ResourceFactory.createProperty(propertyURI + "zipCity")
+  val city = ResourceFactory.createProperty(propertyURI + "city")
   val community = ResourceFactory.createProperty(propertyURI + "community")
   val borough = ResourceFactory.createProperty(propertyURI + "borough")
   val cncldist = ResourceFactory.createProperty(propertyURI + "councilDistrict")

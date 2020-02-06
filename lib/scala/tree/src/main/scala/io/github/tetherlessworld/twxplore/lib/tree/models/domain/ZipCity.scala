@@ -1,11 +1,12 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class ZipCity(city: String) {
-  val uri = "urn:treedata:zipcity:" + city
+  val uri = Uri.parse("urn:treedata:resource:zipcity:" + city)
 }
 
 object ZipCity {

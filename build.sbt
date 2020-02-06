@@ -133,5 +133,8 @@ lazy val treeLib =
     .dependsOn(geoLib)
     .settings(
       name := "twxplore-tree-lib",
-      skip in publish := true
+      skip in publish := true,
+      libraryDependencies ++= Seq(
+        "org.scalatest" %% "scalatest" % "3.0.8"
+      )
     )

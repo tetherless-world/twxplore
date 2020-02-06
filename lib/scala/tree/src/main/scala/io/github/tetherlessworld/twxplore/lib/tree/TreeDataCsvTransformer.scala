@@ -3,7 +3,6 @@ package io.github.tetherlessworld.twxplore.lib.tree
 import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import org.apache.jena.rdf.model.ModelFactory
@@ -24,7 +23,7 @@ case class TreeDataCsvTransformer(filename: String) {
   var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
   var state: State = State("New York", List[Uri]())
-  val uri = "urn:treedata:resource"
+  val uri = "urn:treedata:resource:"
 
   class LineProcessor {
 //    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
@@ -71,7 +70,7 @@ case class TreeDataCsvTransformer(filename: String) {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, List[Uri]())
+          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri]())
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -292,6 +291,7 @@ case class TreeDataCsvTransformer(filename: String) {
         problems = processProblems(cols(14)),
         address = processAddress(cols(24)),
         postcode = processPostcode(cols(25)),
+        city = city,
         zipCity = processZipCity(cols(26)),
         community = processCommunity(cols(27)),
         borough = processBorough(cols(29), cols(28)),
@@ -314,7 +314,6 @@ case class TreeDataCsvTransformer(filename: String) {
 
   def parseCSV(): Unit = {
     val source = scala.io.Source.fromFile(filename)
-    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
@@ -348,11 +347,9 @@ case class TreeDataCsvTransformer(filename: String) {
           val Tree = lineProcessor.process(line)
           treeList += Tree
           treeMap += (Tree.id -> Tree)
-          Rdf.write[Tree](model, Tree)
         }
       }
     }
     source2.close()
-    model.write(System.out, "TTL")
   }
 }

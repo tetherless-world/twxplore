@@ -5,11 +5,11 @@ import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Borough(borough: String, borocode: Int, ntaList: List[Uri]) {
-  val uri = Uri.parse("urn:treedata:borough:" + borocode)
+final case class Borough(borough: String, borocode: Int, city: Uri, ntaList: List[Uri]) {
+  val uri = Uri.parse("urn:treedata:resource:borough:" + borocode)
 
   def addNTA(nta: NTA): Borough = {
-    Borough(borough, borocode, ntaList :+ nta.uri)
+    Borough(borough, borocode, city, ntaList :+ nta.uri)
   }
 }
 
@@ -22,6 +22,7 @@ object Borough {
       Borough(
         borough = resource.label.get,
         borocode = resource.identifier.get.toInt,
+        city = resource.cityUri.get,
         ntaList = resource.NTAUris
       )
     }
@@ -35,7 +36,7 @@ object Borough {
       resource.label = value.borough
       resource.identifier = value.borocode.toString
       resource.NTAUris = value.ntaList
-
+      resource.cityUri = value.city
       resource
     }
   }

@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Block(id: Int, nta: Uri) {
-  val uri = Uri.parse("urn:treedata:block:" + id)
+  val uri = Uri.parse("urn:treedata:resource:block:" + id)
 }
 
 object Block {

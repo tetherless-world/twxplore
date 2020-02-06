@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class CensusTract(id: Int, shapefile: String) {
-  val uri = Uri.parse("urn:treedata:censusTract:" + id)
+  val uri = Uri.parse("urn:treedata:resource:censusTract:" + id)
 }
 
 object CensusTract {

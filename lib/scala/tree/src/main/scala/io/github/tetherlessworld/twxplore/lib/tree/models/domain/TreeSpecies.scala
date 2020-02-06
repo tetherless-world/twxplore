@@ -5,7 +5,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class TreeSpecies(common: String, latin: String) {
-  val uri = "urn:treedata:species:" + common
+  val uri = "urn:treedata:resource:species:" + common
 }
 
 object TreeSpecies {
