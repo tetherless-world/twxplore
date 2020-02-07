@@ -5,11 +5,11 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.Sche
 
 trait SchemaProperties extends PropertyGetters with PropertySetters {
   final def address = getPropertyObjectString(Schema.address)
-  final def city = getPropertyObjectString(Schema.city)
+  final def city = getPropertyObjectResourceLabel(Schema.city)
   final def latitude = getPropertyObjectFloat(Schema.latitude)
   final def longitude = getPropertyObjectFloat(Schema.longitude)
-  final def postalCode = getPropertyObjectInt(Schema.postalCode)
-  final def state = getPropertyObjectString(Schema.state)
+  final def postalCode = Option(getPropertyObjectResourceIdentifier(Schema.state).get.toInt)
+  final def state = getPropertyObjectResourceLabel(Schema.state)
   final def cityUri = getPropertyObjectUri(Schema.city)
   final def citiesUri = getPropertyObjectUris(Schema.city)
   final def postalCodeUri = getPropertyObjectUri(Schema.postalCode)

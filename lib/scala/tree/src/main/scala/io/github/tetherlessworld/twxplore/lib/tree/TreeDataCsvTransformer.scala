@@ -10,7 +10,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-case class TreeDataCsvTransformer(filename: String) {
+case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
   }
@@ -26,16 +26,6 @@ case class TreeDataCsvTransformer(filename: String) {
   val uri = "urn:treedata:resource:"
 
   class LineProcessor {
-//    var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-//    var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
-//    var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
-//    var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
-//    var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
-//    var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-//    var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
-//    var state: State = State("New York", List[Uri]())
-//    val uri = "urn:treedata:resource"
-
     def processAddress(address: String): String = address
 
     def processBBL(bbl: String): Option[Long] = {
@@ -128,7 +118,7 @@ case class TreeDataCsvTransformer(filename: String) {
       ntaMap.get(nta) match {
         case Some(n) => n
         case _ => {
-          val boroughUri = Some(Uri.parse(uri + "borough:" + borough.toString))
+          val boroughUri = Uri.parse(uri + "borough:" + borough.toString)
           val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
           val new_nta = NTA(nta, ntaName, List[Uri](), boroughUri, postcodeUri)
           ntaMap += (nta -> new_nta)
@@ -257,7 +247,7 @@ case class TreeDataCsvTransformer(filename: String) {
     def generateNTAList(): Unit = {
 
       for ((key, nta) <- ntaMap){
-        val boroughId = nta.borough.get.toString.substring(nta.borough.get.toString.lastIndexOf(":")+ 1).toInt
+        val boroughId = nta.borough.toString.substring(nta.borough.toString.lastIndexOf(":")+ 1).toInt
         boroughMap(boroughId) = boroughMap(boroughId).addNTA(nta)
       }
     }
@@ -312,7 +302,7 @@ case class TreeDataCsvTransformer(filename: String) {
     }
   }
 
-  def parseCSV(): Unit = {
+  def parseCSV(filename: String): Unit = {
     val source = scala.io.Source.fromFile(filename)
     val lineProcessor = new LineProcessor()
 

@@ -5,7 +5,7 @@ sealed trait UserType {
 }
 
 case object TreesCountStaff extends UserType {
-  val label = "TreesCountStuff"
+  val label = "TreesCountStaff"
 }
 
 case object NYCParksStaff extends UserType {

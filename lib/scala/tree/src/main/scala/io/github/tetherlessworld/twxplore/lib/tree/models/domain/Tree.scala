@@ -5,7 +5,7 @@ import java.util.Date
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Tree(id: Int,
@@ -112,7 +112,7 @@ object Tree {
         }),
         address = resource.address.get,
         postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(TREE.postcode)),
-        city = Rdf.read[City](resource.getPropertyResourceValue(TREE.city)),
+        city = Rdf.read[City](resource.getPropertyResourceValue(Schema.city)),
         zipCity = Rdf.read[ZipCity](resource.getPropertyResourceValue(TREE.zipCity)),
         community = resource.community.get,
         borough = Rdf.read[Borough](resource.getPropertyResourceValue(TREE.borough)),
@@ -121,7 +121,7 @@ object Tree {
         stateSenate = resource.stateSenate.get,
         NTA = Rdf.read[NTA](resource.getPropertyResourceValue(TREE.NTA)),
         boroughCount = resource.boroughCount.get,
-        state = Rdf.read[State](resource.getPropertyResourceValue(TREE.state)),
+        state = Rdf.read[State](resource.getPropertyResourceValue(Schema.state)),
         latitude = resource.latitude.get,
         longitude = resource.longitude.get,
         x_sp = resource.x_sp.get,
@@ -167,7 +167,7 @@ object Tree {
       val zipCity = Rdf.write[ZipCity](model, value.zipCity)
       resource.addProperty(TREE.zipCity, zipCity)
       val city = Rdf.write[City](model, value.city)
-      resource.addProperty(TREE.city, city)
+      resource.addProperty(Schema.city, city)
       resource.community = value.community
       val borough = Rdf.write[Borough](model, value.borough)
       resource.addProperty(TREE.borough, borough)
@@ -178,7 +178,7 @@ object Tree {
       resource.addProperty(TREE.NTA, NTA)
       resource.boroughCount = value.boroughCount
       val state = Rdf.write[State](model, value.state)
-      resource.addProperty(TREE.state, state)
+      resource.addProperty(Schema.state, state)
       resource.latitude = value.latitude
       resource.longitude = value.longitude
       resource.x_sp = value.x_sp

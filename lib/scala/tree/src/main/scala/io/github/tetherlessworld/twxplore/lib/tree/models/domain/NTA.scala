@@ -6,13 +6,13 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
-final case class NTA(nta: String, ntaName: String, blocks: List[Uri], borough: Option[Uri], postCode: Uri) extends Ordered[NTA] {
+final case class NTA(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri) extends Ordered[NTA] {
   val uri = Uri.parse("urn:treedata:resource:nta:" + nta)
 
   def compare(that: NTA) = this.nta compare that.nta
 
   def addBlock(block: Block): NTA = {
-    NTA(nta, ntaName, blocks :+ block.uri, borough, postCode)
+    NTA(nta, name, blocks :+ block.uri, borough, postCode)
   }
 }
 
@@ -25,8 +25,8 @@ object NTA {
     override def read(resource: Resource): NTA = {
       NTA(
         nta = resource.identifier.get,
-        ntaName = resource.label.get,
-        borough = resource.boroughUri,
+        name = resource.label.get,
+        borough = resource.boroughUri.get,
         postCode = resource.postalCodeUri.get,
         blocks = resource.blocksUri,
       )
@@ -38,10 +38,11 @@ object NTA {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
 
-      resource.label = value.ntaName
+      resource.label = value.name
       resource.identifier = value.nta
       resource.postalCodeUri = value.postCode
       resource.blocksUri = value.blocks
+      resource.boroughUri = value.borough
       resource
     }
   }

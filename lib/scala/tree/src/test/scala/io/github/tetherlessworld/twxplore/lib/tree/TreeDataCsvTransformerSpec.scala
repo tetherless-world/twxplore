@@ -1,15 +1,14 @@
 package io.github.tetherlessworld.twxplore.lib.test
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.tree.TreeDataCsvTransformer
+import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
 
 class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
+
   "TreeDataCsvTranformerSpec" can {
-    val testData = TreeDataCsvTransformer("./lib/scala/tree/src/test/resources/test_treedata.csv")
-    testData.parseCSV()
-    println(testData.treeList)
+    val testData = TestData
 
     "a valid csv" should {
       "a valid mapping of trees" should {
@@ -37,7 +36,7 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "be within a specific borough" in {
-          testTree.borough.borough should equal ("Queens")
+          testTree.borough.name should equal ("Queens")
         }
 
         "be within a specific city" in {
@@ -57,7 +56,7 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "have a nta that references specified borough" in {
-          testTree.NTA.borough.get.toString should equal ("urn:treedata:resource:borough:4")
+          testTree.NTA.borough.toString should equal ("urn:treedata:resource:borough:4")
         }
 
         "have the nta contained within specified borough" in {

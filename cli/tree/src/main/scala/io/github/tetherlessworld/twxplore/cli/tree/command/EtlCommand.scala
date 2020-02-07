@@ -26,8 +26,8 @@ object EtlCommand extends Command {
   def apply(): Unit = {
     val pipelineName = args.pipelineName.toLowerCase()
     val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
-    val treeData = TreeDataCsvTransformer(args.dataDirectoryPath)
-    treeData.parseCSV()
+    val treeData = TreeDataCsvTransformer()
+    treeData.parseCSV(args.dataDirectoryPath)
     val model = ModelFactory.createDefaultModel()
     for(tree <- treeData.treeList){
       Rdf.write[Tree](model, tree)
