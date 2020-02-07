@@ -21,7 +21,7 @@ case class TreeDataCsvTransformer() {
   var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
   var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
   var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New York"))
+  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New_York"))
   var state: State = State("New York", List[Uri]())
   val uri = "urn:treedata:resource:"
 

@@ -64,7 +64,7 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "have the borough that references specified city" in {
-          testTree.borough.city.toString should equal ("urn:treedata:resource:city:New York City")
+          testTree.borough.city.toString should equal ("urn:treedata:resource:city:New_York_City")
         }
 
         "have a borough contained within specified city" in {
@@ -72,7 +72,7 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "have a city that references specified state" in {
-          testTree.city.state.toString should equal ("urn:treedata:resource:state:New York")
+          testTree.city.state.toString should equal ("urn:treedata:resource:state:New_York")
         }
 
       }

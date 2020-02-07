@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class State(name: String, cities: List[Uri]) {
-  val uri = Uri.parse("urn:treedata:resource:state:" + name)
+  val uri = Uri.parse("urn:treedata:resource:state:" + name.replace(" ", "_"))
 
   def addCity(city: City): State = {
     State(name, cities :+ city.uri)

@@ -113,7 +113,7 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "have a specific state it resides in" in {
-        city.state.toString should equal ("urn:treedata:resource:state:New York")
+        city.state.toString should equal ("urn:treedata:resource:state:New_York")
       }
     }
 
@@ -132,7 +132,7 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "have a specific city" in {
-        borough.city.toString should equal("urn:treedata:resource:city:New York City")
+        borough.city.toString should equal("urn:treedata:resource:city:New_York_City")
       }
     }
 

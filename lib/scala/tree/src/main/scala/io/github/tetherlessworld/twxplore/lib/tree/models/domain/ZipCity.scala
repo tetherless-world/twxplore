@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class ZipCity(city: String) {
-  val uri = Uri.parse("urn:treedata:resource:zipcity:" + city)
+  val uri = Uri.parse("urn:treedata:resource:zipcity:" + city.replace(" ", "_"))
 }
 
 object ZipCity {
