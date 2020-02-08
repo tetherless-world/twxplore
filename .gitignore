@@ -9,3 +9,5 @@ package-lock.json
 /root/
 target/
 .idea/
+
+/result.ttl

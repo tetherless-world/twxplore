@@ -130,7 +130,7 @@ lazy val testLib =
 
 lazy val treeLib =
   (project in file("lib/scala/tree"))
-    .dependsOn(geoLib)
+    .dependsOn(geoLib, testLib % "test->compile")
     .settings(
       name := "twxplore-tree-lib",
       skip in publish := true

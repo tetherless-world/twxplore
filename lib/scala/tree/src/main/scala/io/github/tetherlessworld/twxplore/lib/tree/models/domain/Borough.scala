@@ -3,13 +3,14 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Borough(borough: String, borocode: Int, ntaList: List[Uri]) {
-  val uri = Uri.parse("urn:treedata:borough:" + borocode)
+final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri]) {
+  val uri = Uri.parse(TREE.BOROUGH_URI_PREFIX + borocode)
 
-  def addNTA(nta: NTA): Borough = {
-    Borough(borough, borocode, ntaList :+ nta.uri)
+  def addNTA(nta: Nta): Borough = {
+    this.copy(ntaList = ntaList :+ nta.uri)
   }
 }
 
@@ -20,9 +21,10 @@ object Borough {
   implicit object BoroughRdfReader extends RdfReader[Borough] {
     override def read(resource: Resource): Borough = {
       Borough(
-        borough = resource.label.get,
+        name = resource.label.get,
         borocode = resource.identifier.get.toInt,
-        ntaList = resource.NTAUris
+        city = resource.cityUri.get,
+        ntaList = resource.ntaUris
       )
     }
   }
@@ -32,10 +34,10 @@ object Borough {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
 
-      resource.label = value.borough
+      resource.label = value.name
       resource.identifier = value.borocode.toString
-      resource.NTAUris = value.ntaList
-
+      resource.ntaUris = value.ntaList
+      resource.cityUri = value.city
       resource
     }
   }
