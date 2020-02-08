@@ -3,10 +3,11 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Block(id: Int, nta: Uri) {
-  val uri = Uri.parse("urn:treedata:resource:block:" + id)
+  val uri = Uri.parse(TREE.BLOCK_URI_PREFIX + id)
 }
 
 object Block {
@@ -18,7 +19,7 @@ object Block {
       resource.getModel.write(System.out, "TTL")
       Block(
         id = resource.identifier.get.toInt,
-        nta  = resource.NTAUri.get
+        nta  = resource.ntaUri.get
       )
     }
   }
@@ -28,7 +29,7 @@ object Block {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.identifier = value.id.toString
-      resource.NTAUri = value.nta
+      resource.ntaUri = value.nta
 
       resource
     }

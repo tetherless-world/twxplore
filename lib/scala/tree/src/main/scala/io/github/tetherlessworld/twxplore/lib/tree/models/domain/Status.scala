@@ -1,7 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+
 sealed trait Status {
-  val uri = "urn:treedata:status"
+  val uri = TREE.STATUS_URI_PREFIX
   val label: String
 }
 

@@ -40,7 +40,7 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "point to a specific NTA" in {
-        treeResource.NTA.get should equal ("Forest Hills")
+        treeResource.nta.get should equal ("Forest Hills")
       }
 
       "point to a specific block" in {

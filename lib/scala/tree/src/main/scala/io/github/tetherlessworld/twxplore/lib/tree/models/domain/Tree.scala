@@ -31,7 +31,7 @@ final case class Tree(id: Int,
                       cncldist: Int,
                       stateAssembly: Int,
                       stateSenate: Int,
-                      NTA: NTA,
+                      NTA: Nta,
                       boroughCount: Int,
                       state: State,
                       latitude: Float,
@@ -42,7 +42,7 @@ final case class Tree(id: Int,
                       bin: Option[Int],
                       bbl: Option[Long]
                      ){
-  val uri = Uri.parse("urn:treedata:resource:tree:" + id)
+  val uri = Uri.parse(TREE.TREE_URI_PREFIX + id)
 }
 
 object Tree {
@@ -67,35 +67,31 @@ object Tree {
           case Some("Stump") => Stump
           case _ => Dead
         },
-        health = resource.health match {
-          case Some("Fair") => Some(Fair)
-          case Some("Good") => Some(Good)
-          case Some("Poor") => Some(Poor)
-          case _ => None
-        },
+        health = resource.health map ({
+          case "Fair" => Fair
+          case "Good" => Good
+          case "Poor" => Poor
+        }),
         species = Some(Rdf.read[TreeSpecies](resource.getPropertyResourceValue(TREE.species))),
-        steward = resource.steward match {
-          case Some("OneOrTwo") => Some(OneOrTwo)
-          case Some("ThreeOrFour") => Some(ThreeOrFour)
-          case _ => None
-        },
-        guards = resource.guards match {
-          case Some("Helpful") => Some(Helpful)
-          case Some("Harmful") => Some(Harmful)
-          case Some("Unsure") => Some(Unsure)
-          case _ => None
-        },
-        sidewalk = resource.sidewalk match {
-          case Some("NoDamage") => Some(NoDamage)
-          case Some("Damage") => Some(Damage)
-          case _ => None
-        },
+        steward = resource.steward map ({
+          case "OneOrTwo" => OneOrTwo
+          case "ThreeOrFour" => ThreeOrFour
+        }),
+        guards = resource.guards map ({
+            case "Helpful" => Helpful
+            case "Harmful" => Harmful
+            case "Unsure" => Unsure
+          }),
+        sidewalk = resource.sidewalk map ({
+            case "NoDamage" => NoDamage
+            case "Damage" => Damage
+          }),
         userType = resource.userType match {
           case Some("TreesCountStaff") => TreesCountStaff
           case Some("NYCParksStaff") => NYCParksStaff
           case Some("Volunteer") => Volunteer
         },
-        problems = resource.problems.map(problem => problem match {
+        problems = resource.problems.map {
           case "BranchLights" => BranchLights
           case "BranchOther" => BranchOther
           case "BranchShoe" => BranchShoe
@@ -109,7 +105,7 @@ object Tree {
           case "RootStone" => RootStone
           case "Sneakers" => Sneakers
           case "WiresRope" => WiresRope
-        }),
+        },
         address = resource.address.get,
         postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(TREE.postcode)),
         city = Rdf.read[City](resource.getPropertyResourceValue(Schema.city)),
@@ -119,7 +115,7 @@ object Tree {
         cncldist = resource.cncldist.get,
         stateAssembly = resource.stateAssembly.get,
         stateSenate = resource.stateSenate.get,
-        NTA = Rdf.read[NTA](resource.getPropertyResourceValue(TREE.NTA)),
+        NTA = Rdf.read[Nta](resource.getPropertyResourceValue(TREE.NTA)),
         boroughCount = resource.boroughCount.get,
         state = Rdf.read[State](resource.getPropertyResourceValue(Schema.state)),
         latitude = resource.latitude.get,
@@ -151,13 +147,13 @@ object Tree {
       resource.status = value.status.label
       if (value.status.label == "Alive") {
         //println(value.status.label, value.id)
-        if(value.health != None) resource.health = value.health.get.label
-        if(value.species != None) {
+        if(value.health.isDefined) resource.health = value.health.get.label
+        if(value.species.isDefined) {
           val species = Rdf.write[TreeSpecies](model, value.species.get)
           resource.addProperty(TREE.species, species)
         }
-        if(value.guards != None) resource.guards = value.guards.get.label
-        if(value.sidewalk != None)  resource.sidewalk = value.sidewalk.get.label
+        if(value.guards.isDefined) resource.guards = value.guards.get.label
+        if(value.sidewalk.isDefined)  resource.sidewalk = value.sidewalk.get.label
       }
       resource.userType = value.userType.label
       resource.problems = value.problems.map(problem => problem.label)
@@ -174,7 +170,7 @@ object Tree {
       resource.cncldist = value.cncldist
       resource.stateAssembly = value.stateAssembly
       resource.stateSenate = value.stateSenate
-      val NTA = Rdf.write[NTA](model, value.NTA)
+      val NTA = Rdf.write[Nta](model, value.NTA)
       resource.addProperty(TREE.NTA, NTA)
       resource.boroughCount = value.boroughCount
       val state = Rdf.write[State](model, value.state)
@@ -183,12 +179,12 @@ object Tree {
       resource.longitude = value.longitude
       resource.x_sp = value.x_sp
       resource.y_sp = value.y_sp
-      if (value.censusTract != None) {
+      if (value.censusTract.isDefined) {
         val censusTract = Rdf.write[CensusTract](model, value.censusTract.get)
         resource.addProperty(TREE.censusTract, censusTract)
       }
-      if(value.bin != None) resource.bin = value.bin.get
-      if(value.bbl != None) resource bbl = value.bbl.get
+      if(value.bin.isDefined) resource.bin = value.bin.get
+      if(value.bbl.isDefined) resource bbl = value.bbl.get
       resource
     }
   }

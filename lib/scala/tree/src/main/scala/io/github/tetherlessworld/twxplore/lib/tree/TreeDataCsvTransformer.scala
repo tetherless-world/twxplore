@@ -3,9 +3,9 @@ package io.github.tetherlessworld.twxplore.lib.tree
 import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import org.apache.jena.rdf.model.ModelFactory
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -18,12 +18,12 @@ case class TreeDataCsvTransformer() {
   var treeMap: mutable.HashMap[Int, Tree] = new mutable.HashMap()
   var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
-  var ntaMap: mutable.HashMap[String, NTA] = new mutable.HashMap()
+  var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
   var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
   var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse("urn:treedata:resource:state:New_York"))
+  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + "New_York"))
   var state: State = State("New York", List[Uri]())
-  val uri = "urn:treedata:resource:"
+  val uri = TREE.resourceURI
 
   class LineProcessor {
     def processAddress(address: String): String = address
@@ -114,13 +114,13 @@ case class TreeDataCsvTransformer() {
 
     def processLongitude(longitude: String): Float = longitude.toFloat
 
-    def processNTA(nta: String, ntaName: String, borough: Int, postCode: Int): NTA = {
+    def processNTA(nta: String, ntaName: String, borough: Int, postCode: Int): Nta = {
       ntaMap.get(nta) match {
         case Some(n) => n
         case _ => {
           val boroughUri = Uri.parse(uri + "borough:" + borough.toString)
           val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
-          val new_nta = NTA(nta, ntaName, List[Uri](), boroughUri, postcodeUri)
+          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri)
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -302,8 +302,8 @@ case class TreeDataCsvTransformer() {
     }
   }
 
-  def parseCSV(filename: String): Unit = {
-    val source = scala.io.Source.fromFile(filename)
+  def parseCsv(filename: String): Unit = {
+    val source = scala.io.Source.fromResource(filename)
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
@@ -319,8 +319,7 @@ case class TreeDataCsvTransformer() {
     lineProcessor.generateBoroughList()
     lineProcessor.generateCityList()
     source.close()
-    val source2 = scala.io.Source.fromFile(filename)
-    val model = ModelFactory.createDefaultModel()
+    val source2 = scala.io.Source.fromResource(filename)
     for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}

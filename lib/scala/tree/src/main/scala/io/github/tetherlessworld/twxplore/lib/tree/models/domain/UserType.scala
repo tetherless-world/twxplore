@@ -1,6 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+
 sealed trait UserType {
+  val uri = TREE.userType
   val label: String
 }
 

@@ -4,7 +4,7 @@ import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
 import org.apache.jena.rdf.model.{Literal, Property, RDFNode, Resource}
-import org.apache.jena.vocabulary.{DCTerms, RDFS}
+import org.apache.jena.vocabulary._
 
 import scala.collection.JavaConverters._
 

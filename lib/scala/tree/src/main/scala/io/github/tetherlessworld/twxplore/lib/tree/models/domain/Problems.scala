@@ -1,7 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+
 sealed trait Problems {
-  val uri = "urn:treedata:problems"
+  val uri = TREE.PROBLEMS_URI_PREFIX
   val label: String
 }
 

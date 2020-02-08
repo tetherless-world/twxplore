@@ -3,13 +3,14 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class State(name: String, cities: List[Uri]) {
-  val uri = Uri.parse("urn:treedata:resource:state:" + name.replace(" ", "_"))
+  val uri = Uri.parse(TREE.STATE_URI_PREFIX + name.replace(" ", "_"))
 
   def addCity(city: City): State = {
-    State(name, cities :+ city.uri)
+    this.copy(cities = cities :+ city.uri)
   }
 }
 

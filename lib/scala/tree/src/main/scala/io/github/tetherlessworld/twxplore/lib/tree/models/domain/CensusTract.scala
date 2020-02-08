@@ -3,10 +3,11 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class CensusTract(id: Int, shapefile: String) {
-  val uri = Uri.parse("urn:treedata:resource:censusTract:" + id)
+  val uri = Uri.parse(TREE.CENSUSTRACT_URI_PREFIX + id)
 }
 
 object CensusTract {

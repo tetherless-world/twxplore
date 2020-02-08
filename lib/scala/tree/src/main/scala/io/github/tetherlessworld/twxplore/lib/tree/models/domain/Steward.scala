@@ -1,7 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+
 sealed trait Steward {
-  val uri = "urn:treedata:steward"
+  val uri = TREE.STEWARD_URI_PREFIX
   val label: String
 }
 

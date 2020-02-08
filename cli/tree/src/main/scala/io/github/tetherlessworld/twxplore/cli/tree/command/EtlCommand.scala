@@ -27,9 +27,17 @@ object EtlCommand extends Command {
     val pipelineName = args.pipelineName.toLowerCase()
     val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
     val treeData = TreeDataCsvTransformer()
-    treeData.parseCSV(args.dataDirectoryPath)
+    treeData.parseCsv(args.dataDirectoryPath)
     val model = ModelFactory.createDefaultModel()
+    var counter = 0
+    var total_trees = treeData.treeList.size
+
+    println("Finished parsing the csv file: " + args.dataDirectoryPath)
     for(tree <- treeData.treeList){
+      counter += 1
+      if (counter % 100 == 0) {
+        println(s"${counter} trees processed: ${total_trees - counter} trees remaining")
+      }
       Rdf.write[Tree](model, tree)
     }
     val file = new File(args.pipelineName)
