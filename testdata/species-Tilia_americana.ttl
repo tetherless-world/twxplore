@@ -1,0 +1,3 @@
+<urn:treedata:resource:species:Tilia_americana>
+        <urn:treedata:property:common>  "Tilia americana" ;
+        <urn:treedata:property:latin>   "American linden" .

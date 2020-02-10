@@ -1,0 +1,7 @@
+<urn:treedata:resource:borough:3>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Brooklyn" ;
+        <http://purl.org/dc/terms/identifier>
+                "3" ;
+        <http://schema.org/city>     <urn:treedata:resource:city:New_York_City> ;
+        <urn:treedata:property:NTA>  <urn:treedata:resource:NTA:BK90> , <urn:treedata:resource:NTA:BK37> , <urn:treedata:resource:NTA:BK26> .

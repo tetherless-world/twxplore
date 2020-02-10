@@ -1,0 +1,45 @@
+<urn:treedata:resource:tree:192755>
+        <http://purl.org/dc/terms/identifier>
+                "192755" ;
+        <http://schema.org/address>     "638 AVENUE Z" ;
+        <http://schema.org/city>        <urn:treedata:resource:city:New_York_City> ;
+        <http://schema.org/latitude>    "40.586357" ;
+        <http://schema.org/longitude>   "-73.96974" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11223> ;
+        <http://schema.org/state>       <urn:treedata:resource:state:New_York> ;
+        <urn:treedata:property:NTA>     <urn:treedata:resource:NTA:BK26> ;
+        <urn:treedata:property:bbl>     "3072350001" ;
+        <urn:treedata:property:bin>     "3320727" ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:207508> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:3> ;
+        <urn:treedata:property:boroughCount>
+                "3037402" ;
+        <urn:treedata:property:censusTract>
+                <urn:treedata:resource:censusTract:37402> ;
+        <urn:treedata:property:community>
+                "313" ;
+        <urn:treedata:property:councilDistrict>
+                "47" ;
+        <urn:treedata:property:createdAt>
+                "Mon Aug 31 00:00:00 EDT 2015" ;
+        <urn:treedata:property:curbLoc>
+                "OffsetFromCurb" ;
+        <urn:treedata:property:dbh>     "21" ;
+        <urn:treedata:property:health>  "Fair" ;
+        <urn:treedata:property:sidewalk>
+                "NoDamage" ;
+        <urn:treedata:property:species>
+                <urn:treedata:resource:species:Platanus_x_acerifolia> ;
+        <urn:treedata:property:stateAssembly>
+                "45" ;
+        <urn:treedata:property:stateSenate>
+                "23" ;
+        <urn:treedata:property:status>  "Alive" ;
+        <urn:treedata:property:stump>   "0" ;
+        <urn:treedata:property:usertype>
+                "TreesCountStaff" ;
+        <urn:treedata:property:x_sp>    "992653.75" ;
+        <urn:treedata:property:y_sp>    "152903.62" ;
+        <urn:treedata:property:zipCity>
+                <urn:treedata:resource:zipCity:Brooklyn> .

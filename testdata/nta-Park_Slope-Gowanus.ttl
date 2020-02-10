@@ -1,0 +1,9 @@
+<urn:treedata:resource:NTA:BK37>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Park Slope-Gowanus" ;
+        <http://purl.org/dc/terms/identifier>
+                "BK37" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11215> ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:223043> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:3> .

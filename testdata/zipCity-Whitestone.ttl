@@ -1,0 +1,3 @@
+<urn:treedata:resource:zipCity:Whitestone>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Whitestone" .

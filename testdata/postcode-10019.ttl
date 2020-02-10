@@ -1,0 +1,4 @@
+<urn:treedata:resource:postcode:10019>
+        <http://purl.org/dc/terms/identifier>
+                "10019" ;
+        <http://schema.org/city>  <urn:treedata:resource:city:New_York_City> .

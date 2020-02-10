@@ -1,0 +1,47 @@
+<urn:treedata:resource:tree:204337>
+        <http://purl.org/dc/terms/identifier>
+                "204337" ;
+        <http://schema.org/address>     "1027 GRAND STREET" ;
+        <http://schema.org/city>        <urn:treedata:resource:city:New_York_City> ;
+        <http://schema.org/latitude>    "40.71354" ;
+        <http://schema.org/longitude>   "-73.934456" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11211> ;
+        <http://schema.org/state>       <urn:treedata:resource:state:New_York> ;
+        <urn:treedata:property:NTA>     <urn:treedata:resource:NTA:BK90> ;
+        <urn:treedata:property:bbl>     "3029250001" ;
+        <urn:treedata:property:bin>     "3338342" ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:217969> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:3> ;
+        <urn:treedata:property:boroughCount>
+                "3044900" ;
+        <urn:treedata:property:censusTract>
+                <urn:treedata:resource:censusTract:449> ;
+        <urn:treedata:property:community>
+                "301" ;
+        <urn:treedata:property:councilDistrict>
+                "34" ;
+        <urn:treedata:property:createdAt>
+                "Sat Sep 05 00:00:00 EDT 2015" ;
+        <urn:treedata:property:curbLoc>
+                "OnCurb" ;
+        <urn:treedata:property:dbh>     "10" ;
+        <urn:treedata:property:health>  "Good" ;
+        <urn:treedata:property:problems>
+                "Stones" ;
+        <urn:treedata:property:sidewalk>
+                "Damage" ;
+        <urn:treedata:property:species>
+                <urn:treedata:resource:species:Gleditsia_triacanthos_var._inermis> ;
+        <urn:treedata:property:stateAssembly>
+                "53" ;
+        <urn:treedata:property:stateSenate>
+                "18" ;
+        <urn:treedata:property:status>  "Alive" ;
+        <urn:treedata:property:stump>   "0" ;
+        <urn:treedata:property:usertype>
+                "Volunteer" ;
+        <urn:treedata:property:x_sp>    "1002420.4" ;
+        <urn:treedata:property:y_sp>    "199244.25" ;
+        <urn:treedata:property:zipCity>
+                <urn:treedata:resource:zipCity:Brooklyn> .

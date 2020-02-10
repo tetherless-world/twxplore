@@ -1,0 +1,47 @@
+<urn:treedata:resource:tree:200540>
+        <http://purl.org/dc/terms/identifier>
+                "200540" ;
+        <http://schema.org/address>     "147-074 7 AVENUE" ;
+        <http://schema.org/city>        <urn:treedata:resource:city:New_York_City> ;
+        <http://schema.org/latitude>    "40.79411" ;
+        <http://schema.org/longitude>   "-73.81868" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11357> ;
+        <http://schema.org/state>       <urn:treedata:resource:state:New_York> ;
+        <urn:treedata:property:NTA>     <urn:treedata:resource:NTA:QN49> ;
+        <urn:treedata:property:bbl>     "4044750045" ;
+        <urn:treedata:property:bin>     "4101931" ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:315986> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:4> ;
+        <urn:treedata:property:boroughCount>
+                "4097300" ;
+        <urn:treedata:property:censusTract>
+                <urn:treedata:resource:censusTract:973> ;
+        <urn:treedata:property:community>
+                "407" ;
+        <urn:treedata:property:councilDistrict>
+                "19" ;
+        <urn:treedata:property:createdAt>
+                "Thu Sep 03 00:00:00 EDT 2015" ;
+        <urn:treedata:property:curbLoc>
+                "OnCurb" ;
+        <urn:treedata:property:dbh>     "21" ;
+        <urn:treedata:property:health>  "Fair" ;
+        <urn:treedata:property:problems>
+                "Stones" ;
+        <urn:treedata:property:sidewalk>
+                "Damage" ;
+        <urn:treedata:property:species>
+                <urn:treedata:resource:species:Quercus_palustris> ;
+        <urn:treedata:property:stateAssembly>
+                "27" ;
+        <urn:treedata:property:stateSenate>
+                "11" ;
+        <urn:treedata:property:status>  "Alive" ;
+        <urn:treedata:property:stump>   "0" ;
+        <urn:treedata:property:usertype>
+                "TreesCountStaff" ;
+        <urn:treedata:property:x_sp>    "1034455.7" ;
+        <urn:treedata:property:y_sp>    "228644.84" ;
+        <urn:treedata:property:zipCity>
+                <urn:treedata:resource:zipCity:Whitestone> .

@@ -1,0 +1,3 @@
+<urn:treedata:resource:zipCity:Forest_Hills>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Forest Hills" .

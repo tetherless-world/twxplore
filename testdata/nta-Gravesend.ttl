@@ -1,0 +1,9 @@
+<urn:treedata:resource:NTA:BK26>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Gravesend" ;
+        <http://purl.org/dc/terms/identifier>
+                "BK26" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11223> ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:207508> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:3> .

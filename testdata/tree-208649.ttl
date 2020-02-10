@@ -1,0 +1,47 @@
+<urn:treedata:resource:tree:208649>
+        <http://purl.org/dc/terms/identifier>
+                "208649" ;
+        <http://schema.org/address>     "311 WEST 50 STREET" ;
+        <http://schema.org/city>        <urn:treedata:resource:city:New_York_City> ;
+        <http://schema.org/latitude>    "40.762722" ;
+        <http://schema.org/longitude>   "-73.9873" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:10019> ;
+        <http://schema.org/state>       <urn:treedata:resource:state:New_York> ;
+        <urn:treedata:property:NTA>     <urn:treedata:resource:NTA:MN15> ;
+        <urn:treedata:property:bbl>     "1010410019" ;
+        <urn:treedata:property:bin>     "1086093" ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:103940> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:1> ;
+        <urn:treedata:property:boroughCount>
+                "1012700" ;
+        <urn:treedata:property:censusTract>
+                <urn:treedata:resource:censusTract:133> ;
+        <urn:treedata:property:community>
+                "104" ;
+        <urn:treedata:property:councilDistrict>
+                "3" ;
+        <urn:treedata:property:createdAt>
+                "Mon Sep 07 00:00:00 EDT 2015" ;
+        <urn:treedata:property:curbLoc>
+                "OnCurb" ;
+        <urn:treedata:property:dbh>     "9" ;
+        <urn:treedata:property:health>  "Good" ;
+        <urn:treedata:property:problems>
+                "MetalGrates" ;
+        <urn:treedata:property:sidewalk>
+                "NoDamage" ;
+        <urn:treedata:property:species>
+                <urn:treedata:resource:species:Tilia_americana> ;
+        <urn:treedata:property:stateAssembly>
+                "75" ;
+        <urn:treedata:property:stateSenate>
+                "27" ;
+        <urn:treedata:property:status>  "Alive" ;
+        <urn:treedata:property:stump>   "0" ;
+        <urn:treedata:property:usertype>
+                "Volunteer" ;
+        <urn:treedata:property:x_sp>    "987769.1" ;
+        <urn:treedata:property:y_sp>    "217157.86" ;
+        <urn:treedata:property:zipCity>
+                <urn:treedata:resource:zipCity:New_York> .

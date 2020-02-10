@@ -1,0 +1,3 @@
+<urn:treedata:resource:species:Gleditsia_triacanthos_var._inermis>
+        <urn:treedata:property:common>  "Gleditsia triacanthos var. inermis" ;
+        <urn:treedata:property:latin>   "honeylocust" .

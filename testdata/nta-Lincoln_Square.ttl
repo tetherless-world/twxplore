@@ -1,0 +1,9 @@
+<urn:treedata:resource:NTA:MN14>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Lincoln Square" ;
+        <http://purl.org/dc/terms/identifier>
+                "MN14" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:10023> ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:106099> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:1> .

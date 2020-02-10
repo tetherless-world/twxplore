@@ -1,0 +1,9 @@
+<urn:treedata:resource:NTA:SI14>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Grasmere-Arrochar-Ft. Wadsworth" ;
+        <http://purl.org/dc/terms/identifier>
+                "SI14" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:10305> ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:407443> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:5> .

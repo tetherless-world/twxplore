@@ -1,0 +1,9 @@
+<urn:treedata:resource:NTA:QN49>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Whitestone" ;
+        <http://purl.org/dc/terms/identifier>
+                "QN49" ;
+        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:11357> ;
+        <urn:treedata:property:block>   <urn:treedata:resource:block:315986> ;
+        <urn:treedata:property:borough>
+                <urn:treedata:resource:borough:4> .

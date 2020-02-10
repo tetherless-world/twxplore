@@ -1,0 +1,4 @@
+<urn:treedata:resource:block:106099>
+        <http://purl.org/dc/terms/identifier>
+                "106099" ;
+        <urn:treedata:property:NTA>  <urn:treedata:resource:NTA:MN14> .
