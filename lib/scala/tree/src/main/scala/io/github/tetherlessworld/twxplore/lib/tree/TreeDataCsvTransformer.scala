@@ -324,7 +324,7 @@ case class TreeDataCsvTransformer() {
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
-    val source = scala.io.Source.fromFile(filename)
+    val source = scala.io.Source.fromResource(filename)
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
@@ -342,7 +342,7 @@ case class TreeDataCsvTransformer() {
     lineProcessor.generateCityList()
 
     source.close()
-    val source2 = scala.io.Source.fromFile(filename)
+    val source2 = scala.io.Source.fromResource(filename)
     for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
