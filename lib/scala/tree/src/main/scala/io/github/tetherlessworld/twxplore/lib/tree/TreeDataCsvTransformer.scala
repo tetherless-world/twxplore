@@ -21,6 +21,8 @@ case class TreeDataCsvTransformer() {
   var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
   var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
   var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
+  var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
+  var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
   var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + "New_York"))
   var state: State = State("New York", List[Uri]())
   val uri = TREE.resourceURI
@@ -70,7 +72,16 @@ case class TreeDataCsvTransformer() {
     def processCensusTract(censusTract: String): Option[CensusTract] = {
       censusTract match {
         case "" => None
-        case _ =>  Some(CensusTract(censusTract.toInt, "none"))
+        case _ =>  {
+          censusTractMap.get(censusTract.toInt) match {
+            case Some(n) => Some(n)
+            case _ => {
+              val newCensusTract = CensusTract(censusTract.toInt, "lol")
+              censusTractMap += (censusTract.toInt -> newCensusTract)
+              Some(newCensusTract)
+            }
+          }
+        }
       }
     }
 
@@ -221,7 +232,16 @@ case class TreeDataCsvTransformer() {
 
     def processYStatePlane(y_sp: String): Float = y_sp.toFloat
 
-    def processZipCity(zipcity: String): ZipCity = ZipCity(zipcity)
+    def processZipCity(zipcity: String): ZipCity = {
+      zipCityMap.get(zipcity) match {
+        case Some(z) => z
+        case _ => {
+          val zipCity: ZipCity = ZipCity(zipcity)
+          zipCityMap += (zipcity -> zipCity)
+          zipCity
+        }
+      }
+    }
 
     def convertToCols(line: String): Array[String] = {
       val problemStart: Int = line.indexOf("\"")
@@ -302,14 +322,16 @@ case class TreeDataCsvTransformer() {
     }
   }
 
-  def parseCsv(filename: String): Unit = {
-    val source = scala.io.Source.fromResource(filename)
+  def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
+    //change it back to fromResource after you're done
+    val source = scala.io.Source.fromFile(filename)
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
         case _ => {
+
           lineProcessor.processRegions(line)
         }
       }
@@ -318,8 +340,9 @@ case class TreeDataCsvTransformer() {
     lineProcessor.generateNTAList()
     lineProcessor.generateBoroughList()
     lineProcessor.generateCityList()
+
     source.close()
-    val source2 = scala.io.Source.fromResource(filename)
+    val source2 = scala.io.Source.fromFile(filename)
     for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
@@ -333,12 +356,24 @@ case class TreeDataCsvTransformer() {
           } else {
             cols = line.split(",", -1).map(_.trim)
           }
-          val Tree = lineProcessor.process(line)
-          treeList += Tree
-          treeMap += (Tree.id -> Tree)
+          val tree = lineProcessor.process(line)
+          sink.accept(tree)
+          treeList += tree
+          treeMap += (tree.id -> tree)
         }
       }
     }
+    println(s"# of boroughs: ${boroughMap.size}")
+    sink.accept(city)
+    sink.accept(state)
+    for ((_, nta) <- ntaMap) sink.accept(nta)
+    for ((_, borough) <- boroughMap) sink.accept(borough)
+    for ((_, block) <- blockMap) sink.accept(block)
+    for ((_, code) <- postalCode) sink.accept(code)
+    for ((_, city) <- zipCityMap) sink.accept(city)
+    for ((_, species) <- treeSpeciesMap) sink.accept(species)
+    for ((_, census) <- censusTractMap) sink.accept(census)
+
     source2.close()
   }
 }

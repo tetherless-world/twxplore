@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.tree
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Tree
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import org.apache.jena.rdf.model.{ModelFactory, Resource}
 import org.scalatest.{Matchers, WordSpec}
 
@@ -14,13 +14,23 @@ class TreeSpec extends WordSpec with Matchers {
   "TreeSpec" can {
     val tree = TestData.treeList.head
     val model = ModelFactory.createDefaultModel()
-    var treeResourceOption = Option(Rdf.write[Tree](model, tree))
+    val treeResourceOption = Option(Rdf.write[Tree](model, tree))
     "a valid tree write" should {
 
       "return a nonempty resource" in {
         treeResourceOption should not be(None)
       }
     }
+
+    Rdf.write[Block](model, tree.block)
+    Rdf.write[Borough](model, tree.borough)
+    Rdf.write[CensusTract](model, tree.censusTract.get)
+    Rdf.write[City](model, tree.city)
+    Rdf.write[Nta](model, tree.NTA)
+    Rdf.write[Postcode](model, tree.postcode)
+    Rdf.write[State](model, tree.state)
+    Rdf.write[TreeSpecies](model, tree.species.get)
+    Rdf.write[ZipCity](model, tree.zipCity)
 
     val treeResource = treeResourceOption.get
 
@@ -128,7 +138,7 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "have a specific list of NTAs" in {
-        assert(borough.ntaList.contains( Uri.parse("urn:treedata:resource:nta:QN17")))
+        assert(borough.ntaList.contains( Uri.parse("urn:treedata:resource:NTA:QN17")))
       }
 
       "have a specific city" in {

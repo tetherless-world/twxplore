@@ -42,6 +42,9 @@ trait TreeTermsProperties extends PropertyGetters with PropertySetters {
   final def x_sp = getPropertyObjectFloat(TREE.x_sp)
   final def y_sp = getPropertyObjectFloat(TREE.y_sp)
   final def zipCity = getPropertyObjectResourceLabel(TREE.zipCity)
+  final def zipCityUri = getPropertyObjectUri(TREE.zipCity)
+  final def censusTractUri = getPropertyObjectUri(TREE.censusTract)
+  final def speciesUri = getPropertyObjectUri(TREE.species)
 
   //Setters
   final def bbl_=(value: Long) = addPropertyLiteral(TREE.bbl, value)
@@ -72,5 +75,8 @@ trait TreeTermsProperties extends PropertyGetters with PropertySetters {
   final def userType_=(value: String) = addPropertyLiteral(TREE.userType, value)
   final def x_sp_=(value: Float) = addPropertyLiteral(TREE.x_sp, value)
   final def y_sp_=(value: Float) = addPropertyLiteral(TREE.y_sp, value)
+  final def zipCityUri_= (uri: Uri) = addPropertyUri(TREE.zipCity, uri)
+  final def censusTractUri_=(uri: Uri) = addPropertyUri(TREE.censusTract, uri)
+  final def speciesUri_=(uri: Uri) = addPropertyUri(TREE.species, uri)
 
 }

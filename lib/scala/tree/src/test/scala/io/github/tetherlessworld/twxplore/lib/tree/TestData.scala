@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 object TestData {
   private val testData = TreeDataCsvTransformer()
-  testData.parseCsv("test_treedata.csv")
+  testData.parseCsv("test_treedata.csv", new TreeCsvTransformerSink {})
   val treeList = testData.treeList
   var treeMap: mutable.HashMap[Int, Tree] = testData.treeMap
   var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = testData.treeSpeciesMap
