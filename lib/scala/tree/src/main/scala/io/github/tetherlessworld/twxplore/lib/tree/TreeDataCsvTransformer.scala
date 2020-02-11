@@ -36,7 +36,7 @@ case class TreeDataCsvTransformer() {
   private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
   private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + "New_York"))
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"))
   private var state: State = State("New York", List[Uri]())
   val uri = TREE.resourceURI
 
