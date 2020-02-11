@@ -40,10 +40,9 @@ final case class Tree(id: Int,
                       y_sp: Float,
                       censusTract: Option[CensusTract],
                       bin: Option[Int],
-                      bbl: Option[Long]
-                     ){
-  val uri = Uri.parse(TREE.TREE_URI_PREFIX + ":" + id)
-}
+                      bbl: Option[Long],
+                      uri: Uri
+                     )
 
 object Tree {
   implicit class TreeResource(val resource: Resource)
@@ -124,7 +123,8 @@ object Tree {
         y_sp = resource.y_sp.get,
         censusTract = Some(Rdf.read[CensusTract](resource.getPropertyResourceValue(TREE.censusTract))),
         bin = resource.bin,
-        bbl = Some(resource.bbl.get.toLong)
+        bbl = Some(resource.bbl.get.toLong),
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

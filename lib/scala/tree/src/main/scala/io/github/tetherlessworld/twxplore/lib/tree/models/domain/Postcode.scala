@@ -6,8 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Postcode(code: Int, city: Uri) {
-  val uri = Uri.parse(TREE.POSTCODE_URI_PREFIX + ":" + code.toString)
+final case class Postcode(code: Int, city: Uri, uri: Uri) {
 }
 
 object Postcode {
@@ -18,7 +17,8 @@ object Postcode {
     override def read(resource: Resource): Postcode = {
       Postcode(
         code = resource.identifier.get.toInt,
-        city = resource.cityUri.get
+        city = resource.cityUri.get,
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

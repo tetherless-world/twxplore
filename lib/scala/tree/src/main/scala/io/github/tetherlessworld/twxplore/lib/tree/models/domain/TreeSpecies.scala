@@ -6,9 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class TreeSpecies(common: String, latin: String) {
-  val uri = Uri.parse(TREE.SPECIES_URI_PREFIX + ":" + common.replace(" ", "_"))
-}
+final case class TreeSpecies(common: String, latin: String, uri: Uri)
 
 object TreeSpecies {
 
@@ -19,7 +17,8 @@ object TreeSpecies {
     override def read(resource: Resource): TreeSpecies = {
       TreeSpecies(
         common = resource.common.get,
-        latin = resource.latin.get
+        latin = resource.latin.get,
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

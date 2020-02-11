@@ -6,9 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Block(id: Int, nta: Uri) {
-  val uri = Uri.parse(TREE.BLOCK_URI_PREFIX + ":" +id)
-}
+final case class Block(id: Int, nta: Uri, uri: Uri) {}
 
 object Block {
   implicit class BlockResource(val resource: Resource)
@@ -19,7 +17,8 @@ object Block {
       resource.getModel.write(System.out, "TTL")
       Block(
         id = resource.identifier.get.toInt,
-        nta  = resource.ntaUri.get
+        nta  = resource.ntaUri.get,
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

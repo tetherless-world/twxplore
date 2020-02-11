@@ -36,8 +36,8 @@ case class TreeDataCsvTransformer() {
   private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
   private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"))
-  private var state: State = State("New York", List[Uri]())
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
+  private var state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
   val uri = TREE.resourceURI
 
   class LineProcessor {
@@ -61,7 +61,7 @@ case class TreeDataCsvTransformer() {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta))
+          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block
@@ -75,7 +75,7 @@ case class TreeDataCsvTransformer() {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri]())
+          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -89,7 +89,7 @@ case class TreeDataCsvTransformer() {
           censusTractMap.get(censusTract.toInt) match {
             case Some(n) => Some(n)
             case _ => {
-              val newCensusTract = CensusTract(censusTract.toInt, "lol")
+              val newCensusTract = CensusTract(censusTract.toInt, "lol", Uri.parse(TREE.CENSUSTRACT_URI_PREFIX + ":" + censusTract))
               censusTractMap += (censusTract.toInt -> newCensusTract)
               Some(newCensusTract)
             }
@@ -144,7 +144,7 @@ case class TreeDataCsvTransformer() {
         case _ => {
           val boroughUri = Uri.parse(uri + "borough:" + borough.toString)
           val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
-          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri)
+          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri, Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta))
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -155,7 +155,7 @@ case class TreeDataCsvTransformer() {
       postalCode.get(postcode.toInt) match {
         case Some(p) => p
         case _ => {
-          val new_postcode = Postcode(postcode.toInt, city.uri)
+          val new_postcode = Postcode(postcode.toInt, city.uri, Uri.parse(TREE.POSTCODE_URI_PREFIX + ":" + postcode.toString))
           city = city.addPostcode(new_postcode)
           postalCode += (postcode.toInt -> new_postcode)
           new_postcode
@@ -224,7 +224,7 @@ case class TreeDataCsvTransformer() {
           ltn_name match {
             case "" => None
             case _ => {
-              val tempSpecies = Some(TreeSpecies(ltn_name, cmn_name))
+              val tempSpecies = Some(TreeSpecies(ltn_name, cmn_name, Uri.parse(TREE.SPECIES_URI_PREFIX + ":" + cmn_name.replace(" ", "_"))))
               treeSpeciesMap += (ltn_name -> tempSpecies.get)
               tempSpecies
             }
@@ -249,7 +249,7 @@ case class TreeDataCsvTransformer() {
       zipCityMap.get(zipcity) match {
         case Some(z) => z
         case _ => {
-          val zipCity: ZipCity = ZipCity(zipcity)
+          val zipCity: ZipCity = ZipCity(zipcity, Uri.parse(TREE.ZIPCITY_URI_PREFIX + ":" + zipcity.replace(" ", "_")))
           zipCityMap += (zipcity -> zipCity)
           zipCity
         }
@@ -330,7 +330,8 @@ case class TreeDataCsvTransformer() {
         y_sp = processYStatePlane(cols(40)),
         censusTract = processCensusTract(cols(42)),
         bin = processBin(cols(43)),
-        bbl = processBBL(cols(44))
+        bbl = processBBL(cols(44)),
+        uri = Uri.parse(TREE.TREE_URI_PREFIX + cols(0))
       )
     }
   }

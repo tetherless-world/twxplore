@@ -6,9 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class ZipCity(city: String) {
-  val uri = Uri.parse(TREE.ZIPCITY_URI_PREFIX + ":" + city.replace(" ", "_"))
-}
+final case class ZipCity(city: String, uri: Uri)
 
 object ZipCity {
   implicit class ZipCityResource(val resource: Resource)
@@ -17,7 +15,8 @@ object ZipCity {
   implicit object ZipCityRdfReader extends RdfReader[ZipCity] {
     override def read(resource: Resource): ZipCity = {
       ZipCity(
-        city = resource.label.get
+        city = resource.label.get,
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

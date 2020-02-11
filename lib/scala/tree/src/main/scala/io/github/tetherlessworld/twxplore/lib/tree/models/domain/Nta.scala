@@ -7,9 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
-final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri) extends Ordered[Nta] {
-  val uri = Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta)
-
+final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri, uri: Uri) extends Ordered[Nta] {
   def compare(that: Nta) = this.nta compare that.nta
 
   def addBlock(block: Block): Nta = {
@@ -30,6 +28,7 @@ object Nta {
         borough = resource.boroughUri.get,
         postCode = resource.postalCodeUri.get,
         blocks = resource.blocksUri,
+        uri = Uri.parse(resource.getURI)
       )
     }
   }

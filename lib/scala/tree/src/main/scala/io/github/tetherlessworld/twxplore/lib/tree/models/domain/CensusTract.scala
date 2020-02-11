@@ -6,9 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class CensusTract(id: Int, shapefile: String) {
-  val uri = Uri.parse(TREE.CENSUSTRACT_URI_PREFIX + ":" + id)
-}
+final case class CensusTract(id: Int, shapefile: String, uri: Uri)
 
 object CensusTract {
   implicit class CensusTractResource(val resource: Resource)
@@ -18,7 +16,8 @@ object CensusTract {
     override def read(resource: Resource): CensusTract = {
       CensusTract(
         id = resource.identifier.get.toInt,
-        shapefile = "a dud"
+        shapefile = "a dud",
+        uri = Uri.parse(resource.getURI)
       )
     }
   }
