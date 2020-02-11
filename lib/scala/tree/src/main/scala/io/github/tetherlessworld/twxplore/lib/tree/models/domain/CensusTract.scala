@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class CensusTract(id: Int, shapefile: String) {
-  val uri = Uri.parse(TREE.CENSUSTRACT_URI_PREFIX + id)
+  val uri = Uri.parse(TREE.CENSUSTRACT_URI_PREFIX + ":" + id)
 }
 
 object CensusTract {
@@ -28,6 +28,7 @@ object CensusTract {
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.identifier = value.id.toString
       resource.polygon = value.shapefile
+      resource.`type` = ResourceFactory.createResource(TREE.CENSUSTRACT_URI_PREFIX)
       resource
     }
   }

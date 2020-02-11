@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Block(id: Int, nta: Uri) {
-  val uri = Uri.parse(TREE.BLOCK_URI_PREFIX + id)
+  val uri = Uri.parse(TREE.BLOCK_URI_PREFIX + ":" +id)
 }
 
 object Block {
@@ -30,6 +30,7 @@ object Block {
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.identifier = value.id.toString
       resource.ntaUri = value.nta
+      resource.`type` = ResourceFactory.createResource(TREE.BLOCK_URI_PREFIX)
 
       resource
     }

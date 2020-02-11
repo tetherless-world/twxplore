@@ -139,7 +139,6 @@ lazy val treeApp = (project in file("app/tree"))
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
     ),
     name := "tree-app",
     routesGenerator := InjectedRoutesGenerator,

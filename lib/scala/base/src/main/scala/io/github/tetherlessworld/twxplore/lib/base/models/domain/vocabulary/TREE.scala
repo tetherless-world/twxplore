@@ -39,23 +39,23 @@ object TREE {
   val bbl = ResourceFactory.createProperty(propertyURI + "bbl")
 
 
-  val BLOCK_URI_PREFIX = resourceURI + "block:"
-  val BOROUGH_URI_PREFIX = resourceURI + "borough:"
-  val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract:"
-  val CITY_URI_PREFIX = resourceURI + "city:"
+  val BLOCK_URI_PREFIX = resourceURI + "block"
+  val BOROUGH_URI_PREFIX = resourceURI + "borough"
+  val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract"
+  val CITY_URI_PREFIX = resourceURI + "city"
   val CURBLOC_URI_PREFIX = resourceURI + "curbLoc"
   val GUARDS_URI_PREFIX = resourceURI + "guards"
   val HEALTH_URI_PREFIX = resourceURI + "health"
-  val NTA_URI_PREFIX = resourceURI + "NTA:"
-  val POSTCODE_URI_PREFIX = resourceURI + "postcode:"
+  val NTA_URI_PREFIX = resourceURI + "nta"
+  val POSTCODE_URI_PREFIX = resourceURI + "postcode"
   val PROBLEMS_URI_PREFIX = resourceURI + "problems"
   val SIDEWALK_URI_PREFIX = resourceURI + "sidewalk"
-  val SPECIES_URI_PREFIX = resourceURI + "species:"
-  val STATE_URI_PREFIX = resourceURI + "state:"
+  val SPECIES_URI_PREFIX = resourceURI + "species"
+  val STATE_URI_PREFIX = resourceURI + "state"
   val STATUS_URI_PREFIX = resourceURI + "status"
   val STEWARD_URI_PREFIX = resourceURI + "steward"
-  val TREE_URI_PREFIX = resourceURI + "tree:"
+  val TREE_URI_PREFIX = resourceURI + "tree"
   val USERTYPE_URI_PREFIX = resourceURI + "userType"
-  val ZIPCITY_URI_PREFIX = resourceURI + "zipCity:"
+  val ZIPCITY_URI_PREFIX = resourceURI + "zipCity"
 
 }

@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class TreeSpecies(common: String, latin: String) {
-  val uri = Uri.parse(TREE.SPECIES_URI_PREFIX + common.replace(" ", "_"))
+  val uri = Uri.parse(TREE.SPECIES_URI_PREFIX + ":" + common.replace(" ", "_"))
 }
 
 object TreeSpecies {
@@ -30,7 +30,7 @@ object TreeSpecies {
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.common = value.common
       resource.latin = value.latin
-
+      resource.`type` = ResourceFactory.createResource(TREE.SPECIES_URI_PREFIX)
       resource
     }
   }

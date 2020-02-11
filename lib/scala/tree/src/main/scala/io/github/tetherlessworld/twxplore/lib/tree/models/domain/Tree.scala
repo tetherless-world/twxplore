@@ -42,7 +42,7 @@ final case class Tree(id: Int,
                       bin: Option[Int],
                       bbl: Option[Long]
                      ){
-  val uri = Uri.parse(TREE.TREE_URI_PREFIX + id)
+  val uri = Uri.parse(TREE.TREE_URI_PREFIX + ":" + id)
 }
 
 object Tree {
@@ -194,6 +194,7 @@ object Tree {
       }
       if(value.bin.isDefined) resource.bin = value.bin.get
       if(value.bbl.isDefined) resource bbl = value.bbl.get
+      resource.`type` = ResourceFactory.createResource(TREE.TREE_URI_PREFIX)
       resource
     }
   }

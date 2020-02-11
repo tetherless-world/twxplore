@@ -13,4 +13,5 @@ object Schema {
   val state = ResourceFactory.createProperty(URI + "state")
   val polygon = ResourceFactory.createProperty(URI + "polygon")
   val cityResource = URI + "city"
+
 }

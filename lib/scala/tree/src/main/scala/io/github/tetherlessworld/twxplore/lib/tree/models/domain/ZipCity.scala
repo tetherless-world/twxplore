@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class ZipCity(city: String) {
-  val uri = Uri.parse(TREE.ZIPCITY_URI_PREFIX + city.replace(" ", "_"))
+  val uri = Uri.parse(TREE.ZIPCITY_URI_PREFIX + ":" + city.replace(" ", "_"))
 }
 
 object ZipCity {
@@ -26,6 +26,7 @@ object ZipCity {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.label = value.city
+      resource.`type` = ResourceFactory.createResource(TREE.ZIPCITY_URI_PREFIX)
       resource
     }
   }

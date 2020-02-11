@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri]) {
-  val uri = Uri.parse(TREE.BOROUGH_URI_PREFIX + borocode)
+  val uri = Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode)
 
   def addNTA(nta: Nta): Borough = {
     this.copy(ntaList = ntaList :+ nta.uri)
@@ -38,6 +38,7 @@ object Borough {
       resource.identifier = value.borocode.toString
       resource.ntaUris = value.ntaList
       resource.cityUri = value.city
+      resource.`type` = ResourceFactory.createResource(TREE.BOROUGH_URI_PREFIX)
       resource
     }
   }

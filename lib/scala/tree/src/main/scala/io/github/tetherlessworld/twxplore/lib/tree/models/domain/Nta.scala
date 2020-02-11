@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
 final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri) extends Ordered[Nta] {
-  val uri = Uri.parse(TREE.NTA_URI_PREFIX + nta)
+  val uri = Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta)
 
   def compare(that: Nta) = this.nta compare that.nta
 
@@ -44,6 +44,7 @@ object Nta {
       resource.postalCodeUri = value.postCode
       resource.blocksUri = value.blocks
       resource.boroughUri = value.borough
+      resource.`type` = ResourceFactory.createResource(TREE.NTA_URI_PREFIX)
       resource
     }
   }

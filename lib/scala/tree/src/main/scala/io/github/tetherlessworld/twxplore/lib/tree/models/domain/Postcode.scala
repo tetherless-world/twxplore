@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Postcode(code: Int, city: Uri) {
-  val uri = Uri.parse(TREE.POSTCODE_URI_PREFIX + code.toString)
+  val uri = Uri.parse(TREE.POSTCODE_URI_PREFIX + ":" + code.toString)
 }
 
 object Postcode {
@@ -29,7 +29,7 @@ object Postcode {
 
       resource.cityUri = value.city
       resource.identifier = value.code.toString
-
+      resource.`type` = ResourceFactory.createResource(TREE.POSTCODE_URI_PREFIX)
       resource
     }
   }
