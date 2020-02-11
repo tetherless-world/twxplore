@@ -14,17 +14,17 @@ case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
   }
-  var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-  var treeMap: mutable.HashMap[Int, Tree] = new mutable.HashMap()
-  var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
-  var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
-  var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
-  var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
-  var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
-  var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
-  var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + "New_York"))
-  var state: State = State("New York", List[Uri]())
+  private var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
+  private var treeMap: mutable.HashMap[Int, Tree] = new mutable.HashMap()
+  private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
+  private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
+  private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
+  private var blockMap: mutable.HashMap[Int, Block] = new mutable.HashMap()
+  private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
+  private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
+  private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + "New_York"))
+  private var state: State = State("New York", List[Uri]())
   val uri = TREE.resourceURI
 
   class LineProcessor {

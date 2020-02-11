@@ -5,10 +5,10 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import scala.collection.mutable
 
 object TestData {
-  private val testData = TreeDataCsvTransformer()
-  testData.parseCsv("test_treedata.csv", new TreeCsvTransformerSink {})
+  private val testDataTransformer = TreeDataCsvTransformer()
+  private val testData = new TreeCsvToDomainModel {}
+  testDataTransformer.parseCsv("test_treedata.csv", testData)
   val treeList = testData.treeList
-  var treeMap: mutable.HashMap[Int, Tree] = testData.treeMap
   var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = testData.treeSpeciesMap
   var boroughMap: mutable.HashMap[Int, Borough] = testData.boroughMap
   var ntaMap: mutable.HashMap[String, Nta] = testData.ntaMap

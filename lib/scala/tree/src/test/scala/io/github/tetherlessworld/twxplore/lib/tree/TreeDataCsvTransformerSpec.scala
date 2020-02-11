@@ -13,11 +13,11 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
     "a valid csv" should {
       "a valid mapping of trees" should {
         "return a nonempty mapping of trees" in {
-          assert(testData.treeMap.size != 0)
+          assert(testData.treeList.size != 0)
         }
 
-        "return a mapping of 10 trees" in {
-          testData.treeMap.size should equal(10)
+        "return a list of 10 trees" in {
+          testData.treeList.size should equal(10)
         }
       }
 
