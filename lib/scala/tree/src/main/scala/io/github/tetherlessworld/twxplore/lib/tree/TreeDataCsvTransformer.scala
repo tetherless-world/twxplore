@@ -14,6 +14,21 @@ case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
   }
+  private def checkSource(filename: String): BufferedSource = {
+    var source: BufferedSource = null
+    if(sys.env.contains("CI")) {
+      source = scala.io.Source.fromResource(filename)
+    } else {
+      try {
+        source = scala.io.Source.fromResource(filename)
+        source.getLines.zipWithIndex
+      } catch {
+        case _:Throwable => source = scala.io.Source.fromFile(filename)
+      }
+    }
+    source
+  }
+
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
   private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -322,17 +337,7 @@ case class TreeDataCsvTransformer() {
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
-    var source: BufferedSource = null
-    if(sys.env.contains("CI")) {
-      source = scala.io.Source.fromResource(filename)
-    } else {
-      try {
-        source = scala.io.Source.fromResource(filename)
-        source.getLines.zipWithIndex
-      } catch {
-        case _:Throwable => source = scala.io.Source.fromFile(filename)
-      }
-    }
+    val source: BufferedSource = checkSource(filename)
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
@@ -350,17 +355,7 @@ case class TreeDataCsvTransformer() {
     lineProcessor.generateCityList()
 
     source.close()
-    var source2: BufferedSource = null
-    if(sys.env.contains("CI")) {
-      source2 = scala.io.Source.fromResource(filename)
-    } else {
-      try {
-        source2 = scala.io.Source.fromResource(filename)
-        source2.getLines.zipWithIndex
-      } catch {
-        case _:Throwable => source2 = scala.io.Source.fromFile(filename)
-      }
-    }
+    val source2: BufferedSource = checkSource(filename)
     for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
