@@ -1,3 +1,0 @@
-<urn:treedata:resource:species:Acer_rubrum>
-        <urn:treedata:property:common>  "Acer rubrum" ;
-        <urn:treedata:property:latin>   "red maple" .

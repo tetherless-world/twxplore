@@ -8,6 +8,7 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
 import scala.collection.mutable
+import scala.io.BufferedSource
 
 case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
@@ -321,7 +322,17 @@ case class TreeDataCsvTransformer() {
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
-    val source = scala.io.Source.fromResource(filename)
+    var source: BufferedSource = null
+    if(sys.env.contains("CI")) {
+      source = scala.io.Source.fromResource(filename)
+    } else {
+      try {
+        source = scala.io.Source.fromResource(filename)
+        source.getLines.zipWithIndex
+      } catch {
+        case _:Throwable => source = scala.io.Source.fromFile(filename)
+      }
+    }
     val lineProcessor = new LineProcessor()
 
     for((line, line_no) <- source.getLines.zipWithIndex) {
@@ -339,7 +350,17 @@ case class TreeDataCsvTransformer() {
     lineProcessor.generateCityList()
 
     source.close()
-    val source2 = scala.io.Source.fromResource(filename)
+    var source2: BufferedSource = null
+    if(sys.env.contains("CI")) {
+      source2 = scala.io.Source.fromResource(filename)
+    } else {
+      try {
+        source2 = scala.io.Source.fromResource(filename)
+        source2.getLines.zipWithIndex
+      } catch {
+        case _:Throwable => source2 = scala.io.Source.fromFile(filename)
+      }
+    }
     for((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}

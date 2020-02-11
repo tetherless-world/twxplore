@@ -1,4 +1,0 @@
-<urn:treedata:resource:state:New_York>
-        <http://www.w3.org/2000/01/rdf-schema#label>
-                "New York" ;
-        <http://schema.org/city>  <urn:treedata:resource:city:New_York_City> .

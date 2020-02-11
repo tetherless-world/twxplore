@@ -1,4 +1,0 @@
-<urn:treedata:resource:censusTract:973>
-        <http://purl.org/dc/terms/identifier>
-                "973" ;
-        <http://schema.org/polygon>  "lol" .

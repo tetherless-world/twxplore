@@ -1,7 +1,0 @@
-<urn:treedata:resource:city:New_York_City>
-        <http://www.w3.org/2000/01/rdf-schema#label>
-                "New York City" ;
-        <http://schema.org/postalCode>  <urn:treedata:resource:postcode:10019> , <urn:treedata:resource:postcode:11375> , <urn:treedata:resource:postcode:11357> , <urn:treedata:resource:postcode:10023> , <urn:treedata:resource:postcode:11215> , <urn:treedata:resource:postcode:11223> , <urn:treedata:resource:postcode:10305> , <urn:treedata:resource:postcode:11211> ;
-        <http://schema.org/state>       <urn:treedata:resource:state:New_York> ;
-        <urn:treedata:property:borough>
-                <urn:treedata:resource:borough:1> , <urn:treedata:resource:borough:5> , <urn:treedata:resource:borough:3> , <urn:treedata:resource:borough:4> .

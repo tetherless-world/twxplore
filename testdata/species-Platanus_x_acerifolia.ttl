@@ -1,3 +1,0 @@
-<urn:treedata:resource:species:Platanus_x_acerifolia>
-        <urn:treedata:property:common>  "Platanus x acerifolia" ;
-        <urn:treedata:property:latin>   "London planetree" .

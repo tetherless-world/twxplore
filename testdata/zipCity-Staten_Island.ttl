@@ -1,3 +1,0 @@
-<urn:treedata:resource:zipCity:Staten_Island>
-        <http://www.w3.org/2000/01/rdf-schema#label>
-                "Staten Island" .

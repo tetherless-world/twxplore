@@ -1,7 +1,0 @@
-<urn:treedata:resource:borough:1>
-        <http://www.w3.org/2000/01/rdf-schema#label>
-                "Manhattan" ;
-        <http://purl.org/dc/terms/identifier>
-                "1" ;
-        <http://schema.org/city>     <urn:treedata:resource:city:New_York_City> ;
-        <urn:treedata:property:NTA>  <urn:treedata:resource:NTA:MN15> , <urn:treedata:resource:NTA:MN14> .

@@ -1,4 +1,0 @@
-<urn:treedata:resource:block:348711>
-        <http://purl.org/dc/terms/identifier>
-                "348711" ;
-        <urn:treedata:property:NTA>  <urn:treedata:resource:NTA:QN17> .

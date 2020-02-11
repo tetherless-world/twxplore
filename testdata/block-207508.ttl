@@ -1,4 +1,0 @@
-<urn:treedata:resource:block:207508>
-        <http://purl.org/dc/terms/identifier>
-                "207508" ;
-        <urn:treedata:property:NTA>  <urn:treedata:resource:NTA:BK26> .
