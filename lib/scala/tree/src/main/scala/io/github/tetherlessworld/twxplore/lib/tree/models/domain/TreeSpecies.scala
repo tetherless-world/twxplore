@@ -1,12 +1,13 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class TreeSpecies(common: String, latin: String) {
-  val uri = TREE.SPECIES_URI_PREFIX + common.replace(" ", "_")
+  val uri = Uri.parse(TREE.SPECIES_URI_PREFIX + common.replace(" ", "_"))
 }
 
 object TreeSpecies {

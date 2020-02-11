@@ -22,7 +22,6 @@ object TREE {
   val common = ResourceFactory.createProperty(propertyURI + "common")
   val latin = ResourceFactory.createProperty(propertyURI + "latin")
   val address = ResourceFactory.createProperty(propertyURI + "address")
-  val postcode = ResourceFactory.createProperty(propertyURI + "postcode")
   val zipCity = ResourceFactory.createProperty(propertyURI + "zipCity")
   val community = ResourceFactory.createProperty(propertyURI + "community")
   val borough = ResourceFactory.createProperty(propertyURI + "borough")
@@ -42,12 +41,12 @@ object TREE {
 
   val BLOCK_URI_PREFIX = resourceURI + "block:"
   val BOROUGH_URI_PREFIX = resourceURI + "borough:"
-  val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract"
+  val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract:"
   val CITY_URI_PREFIX = resourceURI + "city:"
   val CURBLOC_URI_PREFIX = resourceURI + "curbLoc"
   val GUARDS_URI_PREFIX = resourceURI + "guards"
   val HEALTH_URI_PREFIX = resourceURI + "health"
-  val NTA_URI_PREFIX = resourceURI + "nta:"
+  val NTA_URI_PREFIX = resourceURI + "NTA:"
   val POSTCODE_URI_PREFIX = resourceURI + "postcode:"
   val PROBLEMS_URI_PREFIX = resourceURI + "problems"
   val SIDEWALK_URI_PREFIX = resourceURI + "sidewalk"

@@ -133,3 +133,20 @@ lazy val treeLib =
       name := "twxplore-tree-lib",
       skip in publish := true
     )
+
+lazy val treeApp = (project in file("app/tree"))
+  .dependsOn(treeLib % "compile->compile;test->test")
+  .enablePlugins(PlayScala)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
+    ),
+    name := "tree-app",
+    routesGenerator := InjectedRoutesGenerator,
+    // Adds additional packages into Twirl
+    //TwirlKeys.templateImports += "com.example.controllers._"
+
+    // Adds additional packages into conf/routes
+    // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+    skip in publish := true
+  )

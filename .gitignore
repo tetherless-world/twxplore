@@ -11,3 +11,5 @@ target/
 .idea/
 
 /result.ttl
+/result.zip
+app/tree/app/

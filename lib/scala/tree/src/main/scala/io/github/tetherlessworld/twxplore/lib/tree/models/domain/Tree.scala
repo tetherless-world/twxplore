@@ -107,7 +107,7 @@ object Tree {
           case "WiresRope" => WiresRope
         },
         address = resource.address.get,
-        postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(TREE.postcode)),
+        postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(Schema.postalCode)),
         city = Rdf.read[City](resource.getPropertyResourceValue(Schema.city)),
         zipCity = Rdf.read[ZipCity](resource.getPropertyResourceValue(TREE.zipCity)),
         community = resource.community.get,
@@ -140,8 +140,9 @@ object Tree {
 
       resource.stump = value.stump
 
-      val block = Rdf.write[Block](model, value.block)
-      resource.addProperty(TREE.block, block)
+//      val block = Rdf.write[Block](model, value.block)
+//      resource.addProperty(TREE.block, block)
+      resource.blockUri = value.block.uri
 
       resource.curbLoc = value.curbLoc.label
       resource.status = value.status.label
@@ -149,8 +150,9 @@ object Tree {
         //println(value.status.label, value.id)
         if(value.health.isDefined) resource.health = value.health.get.label
         if(value.species.isDefined) {
-          val species = Rdf.write[TreeSpecies](model, value.species.get)
-          resource.addProperty(TREE.species, species)
+//          val species = Rdf.write[TreeSpecies](model, value.species.get)
+//          resource.addProperty(TREE.species, species)
+          resource.speciesUri = value.species.get.uri
         }
         if(value.guards.isDefined) resource.guards = value.guards.get.label
         if(value.sidewalk.isDefined)  resource.sidewalk = value.sidewalk.get.label
@@ -158,30 +160,37 @@ object Tree {
       resource.userType = value.userType.label
       resource.problems = value.problems.map(problem => problem.label)
       resource.address = value.address
-      val postcode = Rdf.write[Postcode](model, value.postcode)
-      resource.addProperty(TREE.postcode, postcode)
-      val zipCity = Rdf.write[ZipCity](model, value.zipCity)
-      resource.addProperty(TREE.zipCity, zipCity)
-      val city = Rdf.write[City](model, value.city)
-      resource.addProperty(Schema.city, city)
+//      val postcode = Rdf.write[Postcode](model, value.postcode)
+//      resource.addProperty(TREE.postcode, postcode)
+      resource.postalCodeUri = value.postcode.uri
+//      val zipCity = Rdf.write[ZipCity](model, value.zipCity)
+//      resource.addProperty(TREE.zipCity, zipCity)
+      resource.zipCityUri = value.zipCity.uri
+//      val city = Rdf.write[City](model, value.city)
+//      resource.addProperty(Schema.city, city)
+      resource.cityUri = value.city.uri
       resource.community = value.community
-      val borough = Rdf.write[Borough](model, value.borough)
-      resource.addProperty(TREE.borough, borough)
+//      val borough = Rdf.write[Borough](model, value.borough)
+//      resource.addProperty(TREE.borough, borough)
+      resource.boroughUri = value.borough.uri
       resource.cncldist = value.cncldist
       resource.stateAssembly = value.stateAssembly
       resource.stateSenate = value.stateSenate
-      val NTA = Rdf.write[Nta](model, value.NTA)
-      resource.addProperty(TREE.NTA, NTA)
+//      val NTA = Rdf.write[Nta](model, value.NTA)
+//      resource.addProperty(TREE.NTA, NTA)
+      resource.ntaUri = value.NTA.uri
       resource.boroughCount = value.boroughCount
-      val state = Rdf.write[State](model, value.state)
-      resource.addProperty(Schema.state, state)
+//      val state = Rdf.write[State](model, value.state)
+//      resource.addProperty(Schema.state, state)
+      resource.stateUri = value.state.uri
       resource.latitude = value.latitude
       resource.longitude = value.longitude
       resource.x_sp = value.x_sp
       resource.y_sp = value.y_sp
       if (value.censusTract.isDefined) {
-        val censusTract = Rdf.write[CensusTract](model, value.censusTract.get)
-        resource.addProperty(TREE.censusTract, censusTract)
+//        val censusTract = Rdf.write[CensusTract](model, value.censusTract.get)
+//        resource.addProperty(TREE.censusTract, censusTract)
+        resource.censusTractUri = value.censusTract.get.uri
       }
       if(value.bin.isDefined) resource.bin = value.bin.get
       if(value.bbl.isDefined) resource bbl = value.bbl.get

@@ -5,11 +5,9 @@ import java.nio.file.Paths
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
-import io.github.tetherlessworld.scena.Rdf
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.TreeDataCsvTransformer
-import org.apache.jena.rdf.model.ModelFactory
+import io.github.tetherlessworld.twxplore.lib.tree.{FileTreeCsvTransformerSink, TreeDataCsvTransformer}
 
+import scala.io.Source
 object EtlCommand extends Command {
 
   @Parameters(commandDescription = "Run an extract-transform-load (ETL) pipeline")
@@ -27,57 +25,26 @@ object EtlCommand extends Command {
     val pipelineName = args.pipelineName.toLowerCase()
     val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
     val treeData = TreeDataCsvTransformer()
-    treeData.parseCsv(args.dataDirectoryPath)
-    val model = ModelFactory.createDefaultModel()
-    var counter = 0
-    var total_trees = treeData.treeList.size
 
-    println("Finished parsing the csv file: " + args.dataDirectoryPath)
-    for(tree <- treeData.treeList){
-      counter += 1
-      if (counter % 100 == 0) {
-        println(s"${counter} trees processed: ${total_trees - counter} trees remaining")
-      }
-      Rdf.write[Tree](model, tree)
-    }
+    treeData.parseCsv(args.dataDirectoryPath, new FileTreeCsvTransformerSink)
+
     val file = new File(args.pipelineName)
     println(args.pipelineName)
     val fileWriter = new FileWriter(file)
 
     try {
-      model.write(fileWriter, "TURTLE")
+      val fileList = new java.io.File("./testdata").listFiles
+      for(file <- fileList){
+        val fileReader = Source.fromFile(file)
+        for(line <- fileReader) {
+          fileWriter.write(line)
+        }
+        fileReader.close()
+        file.delete()
+      }
     } finally {
       fileWriter.close()
     }
-//    val pipeline = Pipelines.pipelines.get(pipelineName)
-//    if (!pipeline.isDefined) {
-//      logger.error(s"no such pipeline `${pipelineName}`, valid: ${Pipelines.pipelines.keySet.mkString(" ")}")
-//      return
-//    }
-//
-//    val model = ModelFactory.createDefaultModel()
-//
-//    val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
-//
-//    val extractedDataDirectoryPath = dataDirectoryPath.resolve("extracted").resolve(pipelineName)
-//    Files.createDirectories(extractedDataDirectoryPath)
-//
-//    pipeline.get.extractor.extract(extractedDataDirectoryPath)
-//
-//    val transformedDataDirectoryPath = dataDirectoryPath.resolve("transformed").resolve(pipelineName)
-//    Files.createDirectories(transformedDataDirectoryPath)
-//    val transformedFilePath = transformedDataDirectoryPath.resolve(pipelineName + ".ttl")
-//
-//    for (thing <- pipeline.get.transformer.transform(extractedDataDirectoryPath)) {
-//      thing.toResource(model)
-//    }
-//
-//    val fileWriter = new FileWriter(transformedFilePath.toFile)
-//    try {
-//      model.write(fileWriter, "TURTLE")
-//    } finally {
-//      fileWriter.close()
-//    }
   }
 
   private val logger = Logger(getClass.getName)
