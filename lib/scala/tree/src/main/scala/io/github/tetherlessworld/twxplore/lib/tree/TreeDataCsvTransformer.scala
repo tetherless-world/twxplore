@@ -8,14 +8,11 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
   }
-  private var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
-  private var treeMap: mutable.HashMap[Int, Tree] = new mutable.HashMap()
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
   private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -358,12 +355,9 @@ case class TreeDataCsvTransformer() {
           }
           val tree = lineProcessor.process(line)
           sink.accept(tree)
-          treeList += tree
-          treeMap += (tree.id -> tree)
         }
       }
     }
-    println(s"# of boroughs: ${boroughMap.size}")
     sink.accept(city)
     sink.accept(state)
     for ((_, nta) <- ntaMap) sink.accept(nta)

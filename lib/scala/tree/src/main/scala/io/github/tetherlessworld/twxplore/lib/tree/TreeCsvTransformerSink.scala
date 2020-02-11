@@ -1,14 +1,21 @@
 package io.github.tetherlessworld.twxplore.lib.tree
 
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Block, Tree}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
 trait TreeCsvTransformerSink {
   def accept(block: Block): Unit
-
-  def accept(tree: Tree): Unit;
+  def accept(borough: Borough): Unit
+  def accept(nta: Nta): Unit
+  def accept(postcode: Postcode): Unit
+  def accept(zipCity: ZipCity): Unit
+  def accept(censusTract: CensusTract): Unit
+  def accept(city: City): Unit
+  def accept(state: State): Unit
+  def accept (species: TreeSpecies): Unit
+  def accept(tree: Tree): Unit
 }
 
-//case class TreeCsvToDomainModel() extends TreeCsvTransformerSink {
+//class TreeCsvToDomainModel() extends TreeCsvTransformerSink {
 //  var treeList: ListBuffer[Tree] = new ListBuffer[Tree]()
 //  var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
 //  var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
@@ -35,7 +42,7 @@ trait TreeCsvTransformerSink {
 //  }
 //}
 //
-//case class TreeCsvToRdf() extends TreeCsvTransformerSink {
+//class TreeCsvToRdf() extends TreeCsvTransformerSink {
 //  private def writeModel(model: Model, filename: String): Unit = {
 //    val file = new File(s"./testdata/${filename.replace(" ", "_")}.ttl")
 //    if(!file.exists()) {
@@ -54,28 +61,28 @@ trait TreeCsvTransformerSink {
 //  def accept[T](value: T): Unit = {
 //    val model = ModelFactory.createDefaultModel()
 //    val filename = value match {
-//      case _: Block => "block-" + value.asInstanceOf[Block].id.toString
-//      case _: Borough => "borough-" + value.asInstanceOf[Borough].name
-//      case _: CensusTract => "censusTract-" + value.asInstanceOf[CensusTract].id.toString
-//      case _: City => "city-" + value.asInstanceOf[City].name
-//      case _: Nta => "Nta-" + value.asInstanceOf[Nta].name
-//      case _: Postcode => "postcode-" + value.asInstanceOf[Postcode].code.toString
-//      case _: State => "state-" + value.asInstanceOf[State].name
-//      case _: Tree => "tree-" + value.asInstanceOf[Tree].id.toString
-//      case _: TreeSpecies => "species-" + value.asInstanceOf[TreeSpecies].common
-//      case _: ZipCity => "zipCity-" + value.asInstanceOf[ZipCity].city
+//      case value: Block => "block-" + value.id.toString
+//      case value: Borough => "borough-" + value.name
+//      case value: CensusTract => "censusTract-" + value.id.toString
+//      case value: City => "city-" + value.name
+//      case value: Nta => "Nta-" + value.name
+//      case value: Postcode => "postcode-" + value.code.toString
+//      case value: State => "state-" + value.name
+//      case value: Tree => "tree-" + value.id.toString
+//      case value: TreeSpecies => "species-" + value.common
+//      case value: ZipCity => "zipCity-" + value.city
 //    }
 //    value match {
-//      case _: Block => Rdf.write[Block](model, value.asInstanceOf[Block])
-//      case _: Borough => Rdf.write[Borough](model, value.asInstanceOf[Borough])
-//      case _: CensusTract => Rdf.write[CensusTract](model, value.asInstanceOf[CensusTract])
-//      case _: City => Rdf.write[City](model, value.asInstanceOf[City])
-//      case _: Nta => Rdf.write[Nta](model, value.asInstanceOf[Nta])
-//      case _: Postcode => Rdf.write[Postcode](model, value.asInstanceOf[Postcode])
-//      case _: State => Rdf.write[State](model, value.asInstanceOf[State])
-//      case _: Tree => Rdf.write[Tree](model, value.asInstanceOf[Tree])
-//      case _: TreeSpecies => Rdf.write[TreeSpecies](model, value.asInstanceOf[TreeSpecies])
-//      case _: ZipCity => Rdf.write[ZipCity](model, value.asInstanceOf[ZipCity])
+//      case value: Block => Rdf.write[Block](model, value)
+//      case value: Borough => Rdf.write[Borough](model, value)
+//      case value: CensusTract => Rdf.write[CensusTract](model, value)
+//      case value: City => Rdf.write[City](model, value)
+//      case value: Nta => Rdf.write[Nta](model, value)
+//      case value: Postcode => Rdf.write[Postcode](model, value)
+//      case value: State => Rdf.write[State](model, value)
+//      case value: Tree => Rdf.write[Tree](model, value)
+//      case value: TreeSpecies => Rdf.write[TreeSpecies](model, value)
+//      case value: ZipCity => Rdf.write[ZipCity](model, value)
 //    }
 //    writeModel(model, filename)
 //  }

@@ -5,7 +5,7 @@ import java.nio.file.Paths
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
-import io.github.tetherlessworld.twxplore.lib.tree.{TreeCsvToRdf, TreeDataCsvTransformer}
+import io.github.tetherlessworld.twxplore.lib.tree.{FileTreeCsvTransformerSink, TreeDataCsvTransformer}
 
 import scala.io.Source
 object EtlCommand extends Command {
@@ -26,7 +26,7 @@ object EtlCommand extends Command {
     val dataDirectoryPath = Paths.get(args.dataDirectoryPath)
     val treeData = TreeDataCsvTransformer()
 
-    treeData.parseCsv(args.dataDirectoryPath, new TreeCsvToRdf {})
+    treeData.parseCsv(args.dataDirectoryPath, new FileTreeCsvTransformerSink)
 
     val file = new File(args.pipelineName)
     println(args.pipelineName)

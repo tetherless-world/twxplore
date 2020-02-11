@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 object TestData {
   private val testDataTransformer = TreeDataCsvTransformer()
-  private val testData = new TreeCsvToDomainModel {}
+  private val testData = new MemTreeCsvTransformerSink
   testDataTransformer.parseCsv("test_treedata.csv", testData)
   val treeList = testData.treeList
   var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = testData.treeSpeciesMap
@@ -14,6 +14,6 @@ object TestData {
   var ntaMap: mutable.HashMap[String, Nta] = testData.ntaMap
   var blockMap: mutable.HashMap[Int, Block] = testData.blockMap
   var postalCode: mutable.HashMap[Int, Postcode] = testData.postalCode
-  var city: City = testData.city
-  var state: State = testData.state
+  var city: City = testData.cityBuffer
+  var state: State = testData.stateBuffer
 }
