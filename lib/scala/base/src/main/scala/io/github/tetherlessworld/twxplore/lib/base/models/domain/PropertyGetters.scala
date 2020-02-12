@@ -15,7 +15,7 @@ trait PropertyGetters {
   }
 
   protected final def getPropertyObjectDates(property: Property): List[Date] = {
-    val dateFormatter = new java.text.SimpleDateFormat("dow mon dd hh:mm:ss zzz yyyy")
+    val dateFormatter = new java.text.SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy")
     getPropertyObjectStrings(property).map(date => dateFormatter.parse(date))
   }
 
