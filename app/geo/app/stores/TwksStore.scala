@@ -1,7 +1,7 @@
 package stores
-import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
+import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
@@ -9,28 +9,26 @@ import org.apache.jena.vocabulary.{RDF, RDFS}
 
 import scala.collection.JavaConverters._
 
-class TwksStore(serverBaseUrl: String) extends Store {
-  private val client: TwksClient = new RestTwksClient(RestTwksClientConfiguration.builder().setServerBaseUrl(serverBaseUrl).build())
-
+class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getFeatures(limit: Int, offset: Int): List[Feature] =
     getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
 
   override def getFeaturesCount(): Int = {
-      val query = QueryFactory.create(
-        s"""
-           |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-           |PREFIX rdf: <${RDF.getURI}>
-           |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
-           |SELECT (COUNT(DISTINCT ?feature) AS ?count)
-           |WHERE {
-           |  ?feature rdf:type geo:Feature .
-           |  ?feature geo:hasDefaultGeometry ?geometry .
-           |  ?geometry rdf:type sf:Geometry .
-           |}
-           |""".stripMargin)
-      withQueryExecution(query) {
-        queryExecution =>
-          queryExecution.execSelect().next().get("count").asLiteral().getInt
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
+         |SELECT (COUNT(DISTINCT ?feature) AS ?count)
+         |WHERE {
+         |  ?feature rdf:type geo:Feature .
+         |  ?feature geo:hasDefaultGeometry ?geometry .
+         |  ?geometry rdf:type sf:Geometry .
+         |}
+         |""".stripMargin)
+    withQueryExecution(query) {
+      queryExecution =>
+        queryExecution.execSelect().next().get("count").asLiteral().getInt
     }
   }
 

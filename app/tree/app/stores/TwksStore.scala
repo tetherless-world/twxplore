@@ -1,18 +1,6 @@
 package stores
-import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
-import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.Rdf
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary._
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
-import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
-import org.apache.jena.vocabulary.RDF
 
-import scala.collection.JavaConverters._
-
-class TwksStore(serverBaseUrl: String) extends Store {
-  private val client: TwksClient = new RestTwksClient(RestTwksClientConfiguration.builder().setServerBaseUrl(serverBaseUrl).build())
-
+class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getTrees(limit: Int, offset: Int): List[Tree] =
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
 
