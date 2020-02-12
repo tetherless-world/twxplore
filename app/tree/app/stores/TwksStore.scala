@@ -1,5 +1,16 @@
 package stores
 
+import edu.rpi.tw.twks.uri.Uri
+import io.github.tetherlessworld.scena.Rdf
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
+import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Tree}
+import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
+import org.apache.jena.query.QueryFactory
+import org.apache.jena.vocabulary.RDF
+
+import scala.collection.JavaConverters._
+
 class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getTrees(limit: Int, offset: Int): List[Tree] =
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
@@ -47,7 +58,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |  ?zipCity ?zipCityP ?zipCityO .
          |}
          |""".stripMargin)
-    withQueryExecution(query) { queryExecution =>
+    withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
       model.listSubjectsWithProperty(RDF.`type`, TREE.TREE_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Tree](resource))
     }
@@ -63,7 +74,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |  ?feature rdf:type tree:tree .
          |} LIMIT $limit OFFSET $offset
          |""".stripMargin)
-    withQueryExecution(query) {
+    withAssertionsQueryExecution(query) {
       queryExecution =>
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("tree").asResource().getURI))
     }
@@ -91,7 +102,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |  ?geometry ?geometryP ?geometryO .
          |}
          |""".stripMargin)
-    withQueryExecution(query) { queryExecution =>
+    withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
       model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
@@ -106,18 +117,9 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |  ?feature rdf:type geo:Feature .
          |} LIMIT $limit OFFSET $offset
          |""".stripMargin)
-    withQueryExecution(query) {
+    withAssertionsQueryExecution(query) {
       queryExecution =>
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
-    }
-  }
-
-  private def withQueryExecution[T](query: Query)(f: (QueryExecution) => T): T = {
-    val queryExecution = client.queryAssertions(query)
-    try {
-      f(queryExecution)
-    } finally {
-      queryExecution.close()
     }
   }
 }
