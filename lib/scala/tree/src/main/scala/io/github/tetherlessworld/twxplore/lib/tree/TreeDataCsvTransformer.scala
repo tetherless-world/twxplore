@@ -331,7 +331,7 @@ case class TreeDataCsvTransformer() {
         censusTract = processCensusTract(cols(42)),
         bin = processBin(cols(43)),
         bbl = processBBL(cols(44)),
-        uri = Uri.parse(TREE.TREE_URI_PREFIX + cols(0))
+        uri = Uri.parse(TREE.TREE_URI_PREFIX + ":" + cols(0))
       )
     }
   }
