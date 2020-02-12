@@ -42,7 +42,7 @@ parallelExecution in ThisBuild := false
 
 
 // Resolvers
-resolvers in ThisBuild += Resolver.mavenLocal
+//resolvers in ThisBuild += Resolver.mavenLocal
 resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 
