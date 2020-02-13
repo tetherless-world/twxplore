@@ -12,55 +12,43 @@ import org.apache.jena.vocabulary.RDF
 import scala.collection.JavaConverters._
 
 class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
-  override def getTrees(limit: Int, offset: Int): List[Tree] =
+  override def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
+  }
 
   private def getTreesByUris(TreeUris: List[Uri]): List[Tree] = {
     // Should be safe to inject featureUris since they've already been parsed as URIs
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX treeR: <${TREE.URI + "resource"}>
-         |PREFIX treeP: <${TREE.URI + "property"}>
-         |PREFIX schema: <${Schema.URI}>
+         |PREFIX treeR: <${TREE.URI + "resource:"}>
+         |PREFIX treeP: <${TREE.URI + "property:"}>
+         |PREFIX schema: <${Schema.URI }>
          |CONSTRUCT {
          |  ?tree ?treeP ?treeO .
-         |  ?tree rdf:type treeR:Tree .
+         |  ?tree rdf:type treeR:tree .
          |  ?block ?blockP ?blockO .
          |  ?borough ?boroughP ?boroughO .
-         |  ?censusTract ?censusTractP ?censusTractO .
          |  ?city ?cityP ?cityO .
-         |  ?nta ?ntaP ?ntaO .
-         |  ?postcode ?postcodeP ?postcodeO .
-         |  ?species ?speciesP ?speciesO .
-         |  ?state ?stateP ?stateO .
-         |  ?zipCity ?zipCityP ?zipCityO .
          |} WHERE {
          |  VALUES ?tree { ${TreeUris.map(TreeUri => "<" + TreeUri.toString() + ">").mkString(" ")} }
          |  ?tree treeP:block ?block .
          |  ?tree treeP:borough ?borough .
-         |  ?tree treeP:censusTract ?block .
          |  ?tree schema:city ?city .
-         |  ?tree treeP:NTA ?nta .
-         |  ?tree schema:postcode ?postcode .
-         |  ?tree treeP:species ?species .
-         |  ?tree schema:state ?state .
-         |  ?tree treeP:zipCity ?zipCity .
+         |  ?tree ?treeP ?treeO .
          |  ?block ?blockP ?blockO .
          |  ?borough ?boroughP ?boroughO .
-         |  ?censusTract ?censusTractP ?censusTractO .
          |  ?city ?cityP ?cityO .
-         |  ?nta ?ntaP ?ntaO .
-         |  ?postcode ?postcodeP ?postcodeO .
-         |  ?species ?speciesP ?speciesO .
-         |  ?state ?stateP ?stateO .
-         |  ?tree ?treeP ?treeO .
-         |  ?zipCity ?zipCityP ?zipCityO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
+      val before = System.currentTimeMillis()
       val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`, TREE.TREE_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Tree](resource))
+      val after = System.currentTimeMillis()
+      println("It took " + (after - before)/1000 + " seconds to execute")
+      model.listSubjectsWithProperty(RDF.`type`, TREE.TREE_URI_PREFIX).asScala.toList.map(resource =>{
+        Rdf.read[Tree](resource)
+      })
     }
   }
 
@@ -68,10 +56,10 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX tree: <${TREE.URI + "resource"}>
+         |PREFIX tree: <${TREE.URI + "resource:"}>
          |
-         |SELECT DISTINCT ?feature WHERE {
-         |  ?feature rdf:type tree:tree .
+         |SELECT DISTINCT ?tree WHERE {
+         |  ?tree rdf:type tree:tree .
          |} LIMIT $limit OFFSET $offset
          |""".stripMargin)
     withAssertionsQueryExecution(query) {
