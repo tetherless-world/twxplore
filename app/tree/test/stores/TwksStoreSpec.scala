@@ -1,9 +1,14 @@
 package stores
 
+import edu.rpi.tw.twks.client.RestTwksClientConfiguration
+import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
-class TwksStoreSpec extends WordSpec with Matchers{
+class TwksStoreSpec extends WordSpec with Matchers {
+  val storeConfiguration = new TwksStoreConfiguration(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build())
+  val store = new TwksStore(storeConfiguration)
+
   "Test Twks Store" can {
     val currentTreeList = TestData.treeList
 
@@ -18,22 +23,22 @@ class TwksStoreSpec extends WordSpec with Matchers{
 
       "a valid URI" should {
         "return a list a trees" in {
-          TwksStore.getTrees
+          store.getTrees
         }
       }
     }
-//
-//    "a valid geometry" should {
-//      "return a valid feature list" in {
-//        val featureList = TestStore.getFeaturesContaining(currentGeometry)
-//        featureList should equal(List(TestData.feature))
-//      }
-//    }
-//
-//    "an invalid geometry" should {
-//      "return an empty feature list" in {
-//        val featureList = TestStore.getFeaturesContaining(null)
-//        featureList should equal(List())
+    //
+    //    "a valid geometry" should {
+    //      "return a valid feature list" in {
+    //        val featureList = TestStore.getFeaturesContaining(currentGeometry)
+    //        featureList should equal(List(TestData.feature))
+    //      }
+    //    }
+    //
+    //    "an invalid geometry" should {
+    //      "return an empty feature list" in {
+    //        val featureList = TestStore.getFeaturesContaining(null)
+    //        featureList should equal(List())
 //      }
 //    }
 //
