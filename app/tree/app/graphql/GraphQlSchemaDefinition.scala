@@ -268,8 +268,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
       val ad = node.asInstanceOf[Map[String, Any]]
 
       Tree(
-        id = ad.get("id").asInstanceOf[Int],
-        createdAt = ad.get("createdAt").asInstanceOf[Date],
+        id = ad("id").asInstanceOf[Int],
+        createdAt = ad("createdAt").asInstanceOf[Date],
         dbh = ad.get("dbh").asInstanceOf[Int],
         stump = ad.get("stump").asInstanceOf[Int],
         block = ad.get("block").asInstanceOf[Block],

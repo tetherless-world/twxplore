@@ -23,7 +23,8 @@ class TwksStoreSpec extends WordSpec with Matchers {
 
       "a valid URI" should {
         "return a list a trees" in {
-          store.getTrees
+          val feature = store.getTrees(10, 0)
+          feature should equal(currentTreeList)
         }
       }
     }

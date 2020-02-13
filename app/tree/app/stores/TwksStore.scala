@@ -76,7 +76,13 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |""".stripMargin)
     withAssertionsQueryExecution(query) {
       queryExecution =>
-        queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("tree").asResource().getURI))
+        queryExecution.execSelect().asScala.toList.map({
+
+          querySolution => {
+            println(querySolution)
+            Uri.parse(querySolution.get("tree").asResource().getURI)
+          }
+        })
     }
   }
 
