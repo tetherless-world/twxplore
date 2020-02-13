@@ -21,7 +21,7 @@ jobs:
           command: |
             # See https://discuss.circleci.com/t/gpg-keys-as-environment-variables/28641/3
             echo -e "$OSSRH_GPG_KEY" | gpg --import
-            mkdir ~/.sbt/gpg
+            mkdir -p ~/.sbt/gpg
             gpg -a --export-secret-keys >~/.sbt/gpg/secring.asc
             mkdir -p ~/.sbt/1.0/plugins
             echo 'addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")' >~/.sbt/1.0/plugins/pgp.sbt
