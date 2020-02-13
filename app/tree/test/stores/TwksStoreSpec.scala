@@ -4,13 +4,22 @@ import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksStoreSpec extends WordSpec with Matchers{
-  "Twks Store" can {
+  "Test Twks Store" can {
     val currentTreeList = TestData.treeList
 
     "a valid URI" should {
       "return a list a trees" in {
         val feature = TestStore.getTrees(10, 0)
         feature should equal(currentTreeList)
+      }
+    }
+    "Twks Store" can {
+      val currentTreeList = TestData.treeList
+
+      "a valid URI" should {
+        "return a list a trees" in {
+          TwksStore.getTrees
+        }
       }
     }
 //

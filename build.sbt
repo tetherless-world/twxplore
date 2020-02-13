@@ -96,7 +96,7 @@ lazy val geoLib =
     )
 
 lazy val treeCli = (project in file("cli/tree"))
-  .dependsOn(treeLib)
+  .dependsOn(treeLib, treeApp)
   .enablePlugins(AssemblyPlugin)
   .settings(
     assemblyMergeStrategy in assembly := {
