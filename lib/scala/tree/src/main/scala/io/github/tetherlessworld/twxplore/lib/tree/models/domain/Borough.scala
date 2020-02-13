@@ -6,7 +6,9 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri], uri: Uri) {
+final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri], uri: Uri) extends Ordered[Borough] {
+  def compare(that: Borough) = this.borocode compare that.borocode
+
   def addNTA(nta: Nta): Borough = {
     this.copy(ntaList = ntaList :+ nta.uri)
   }

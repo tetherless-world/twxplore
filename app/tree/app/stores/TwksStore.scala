@@ -1,10 +1,10 @@
 package stores
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.Rdf
+import io.github.tetherlessworld.scena.{Rdf, RdfReader}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
 import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Borough, Feature, Nta, Tree}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.RDF
@@ -23,22 +23,40 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |PREFIX rdf: <${RDF.getURI}>
          |PREFIX treeR: <${TREE.URI + "resource:"}>
          |PREFIX treeP: <${TREE.URI + "property:"}>
-         |PREFIX schema: <${Schema.URI }>
+         |PREFIX schema: <${Schema.URI}>
          |CONSTRUCT {
          |  ?tree ?treeP ?treeO .
          |  ?tree rdf:type treeR:tree .
          |  ?block ?blockP ?blockO .
          |  ?borough ?boroughP ?boroughO .
+         |  ?censusTract ?censusTractP ?censusTractO .
          |  ?city ?cityP ?cityO .
+         |  ?nta ?ntaP ?ntaO .
+         |  ?postcode ?postcodeP ?postcodeO .
+         |  ?species ?speciesP ?speciesO .
+         |  ?state ?stateP ?stateO .
+         |  ?zipCity ?zipCityP ?zipCityO .
          |} WHERE {
          |  VALUES ?tree { ${TreeUris.map(TreeUri => "<" + TreeUri.toString() + ">").mkString(" ")} }
          |  ?tree treeP:block ?block .
          |  ?tree treeP:borough ?borough .
+         |  ?tree treeP:censusTract ?censusTract .
          |  ?tree schema:city ?city .
-         |  ?tree ?treeP ?treeO .
+         |  ?tree treeP:NTA ?nta .
+         |  ?tree schema:postalCode ?postcode .
+         |  ?tree treeP:species ?species .
+         |  ?tree schema:state ?state .
+         |  ?tree treeP:zipCity ?zipCity .
          |  ?block ?blockP ?blockO .
          |  ?borough ?boroughP ?boroughO .
+         |  ?censusTract ?censusTractP ?censusTractO .
          |  ?city ?cityP ?cityO .
+         |  ?nta ?ntaP ?ntaO .
+         |  ?postcode ?postcodeP ?postcodeO .
+         |  ?species ?speciesP ?speciesO .
+         |  ?state ?stateP ?stateO .
+         |  ?tree ?treeP ?treeO .
+         |  ?zipCity ?zipCityP ?zipCityO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
@@ -46,6 +64,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
       val model = queryExecution.execConstruct()
       val after = System.currentTimeMillis()
       println("It took " + (after - before)/1000 + " seconds to execute")
+      model.write(System.out)
       model.listSubjectsWithProperty(RDF.`type`, TREE.TREE_URI_PREFIX).asScala.toList.map(resource =>{
         Rdf.read[Tree](resource)
       })
@@ -121,7 +140,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
       val query = QueryFactory.create(
         s"""
            |PREFIX rdf: <${RDF.getURI}>
-           |PREFIX tree: <${TREE.URI + "resource"}>
+           |PREFIX tree: <${TREE.URI + "resource:"}>
            |SELECT DISTINCT ?feature WHERE {
            |  ?feature rdf:type tree:$model .
            |} LIMIT $limit OFFSET $offset
@@ -164,23 +183,37 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
   }
 
   override def getNtasByBorough(borough: Borough): List[Nta] = {
+    getPropertyByProperty[Nta](borough.uri, "NTA")
+  }
+
+  private def getPropertyByProperty[P](overlayProp: Uri, componentPropName: String)(implicit rdfReader: RdfReader[P]): List[P] ={
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX treeR: <${TREE.URI + "resource"}>
-         |PREFIX treeP: <${TREE.URI + "property"}>
+         |PREFIX treeR: <${TREE.URI + "resource:"}>
+         |PREFIX treeP: <${TREE.URI + "property:"}>
          |CONSTRUCT {
-         |  ?nta ?ntaP ?ntaO
+         |  ?block ?blockP ?blockO .
+         |  ?block rdf:type treeR:$componentPropName
          |}
          |WHERE {
-         |  VALUES ?borough { ${"<" + borough.uri.toString() + ">"} }
-         |  ?borough treeP:NTA ?nta
-         |  ?nta ?ntaP ?ntaO
+         |  VALUES ?nta { ${"<" + overlayProp.toString() + ">"} }
+         |  ?nta treeP:$componentPropName ?block .
+         |  ?block rdf:type treeR:$componentPropName .
+         |  ?block ?blockP ?blockO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`, TREE.NTA_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Nta](resource))
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[P](resource))
     }
+  }
+
+  override def getBlocksByNta(nta: Nta): List[Block] = {
+    getPropertyByProperty[Block](nta.uri, "block")
+  }
+
+  override def getBoroughsByCity(city: City): List[Borough] = {
+    getPropertyByProperty[Borough](city.uri, "borough")
   }
 }

@@ -6,7 +6,9 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Block(id: Int, nta: Uri, uri: Uri) {}
+final case class Block(id: Int, nta: Uri, uri: Uri) extends Ordered[Block] {
+  def compare(that: Block) = this.id compare that.id
+}
 
 object Block {
   implicit class BlockResource(val resource: Resource)
