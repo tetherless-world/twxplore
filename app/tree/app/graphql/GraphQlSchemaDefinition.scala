@@ -127,50 +127,51 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 
   // Domain model types, in dependence order
 
-//  implicit val StateInputType = deriveInputObjectType[State](
-//    InputObjectTypeName("StateFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val CityInputType = deriveInputObjectType[City](
-//    InputObjectTypeName("CityFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val boroughInputType = deriveInputObjectType[Borough](
-//    InputObjectTypeName("BoroughFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val NtaInputType = deriveInputObjectType[Nta](
-//    InputObjectTypeName("NtaFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val BlockInputType = deriveInputObjectType[Block](
-//    InputObjectTypeName("BlockFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val CensusTractInputType = deriveInputObjectType[CensusTract](
-//    InputObjectTypeName("CensusTractFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val PostCodeInputType = deriveInputObjectType[Postcode](
-//    InputObjectTypeName("PostcodeFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies](
-//    InputObjectTypeName("SpeciesFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
-//
-//  implicit val ZipCityInputType = deriveInputObjectType[ZipCity](
-//    InputObjectTypeName("ZipCityFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType))
-//  )
+
+  implicit val CensusTractInputType = deriveInputObjectType[CensusTract](
+    InputObjectTypeName("CensusTractFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val PostCodeInputType = deriveInputObjectType[Postcode](
+    InputObjectTypeName("PostcodeFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies](
+    InputObjectTypeName("SpeciesFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val ZipCityInputType = deriveInputObjectType[ZipCity](
+    InputObjectTypeName("ZipCityFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val BlockInputType = deriveInputObjectType[Block](
+    InputObjectTypeName("BlockFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val NtaInputType = deriveInputObjectType[Nta](
+    InputObjectTypeName("NtaFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val BoroughInputType = deriveInputObjectType[Borough](
+    InputObjectTypeName("BoroughFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val CityInputType = deriveInputObjectType[City](
+    InputObjectTypeName("CityFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
+
+  implicit val StateInputType = deriveInputObjectType[State](
+    InputObjectTypeName("StateFieldsInput"),
+    ReplaceInputField("uri", InputField("uri", UriType))
+  )
 
   implicit val GeometryInputType = deriveInputObjectType[Geometry](
     InputObjectTypeName("GeometryFieldsInput"),
@@ -246,6 +247,21 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
+  implicit val borough = new FromInput[Borough] {
+    val marshaller = CoercedScalaResultMarshaller.default
+    def fromResult(node: marshaller.Node) = {
+      val ad = node.asInstanceOf[Map[String, Any]]
+
+      Borough(
+        name = ad("name").asInstanceOf[String],
+        borocode = ad("borocode").asInstanceOf[Int],
+        city = ad("city").asInstanceOf[Uri],
+        ntaList = ad("ntaList").asInstanceOf[Vector[Uri]].toList,
+        uri = ad("uri").asInstanceOf[Uri]
+      )
+    }
+  }
+
   implicit val manualTree = new FromInput[Tree] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
@@ -290,12 +306,15 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  // Argument typqes
+  // Argument types
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
+  val BoroughArgument = Argument("borough", BoroughInputType, description="Borough Input")
+
 
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
     Field("trees", ListType(TreeType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTrees(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
+    Field("getNtasByBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough")))
   ))
 
   // Schema

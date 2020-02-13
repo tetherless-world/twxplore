@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
 import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Tree}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Borough, Feature, Nta, Tree}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.RDF
@@ -120,6 +120,73 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
     withAssertionsQueryExecution(query) {
       queryExecution =>
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
+    }
+  }
+
+  private def getTreeResourceUris(limit: Int, offset: Int, model: String): List[Uri] = {
+      val query = QueryFactory.create(
+        s"""
+           |PREFIX rdf: <${RDF.getURI}>
+           |PREFIX tree: <${TREE.URI + "resource"}>
+           |SELECT DISTINCT ?feature WHERE {
+           |  ?feature rdf:type tree:$model .
+           |} LIMIT $limit OFFSET $offset
+           |""".stripMargin)
+      withAssertionsQueryExecution(query) {
+        queryExecution =>
+          queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
+      }
+    }
+
+  private def getBoroughByUri(boroughUri: Uri): Borough = {
+    getBoroughsByUris(List(boroughUri)).head
+  }
+
+  private def getBoroughsByUris(boroughUris: List[Uri]): List[Borough] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX tree: <${TREE.URI + "resource"}>
+         |CONSTRUCT {
+         |  ?borough ?boroughP ?boroughO .
+         |  ?borough rdf:type tree:borough .
+         |} WHERE {
+         |  VALUES ?borough { ${boroughUris.map(boroughUri => "<" + boroughUri.toString() + ">").mkString(" ")} }
+         |  ?borough ?boroughP ?boroughO .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution =>
+      val model = queryExecution.execConstruct()
+      model.listSubjectsWithProperty(RDF.`type`, TREE.BOROUGH_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Borough](resource))
+    }
+  }
+
+  private def getBoroughUris(limit: Int, offset: Int): List[Uri] = {
+    getTreeResourceUris(limit, offset, "borough")
+  }
+
+  private def getNtasByBoroughUri(boroughUri: Uri): List[Nta] = {
+    getNtasByBorough(getBoroughByUri(boroughUri))
+  }
+
+  override def getNtasByBorough(borough: Borough): List[Nta] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX treeR: <${TREE.URI + "resource"}>
+         |PREFIX treeP: <${TREE.URI + "property"}>
+         |CONSTRUCT {
+         |  ?nta ?ntaP ?ntaO
+         |}
+         |WHERE {
+         |  VALUES ?borough { ${"<" + borough.uri.toString() + ">"} }
+         |  ?borough treeP:NTA ?nta
+         |  ?nta ?ntaP ?ntaO
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution =>
+      val model = queryExecution.execConstruct()
+      model.listSubjectsWithProperty(RDF.`type`, TREE.NTA_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Nta](resource))
     }
   }
 }

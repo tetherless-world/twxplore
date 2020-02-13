@@ -33,6 +33,27 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            |{"data":{"trees":[${TestData.treeList.map(tree => "{\"uri\":" + "\"" + tree.uri + "\"").mkString("},")}}]}}
            |""".stripMargin))
     }
+    "list of nta give a borough" in {
+      val query =
+        graphql"""
+           query TreesQuery($$borough: BoroughFieldsInput!) {
+              getNtasByBorough(borough: $$borough) {
+                uri
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("borough" -> Json.obj(
+        "borocode" -> TestData.boroughMap(1).borocode,
+        "name" -> TestData.boroughMap(1).name,
+        "city" -> TestData.boroughMap(1).city.toString,
+        "ntaList" -> TestData.boroughMap(1).ntaList.map(nta => nta.toString).toList,
+        "uri" -> TestData.boroughMap(1).uri.toString )))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getNtasByBorough":[${TestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}
+           |""".stripMargin
+      ))
+    }
   }
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
