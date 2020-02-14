@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "twxplore/*": [
+        "src/ts/twxplore/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ]
+  },
+  "noImplicitAny": true,
+  "extends": "../lib/tsconfig.base.json",
+  "allowSyntheticDefaultImports": true
+}
