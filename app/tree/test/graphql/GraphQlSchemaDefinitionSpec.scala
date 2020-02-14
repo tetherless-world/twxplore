@@ -54,6 +54,52 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            |""".stripMargin
       ))
     }
+    "list of block given a nta" in {
+      val query =
+        graphql"""
+           query TreesQuery($$nta: NtaFieldsInput!) {
+              getBlocksByNta(nta: $$nta) {
+                uri
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("nta" -> Json.obj(
+        "nta" -> TestData.ntaMap("MN14").nta,
+        "name" -> TestData.ntaMap("MN14").name,
+        "blocks" -> TestData.ntaMap("MN14").blocks.map(block => block.toString).toList,
+        "borough" -> TestData.ntaMap("MN14").borough.toString,
+        "postCode" -> TestData.ntaMap("MN14").postCode.toString,
+        "uri" -> TestData.ntaMap("MN14").uri.toString
+      )))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getBlocksByNta":[${TestData.ntaMap("MN14").blocks.map(block => "{\"uri\":" + "\"" + block + "\"").mkString("},")}}]}}
+           |""".stripMargin
+      ))
+    }
+    "list of boroughs given a city" in {
+      val query =
+        graphql"""
+           query TreesQuery($$city: CityFieldsInput!) {
+              getBoroughsByCity(city: $$city) {
+                uri
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("city" -> Json.obj(
+        "name" -> TestData.city.name,
+        "boroughs" -> TestData.city.boroughs.map(borough => borough.toString).toList,
+        "postcodes" -> TestData.city.postcodes.map(postcode => postcode.toString).toList,
+        "state" -> TestData.city.state.toString,
+        "uri" -> TestData.city.uri.toString,
+      )))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getBoroughsByCity":[${TestData.city.boroughs.map(borough => "{\"uri\":" + "\"" + borough + "\"").mkString("},")}}]}}
+           |""".stripMargin
+      ))
+    }
+
   }
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,

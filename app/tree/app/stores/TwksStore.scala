@@ -142,7 +142,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`, TREE.BOROUGH_URI_PREFIX).asScala.toList.map(resource => Rdf.read[Borough](resource))
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[Borough](resource))
     }
   }
 

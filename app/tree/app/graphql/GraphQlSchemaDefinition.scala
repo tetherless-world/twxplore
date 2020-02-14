@@ -247,6 +247,37 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
+  implicit val manualCity = new FromInput[City] {
+    val marshaller = CoercedScalaResultMarshaller.default
+    def fromResult(node: marshaller.Node) = {
+      val ad = node.asInstanceOf[Map[String, Any]]
+
+      City(
+        name = ad("name").asInstanceOf[String],
+        boroughs = ad("boroughs").asInstanceOf[Vector[Uri]].toList,
+        postcodes = ad("postcodes").asInstanceOf[Vector[Uri]].toList,
+        state = ad("state").asInstanceOf[Uri],
+        uri = ad("uri").asInstanceOf[Uri]
+      )
+    }
+  }
+
+  implicit val manualNta = new FromInput[Nta] {
+    val marshaller = CoercedScalaResultMarshaller.default
+    def fromResult(node: marshaller.Node) = {
+      val ad = node.asInstanceOf[Map[String, Any]]
+
+      Nta(
+        name = ad("name").asInstanceOf[String],
+        nta = ad("nta").asInstanceOf[String],
+        blocks = ad("blocks").asInstanceOf[Vector[Uri]].toList,
+        borough = ad("borough").asInstanceOf[Uri],
+        postCode = ad("postCode").asInstanceOf[Uri],
+        uri = ad("uri").asInstanceOf[Uri]
+      )
+    }
+  }
+
   implicit val borough = new FromInput[Borough] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
@@ -309,12 +340,15 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   // Argument types
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
   val BoroughArgument = Argument("borough", BoroughInputType, description="Borough Input")
-
+  val NtaArgument = Argument("nta", NtaInputType, description = "NTA Input")
+  val CityArgument = Argument("city", CityInputType, description = "City Input")
 
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
     Field("trees", ListType(TreeType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTrees(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("getNtasByBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough")))
+    Field("getNtasByBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough"))),
+    Field("getBlocksByNta", ListType(BlockType), arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNta(nta = ctx.args.arg("nta"))),
+    Field("getBoroughsByCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city")))
   ))
 
   // Schema
