@@ -44,6 +44,8 @@ object TREE {
   val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract"
   val CITY_URI_PREFIX = resourceURI + "city"
   val CURBLOC_URI_PREFIX = resourceURI + "curbLoc"
+  val FEATURE_URI_PREFIX = resourceURI + "feature"
+  val GEOMETRY_URI_PREFIX = resourceURI + "geometry"
   val GUARDS_URI_PREFIX = resourceURI + "guards"
   val HEALTH_URI_PREFIX = resourceURI + "health"
   val NTA_URI_PREFIX = resourceURI + "NTA"
