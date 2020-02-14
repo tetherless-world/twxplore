@@ -12,6 +12,7 @@ object TestData {
   val ntaMap: Map[String, Nta] = testData.ntaMap.toMap
   val blockMap: Map[Int, Block] = testData.blockMap.toMap
   val postalCode: Map[Int, Postcode] = testData.postalCode.toMap
-  val city: City = testData.cityBuffer
   val state: State = testData.stateBuffer
+  val city: City = testData.cityBuffer
+
 }

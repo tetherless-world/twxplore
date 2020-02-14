@@ -7,6 +7,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
 
+  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
   "TreeDataCsvTranformerSpec" can {
     val testData = TestData
 
@@ -28,51 +29,63 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "be within a specific block" in {
-          testTree.block.id should equal(348711)
+          val blockMap = TestData.blockMap
+          blockMap(testTree.block.lastPart.toInt).id should equal(348711)
         }
 
         "be within a specific nta" in {
-          testTree.NTA.nta should equal("QN17")
+          val ntaMap = TestData.ntaMap
+          ntaMap(testTree.NTA.lastPart).nta should equal("QN17")
         }
 
         "be within a specific borough" in {
-          testTree.borough.name should equal ("Queens")
+          val boroughMap = TestData.boroughMap
+          boroughMap(testTree.borough.lastPart.toInt).name should equal ("Queens")
         }
 
         "be within a specific city" in {
-          testTree.city.name should equal("New York City")
+          val city = TestData.city
+          city.name should equal("New York City")
         }
 
         "be within a specific state" in {
-          testTree.state.name should equal("New York")
+          val state = TestData.state
+          state.name should equal("New York")
         }
 
         "have a block that references specified NTA" in {
-          testTree.block.nta.toString should equal ("urn:treedata:resource:NTA:QN17")
+          val blockMap = TestData.blockMap
+          blockMap(testTree.block.lastPart.toInt).nta.toString should equal ("urn:treedata:resource:NTA:QN17")
         }
 
         "have the block contained within specified NTA" in {
-          testTree.NTA.blocks.contains(Uri.parse("urn:treedata:resource:block:348711"))
+          val ntaMap = TestData.ntaMap
+          ntaMap(testTree.NTA.lastPart).blocks.contains(Uri.parse("urn:treedata:resource:block:348711"))
         }
 
         "have a nta that references specified borough" in {
-          testTree.NTA.borough.toString should equal ("urn:treedata:resource:borough:4")
+          val ntaMap = TestData.ntaMap
+          ntaMap(testTree.NTA.lastPart).borough.toString should equal ("urn:treedata:resource:borough:4")
         }
 
         "have the nta contained within specified borough" in {
-          testTree.borough.ntaList.contains(Uri.parse("urn:treedata:resource:NTA:QN17"))
+          val boroughMap = TestData.boroughMap
+          boroughMap(testTree.borough.lastPart.toInt).ntaList.contains(Uri.parse("urn:treedata:resource:NTA:QN17"))
         }
 
         "have the borough that references specified city" in {
-          testTree.borough.city.toString should equal ("urn:treedata:resource:city:New_York_City")
+          val boroughMap = TestData.boroughMap
+          boroughMap(testTree.borough.lastPart.toInt).city.toString should equal ("urn:treedata:resource:city:New_York_City")
         }
 
         "have a borough contained within specified city" in {
-          testTree.city.boroughs.contains(Uri.parse("urn:treedata:resource:borough:4"))
+          val city = TestData.city
+          city.boroughs.contains(Uri.parse("urn:treedata:resource:borough:4"))
         }
 
         "have a city that references specified state" in {
-          testTree.city.state.toString should equal ("urn:treedata:resource:state:New_York")
+          val city = TestData.city
+          city.state.toString should equal ("urn:treedata:resource:state:New_York")
         }
 
       }
