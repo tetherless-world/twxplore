@@ -26,37 +26,9 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
          |PREFIX schema: <${Schema.URI}>
          |CONSTRUCT {
          |  ?tree ?treeP ?treeO .
-         |  ?tree rdf:type treeR:tree .
-         |  ?block ?blockP ?blockO .
-         |  ?borough ?boroughP ?boroughO .
-         |  ?censusTract ?censusTractP ?censusTractO .
-         |  ?city ?cityP ?cityO .
-         |  ?nta ?ntaP ?ntaO .
-         |  ?postcode ?postcodeP ?postcodeO .
-         |  ?species ?speciesP ?speciesO .
-         |  ?state ?stateP ?stateO .
-         |  ?zipCity ?zipCityP ?zipCityO .
          |} WHERE {
          |  VALUES ?tree { ${TreeUris.map(TreeUri => "<" + TreeUri.toString() + ">").mkString(" ")} }
-         |  ?tree treeP:block ?block .
-         |  ?tree treeP:borough ?borough .
-         |  ?tree treeP:censusTract ?censusTract .
-         |  ?tree schema:city ?city .
-         |  ?tree treeP:NTA ?nta .
-         |  ?tree schema:postalCode ?postcode .
-         |  ?tree treeP:species ?species .
-         |  ?tree schema:state ?state .
-         |  ?tree treeP:zipCity ?zipCity .
-         |  ?block ?blockP ?blockO .
-         |  ?borough ?boroughP ?boroughO .
-         |  ?censusTract ?censusTractP ?censusTractO .
-         |  ?city ?cityP ?cityO .
-         |  ?nta ?ntaP ?ntaO .
-         |  ?postcode ?postcodeP ?postcodeO .
-         |  ?species ?speciesP ?speciesO .
-         |  ?state ?stateP ?stateO .
          |  ?tree ?treeP ?treeO .
-         |  ?zipCity ?zipCityP ?zipCityO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
@@ -65,7 +37,7 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
       val after = System.currentTimeMillis()
       println("It took " + (after - before)/1000 + " seconds to execute")
       model.write(System.out)
-      model.listSubjectsWithProperty(RDF.`type`, TREE.TREE_URI_PREFIX).asScala.toList.map(resource =>{
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource =>{
         Rdf.read[Tree](resource)
       })
     }

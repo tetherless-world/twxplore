@@ -132,7 +132,7 @@ object Tree {
 //        censusTract = Some(Rdf.read[CensusTract](resource.getPropertyResourceValue(TREE.censusTract))),
         censusTract = resource.censusTractUri,
         bin = resource.bin,
-        bbl = Some(resource.bbl.get.toLong),
+        bbl = resource.bbl,
         uri = Uri.parse(resource.getURI)
       )
     }

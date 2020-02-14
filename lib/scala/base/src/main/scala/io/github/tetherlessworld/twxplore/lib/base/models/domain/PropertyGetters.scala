@@ -61,8 +61,13 @@ trait PropertyGetters {
   protected final def getPropertyObjectStrings(property: Property): List[String] =
     getPropertyObjectLiterals(property).map(literal => literal.getString)
 
-  protected final def getPropertyObjectUri(property: Property): Option[Uri] =
-    Some(getPropertyObjectUris(property).head)
+  protected final def getPropertyObjectUri(property: Property): Option[Uri] = {
+    val uriList = getPropertyObjectUris(property)
+    uriList match {
+      case Nil => None
+      case _ => Some(uriList.head)
+    }
+  }
 
   protected final def getPropertyObjectUris(property: Property): List[Uri] =
     getPropertyObjects(property).flatMap(object_ => if (object_.isURIResource) Some(Uri.parse(object_.asResource().getURI)) else None)

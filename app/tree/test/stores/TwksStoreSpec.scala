@@ -26,10 +26,10 @@ class TwksStoreSpec extends WordSpec with Matchers {
       val currentTreeList = TestData.treeList
 
       "a valid URI" should {
-//        "return a list a trees" in {
-//          val feature = store.getTrees(1, 0)
-//          feature should equal(currentTreeList)
-//        }
+        "return a list a trees" in {
+          val feature = store.getTrees(10, 0)
+          feature.size should equal(currentTreeList.size)
+        }
         "return a list of ntas given a borough" in {
           val feature = store.getNtasByBorough(TestData.boroughMap(1))
           feature.sorted should equal(TestData.boroughMap(1).ntaList.map(nta => (TestData.ntaMap(nta.lastPart))).sorted)
