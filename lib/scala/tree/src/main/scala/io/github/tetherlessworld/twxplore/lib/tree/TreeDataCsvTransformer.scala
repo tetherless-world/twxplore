@@ -29,6 +29,7 @@ case class TreeDataCsvTransformer() {
     source
   }
 
+
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
   private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -36,7 +37,7 @@ case class TreeDataCsvTransformer() {
   private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
   private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
   private var state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
   val uri = TREE.resourceURI
 
@@ -348,11 +349,12 @@ case class TreeDataCsvTransformer() {
     }
   }
 
+
+
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
     val source: BufferedSource = checkSource(filename)
     val lineProcessor = new LineProcessor()
-
     for((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}

@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geomet
 
 import scala.io.BufferedSource
 
-abstract case class GeometryCsvTransformer() {
+abstract class GeometryCsvTransformer() {
   def checkSource(filename: String): BufferedSource = {
     var source: BufferedSource = null
     if(sys.env.contains("CI")) {
@@ -38,7 +38,7 @@ abstract case class GeometryCsvTransformer() {
     def processFeature(label: String, wkt: String, id: String): Feature = {
       Feature(
         label = processLabel(label),
-        uri = Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + id),
+        uri = Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + id.replace(" ", "_")),
         geometry = processGeometry(label, wkt, id)
       )
     }

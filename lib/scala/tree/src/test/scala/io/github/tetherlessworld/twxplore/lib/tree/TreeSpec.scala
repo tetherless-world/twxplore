@@ -31,6 +31,7 @@ class TreeSpec extends WordSpec with Matchers {
     val postcodeResource = Rdf.write[Postcode](model, TestData.postalCode(tree.postcode.lastPart.toInt))
     val stateResource = Rdf.write[State](model, TestData.state)
 
+
     val speciesResource = Rdf.write[TreeSpecies](model, TestData.treeSpeciesMap(tree.species.get.lastPart.replace("_", " ")))
 
     val treeResource = treeResourceOption.get

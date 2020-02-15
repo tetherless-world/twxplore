@@ -257,7 +257,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
         boroughs = ad("boroughs").asInstanceOf[Vector[Uri]].toList,
         postcodes = ad("postcodes").asInstanceOf[Vector[Uri]].toList,
         state = ad("state").asInstanceOf[Uri],
-        uri = ad("uri").asInstanceOf[Uri]
+        uri = ad("uri").asInstanceOf[Uri],
+        feature = ad("feature").asInstanceOf[Uri]
       )
     }
   }
