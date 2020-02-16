@@ -12,3 +12,5 @@ target/
 
 /result.ttl
 /result.zip
+cli/tree/src/main/resources*
+lib/scala/tree/src/test/resources*

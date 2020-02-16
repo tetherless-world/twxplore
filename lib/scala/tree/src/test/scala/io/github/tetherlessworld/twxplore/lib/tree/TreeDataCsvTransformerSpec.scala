@@ -54,6 +54,37 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         }
       }
 
+      "a valid mapping of boroughs" should {
+        "return a nonempty mapping of boroughs" in {
+          assert(TestData.boroughGeoMap.size != 0)
+        }
+        val queens = TestData.boroughGeoMap("Queens")
+        "have a specific uri" in {
+          queens.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Queens"))
+        }
+      }
+
+      "a valid mapping of ntas" should {
+        "return a nonempty mapping of ntas" in {
+          assert(TestData.ntaGeoMap.size != 0)
+        }
+        val MN06 = TestData.ntaGeoMap("Manhattanville")
+        "have a specific uri" in {
+          MN06.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Manhattanville"))
+        }
+      }
+
+      "a valid mapping of blocks" should {
+        "return a nonempty mapping of blocks" in {
+          assert(TestData.blockGeoMap.size != 0)
+        }
+        println(TestData.blockGeoMap.size)
+        val block = TestData.blockGeoMap("348711")
+        "have a specific uri" in {
+          block.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "348711"))
+        }
+      }
+
       "a valid tree (the head)" should {
         val testTree = testData.treeList.head
         "have a specific address" in {

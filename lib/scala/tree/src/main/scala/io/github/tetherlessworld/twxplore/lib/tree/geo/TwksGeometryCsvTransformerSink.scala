@@ -10,7 +10,7 @@ import org.apache.jena.rdf.model.ModelFactory
 class TwksGeometryCsvTransformerSink(twksStoreConfiguration: TwksStoreConfiguration) extends GeometryCsvTransformerSink {
   private val twksClient = new RestTwksClient(twksStoreConfiguration.twksClientConfiguration)
 
-  override def accept(feature: Feature): Unit = accept(feature)
+  override def accept(feature: Feature): Unit = accept[Feature](feature)
 
   private def accept[T](value: T)(implicit writer: RdfWriter[T]): Unit = {
     val model = ModelFactory.createDefaultModel()

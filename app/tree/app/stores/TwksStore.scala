@@ -158,21 +158,77 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
     getPropertyByProperty[Nta](borough.uri, "NTA")
   }
 
+  override def getGeometryOfCity(city: City): Geometry = {
+    getGeometryOfProperty("city", city.uri)
+  }
+
+  override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = {
+    getGeometryOfProperties("borough", boroughs.map(borough => borough.uri))
+  }
+
+  override def getGeometryOfBorough(borough: Borough): Geometry = {
+    getGeometryOfBoroughs(List(borough)).head
+  }
+
+  override def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = {
+    getGeometryOfProperties("NTA", ntas.map(nta => nta.uri))
+  }
+
+  override def getGeometryOfNta(nta: Nta): Geometry = {
+    getGeometryOfNtas(List(nta)).head
+  }
+
+  override def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = {
+    getGeometryOfProperties("block", blocks.map(block => block.uri))
+  }
+
+  override def getGeometryOfBlock(block: Block): Geometry = {
+    getGeometryOfBlocks(List(block)).head
+  }
+
+  private def getGeometryOfProperty(componentPropName: String, property: Uri): Geometry = {
+    getGeometryOfProperties(componentPropName, List(property)).head
+  }
+
+  private def getGeometryOfProperties(componentPropName: String, properties: List[Uri]): List[Geometry] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX treeR: <${TREE.resourceURI}>
+         |PREFIX treeP: <${TREE.propertyURI}>
+         |CONSTRUCT {
+         |  ?geometry ?geometryP ?geometryO .
+         |}
+         |WHERE {
+         |  VALUES ?componentProp { ${ properties.map(property => "<" + property + ">").mkString(" ")} }
+         |  ?componentProp geo:spatialDimension ?feature .
+         |  ?feature geo:hasDefaultGeometry ?geometry .
+         |  ?geometry ?geometryP ?geometryO .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution =>
+      val model = queryExecution.execConstruct()
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[Geometry](resource))
+    }
+  }
+
   private def getPropertyByProperty[P](overlayProp: Uri, componentPropName: String)(implicit rdfReader: RdfReader[P]): List[P] ={
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX treeR: <${TREE.URI + "resource:"}>
-         |PREFIX treeP: <${TREE.URI + "property:"}>
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX treeR: <${TREE.resourceURI}>
+         |PREFIX treeP: <${TREE.propertyURI}>
          |CONSTRUCT {
-         |  ?block ?blockP ?blockO .
-         |  ?block rdf:type treeR:$componentPropName
+         |  ?componentProp ?componentPropP ?componentPropO .
+         |  ?componentProp rdf:type treeR:$componentPropName .
          |}
          |WHERE {
-         |  VALUES ?nta { ${"<" + overlayProp.toString() + ">"} }
-         |  ?nta treeP:$componentPropName ?block .
-         |  ?block rdf:type treeR:$componentPropName .
-         |  ?block ?blockP ?blockO .
+         |  VALUES ?overlayProp { ${"<" + overlayProp.toString() + ">"} }
+         |  ?overlayProp treeP:$componentPropName ?componentProp .
+         |  ?componentProp rdf:type treeR:$componentPropName .
+         |  ?componentProp ?componentPropP ?componentPropO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>

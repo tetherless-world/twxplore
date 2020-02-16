@@ -29,7 +29,7 @@ object City {
         postcodes = resource.postalCodesUri,
         state = resource.stateUri.get,
         uri = Uri.parse(resource.getURI),
-        feature = resource.hasDefaultGeometry.get
+        feature = resource.spatialDimensionProp.get
       )
     }
   }
@@ -43,7 +43,7 @@ object City {
       resource.stateUri = value.state
       resource.boroughsUri = value.boroughs
       resource.postalCodesUri = value.postcodes
-      resource.hasDefaultGeometry = value.feature
+      resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.CITY_URI_PREFIX)
       resource
     }

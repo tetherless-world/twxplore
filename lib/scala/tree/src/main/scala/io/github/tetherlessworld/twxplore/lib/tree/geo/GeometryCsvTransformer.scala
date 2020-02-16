@@ -30,7 +30,7 @@ abstract class GeometryCsvTransformer() {
     def processGeometry(label: String, wkt: String, id: String): Geometry = {
       Geometry(
         label = processLabel(label),
-        uri = Uri.parse(TREE.GEOMETRY_URI_PREFIX + ":" + id),
+        uri = Uri.parse(TREE.GEOMETRY_URI_PREFIX + ":" + label.replace(" ", "_")),
         wkt = wkt
       )
     }
@@ -38,7 +38,7 @@ abstract class GeometryCsvTransformer() {
     def processFeature(label: String, wkt: String, id: String): Feature = {
       Feature(
         label = processLabel(label),
-        uri = Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + id.replace(" ", "_")),
+        uri = Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + label.replace(" ", "_")),
         geometry = processGeometry(label, wkt, id)
       )
     }

@@ -62,7 +62,7 @@ case class TreeDataCsvTransformer() {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
+          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block
@@ -76,7 +76,7 @@ case class TreeDataCsvTransformer() {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
+          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + borough_str.replace(" ", "_")) ,Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -145,7 +145,7 @@ case class TreeDataCsvTransformer() {
         case _ => {
           val boroughUri = Uri.parse(uri + "borough:" + borough.toString)
           val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
-          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri, Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta))
+          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri, Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + ntaName.replace(" ", "_")), Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta))
           ntaMap += (nta -> new_nta)
           new_nta
         }

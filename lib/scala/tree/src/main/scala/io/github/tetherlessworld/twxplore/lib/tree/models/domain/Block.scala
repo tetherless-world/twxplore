@@ -6,13 +6,13 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Block(id: Int, nta: Uri, uri: Uri) extends Ordered[Block] {
+final case class Block(id: Int, nta: Uri, feature: Uri, uri: Uri) extends Ordered[Block] {
   def compare(that: Block) = this.id compare that.id
 }
 
 object Block {
   implicit class BlockResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
 
   implicit object BlockRdfReader extends RdfReader[Block] {
     override def read(resource: Resource): Block = {
@@ -20,6 +20,7 @@ object Block {
       Block(
         id = resource.identifier.get.toInt,
         nta  = resource.ntaUri.get,
+        feature = resource.spatialDimensionProp.get,
         uri = Uri.parse(resource.getURI)
       )
     }
@@ -31,6 +32,7 @@ object Block {
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.identifier = value.id.toString
       resource.ntaUri = value.nta
+      resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.BLOCK_URI_PREFIX)
 
       resource

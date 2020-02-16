@@ -185,6 +185,14 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 //    ReplaceInputField("curbLoc", InputField("curbLoc", CurbLocType)),
 //  )
 
+  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
+  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
   implicit val StateType = deriveObjectType[GraphQlSchemaContext, State](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
@@ -202,7 +210,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   )
 
   implicit val BlockType = deriveObjectType[GraphQlSchemaContext, Block](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
+
   )
 
   implicit val CensusTractType = deriveObjectType[GraphQlSchemaContext, CensusTract](
@@ -221,13 +230,6 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
 
   implicit val TreeType = deriveObjectType[GraphQlSchemaContext, Tree](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
@@ -274,6 +276,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
         blocks = ad("blocks").asInstanceOf[Vector[Uri]].toList,
         borough = ad("borough").asInstanceOf[Uri],
         postCode = ad("postCode").asInstanceOf[Uri],
+        feature = ad("feature").asInstanceOf[Uri],
         uri = ad("uri").asInstanceOf[Uri]
       )
     }
@@ -289,6 +292,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
         borocode = ad("borocode").asInstanceOf[Int],
         city = ad("city").asInstanceOf[Uri],
         ntaList = ad("ntaList").asInstanceOf[Vector[Uri]].toList,
+        feature = ad("feature").asInstanceOf[Uri],
         uri = ad("uri").asInstanceOf[Uri]
       )
     }

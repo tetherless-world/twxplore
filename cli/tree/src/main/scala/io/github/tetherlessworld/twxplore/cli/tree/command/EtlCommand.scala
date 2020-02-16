@@ -4,7 +4,7 @@ import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
 import edu.rpi.tw.twks.client.RestTwksClientConfiguration
 import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
-import io.github.tetherlessworld.twxplore.lib.tree.geo.{CityCsvTransformer, TwksGeometryCsvTransformerSink}
+import io.github.tetherlessworld.twxplore.lib.tree.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.{TreeDataCsvTransformer, TwksTreeCsvTransformerSink}
 import stores.TwksStore
 object EtlCommand extends Command {
@@ -21,10 +21,14 @@ object EtlCommand extends Command {
     val twksStoreConfig = new TwksStoreConfiguration(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build())
     val store =  new TwksStore(twksStoreConfig)
 
-    if(store.getTrees(1, 0).isEmpty){
+    if(store.getTrees(1, 0).isEmpty || true){
       TreeDataCsvTransformer().parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksStoreConfig))
       CityCsvTransformer().parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
+      BoroughCsvTransformer().parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
+      NtaCsvTransformer().parseCsv("nynta.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
+      BlockCsvTransformer().parseCsv("test_blockdata.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
     }
+
   }
   private val logger = Logger(getClass.getName)
   val name = "etl"

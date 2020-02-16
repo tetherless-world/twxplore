@@ -47,7 +47,9 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
         "name" -> TestData.boroughMap(1).name,
         "city" -> TestData.boroughMap(1).city.toString,
         "ntaList" -> TestData.boroughMap(1).ntaList.map(nta => nta.toString).toList,
-        "uri" -> TestData.boroughMap(1).uri.toString )))
+        "uri" -> TestData.boroughMap(1).uri.toString,
+        "feature" -> TestData.boroughMap(1).feature.toString
+      )))
       result must be(Json.parse(
         s"""
            |{"data":{"getNtasByBorough":[${TestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}
@@ -68,6 +70,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
         "name" -> TestData.ntaMap("MN14").name,
         "blocks" -> TestData.ntaMap("MN14").blocks.map(block => block.toString).toList,
         "borough" -> TestData.ntaMap("MN14").borough.toString,
+        "feature" -> TestData.ntaMap("MN14").feature.toString,
         "postCode" -> TestData.ntaMap("MN14").postCode.toString,
         "uri" -> TestData.ntaMap("MN14").uri.toString
       )))
@@ -91,6 +94,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
         "boroughs" -> TestData.city.boroughs.map(borough => borough.toString).toList,
         "postcodes" -> TestData.city.postcodes.map(postcode => postcode.toString).toList,
         "state" -> TestData.city.state.toString,
+        "feature" -> TestData.city.feature.toString,
         "uri" -> TestData.city.uri.toString,
       )))
       result must be(Json.parse(

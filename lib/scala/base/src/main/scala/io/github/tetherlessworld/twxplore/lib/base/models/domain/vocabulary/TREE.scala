@@ -38,7 +38,8 @@ object TREE {
   val bin = ResourceFactory.createProperty(propertyURI + "bin")
   val bbl = ResourceFactory.createProperty(propertyURI + "bbl")
 
-
+  val TREE_RESOURCE_PREFIX = URI + "resource"
+  val TREE_PROPERTY_PREFIX = URI + "property"
   val BLOCK_URI_PREFIX = resourceURI + "block"
   val BOROUGH_URI_PREFIX = resourceURI + "borough"
   val CENSUSTRACT_URI_PREFIX = resourceURI + "censusTract"

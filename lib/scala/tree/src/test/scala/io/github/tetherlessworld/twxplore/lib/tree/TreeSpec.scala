@@ -9,7 +9,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class TreeSpec extends WordSpec with Matchers {
   implicit class TreeSpecResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties with GeoProperties
 
   implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
   "TreeSpec" can {
@@ -30,6 +30,10 @@ class TreeSpec extends WordSpec with Matchers {
     val ntaResource = Rdf.write[Nta](model, TestData.ntaMap(tree.NTA.lastPart))
     val postcodeResource = Rdf.write[Postcode](model, TestData.postalCode(tree.postcode.lastPart.toInt))
     val stateResource = Rdf.write[State](model, TestData.state)
+    val cityFeatureResource = Rdf.write[Feature](model, TestData.cityGeoMap("New York"))
+    val boroughFeatureResource = Rdf.write[Feature](model, TestData.boroughGeoMap("Queens"))
+    val ntaFeatureResource = Rdf.write[Feature](model, TestData.ntaGeoMap("Forest Hills"))
+    val blockFeatureResource = Rdf.write[Feature](model, TestData.blockGeoMap("348711"))
 
 
     val speciesResource = Rdf.write[TreeSpecies](model, TestData.treeSpeciesMap(tree.species.get.lastPart.replace("_", " ")))
@@ -90,6 +94,42 @@ class TreeSpec extends WordSpec with Matchers {
 
       "point to a specific block" in {
         block.id should equal (348711)
+      }
+    }
+
+    "a city resource derived from a tree" should {
+      "have a specific feature label" in {
+        cityFeatureResource.label.get should equal ("New York")
+      }
+      "have a geometry" in {
+        cityFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:New_York"))
+      }
+    }
+
+    "a nta resource derived from a tree" should {
+      "have a specific feature label" in {
+        ntaFeatureResource.label.get should equal ("Forest Hills")
+      }
+      "have a geometry" in {
+        ntaFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Forest_Hills"))
+      }
+    }
+
+    "a block resource derived from a tree" should {
+      "have a specific feature label" in {
+        blockFeatureResource.label.get should equal ("348711")
+      }
+      "have a geometry" in {
+        blockFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:348711"))
+      }
+    }
+
+    "a borough resource derived from a tree" should {
+      "have a specific feature label" in {
+        boroughFeatureResource.label.get should equal ("Queens")
+      }
+      "have a geometry" in {
+        boroughFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Queens"))
       }
     }
 
