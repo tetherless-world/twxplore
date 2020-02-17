@@ -43,6 +43,25 @@ class TwksStoreSpec extends WordSpec with Matchers {
           val feature = store.getBoroughsByCity(TestData.city)
           feature.size should equal(TestData.city.boroughs.size)
         }
+        "return a geometry given a city" in {
+          val feature = store.getGeometryOfCity(TestData.city)
+          feature should equal(TestData.cityGeoMap("New York").geometry)
+        }
+
+        "return a geometry given a borough" in {
+          val feature = store.getGeometryOfBorough(TestData.boroughMap(4))
+          feature should equal(TestData.boroughGeoMap("Queens").geometry)
+        }
+
+        "return a geometry given a nta" in {
+          val feature = store.getGeometryOfNta(TestData.ntaMap("MN14"))
+          feature should equal(TestData.ntaGeoMap("Lincoln Square").geometry)
+        }
+
+        "return a geometry given a block" in {
+          val feature = store.getGeometryOfBlock(TestData.blockMap(348711))
+          feature should equal(TestData.blockGeoMap("348711").geometry)
+        }
 
       }
     }

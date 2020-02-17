@@ -68,9 +68,9 @@ class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
         "return a nonempty mapping of ntas" in {
           assert(TestData.ntaGeoMap.size != 0)
         }
-        val MN06 = TestData.ntaGeoMap("Manhattanville")
+        val MN14 = TestData.ntaGeoMap("Lincoln Square")
         "have a specific uri" in {
-          MN06.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Manhattanville"))
+          MN14.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Lincoln_Square"))
         }
       }
 

@@ -13,7 +13,7 @@ object TestData {
   TreeDataCsvTransformer().parseCsv("test_treedata.csv", testData)
   CityCsvTransformer().parseCsv("city.csv", cityData)
   BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
-  NtaCsvTransformer().parseCsv("nynta.csv", ntaData)
+  NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)
   BlockCsvTransformer().parseCsv("test_blockdata.csv", blockData)
 
   val cityGeoMap = cityData.featureMap

@@ -25,7 +25,7 @@ object EtlCommand extends Command {
       TreeDataCsvTransformer().parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksStoreConfig))
       CityCsvTransformer().parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
       BoroughCsvTransformer().parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
-      NtaCsvTransformer().parseCsv("nynta.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
+      NtaCsvTransformer().parseCsv("test_ntadata.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
       BlockCsvTransformer().parseCsv("test_blockdata.csv", new TwksGeometryCsvTransformerSink(twksStoreConfig))
     }
 

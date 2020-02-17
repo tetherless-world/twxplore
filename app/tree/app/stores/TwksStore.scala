@@ -58,7 +58,6 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
         queryExecution.execSelect().asScala.toList.map({
 
           querySolution => {
-            println(querySolution)
             Uri.parse(querySolution.get("tree").asResource().getURI)
           }
         })
@@ -162,28 +161,28 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
     getGeometryOfProperty("city", city.uri)
   }
 
-  override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = {
-    getGeometryOfProperties("borough", boroughs.map(borough => borough.uri))
+  override def getGeometryOfBoroughs(boroughs: Vector[Borough]): List[Geometry] = {
+    getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
   }
 
   override def getGeometryOfBorough(borough: Borough): Geometry = {
-    getGeometryOfBoroughs(List(borough)).head
+    getGeometryOfBoroughs(Vector(borough)).head
   }
 
-  override def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = {
-    getGeometryOfProperties("NTA", ntas.map(nta => nta.uri))
+  override def getGeometryOfNtas(ntas: Vector[Nta]): List[Geometry] = {
+    getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
   }
 
   override def getGeometryOfNta(nta: Nta): Geometry = {
-    getGeometryOfNtas(List(nta)).head
+    getGeometryOfNtas(Vector(nta)).head
   }
 
-  override def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = {
-    getGeometryOfProperties("block", blocks.map(block => block.uri))
+  override def getGeometryOfBlocks(blocks: Vector[Block]): List[Geometry] = {
+    getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
   }
 
   override def getGeometryOfBlock(block: Block): Geometry = {
-    getGeometryOfBlocks(List(block)).head
+    getGeometryOfBlocks(Vector(block)).head
   }
 
   private def getGeometryOfProperty(componentPropName: String, property: Uri): Geometry = {
@@ -244,4 +243,5 @@ class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore
   override def getBoroughsByCity(city: City): List[Borough] = {
     getPropertyByProperty[Borough](city.uri, "borough")
   }
+
 }

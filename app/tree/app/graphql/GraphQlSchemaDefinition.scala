@@ -9,7 +9,7 @@ import play.api.libs.json
 import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, FloatType, InputField, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, FloatType, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
 
 object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   // Scalar Formats
@@ -19,7 +19,6 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   }
 
 
-  // Scalar aliases
   implicit val ScalaFloatType = ScalarAlias[Float, Double](
     FloatType, _.toDouble, value => {
       Right(value.toFloat)
@@ -176,6 +175,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   implicit val GeometryInputType = deriveInputObjectType[Geometry](
     InputObjectTypeName("GeometryFieldsInput"),
     ReplaceInputField("uri", InputField("uri", UriType))
+
   )
 
 //  implicit val TreeInputType = deriveInputObjectType[Tree](
@@ -186,7 +186,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 //  )
 
   implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
+    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
   )
 
   implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
@@ -211,7 +212,6 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 
   implicit val BlockType = deriveObjectType[GraphQlSchemaContext, Block](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-
   )
 
   implicit val CensusTractType = deriveObjectType[GraphQlSchemaContext, CensusTract](
@@ -236,7 +236,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   )
 
 
-  implicit val manualGeo = new FromInput[Geometry] {
+  implicit val geo = new FromInput[Geometry] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
@@ -249,7 +249,21 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualCity = new FromInput[City] {
+  implicit val feature = new FromInput[Feature] {
+    val marshaller = CoercedScalaResultMarshaller.default
+
+    def fromResult(node: marshaller.Node) = {
+      val ad = node.asInstanceOf[Map[String, Any]]
+
+      Feature(
+        geometry = ad("geometry").asInstanceOf[Geometry],
+        label = ad("label").asInstanceOf[Option[String]],
+        uri = ad("uri").asInstanceOf[Uri]
+      )
+    }
+  }
+
+  implicit val city = new FromInput[City] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
@@ -265,7 +279,21 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualNta = new FromInput[Nta] {
+  implicit val manualblock = new FromInput[Block] {
+    val marshaller = CoercedScalaResultMarshaller.default
+    def fromResult(node: marshaller.Node) = {
+      val ad = node.asInstanceOf[Map[String, Any]]
+
+      Block(
+        id = ad("id").asInstanceOf[Int],
+        nta = ad("nta").asInstanceOf[Uri],
+        feature = ad("feature").asInstanceOf[Uri],
+        uri = ad("uri").asInstanceOf[Uri]
+      )
+    }
+  }
+
+  implicit val nta = new FromInput[Nta] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
@@ -342,10 +370,15 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
+
   // Argument types
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
   val BoroughArgument = Argument("borough", BoroughInputType, description="Borough Input")
+  val BoroughsArgument = Argument("boroughs", ListInputType(BoroughInputType), description="Boroughs Input")
   val NtaArgument = Argument("nta", NtaInputType, description = "NTA Input")
+  val NtasArgument = Argument("ntas", ListInputType(NtaInputType), description = "NTAs Input")
+  val BlockArgument = Argument("block", BlockInputType, description = "Block Input")
+  val BlocksArgument = Argument("blocks", ListInputType(BlockInputType), description = "Blocks Input")
   val CityArgument = Argument("city", CityInputType, description = "City Input")
 
   // Query types
@@ -353,7 +386,14 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     Field("trees", ListType(TreeType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTrees(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
     Field("getNtasByBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough"))),
     Field("getBlocksByNta", ListType(BlockType), arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNta(nta = ctx.args.arg("nta"))),
-    Field("getBoroughsByCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city")))
+    Field("getBoroughsByCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city"))),
+    Field("getGeometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
+    Field("getGeometryOfBoroughs", ListType(GeometryType), arguments= BoroughsArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBoroughs(boroughs = ctx.args.arg("boroughs"))),
+    Field("getGeometryOfBorough", GeometryType, arguments= BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBorough(borough = ctx.args.arg("borough"))),
+    Field("getGeometryOfNtas", ListType(GeometryType), arguments= NtasArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNtas(ntas = ctx.args.arg("ntas"))),
+    Field("getGeometryOfNta", GeometryType, arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNta(nta = ctx.args.arg("nta"))),
+    Field("getGeometryOfBlocks", ListType(GeometryType), arguments= BlocksArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlocks(blocks = ctx.args.arg("blocks"))),
+    Field("getGeometryOfBlock", GeometryType, arguments= BlockArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlock(block = ctx.args.arg("block"))),
   ))
 
   // Schema

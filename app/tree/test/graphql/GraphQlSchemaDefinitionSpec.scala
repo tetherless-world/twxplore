@@ -103,7 +103,98 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            |""".stripMargin
       ))
     }
-
+    "return a geometry given a city" in {
+      val query =
+        graphql"""
+           query TreesQuery($$city: CityFieldsInput!) {
+              getGeometryOfCity(city: $$city) {
+                wkt
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("city" -> Json.obj(
+        "name" -> TestData.city.name,
+        "boroughs" -> TestData.city.boroughs.map(borough => borough.toString).toList,
+        "postcodes" -> TestData.city.postcodes.map(postcode => postcode.toString).toList,
+        "state" -> TestData.city.state.toString,
+        "feature" -> TestData.city.feature.toString,
+        "uri" -> TestData.city.uri.toString,
+      )))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getGeometryOfCity": { "wkt": "${TestData.cityGeoMap("New York").geometry.wkt}" }}}
+           |""".stripMargin
+      ))
+    }
+    "return a geometry given a list of boroughs" in {
+      val query =
+        graphql"""
+           query TreesQuery($$boroughs: [BoroughFieldsInput!]!) {
+              getGeometryOfBoroughs(boroughs: $$boroughs) {
+                wkt
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("boroughs" -> Json.arr(
+        Json.obj(
+          "borocode" -> TestData.boroughMap(1).borocode,
+          "name" -> TestData.boroughMap(1).name,
+          "city" -> TestData.boroughMap(1).city.toString,
+          "ntaList" -> TestData.boroughMap(1).ntaList.map(nta => nta.toString).toList,
+          "uri" -> TestData.boroughMap(1).uri.toString,
+          "feature" -> TestData.boroughMap(1).feature.toString
+        ))))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getGeometryOfBoroughs": [{ "wkt": "${TestData.boroughGeoMap("Manhattan").geometry.wkt}" }]}}
+           |""".stripMargin
+      ))
+    }
+    "return a geometry given a list of ntas" in {
+      val query =
+        graphql"""
+           query TreesQuery($$ntas: [NtaFieldsInput!]!) {
+              getGeometryOfNtas(ntas: $$ntas) {
+                wkt
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("ntas" -> Json.arr(Json.obj(
+        "nta" -> TestData.ntaMap("MN14").nta,
+        "name" -> TestData.ntaMap("MN14").name,
+        "blocks" -> TestData.ntaMap("MN14").blocks.map(block => block.toString).toList,
+        "borough" -> TestData.ntaMap("MN14").borough.toString,
+        "feature" -> TestData.ntaMap("MN14").feature.toString,
+        "postCode" -> TestData.ntaMap("MN14").postCode.toString,
+        "uri" -> TestData.ntaMap("MN14").uri.toString
+      ))))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getGeometryOfNtas": [{ "wkt": "${TestData.ntaGeoMap("Lincoln Square").geometry.wkt}" }]}}
+           |""".stripMargin
+      ))
+    }
+    "return a geometry given a list of blocks" in {
+      val query =
+        graphql"""
+           query TreesQuery($$blocks: [BlockFieldsInput!]!) {
+              getGeometryOfBlocks(blocks: $$blocks) {
+                wkt
+              }
+           }
+        """
+      val result = executeQuery(query, vars = Json.obj("blocks" -> Json.arr(Json.obj(
+        "id" -> TestData.blockMap(348711).id,
+        "nta" -> TestData.blockMap(348711).nta.toString,
+        "feature" -> TestData.blockMap(348711).feature.toString,
+        "uri" -> TestData.blockMap(348711).uri.toString,
+      ))))
+      result must be(Json.parse(
+        s"""
+           |{"data":{"getGeometryOfBlocks": [{ "wkt": "${TestData.blockGeoMap("348711").geometry.wkt}" }]}}
+           |""".stripMargin
+      ))
+    }
   }
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,

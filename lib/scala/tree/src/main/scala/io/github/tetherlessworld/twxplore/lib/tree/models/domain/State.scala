@@ -18,7 +18,6 @@ object State {
 
   implicit object StateRdfReader extends RdfReader[State] {
     override def read(resource: Resource): State = {
-      println(resource)
       State(
         name = resource.label.get,
         cities = resource.citiesUri,
