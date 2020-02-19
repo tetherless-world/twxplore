@@ -53,5 +53,15 @@ to link together the `packages` and install their dependencies.
 
 All of the web applications are structured similarly. After completing the one-time setup, 
 
+Mac/Linux:
+
     cd app/geo/gui
     npm start
+
+Windows:
+
+    cd lib/scala/ts
+    npm run build-win32
+    
+    cd app/geo/gui
+    npm run start-win32
