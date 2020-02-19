@@ -42,7 +42,7 @@ parallelExecution in ThisBuild := false
 
 
 // Resolvers
-resolvers in ThisBuild += Resolver.mavenLocal
+//resolvers in ThisBuild += Resolver.mavenLocal
 resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 
@@ -96,7 +96,7 @@ lazy val geoLib =
     )
 
 lazy val treeCli = (project in file("cli/tree"))
-  .dependsOn(treeLib)
+  .dependsOn(treeLib, treeApp)
   .enablePlugins(AssemblyPlugin)
   .settings(
     assemblyMergeStrategy in assembly := {
@@ -108,6 +108,7 @@ lazy val treeCli = (project in file("cli/tree"))
     assemblyOutputPath in assembly := baseDirectory.value / "dist" / ("tree-cli.jar"),
     mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.tree.TreeCli"),
     libraryDependencies ++= Seq(
+      "com.github.tototoshi" %% "scala-csv" % "1.3.6",
       "com.beust" % "jcommander" % "1.78"
     ),
     name := "tree-cli",
@@ -131,6 +132,9 @@ lazy val treeLib =
     .dependsOn(geoLib, testLib % "test->compile")
     .settings(
       name := "twxplore-tree-lib",
+      libraryDependencies ++= Seq(
+        "com.github.tototoshi" %% "scala-csv" % "1.3.6",
+      ),
       skip in publish := true
     )
 

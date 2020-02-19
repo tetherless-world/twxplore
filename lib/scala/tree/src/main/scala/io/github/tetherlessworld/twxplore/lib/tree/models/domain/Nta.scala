@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
-final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri, uri: Uri) extends Ordered[Nta] {
+final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri, feature: Uri, uri: Uri) extends Ordered[Nta] {
   def compare(that: Nta) = this.nta compare that.nta
 
   def addBlock(block: Block): Nta = {
@@ -17,7 +17,7 @@ final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri,
 
 object Nta {
   implicit class NTAResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
 
 
   implicit object NTARdfReader extends RdfReader[Nta] {
@@ -28,6 +28,7 @@ object Nta {
         borough = resource.boroughUri.get,
         postCode = resource.postalCodeUri.get,
         blocks = resource.blocksUri,
+        feature = resource.spatialDimensionProp.get,
         uri = Uri.parse(resource.getURI)
       )
     }
@@ -43,6 +44,7 @@ object Nta {
       resource.postalCodeUri = value.postCode
       resource.blocksUri = value.blocks
       resource.boroughUri = value.borough
+      resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.NTA_URI_PREFIX)
       resource
     }

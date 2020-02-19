@@ -20,7 +20,7 @@ object CliMain {
     }
     val jCommander = jCommanderBuilder.build()
 
-
+    println(args.mkString(" "))
     jCommander.parse(args:_*)
 
     if (globalArgs.help) {

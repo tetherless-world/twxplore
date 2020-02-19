@@ -1,36 +1,34 @@
 package stores
-import edu.rpi.tw.twks.client.{RestTwksClient, RestTwksClientConfiguration, TwksClient}
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
+import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
-import org.apache.jena.query.{Query, QueryExecution, QueryFactory}
+import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
 import scala.collection.JavaConverters._
 
-class TwksStore(serverBaseUrl: String) extends Store {
-  private val client: TwksClient = new RestTwksClient(RestTwksClientConfiguration.builder().setServerBaseUrl(serverBaseUrl).build())
-
+class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getFeatures(limit: Int, offset: Int): List[Feature] =
     getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
 
   override def getFeaturesCount(): Int = {
-      val query = QueryFactory.create(
-        s"""
-           |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-           |PREFIX rdf: <${RDF.getURI}>
-           |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
-           |SELECT (COUNT(DISTINCT ?feature) AS ?count)
-           |WHERE {
-           |  ?feature rdf:type geo:Feature .
-           |  ?feature geo:hasDefaultGeometry ?geometry .
-           |  ?geometry rdf:type sf:Geometry .
-           |}
-           |""".stripMargin)
-      withQueryExecution(query) {
-        queryExecution =>
-          queryExecution.execSelect().next().get("count").asLiteral().getInt
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
+         |SELECT (COUNT(DISTINCT ?feature) AS ?count)
+         |WHERE {
+         |  ?feature rdf:type geo:Feature .
+         |  ?feature geo:hasDefaultGeometry ?geometry .
+         |  ?geometry rdf:type sf:Geometry .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) {
+      queryExecution =>
+        queryExecution.execSelect().next().get("count").asLiteral().getInt
     }
   }
 
@@ -50,7 +48,7 @@ class TwksStore(serverBaseUrl: String) extends Store {
          |  FILTER(geof:sfContains(?featureGeometryWkt, <${geometry.uri}>)) .
          |}
          |""".stripMargin)
-    withQueryExecution(query) {
+    withAssertionsQueryExecution(query) {
       queryExecution =>
         val model = queryExecution.execConstruct()
         model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
@@ -79,7 +77,7 @@ class TwksStore(serverBaseUrl: String) extends Store {
          |  ?geometry ?geometryP ?geometryO .
          |}
          |""".stripMargin)
-    withQueryExecution(query) { queryExecution =>
+    withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
       model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
@@ -94,18 +92,9 @@ class TwksStore(serverBaseUrl: String) extends Store {
          |  ?feature rdf:type geo:Feature .
          |} LIMIT $limit OFFSET $offset
          |""".stripMargin)
-    withQueryExecution(query) {
+    withAssertionsQueryExecution(query) {
       queryExecution =>
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
-    }
-  }
-
-  private def withQueryExecution[T](query: Query)(f: (QueryExecution) => T): T = {
-    val queryExecution = client.queryAssertions(query)
-    try {
-      f(queryExecution)
-    } finally {
-      queryExecution.close()
     }
   }
 }

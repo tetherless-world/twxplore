@@ -23,7 +23,7 @@ final class MemTreeCsvTransformerSink extends TreeCsvTransformerSink {
   override def accept(nta: Nta): Unit = ntaMap += (nta.nta -> nta)
   override def accept(postcode: Postcode): Unit = postalCode += (postcode.code -> postcode)
   override def accept(species: TreeSpecies): Unit = treeSpeciesMap += (species.common -> species)
-  override def accept(state: State): Unit = stateBuffer = stateBuffer
+  override def accept(state: State): Unit = stateBuffer = state
   override def accept(tree: Tree): Unit = treeList += tree
   override def accept(zipCity: ZipCity): Unit = zipCityMap += (zipCity.city -> zipCity)
 }

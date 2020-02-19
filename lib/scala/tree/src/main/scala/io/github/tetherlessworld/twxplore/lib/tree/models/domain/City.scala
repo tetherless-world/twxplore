@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class City(name: String, boroughs: List[Uri], postcodes: List[Uri], state: Uri, uri: Uri) {
+final case class City(name: String, boroughs: List[Uri], postcodes: List[Uri], state: Uri, feature: Uri, uri: Uri) {
   def addBorough(borough: Borough): City = {
     this.copy(boroughs = boroughs :+ borough.uri)
   }
@@ -19,7 +19,7 @@ final case class City(name: String, boroughs: List[Uri], postcodes: List[Uri], s
 object City {
 
   implicit class CityResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with GeoProperties
 
   implicit object CityRdfReader extends RdfReader[City] {
     override def read(resource: Resource): City = {
@@ -28,7 +28,8 @@ object City {
         boroughs = resource.boroughsUri,
         postcodes = resource.postalCodesUri,
         state = resource.stateUri.get,
-        uri = Uri.parse(resource.getURI)
+        uri = Uri.parse(resource.getURI),
+        feature = resource.spatialDimensionProp.get
       )
     }
   }
@@ -42,6 +43,7 @@ object City {
       resource.stateUri = value.state
       resource.boroughsUri = value.boroughs
       resource.postalCodesUri = value.postcodes
+      resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.CITY_URI_PREFIX)
       resource
     }

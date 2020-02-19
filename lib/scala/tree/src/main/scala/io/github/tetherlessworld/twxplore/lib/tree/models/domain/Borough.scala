@@ -6,7 +6,9 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri], uri: Uri) {
+final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[Uri], feature: Uri, uri: Uri) extends Ordered[Borough] {
+  def compare(that: Borough) = this.borocode compare that.borocode
+
   def addNTA(nta: Nta): Borough = {
     this.copy(ntaList = ntaList :+ nta.uri)
   }
@@ -14,7 +16,7 @@ final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[U
 
 object Borough {
   implicit class BoroughResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
 
   implicit object BoroughRdfReader extends RdfReader[Borough] {
     override def read(resource: Resource): Borough = {
@@ -23,6 +25,7 @@ object Borough {
         borocode = resource.identifier.get.toInt,
         city = resource.cityUri.get,
         ntaList = resource.ntaUris,
+        feature = resource.spatialDimensionProp.get,
         uri = Uri.parse(resource.getURI)
       )
     }
@@ -37,6 +40,7 @@ object Borough {
       resource.identifier = value.borocode.toString
       resource.ntaUris = value.ntaList
       resource.cityUri = value.city
+      resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.BOROUGH_URI_PREFIX)
       resource
     }

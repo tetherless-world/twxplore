@@ -9,9 +9,11 @@ import org.scalatest.{Matchers, WordSpec}
 
 class TreeSpec extends WordSpec with Matchers {
   implicit class TreeSpecResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties with GeoProperties
 
+  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
   "TreeSpec" can {
+    val testData = TestData
     val tree = TestData.treeList.head
     val model = ModelFactory.createDefaultModel()
     val treeResourceOption = Option(Rdf.write[Tree](model, tree))
@@ -22,15 +24,19 @@ class TreeSpec extends WordSpec with Matchers {
       }
     }
 
-    Rdf.write[Block](model, tree.block)
-    Rdf.write[Borough](model, tree.borough)
-    Rdf.write[CensusTract](model, tree.censusTract.get)
-    Rdf.write[City](model, tree.city)
-    Rdf.write[Nta](model, tree.NTA)
-    Rdf.write[Postcode](model, tree.postcode)
-    Rdf.write[State](model, tree.state)
-    Rdf.write[TreeSpecies](model, tree.species.get)
-    Rdf.write[ZipCity](model, tree.zipCity)
+    val blockResource = Rdf.write[Block](model, TestData.blockMap(tree.block.lastPart.toInt))
+    val boroughResource = Rdf.write[Borough](model, TestData.boroughMap(tree.borough.lastPart.toInt))
+    val cityResource = Rdf.write[City](model, TestData.city)
+    val ntaResource = Rdf.write[Nta](model, TestData.ntaMap(tree.NTA.lastPart))
+    val postcodeResource = Rdf.write[Postcode](model, TestData.postalCode(tree.postcode.lastPart.toInt))
+    val stateResource = Rdf.write[State](model, TestData.state)
+    val cityFeatureResource = Rdf.write[Feature](model, TestData.cityGeoMap("New York"))
+    val boroughFeatureResource = Rdf.write[Feature](model, TestData.boroughGeoMap("Queens"))
+    val ntaFeatureResource = Rdf.write[Feature](model, TestData.ntaGeoMap("Forest Hills"))
+    val blockFeatureResource = Rdf.write[Feature](model, TestData.blockGeoMap("348711"))
+
+
+    val speciesResource = Rdf.write[TreeSpecies](model, TestData.treeSpeciesMap(tree.species.get.lastPart.replace("_", " ")))
 
     val treeResource = treeResourceOption.get
 
@@ -59,11 +65,11 @@ class TreeSpec extends WordSpec with Matchers {
     }
 
     val treeRead = Rdf.read[Tree](treeResource)
-    val state = treeRead.state
-    val city = treeRead.city
-    val borough = treeRead.borough
-    val nta = treeRead.NTA
-    val block = treeRead.block
+    val state = Rdf.read[State](stateResource)
+    val city = Rdf.read[City](cityResource)
+    val borough = Rdf.read[Borough](boroughResource)
+    val nta = Rdf.read[Nta](ntaResource)
+    val block = Rdf.read[Block](blockResource)
 
     "a tree derived from a resource" should {
       "have a specific ID" in {
@@ -71,23 +77,59 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "point to specific city" in {
-        treeRead.city.name should equal("New York City")
+        TestData.city.name should equal("New York City")
       }
 
       "point to a specific state" in {
-        treeRead.state.name should equal ("New York")
+        TestData.state.name should equal ("New York")
       }
 
       "point to a specific borough" in {
-        treeRead.borough.name should equal ("Queens")
+        borough.name should equal ("Queens")
       }
 
       "point to a specific NTA" in {
-        treeRead.NTA.name should equal ("Forest Hills")
+        nta.name should equal ("Forest Hills")
       }
 
       "point to a specific block" in {
-        treeRead.block.id should equal (348711)
+        block.id should equal (348711)
+      }
+    }
+
+    "a city resource derived from a tree" should {
+      "have a specific feature label" in {
+        cityFeatureResource.label.get should equal ("New York")
+      }
+      "have a geometry" in {
+        cityFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:New_York"))
+      }
+    }
+
+    "a nta resource derived from a tree" should {
+      "have a specific feature label" in {
+        ntaFeatureResource.label.get should equal ("Forest Hills")
+      }
+      "have a geometry" in {
+        ntaFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Forest_Hills"))
+      }
+    }
+
+    "a block resource derived from a tree" should {
+      "have a specific feature label" in {
+        blockFeatureResource.label.get should equal ("348711")
+      }
+      "have a geometry" in {
+        blockFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:348711"))
+      }
+    }
+
+    "a borough resource derived from a tree" should {
+      "have a specific feature label" in {
+        boroughFeatureResource.label.get should equal ("Queens")
+      }
+      "have a geometry" in {
+        boroughFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Queens"))
       }
     }
 

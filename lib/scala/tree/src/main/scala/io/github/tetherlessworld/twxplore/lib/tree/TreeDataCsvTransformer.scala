@@ -29,6 +29,7 @@ case class TreeDataCsvTransformer() {
     source
   }
 
+
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
   private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -36,7 +37,7 @@ case class TreeDataCsvTransformer() {
   private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
   private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
   private var state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
   val uri = TREE.resourceURI
 
@@ -61,7 +62,7 @@ case class TreeDataCsvTransformer() {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
+          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block
@@ -75,7 +76,7 @@ case class TreeDataCsvTransformer() {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
+          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + borough_str.replace(" ", "_")) ,Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -144,7 +145,7 @@ case class TreeDataCsvTransformer() {
         case _ => {
           val boroughUri = Uri.parse(uri + "borough:" + borough.toString)
           val postcodeUri = Uri.parse(uri + "postcode:" + postCode.toString)
-          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri, Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta))
+          val new_nta = Nta(nta, ntaName, List[Uri](), boroughUri, postcodeUri, Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + ntaName.replace(" ", "_")), Uri.parse(TREE.NTA_URI_PREFIX + ":" + nta))
           ntaMap += (nta -> new_nta)
           new_nta
         }
@@ -224,8 +225,8 @@ case class TreeDataCsvTransformer() {
           ltn_name match {
             case "" => None
             case _ => {
-              val tempSpecies = Some(TreeSpecies(ltn_name, cmn_name, Uri.parse(TREE.SPECIES_URI_PREFIX + ":" + cmn_name.replace(" ", "_"))))
-              treeSpeciesMap += (ltn_name -> tempSpecies.get)
+              val tempSpecies = Some(TreeSpecies(cmn_name, ltn_name, Uri.parse(TREE.SPECIES_URI_PREFIX + ":" + cmn_name.replace(" ", "_"))))
+              treeSpeciesMap += (cmn_name -> tempSpecies.get)
               tempSpecies
             }
           }
@@ -302,45 +303,58 @@ case class TreeDataCsvTransformer() {
         createdAt = processCreatedAt(cols(2)),
         dbh = processDBH(cols(3)),
         stump = processStumpDiameter(cols(4)),
-        block = processBlock(cols(1), cols(33)),
+        block = processBlock(cols(1), cols(33)).uri,
         curbLoc = processCurbLoc(cols(5)),
         status = processStatus(cols(6)),
         health = processHealth(cols(7)),
-        species = processTreeSpecies(cols(8), cols(9)),
+        species = {
+          val speciesObj = processTreeSpecies(cols(8), cols(9))
+          speciesObj match {
+            case None => None
+            case _ => Some(speciesObj.get.uri)
+          }
+        },
         steward = processSteward(cols(10)),
         guards = processGuards(cols(11)),
         sidewalk = processSidewalk(cols(12)),
         userType = processUserType(cols(13)),
         problems = processProblems(cols(14)),
         address = processAddress(cols(24)),
-        postcode = processPostcode(cols(25)),
-        city = city,
-        zipCity = processZipCity(cols(26)),
+        postcode = processPostcode(cols(25)).uri,
+        city = city.uri,
+        zipCity = processZipCity(cols(26)).uri,
         community = processCommunity(cols(27)),
-        borough = processBorough(cols(29), cols(28)),
+        borough = processBorough(cols(29), cols(28)).uri,
         cncldist = processCouncilDistrict(cols(30)),
         stateAssembly = processStateAssembly(cols(31)),
         stateSenate = processStateSenate(cols(32)),
-        NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt),
+        NTA = processNTA(cols(33), cols(34), cols(28).toInt, cols(25).toInt).uri,
         boroughCount = processBoroCt(cols(35)),
-        state = state,
+        state = state.uri,
         latitude = processLatitude(cols(37)),
         longitude = processLongitude(cols(38)),
         x_sp = processXStatePlane(cols(39)),
         y_sp = processYStatePlane(cols(40)),
-        censusTract = processCensusTract(cols(42)),
+        censusTract = {
+          val censusTractObj = processCensusTract(cols(42))
+          censusTractObj match {
+            case None => None
+            case _ => Some(censusTractObj.get.uri)
+          }
+        },
         bin = processBin(cols(43)),
         bbl = processBBL(cols(44)),
-        uri = Uri.parse(TREE.TREE_URI_PREFIX + cols(0))
+        uri = Uri.parse(TREE.TREE_URI_PREFIX + ":" + cols(0))
       )
     }
   }
+
+
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
     val source: BufferedSource = checkSource(filename)
     val lineProcessor = new LineProcessor()
-
     for((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
