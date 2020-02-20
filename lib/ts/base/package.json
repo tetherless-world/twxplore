@@ -61,7 +61,7 @@
     "lodash": "4.17.15",
     "popper.js": "1.16.0",
     "query-string": "6.2.0",
-    "react": "16.8.1",
+    "react": "^16.8.1",
     "react-apollo": "2.5.7",
     "react-dom": "16.8.1",
     "react-loader": "2.4.5",
