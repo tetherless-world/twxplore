@@ -3,7 +3,6 @@ package controllers.graphql
 import akka.actor.ActorSystem
 import io.github.tetherlessworld.twxplore.lib.base.controllers.graphql.AbstractGraphQlController
 import javax.inject.{Inject, Singleton}
-import models.graphql.{GraphQlSchemaContext, GraphQlSchemaDefinition}
 import play.api.mvc.Request
 import stores.Store
 

@@ -1,8 +1,6 @@
-package graphql
-
+package models.graphql
 
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import models.graphql.{GraphQlSchemaContext, GraphQlSchemaDefinition}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
