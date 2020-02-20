@@ -5,13 +5,14 @@ import io.github.tetherlessworld.scena.{Rdf, RdfReader}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
 import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConverters._
 
-class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
+class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
   }
