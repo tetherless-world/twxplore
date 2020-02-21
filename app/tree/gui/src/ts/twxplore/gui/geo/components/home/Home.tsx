@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
-//import {FeaturesList} from "twxplore/gui/geo/components/feature/FeaturesList";
+import {TreesList} from "twxplore/gui/geo/components/trees/TreesList";
 
 export const Home: React.FunctionComponent<{}> = () => (
     <Frame
@@ -9,5 +9,5 @@ export const Home: React.FunctionComponent<{}> = () => (
         documentTitle="Home"
         cardTitle="Features"
     >
-        {/* <FeaturesList/> */}
+        <TreesList/>
     </Frame>);

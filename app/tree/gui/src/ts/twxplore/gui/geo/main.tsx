@@ -1,6 +1,6 @@
 import 'twxplore/gui/geo/custom_bootstrap.scss';
 
-// import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
+import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
 import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
@@ -8,8 +8,8 @@ import KeplerMap from 'twxplore/gui/geo/components/map/Map'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import {ApolloProvider} from "react-apollo";
-// import {ApolloProvider as ApolloHooksProvider} from "@apollo/react-hooks";
+import {ApolloProvider} from "react-apollo";
+import {ApolloProvider as ApolloHooksProvider} from "@apollo/react-hooks";
 import {Route, Router, Switch} from 'react-router';
 import {ConsoleLogger, LoggerContext} from '@tetherless-world/twxplore-base-lib';
 import { Provider } from 'react-redux'
@@ -35,6 +35,8 @@ ReactDOM.render(
     //     </LoggerContext.Provider>
     //   </ApolloHooksProvider>
     // </ApolloProvider>,
+    <ApolloProvider client={apolloClient}>
+      <ApolloHooksProvider client={apolloClient}>
         <Provider store={store}>
           <LoggerContext.Provider value={logger}>
           <Router history={browserHistory}>
@@ -45,6 +47,8 @@ ReactDOM.render(
               </Switch>
           </Router>
         </LoggerContext.Provider>
-        </Provider>,
+        </Provider>
+      </ApolloHooksProvider>
+    </ApolloProvider>,
     document.getElementById('root')
 );

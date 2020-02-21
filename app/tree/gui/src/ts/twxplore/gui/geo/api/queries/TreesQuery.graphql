@@ -1,0 +1,30 @@
+query TreesQuery {
+  trees(limit: 10, offset: 0) {
+      createdAt
+      dbh
+      stump
+      curbLoc
+      status
+      health
+      species
+      steward
+      guards
+      sidewalk
+      userType
+      problems
+      address
+      city
+      community
+      cncldist
+      stateAssembly
+      stateSenate
+      boroughCount
+      latitude
+      longitude
+      x_sp
+      y_sp
+      bin
+      bbl
+      uri
+  }
+}
