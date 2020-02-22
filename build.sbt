@@ -49,6 +49,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 // Projects
 lazy val root = project
   .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
+  .disablePlugins(AssemblyPlugin)
   .settings(
     skip in publish := true
   )
@@ -56,6 +57,7 @@ lazy val root = project
 lazy val baseLib =
   (project in file("lib/scala/base"))
     .dependsOn(testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         filters,
@@ -75,6 +77,7 @@ lazy val baseLib =
 
 lazy val geoApp = (project in file("app/geo"))
   .dependsOn(geoLib % "compile->compile;test->test")
+  .disablePlugins(AssemblyPlugin)
   .enablePlugins(PlayScala)
   .settings(
     name := "geo-app",
@@ -90,6 +93,7 @@ lazy val geoApp = (project in file("app/geo"))
 lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib, testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       name := "twxplore-geo-lib",
       skip in publish := true
@@ -117,6 +121,7 @@ lazy val treeCli = (project in file("cli/tree"))
 
 lazy val testLib =
   (project in file("lib/scala/test"))
+    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         organization.value %% "scena" % scenaVersion,
@@ -130,6 +135,7 @@ lazy val testLib =
 lazy val treeLib =
   (project in file("lib/scala/tree"))
     .dependsOn(geoLib, testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       name := "twxplore-tree-lib",
       libraryDependencies ++= Seq(
@@ -140,6 +146,7 @@ lazy val treeLib =
 
 lazy val treeApp = (project in file("app/tree"))
   .dependsOn(treeLib % "compile->compile;test->test")
+  .disablePlugins(AssemblyPlugin)
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(
