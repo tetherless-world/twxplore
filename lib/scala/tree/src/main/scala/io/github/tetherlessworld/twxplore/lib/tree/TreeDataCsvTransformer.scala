@@ -62,7 +62,7 @@ case class TreeDataCsvTransformer() {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
+          val new_block = Block(block.toInt, block, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
           blockMap += ( block.toInt -> new_block)
           new_block

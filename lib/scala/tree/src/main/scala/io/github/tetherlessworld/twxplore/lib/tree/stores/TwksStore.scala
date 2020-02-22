@@ -1,4 +1,4 @@
-package stores
+package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{Rdf, RdfReader}
@@ -153,6 +153,14 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
   private def getNtasByBoroughUri(boroughUri: Uri): List[Nta] = {
     getNtasByBorough(getBoroughByUri(boroughUri))
   }
+
+//  override def getNtaByBlockUri(block: Uri): Nta = {
+//
+//  }
+//
+//  override def getBlockHierarchy(block: Block): List[SelectionArea] = {
+//
+//  }
 
   override def getNtasByBorough(borough: Borough): List[Nta] = {
     getPropertyByProperty[Nta](borough.uri, "NTA")

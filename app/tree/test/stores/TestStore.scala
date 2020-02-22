@@ -3,6 +3,7 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.stores.Store
 
 object TestStore extends Store {
   implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }

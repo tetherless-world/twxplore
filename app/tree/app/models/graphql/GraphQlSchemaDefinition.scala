@@ -286,6 +286,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 
       Block(
         id = ad("id").asInstanceOf[Int],
+        name = ad("name").asInstanceOf[String],
         nta = ad("nta").asInstanceOf[Uri],
         feature = ad("feature").asInstanceOf[Uri],
         uri = ad("uri").asInstanceOf[Uri]

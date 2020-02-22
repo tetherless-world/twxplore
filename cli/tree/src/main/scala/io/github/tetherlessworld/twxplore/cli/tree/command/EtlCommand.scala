@@ -5,8 +5,8 @@ import com.typesafe.scalalogging.Logger
 import edu.rpi.tw.twks.client.RestTwksClientConfiguration
 import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
 import io.github.tetherlessworld.twxplore.lib.tree.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
 import io.github.tetherlessworld.twxplore.lib.tree.{TreeDataCsvTransformer, TwksTreeCsvTransformerSink}
-import stores.TwksStore
 object EtlCommand extends Command {
 
   @Parameters(commandDescription = "Run the extract-transform-load (ETL) pipeline")
