@@ -8,7 +8,7 @@ import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, Tw
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import javax.inject.Inject
-import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.vocabulary.{DCTerms, RDF}
@@ -73,49 +73,6 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
     }
   }
 
-
-  def getFeatureByUri(featureUri: Uri): Feature =
-    getFeaturesByUris(List(featureUri)).head
-
-  private def getFeaturesByUris(featureUris: List[Uri]): List[Feature] = {
-    // Should be safe to inject featureUris since they've already been parsed as URIs
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
-         |CONSTRUCT {
-         |  ?feature ?featureP ?featureO .
-         |  ?feature rdf:type geo:Feature .
-         |  ?geometry ?geometryP ?geometryO .
-         |} WHERE {
-         |  VALUES ?feature { ${featureUris.map(featureUri => "<" + featureUri.toString() + ">").mkString(" ")} }
-         |  ?feature geo:hasDefaultGeometry ?geometry .
-         |  ?feature ?featureP ?featureO .
-         |  ?geometry ?geometryP ?geometryO .
-         |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) { queryExecution =>
-      val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
-    }
-  }
-
-  private def getFeatureUris(limit: Int, offset: Int): List[Uri] = {
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |SELECT DISTINCT ?feature WHERE {
-         |  ?feature rdf:type geo:Feature .
-         |} LIMIT $limit OFFSET $offset
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) {
-      queryExecution =>
-        queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
-    }
-  }
-
   private def getTreeResourceUris(limit: Int, offset: Int, model: String): List[Uri] = {
       val query = QueryFactory.create(
         s"""
@@ -155,9 +112,7 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
     }
   }
 
-
-
-  def getTreesBySelection(selection: SelectionInput): SelectionResults = {
+  override def getTreesBySelection(selection: SelectionInput): SelectionResults = {
     val treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
     val boroughMap: mutable.HashMap[String, Borough] = new mutable.HashMap()
     val ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -178,12 +133,12 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
       blockMap(tree.block.toString) = getBlockByUris(List(tree.block)).head
     }
 
-    val trees = getTreesByBlockUris(selection.includeBlocks).map(tree => {
+    val trees = getTreesByBlockUris(selection.includeBlocks.toList).map(tree => {
       processTree(tree)
       tree
     }).to[ListBuffer]
 
-    trees ++= getTreesByNtaUris(selection.includeNtaList).map(tree => {
+    trees ++= getTreesByNtaUris(selection.includeNtaList.toList).map(tree => {
       processTree(tree)
       tree
     }).to[ListBuffer]
@@ -256,10 +211,10 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
     result.toList
   }
 
-  def getBlockGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBlockUris(), "block")
-  def getNtaGeometries(): List[SelectionGeometry] = getSelectionGeometries(getNtaUris(), "NTA")
-  def getBoroughGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBoroughUris(), "borough")
-  def getCityGeometry(): SelectionGeometry = getSelectionGeometries(List(getCityUri()), "city").head
+  override def getBlockGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBlockUris(), "block")
+  override def getNtaGeometries(): List[SelectionGeometry] = getSelectionGeometries(getNtaUris(), "NTA")
+  override def getBoroughGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBoroughUris(), "borough")
+  override def getCityGeometry(): SelectionGeometry = getSelectionGeometries(List(getCityUri()), "city").head
   def getStateGeometry(): SelectionGeometry = getSelectionGeometries(List(getStateUri()), "state").head
 
 
@@ -314,19 +269,19 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
   }
 
 
-  def getStateHierarchy(stateUri: Uri): List[SelectionArea] = List(SelectionArea("New York", stateUri, "state", null))
+  override def getStateHierarchy(stateUri: Uri): List[SelectionArea] = List(SelectionArea("New York", stateUri, "state", null))
 
-  def getCityHierarchy(cityUri: Uri): List[SelectionArea] = {
+  override def getCityHierarchy(cityUri: Uri): List[SelectionArea] = {
     val citySelection = getSelection(cityUri, "city", "state")
     getStateHierarchy(citySelection.parent) :+ citySelection
   }
 
-  def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = {
+  override def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = {
     val boroughSelection = getSelection(boroughUri, "borough", "city")
     getCityHierarchy(boroughSelection.parent) :+ boroughSelection
   }
 
-  def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = {
+  override def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = {
     val ntaSelection = getSelection(ntaUri, "NTA", "borough")
     getBoroughHierarchy(ntaSelection.parent) :+ ntaSelection
   }
@@ -405,5 +360,6 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
 
   override def getBlocksByNta(nta: Nta): List[Block] = getPropertyByProperty[Block](nta.uri, "block")
   override def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
+
 
 }
