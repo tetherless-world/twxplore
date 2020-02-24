@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.cli.tree
 import com.beust.jcommander.{JCommander, Parameter}
 import io.github.tetherlessworld.twxplore.cli.tree.command.EtlCommand
 
-object CliMain {
+object TreeCli {
 
   class GlobalArgs {
     @Parameter(names = Array("-h", "--help"))
