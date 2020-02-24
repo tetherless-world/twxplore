@@ -11,5 +11,6 @@ routes text eol=lf
 *.sh text eol=lf
 *.ts text eol=lf
 *.tsx text eol=lf
+*.txt text eol=lf
 *.ttl text eol=lf
 *.xml text eol=lf
