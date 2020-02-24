@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Test
           command: |
-            sbt clean update package test
+            sbt clean update package assembly test
             cp app/geo/target/test-reports/*.xml ~/project/test-results/scala
             # cp lib/scala/base/target/test-reports/*.xml ~/project/test-results/scala
       - store_test_results:
@@ -81,6 +81,8 @@ jobs:
             cd lib/ts/base
             npm run build
             cd ../../../app/geo/gui
+            npm run build
+            cd ../../tree/gui
             npm run build
 workflows:
   version: 2
