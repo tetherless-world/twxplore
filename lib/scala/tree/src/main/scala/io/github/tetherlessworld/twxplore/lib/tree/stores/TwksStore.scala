@@ -37,7 +37,6 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
       val model = queryExecution.execConstruct()
       val after = System.currentTimeMillis()
       println("It took " + (after - before)/1000 + " seconds to execute")
-      model.write(System.out)
       model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource =>{
         Rdf.read[Tree](resource)
       })
