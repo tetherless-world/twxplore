@@ -1,7 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import com.google.inject.ImplementedBy
+import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.SelectionArea
 
 @ImplementedBy(classOf[TwksStore])
 trait Store {
@@ -10,7 +12,7 @@ trait Store {
   def getBoroughsByCity(city: City): List[Borough]
   def getTrees(limit: Int, offset: Int): List[Tree]
 
-  //def getBlockHierarchy(block: Block): List[SelectionArea]
+  def getBlockHierarchy(block: Uri): List[SelectionArea]
 
   /*Getting geometries of specified areas*/
   def getGeometryOfCity(city: City): Geometry

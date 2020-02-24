@@ -4,10 +4,9 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.SelectionArea
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class State(name: String, cities: List[Uri], uri: Uri) extends SelectionArea{
+final case class State(name: String, cities: List[Uri], uri: Uri){
   def addCity(city: City): State = {
     this.copy(cities = cities :+ city.uri)
   }

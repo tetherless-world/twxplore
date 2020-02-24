@@ -3,6 +3,7 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.SelectionArea
 import io.github.tetherlessworld.twxplore.lib.tree.stores.Store
 
 object TestStore extends Store {
@@ -46,4 +47,6 @@ object TestStore extends Store {
   }
 
   override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(Vector(block)).head
+
+  override def getBlockHierarchy(block: Uri): List[SelectionArea] = ???
 }

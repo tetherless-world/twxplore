@@ -4,11 +4,10 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.SelectionArea
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
-final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri, feature: Uri, uri: Uri) extends Ordered[Nta] with SelectionArea {
+final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri, postCode: Uri, feature: Uri, uri: Uri) extends Ordered[Nta] {
   def compare(that: Nta) = this.nta compare that.nta
 
   def addBlock(block: Block): Nta = {
