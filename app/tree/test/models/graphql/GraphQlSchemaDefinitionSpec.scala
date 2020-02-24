@@ -183,6 +183,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
         """
       val result = executeQuery(query, vars = Json.obj("blocks" -> Json.arr(Json.obj(
         "id" -> TestData.blockMap(348711).id,
+        "name" -> TestData.blockMap(348711).name,
         "nta" -> TestData.blockMap(348711).nta.toString,
         "feature" -> TestData.blockMap(348711).feature.toString,
         "uri" -> TestData.blockMap(348711).uri.toString,

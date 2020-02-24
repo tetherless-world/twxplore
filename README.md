@@ -53,15 +53,49 @@ to link together the `packages` and install their dependencies.
 
 All of the web applications are structured similarly. After completing the one-time setup, 
 
-Mac/Linux:
+Mac/Linux/WSL:
 
-    cd app/geo/gui
-    npm start
+    $ cd app/geo/gui
+    $ npm start
 
 Windows:
 
-    cd lib/scala/ts
-    npm run build-win32
+    $ cd lib/scala/ts
+    $ npm run build-win32
     
-    cd app/geo/gui
-    npm run start-win32
+    $ cd app/geo/gui
+    $ npm run start-win32
+    
+####To hook up the frontend with the backend:
+1. Clone the twks server and run the server
+    
+    ```
+    cd ..
+    git clone https://github.com/tetherless-world/twks.git 
+    cd twks/java
+    mvn jetty:run
+   ```     
+2. Load in data from domain model to the twks server
+    
+    - Navigate to the TreeCli.scala ("twxplore/cli/tree/src/main/scala/io/github/tetherlessworld/twxplore/cli/tree/TreeCli") \
+    - Edit configuration run parameters (in Intellij) ```etl --csv-file-path test_treedata.csv```
+    - Run the file configuration
+    - To verify if the file ran properly, open up your web browser and access **twks-server:8080/assertions** 
+    (it should show the RDF graph in TTL format)
+
+3. Run your backend
+    - Navigate to your twxplore project directory
+    
+        ```
+        $ sbt
+        ```
+     - wait for the sbt project to compile
+     
+        ```
+        sbt:twxplore> project treeApp
+        [tree-app] $run
+        ```
+
+
+     
+  

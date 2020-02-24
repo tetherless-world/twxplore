@@ -9,8 +9,7 @@ import org.apache.jena.vocabulary.{RDF, RDFS}
 
 import scala.collection.JavaConverters._
 
-class TwksStore (configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
-
+class TwksStore(configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
   override def getFeatures(limit: Int, offset: Int): List[Feature] =
     getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
 
