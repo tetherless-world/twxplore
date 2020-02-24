@@ -82,6 +82,8 @@ jobs:
             npm run build
             cd ../../../app/geo/gui
             npm run build
+            cd ../../tree/gui
+            npm run build
 workflows:
   version: 2
   build:
