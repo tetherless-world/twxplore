@@ -12,18 +12,19 @@ import scala.io.BufferedSource
 
 case class TreeDataCsvTransformer() {
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
-    str.substring(0, startIndex) + str.substring(startIndex+1, endIndex).replace(",", "+") + str.substring(endIndex+1)
+    str.substring(0, startIndex) + str.substring(startIndex + 1, endIndex).replace(",", "+") + str.substring(endIndex + 1)
   }
+
   private def checkSource(filename: String): BufferedSource = {
     var source: BufferedSource = null
-    if(sys.env.contains("CI")) {
+    if (sys.env.contains("CI")) {
       source = scala.io.Source.fromResource(filename)
     } else {
       try {
         source = scala.io.Source.fromResource(filename)
         source.getLines.zipWithIndex
       } catch {
-        case _:Throwable => source = scala.io.Source.fromFile(filename)
+        case _: Throwable => source = scala.io.Source.fromFile(filename)
       }
     }
     source
@@ -37,7 +38,7 @@ case class TreeDataCsvTransformer() {
   private var postalCode: mutable.HashMap[Int, Postcode] = new mutable.HashMap()
   private var zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
   private var censusTractMap: mutable.HashMap[Int, CensusTract] = new mutable.HashMap()
-  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
+  private var city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" + "New York City".replace(" ", "_")))
   private var state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
   val uri = TREE.resourceURI
 
@@ -62,9 +63,9 @@ case class TreeDataCsvTransformer() {
       blockMap.get(block.toInt) match {
         case Some(b) => b
         case _ => {
-          val new_block = Block(block.toInt, block, Uri.parse(uri + "NTA:" +nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
+          val new_block = Block(block.toInt, block, Uri.parse(uri + "NTA:" + nta), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + block), Uri.parse(TREE.BLOCK_URI_PREFIX + ":" + block))
           ntaMap(nta) = ntaMap(nta).addBlock(new_block)
-          blockMap += ( block.toInt -> new_block)
+          blockMap += (block.toInt -> new_block)
           new_block
         }
       }
@@ -76,7 +77,7 @@ case class TreeDataCsvTransformer() {
       boroughMap.get(borocode.toInt) match {
         case Some(b) => b
         case _ => {
-          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + borough_str.replace(" ", "_")) ,Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
+          val borough = Borough(borough_str, borocode.toInt, city.uri, List[Uri](), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + borough_str.replace(" ", "_")), Uri.parse(TREE.BOROUGH_URI_PREFIX + ":" + borocode))
           boroughMap += (borocode.toInt -> borough)
           borough
         }
@@ -86,7 +87,7 @@ case class TreeDataCsvTransformer() {
     def processCensusTract(censusTract: String): Option[CensusTract] = {
       censusTract match {
         case "" => None
-        case _ =>  {
+        case _ => {
           censusTractMap.get(censusTract.toInt) match {
             case Some(n) => Some(n)
             case _ => {
@@ -121,7 +122,7 @@ case class TreeDataCsvTransformer() {
       guards match {
         case "Helpful" => Some(Helpful)
         case "Harmful" => Some(Harmful)
-        case "Unsure" =>  Some(Unsure)
+        case "Unsure" => Some(Unsure)
         case _ => None
       }
     }
@@ -166,7 +167,7 @@ case class TreeDataCsvTransformer() {
 
     def processProblems(problems_str: String): List[Problems] = {
       val problems = problems_str.split("\\+").map(_.trim).toList
-      val problemList = problems.flatMap ({
+      val problemList = problems.flatMap({
         case "BranchLights" => Some(BranchLights)
         case "BranchOther" => Some(BranchOther)
         case "BranchShoe" => Some(BranchShoe)
@@ -280,14 +281,14 @@ case class TreeDataCsvTransformer() {
 
     def generateNTAList(): Unit = {
 
-      for ((key, nta) <- ntaMap){
-        val boroughId = nta.borough.toString.substring(nta.borough.toString.lastIndexOf(":")+ 1).toInt
+      for ((key, nta) <- ntaMap) {
+        val boroughId = nta.borough.toString.substring(nta.borough.toString.lastIndexOf(":") + 1).toInt
         boroughMap(boroughId) = boroughMap(boroughId).addNTA(nta)
       }
     }
 
     def generateBoroughList(): Unit = {
-      for ((key, borough) <- boroughMap){
+      for ((key, borough) <- boroughMap) {
         city = city.addBorough(borough)
       }
     }
@@ -350,12 +351,11 @@ case class TreeDataCsvTransformer() {
   }
 
 
-
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
     val source: BufferedSource = checkSource(filename)
     val lineProcessor = new LineProcessor()
-    for((line, line_no) <- source.getLines.zipWithIndex) {
+    for ((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
         case _ => {
@@ -371,7 +371,7 @@ case class TreeDataCsvTransformer() {
 
     source.close()
     val source2: BufferedSource = checkSource(filename)
-    for((line, line_no) <- source2.getLines.zipWithIndex) {
+    for ((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}
         case _ => {
