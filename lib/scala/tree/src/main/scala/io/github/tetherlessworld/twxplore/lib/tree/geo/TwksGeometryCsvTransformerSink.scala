@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 import org.apache.jena.rdf.model.ModelFactory
 
-class TwksGeometryCsvTransformerSink(twksStoreConfiguration: TwksStoreConfiguration) extends GeometryCsvTransformerSink {
+final class TwksGeometryCsvTransformerSink(twksStoreConfiguration: TwksStoreConfiguration) extends GeometryCsvTransformerSink {
   private val twksClient = new RestTwksClient(twksStoreConfiguration.twksClientConfiguration)
 
   override def accept(feature: Feature): Unit = accept[Feature](feature)
