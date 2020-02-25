@@ -8,6 +8,7 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 // Constants
 val scenaVersion = "1.0.0-SNAPSHOT"
 val playVersion = "2.8.0"
+val slf4jVersion = "1.7.25"
 
 
 // Publish settings
@@ -118,7 +119,8 @@ lazy val treeCli = (project in file("cli/tree"))
     mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.tree.TreeCli"),
     libraryDependencies ++= Seq(
       "com.github.tototoshi" %% "scala-csv" % "1.3.6",
-      "com.beust" % "jcommander" % "1.78"
+      "com.beust" % "jcommander" % "1.78",
+      "org.slf4j" % "slf4j-simple" % slf4jVersion
     ),
     name := "tree-cli",
     skip in publish := true
@@ -132,7 +134,7 @@ lazy val testLib =
         organization.value %% "scena" % scenaVersion,
         // "org.scalatest" %% "scalatest" % "3.0.8",
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3",
-        "org.slf4j" % "slf4j-simple" % "1.7.25",
+        "org.slf4j" % "slf4j-simple" % slf4jVersion,
       ),
       name := "twxplore-test-lib"
     )
