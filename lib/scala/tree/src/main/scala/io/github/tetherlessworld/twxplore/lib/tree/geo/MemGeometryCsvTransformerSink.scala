@@ -3,7 +3,7 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 
 import scala.collection.mutable
 
-class MemGeometryCsvTransformerSink extends GeometryCsvTransformerSink {
+final class MemGeometryCsvTransformerSink extends GeometryCsvTransformerSink {
   val featureMap: mutable.HashMap[String, Feature] = new mutable.HashMap()
 
   override def accept(feature: Feature): Unit = {
