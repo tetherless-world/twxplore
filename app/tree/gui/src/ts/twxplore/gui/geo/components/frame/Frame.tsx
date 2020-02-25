@@ -6,6 +6,7 @@ import {Navbar} from 'twxplore/gui/geo/components/navbar/Navbar';
 import * as React from 'react';
 import {useEffect} from 'react';
 import { Card, CardBody, CardHeader, CardTitle, Col, Container, Row} from "reactstrap";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 export const Frame: React.FunctionComponent<{
     activeNavItem?: ActiveNavbarItem;

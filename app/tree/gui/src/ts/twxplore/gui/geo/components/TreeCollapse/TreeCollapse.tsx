@@ -89,7 +89,8 @@ export const TreeCollapse: React.FunctionComponent<TreeCardProps> = ({features, 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                     <ListGroup className = 'eachFeature'>
-                        <ListGroupItem> dbh: {features.dbh} </ListGroupItem>
+                      
+                        {/* <ListGroupItem> dbh: {features.dbh} </ListGroupItem>
                         <ListGroupItem> stump: {features.stump} </ListGroupItem>
                         <ListGroupItem> curbLoc: {features.curbLoc} </ListGroupItem> 
                         <ListGroupItem> status: {features.status} </ListGroupItem> 
@@ -113,7 +114,12 @@ export const TreeCollapse: React.FunctionComponent<TreeCardProps> = ({features, 
                         <ListGroupItem> y_sp: {features.y_sp} </ListGroupItem>
                         <ListGroupItem> bin: {features.bin} </ListGroupItem>
                         <ListGroupItem> bbl: {features.bbl} </ListGroupItem>
-                        <ListGroupItem> bbl: <a href="" onClick = {(boroughClick)}> {features.bbl} </a> </ListGroupItem>
+                        <ListGroupItem> borough: <a href="" onClick = {(boroughClick)}> {features.bbl} </a> </ListGroupItem> */}
+
+                        {Object.keys(features).map(key =>
+                          String(features[key]).toLowerCase().indexOf("resource") === -1? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
+                          <ListGroupItem> {key}: <a href="" onClick = {(boroughClick)}> {features[key]} </a> </ListGroupItem> 
+                        )}
                     </ListGroup>
                 </ExpansionPanelDetails>
             </ExpansionPanel>

@@ -26,7 +26,7 @@ export const TreesList: React.FunctionComponent<TreeListProps> = ({callSetMode})
     return (
         <div>
             {data!.trees.map(feature =>
-                <TreeCollapse features= {feature} callSetMode = {callSetMode}/>
+                <TreeCollapse features = {feature} callSetMode = {callSetMode}/>
             )}
         </div>
     );
