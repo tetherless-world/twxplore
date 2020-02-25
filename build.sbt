@@ -68,6 +68,7 @@ lazy val baseLib =
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
         "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
         organization.value %% "scena" % scenaVersion,
+        "nl.grons" %% "metrics4-scala" % "4.1.1",
         "org.apache.jena" % "jena-geosparql" % "3.13.1",
         "org.sangria-graphql" %% "sangria" % "1.4.2",
         "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",
