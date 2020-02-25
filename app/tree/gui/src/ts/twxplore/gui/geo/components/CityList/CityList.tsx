@@ -10,29 +10,30 @@ import { TreeCollapse } from "../TreeCollapse/TreeCollapse";
 
 
 
-type TreeListProps = {
-    callSetMode:Function
-  }
+//type BoroughListProps = {
+//  }
 
-export const TreesList: React.FunctionComponent<TreeListProps> = ({callSetMode}) => {
-    const {loading, data, error} = useQuery<TreesQuery, TreesQuery_trees>(query, {});
+export const CityList: React.FunctionComponent<{}> = () => {
+    /* const {loading, data, error} = useQuery<TreesQuery, TreesQuery_trees>(query, {});
 
     if (error) {
         return <FatalErrorModal exception={new ApolloException(error)}/>;
     } else if (loading) {
         return <ReactLoader loaded={false}/>;
-    }
+    } */
 
-    return (
-        <div>
-            {data!.trees.map(feature =>
-                <TreeCollapse features= {feature} callSetMode = {callSetMode}/>
-            )}
-        </div>
+    return ( <div>
+                <p>You entered city mode!</p>
+            </div>
     );
 }
 
+/* <div>
+            {data!.trees.map(feature =>
+                <TreeCollapse features= {feature} callSetMode = {callSetMode}/>
+            )}
+        </div> */
 
 //<TreeCollapse uri={feature.uri} longitude={feature.longitude} 
 //latitude={feature.latitude}/>
-export default TreesList
+export default CityList
