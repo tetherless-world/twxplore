@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
 import {ListGroup, ListGroupItem, Collapse, Button, CardBody, Card} from "reactstrap";
 //import PropTypes from "prop-types";
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -21,7 +22,11 @@ const useStyles = makeStyles((theme: Theme) =>
         '&:hover': {
             color: 'blue'
     }
-  }),
+  },
+    arrow_disabled: {
+        color: 'grey'
+    }
+  ),
 );
 
 
@@ -38,7 +43,9 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
     });
     return (
         <div>
-            <ArrowBackIcon className={classes.arrow}/>
+            <IconButton onClick = {() => setMode('home')} disabled = {mode == 'home'}>
+                <ArrowBackIcon className = {(mode == 'home' ? classes.arrow_disabled : classes.arrow)} />
+            </IconButton>
             { mode=='home' && <TreesList callSetMode = {callSetMode}/>}
             { mode == 'borough' && <BoroughList/>}
             { mode == 'city' && <CityList/>}
