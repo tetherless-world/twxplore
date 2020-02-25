@@ -9,6 +9,7 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 val scenaVersion = "1.0.0-SNAPSHOT"
 val playVersion = "2.8.0"
 val slf4jVersion = "1.7.25"
+val twksVersion = "1.0.4-SNAPSHOT"
 
 
 // Publish settings
@@ -66,7 +67,8 @@ lazy val baseLib =
         ws,
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-        "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
+        "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+        "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
         organization.value %% "scena" % scenaVersion,
         "nl.grons" %% "metrics4-scala" % "4.1.1",
         "org.apache.jena" % "jena-geosparql" % "3.13.1",

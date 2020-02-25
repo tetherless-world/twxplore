@@ -1,16 +1,15 @@
 package io.github.tetherlessworld.twxplore.lib.tree
 
-import edu.rpi.tw.twks.client.RestTwksClient
+import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.nanopub.Nanopublication
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}
-import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.apache.jena.rdf.model.ModelFactory
 
-final class TwksTreeCsvTransformerSink(twksStoreConfiguration: TwksStoreConfiguration)
-  extends TreeCsvTransformerSink with DefaultInstrumented {
-  private val twksClient = new RestTwksClient(twksStoreConfiguration.twksClientConfiguration)
+final class TwksTreeCsvTransformerSink(twksClient: TwksClient)
+  extends AbstractTwksTransformerSink(twksClient)
+    with TreeCsvTransformerSink with DefaultInstrumented {
   private val putNanopublicationTimer = metrics.timer("putNanopublicationTimer")
 
   override def accept(block: Block): Unit = accept[Block](block)
