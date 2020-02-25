@@ -4,6 +4,18 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.geo._
 
 object TestData {
+  private val testData = new MemTreeCsvTransformerSink
+  private val cityData = new MemGeometryCsvTransformerSink
+  private val boroughData = new MemGeometryCsvTransformerSink
+  private val ntaData = new MemGeometryCsvTransformerSink
+  private val blockData = new MemGeometryCsvTransformerSink
+
+  new TreeDataCsvTransformer().parseCsv("test_treedata.csv", testData)
+  new CityCsvTransformer().parseCsv("city.csv", cityData)
+  new BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
+  new NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)
+  new BlockCsvTransformer().parseCsv("test_blockdata.csv", blockData)
+
   val cityGeoMap = cityData.featureMap
   val boroughGeoMap = boroughData.featureMap
   val ntaGeoMap = ntaData.featureMap
@@ -22,10 +34,4 @@ object TestData {
   val postalCode: Map[Int, Postcode] = testData.postalCode.toMap
   val state: State = testData.stateBuffer
   val city: City = testData.cityBuffer
-  private val testData = new MemTreeCsvTransformerSink
-  private val cityData = new MemGeometryCsvTransformerSink
-  private val boroughData = new MemGeometryCsvTransformerSink
-  private val ntaData = new MemGeometryCsvTransformerSink
-  private val blockData = new MemGeometryCsvTransformerSink
-
 }
