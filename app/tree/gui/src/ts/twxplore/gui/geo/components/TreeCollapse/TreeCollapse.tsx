@@ -7,13 +7,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-//import * as PropTypes from "prop-types";
+import TreesQuery_trees from 'twxplore\gui\geo\api\queries\types\TreesQuery'
 
 
-
-type Feature_List = {
-  createdAt: string,
-  dbh: number,
+export interface Feature_List = {
+  createdAt: string;
+  dbh: number;
   stump: number,
   curbLoc: string,
   status: string,
@@ -101,12 +100,3 @@ export const TreeCollapse: React.FunctionComponent<TreeCardProps> = ({features, 
     );
 }
 
-
-
-export default TreeCollapse
-
-/*
-TreeCollapse.propTypes = {
-    features: PropTypes.object.isRequired
-  };
-*/

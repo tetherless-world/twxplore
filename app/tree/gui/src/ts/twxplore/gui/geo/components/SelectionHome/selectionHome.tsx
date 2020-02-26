@@ -3,7 +3,7 @@ import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
 import SelectionPanel from '../selectionPanel/SelectionPanel'
 
-export const selectionHome: React.FunctionComponent<{}> = () => (
+export const SelectionHome: React.FunctionComponent<{}> = () => (
     <Frame
         activeNavItem={ActiveNavbarItem.Home}
         documentTitle="Selection"
@@ -12,4 +12,3 @@ export const selectionHome: React.FunctionComponent<{}> = () => (
         <SelectionPanel/>
     </Frame>);
 
-export default selectionHome

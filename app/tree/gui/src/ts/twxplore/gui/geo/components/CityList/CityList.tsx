@@ -8,5 +8,3 @@ export const CityList: React.FunctionComponent<{}> = () => {
             </div>
     );
 }
-
-export default CityList
