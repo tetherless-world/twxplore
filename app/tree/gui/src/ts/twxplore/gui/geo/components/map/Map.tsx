@@ -77,6 +77,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
       "type": "FeatureCollection",
       "features": features
     }
+    console.log(featuredata)
     const dataset = {
       data: Processors.processGeojson(featuredata),
       info: {

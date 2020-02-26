@@ -1,25 +1,26 @@
 package io.github.tetherlessworld.twxplore.lib.tree.stores
 
+import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{Rdf, RdfReader}
-import io.github.tetherlessworld.twxplore.lib.base.models.domain._
+import io.github.tetherlessworld.twxplore.lib.base.TwksClientFactory
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
-import io.github.tetherlessworld.twxplore.lib.base.stores.{AbstractTwksStore, TwksStoreConfiguration}
+import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI
 import org.apache.jena.query.QueryFactory
-import org.apache.jena.rdf.model.Resource
 import org.apache.jena.vocabulary.{DCTerms, RDF}
+import play.api.Configuration
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends AbstractTwksStore(configuration) with Store {
-  implicit class TwksResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
+class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with Store {
+  @Inject
+  def this(configuration: Configuration) = this(TwksClientFactory.createTwksClient(configuration))
 
   override def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
@@ -41,10 +42,7 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
-      val before = System.currentTimeMillis()
       val model = queryExecution.execConstruct()
-      val after = System.currentTimeMillis()
-      println("It took " + (after - before)/1000 + " seconds to execute")
       model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource =>{
         Rdf.read[Tree](resource)
       })
