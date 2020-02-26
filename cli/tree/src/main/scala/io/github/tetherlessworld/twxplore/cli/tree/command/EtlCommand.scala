@@ -3,9 +3,9 @@ package io.github.tetherlessworld.twxplore.cli.tree.command
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
 import io.github.tetherlessworld.twxplore.lib.base.TwksClientFactory
-import io.github.tetherlessworld.twxplore.lib.tree.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
-import io.github.tetherlessworld.twxplore.lib.tree.{TreeDataCsvTransformer, TwksTreeCsvTransformerSink}
 
 object EtlCommand extends Command {
 
@@ -18,7 +18,7 @@ object EtlCommand extends Command {
     val twksStore = new TwksStore(twksClient)
 
     if (twksStore.getTrees(1, 0).isEmpty || true) {
-      new TreeDataCsvTransformer().parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksClient))
+      new TreeCsvTransformer(treeBufferSize = args.treeBufferSize).parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksClient))
       new CityCsvTransformer().parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
       new BoroughCsvTransformer().parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksClient))
       new NtaCsvTransformer().parseCsv("test_ntadata.csv", new TwksGeometryCsvTransformerSink(twksClient))
@@ -30,6 +30,8 @@ object EtlCommand extends Command {
   class Args {
     @Parameter(names = Array("--csv-file-path"), required = true)
     var csvFilePath: String = null
+    @Parameter(names = Array("--tree-buffer-size"))
+    var treeBufferSize: Int = TreeCsvTransformer.TreeBufferSizeDefault
   }
 
 }
