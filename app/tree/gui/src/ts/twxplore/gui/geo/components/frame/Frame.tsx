@@ -2,11 +2,10 @@ import './Frame.scss';
 
 import * as classnames from 'classnames';
 import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarItem';
-import {Navbar} from 'twxplore/gui/geo/components/navbar/Navbar';
+//import {Navbar} from 'twxplore/gui/geo/components/navbar/Navbar';
 import * as React from 'react';
 import {useEffect} from 'react';
 import { Card, CardBody, CardHeader, CardTitle, Col, Container, Row} from "reactstrap";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 export const Frame: React.FunctionComponent<{
     activeNavItem?: ActiveNavbarItem;
@@ -21,7 +20,6 @@ export const Frame: React.FunctionComponent<{
     });
     return (
         <div className={classnames(["frame", className])}>
-            <Navbar activeNavItem={activeNavItem}/>
             <div className="mb-2 mt-2">
                 <Container fluid>
                     <Row>
@@ -42,3 +40,5 @@ export const Frame: React.FunctionComponent<{
         </div>
     );
 }
+
+//<Navbar activeNavItem={activeNavItem}/>

@@ -2,10 +2,11 @@ import * as React from "react";
 
 
 
+
 //type BoroughListProps = {
 //  }
 
-export const BoroughList: React.FunctionComponent<{}> = () => {
+export const SpeciesList: React.FunctionComponent<{}> = () => {
     /* const {loading, data, error} = useQuery<TreesQuery, TreesQuery_trees>(query, {});
 
     if (error) {
@@ -15,7 +16,7 @@ export const BoroughList: React.FunctionComponent<{}> = () => {
     } */
 
     return ( <div>
-                <p>You entered borough mode!</p>
+                <p>You entered species mode!</p>
             </div>
     );
 }
@@ -28,4 +29,4 @@ export const BoroughList: React.FunctionComponent<{}> = () => {
 
 //<TreeCollapse uri={feature.uri} longitude={feature.longitude} 
 //latitude={feature.latitude}/>
-export default BoroughList
+export default SpeciesList

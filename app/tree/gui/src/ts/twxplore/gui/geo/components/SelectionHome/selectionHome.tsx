@@ -1,13 +1,15 @@
 import * as React from 'react';
 import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
-import PanelParent from '../PanelParent/PanelParent';
+import SelectionPanel from '../selectionPanel/SelectionPanel'
 
-export const Home: React.FunctionComponent<{}> = () => (
+export const selectionHome: React.FunctionComponent<{}> = () => (
     <Frame
         activeNavItem={ActiveNavbarItem.Home}
-        documentTitle="Home"
-        cardTitle="Info Panel"
+        documentTitle="Selection"
+        cardTitle="Selection Panel"
     >
-        <PanelParent/>
+        <SelectionPanel/>
     </Frame>);
+
+export default selectionHome

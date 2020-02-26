@@ -5,6 +5,7 @@ import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
 import KeplerMap from 'twxplore/gui/geo/components/map/Map'
+import selectionHome from 'twxplore/gui/geo/components/SelectionHome/selectionHome'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -43,6 +44,7 @@ ReactDOM.render(
               <Switch>
                   <Route exact path={Hrefs.home} component={Home}/>
                   <Route exact path = {Hrefs.map} component={KeplerMap}/>
+                  <Route exact path = {Hrefs.selection} component = {selectionHome}/>
                   <Route component={NoRoute}/>
               </Switch>
           </Router>
