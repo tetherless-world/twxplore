@@ -11,7 +11,7 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import scala.collection.mutable
 import scala.io.BufferedSource
 
-class TreeDataCsvTransformer() extends DefaultInstrumented {
+class TreeCsvTransformer extends CsvTransformer with DefaultInstrumented {
   val uri = TREE.resourceURI
   private val treeMeter = metrics.meter("treeMeter")
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
@@ -26,7 +26,7 @@ class TreeDataCsvTransformer() extends DefaultInstrumented {
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
-    val source: BufferedSource = checkSource(filename)
+    val source: BufferedSource = openSource(filename)
     val lineProcessor = new LineProcessor()
     for ((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
@@ -78,21 +78,6 @@ class TreeDataCsvTransformer() extends DefaultInstrumented {
 
   private def replaceComma(str: String, startIndex: Int, endIndex: Int): String = {
     str.substring(0, startIndex) + str.substring(startIndex + 1, endIndex).replace(",", "+") + str.substring(endIndex + 1)
-  }
-
-  private def checkSource(filename: String): BufferedSource = {
-    var source: BufferedSource = null
-    if (sys.env.contains("CI")) {
-      source = scala.io.Source.fromResource(filename)
-    } else {
-      try {
-        source = scala.io.Source.fromResource(filename)
-        source.getLines.zipWithIndex
-      } catch {
-        case _: Throwable => source = scala.io.Source.fromFile(filename)
-      }
-    }
-    source
   }
 
   class LineProcessor {

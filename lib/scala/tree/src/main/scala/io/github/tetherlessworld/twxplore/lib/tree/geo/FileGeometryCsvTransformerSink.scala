@@ -24,4 +24,7 @@ final class FileGeometryCsvTransformerSink extends GeometryCsvTransformerSink {
       fileWriter.close()
     }
   }
+
+  override def flush(): Unit = {
+  }
 }

@@ -10,7 +10,7 @@ object TestData {
   private val ntaData = new MemGeometryCsvTransformerSink
   private val blockData = new MemGeometryCsvTransformerSink
 
-  new TreeDataCsvTransformer().parseCsv("test_treedata.csv", testData)
+  new TreeCsvTransformer().parseCsv("test_treedata.csv", testData)
   new CityCsvTransformer().parseCsv("city.csv", cityData)
   new BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
   new NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)
@@ -22,7 +22,7 @@ object TestData {
   val blockGeoMap = blockData.featureMap
   val treeList = testData.treeList.toList
 
-  new TreeDataCsvTransformer().parseCsv("test_treedata.csv", testData)
+  new TreeCsvTransformer().parseCsv("test_treedata.csv", testData)
   new CityCsvTransformer().parseCsv("city.csv", cityData)
   new BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
   new NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)

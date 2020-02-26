@@ -9,4 +9,6 @@ final class MemGeometryCsvTransformerSink extends GeometryCsvTransformerSink {
   override def accept(feature: Feature): Unit = {
     featureMap += (feature.label.get -> feature)
   }
+
+  override def flush(): Unit = {}
 }

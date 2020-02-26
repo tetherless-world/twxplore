@@ -5,7 +5,6 @@ import edu.rpi.tw.twks.nanopub.Nanopublication
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 import io.github.tetherlessworld.twxplore.lib.tree.AbstractTwksTransformerSink
-import org.apache.jena.rdf.model.ModelFactory
 
 final class TwksGeometryCsvTransformerSink(twksClient: TwksClient)
   extends AbstractTwksTransformerSink(twksClient)
@@ -14,11 +13,12 @@ final class TwksGeometryCsvTransformerSink(twksClient: TwksClient)
   override def accept(feature: Feature): Unit = accept[Feature](feature)
 
   private def accept[T](value: T)(implicit writer: RdfWriter[T]): Unit = {
-    val model = ModelFactory.createDefaultModel()
-    Rdf.write(model, value)
-
-    val nanopublication = Nanopublication.builder().getAssertionBuilder.setModel(model).getNanopublicationBuilder.build()
+    val nanopublicationBuilder = Nanopublication.builder()
+    Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, value)
+    val nanopublication = nanopublicationBuilder.build()
 
     twksClient.putNanopublication(nanopublication)
   }
+
+  override def flush(): Unit = {}
 }
