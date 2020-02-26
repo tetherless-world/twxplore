@@ -2,31 +2,18 @@ import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarI
 import {ActiveSidebarItem} from 'twxplore/gui/geo/components/sidebar/ActiveSidebarItem';
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
-import { compose } from 'redux'
-import {connect, MapDispatchToProps} from 'react-redux';
-import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {Form, FormGroup, Input, Nav, Navbar as BootstrapNavbar, NavbarBrand, NavItem, NavLink,} from 'reactstrap';
-import { Dispatch } from 'react';
 
-const mapStateToProps = (state:any) => state;
-const mapDispatchToProps = (dispatch:Dispatch<any>) => {
-  return {
-    changeTool: (tool: ActiveSidebarItem) => dispatch({ type: 'ActiveTool', activeTool: tool})
-  }
-};
+
 
 interface Props {
     activeNavItem?: ActiveNavbarItem;
     activeSideItem?: ActiveSidebarItem;
-    dispatch: ReturnType<typeof mapDispatchToProps>
 
 }
 
-const NavbarImpl: React.FunctionComponent<Props> = ({activeNavItem, activeSideItem, dispatch}) => {
-  const handleClick = (toolType:ActiveSidebarItem) => {
-    dispatch.changeTool(toolType)
-  }
-  
+export const Navbar: React.FunctionComponent<Props> = ({activeNavItem, activeSideItem}) => {
   return (
         <div>
             <BootstrapNavbar className="py-0 " color="light" light expand="md">
@@ -56,9 +43,10 @@ const NavbarImpl: React.FunctionComponent<Props> = ({activeNavItem, activeSideIt
                     <NavItem active={activeNavItem === ActiveNavbarItem.Map}>
                         <NavLink
                           active={activeSideItem === ActiveSidebarItem.Select}
-                          onClick={() => handleClick(ActiveSidebarItem.Select)}
+                          tag={Link}
+                          to={Hrefs.map}
                         >
-                          Select
+                          Map
                         </NavLink>
                     </NavItem>
                     <NavItem active={activeNavItem === ActiveNavbarItem.Map}>
@@ -83,8 +71,3 @@ const NavbarImpl: React.FunctionComponent<Props> = ({activeNavItem, activeSideIt
             </BootstrapNavbar>
         </div>);
 }
-
-export const Navbar = compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(NavbarImpl);

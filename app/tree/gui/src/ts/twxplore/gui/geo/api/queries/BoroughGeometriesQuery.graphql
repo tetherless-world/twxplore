@@ -1,0 +1,9 @@
+query BoroughsQuery {
+  getBoroughGeometries{
+      geometry{
+        label
+        wkt
+      }
+      uri
+  }
+}

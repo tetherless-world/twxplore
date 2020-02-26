@@ -1,0 +1,9 @@
+query NtasQuery {
+  getNtaGeometries{
+      geometry{
+        label
+        wkt
+      }
+      uri
+  }
+}

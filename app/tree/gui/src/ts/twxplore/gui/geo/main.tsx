@@ -4,7 +4,7 @@ import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
 import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
-import KeplerMap from 'twxplore/gui/geo/components/map/Map'
+import {treeMap} from 'twxplore/gui/geo/components/map/Map'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -22,19 +22,6 @@ const logger = new ConsoleLogger();
 const browserHistory = createBrowserHistory();
 
 ReactDOM.render(
-    // <ApolloProvider client={apolloClient}>
-    //   <ApolloHooksProvider client={apolloClient}>
-    //     <LoggerContext.Provider value={logger}>
-    //       <Router history={browserHistory}>
-    //           <Switch>
-    //               <Route exact path={Hrefs.home} component={Home}/>
-    //               <Route exact path = {Hrefs.map} component={Map}/>
-    //               <Route component={NoRoute}/>
-    //           </Switch>
-    //       </Router>
-    //     </LoggerContext.Provider>
-    //   </ApolloHooksProvider>
-    // </ApolloProvider>,
     <ApolloProvider client={apolloClient}>
       <ApolloHooksProvider client={apolloClient}>
         <Provider store={store}>
@@ -42,7 +29,7 @@ ReactDOM.render(
           <Router history={browserHistory}>
               <Switch>
                   <Route exact path={Hrefs.home} component={Home}/>
-                  <Route exact path = {Hrefs.map} component={KeplerMap}/>
+                  <Route exact path = {Hrefs.map} component={treeMap}/>
                   <Route component={NoRoute}/>
               </Switch>
           </Router>

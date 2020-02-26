@@ -1,0 +1,91 @@
+query ResultsQuery($selectionInput: SelectionInputFieldsInput!) {
+  getTreesBySelection(selectionInput: $selectionInput){
+      blocks{
+        id
+        name
+        uri
+      }
+
+      boroughs{
+        borocode
+        name
+        city
+        ntaList
+        uri
+      }
+
+      censusTracts{
+        id
+        uri    
+      }
+
+      city{
+        name
+        boroughs
+        postcodes
+        state
+        uri
+      }
+
+      ntaList{
+        nta
+        name
+        blocks
+        borough
+        postCode
+        uri
+      }
+
+      postcodes{
+        code
+        city
+        uri
+      }
+
+      state{
+        name
+        cities
+        uri
+      }
+
+      trees{
+        createdAt
+        dbh
+        stump
+        curbLoc
+        status
+        health
+        species
+        steward
+        guards
+        sidewalk
+        userType
+        problems
+        address
+        city
+        community
+        cncldist
+        stateAssembly
+        stateSenate
+        boroughCount
+        latitude
+        longitude
+        x_sp
+        y_sp
+        bin
+        bbl
+        uri 
+      }  
+
+      treeSpecies{
+        common
+        latin
+        uri
+      }
+
+      zipCities{
+        city
+        uri
+      }
+  }
+}

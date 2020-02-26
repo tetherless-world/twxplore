@@ -245,7 +245,6 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     ReplaceField("geometry", Field("geometry", GeometryType, resolve = _.value.geometry))
   )
 
-
   implicit val TreeType = deriveObjectType[GraphQlSchemaContext, Tree](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
   )
@@ -258,7 +257,6 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-
   implicit val SelectionResultsType = deriveObjectType[GraphQlSchemaContext, SelectionResults](
     ReplaceField("blocks", Field("blocks", ListType(BlockType), resolve = _.value.blocks)),
     ReplaceField("boroughs", Field("boroughs", ListType(BoroughType), resolve = _.value.boroughs)),
@@ -266,7 +264,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     ReplaceField("city", Field("city", CityType, resolve = _.value.city)),
     ReplaceField("ntaList", Field("ntaList", ListType(NtaType), resolve = _.value.ntaList)),
     ReplaceField("postcodes", Field("postcodes", ListType(PostCodeType), resolve = _.value.postcodes)),
-    ReplaceField("state", Field("ntaList", StateType, resolve = _.value.state)),
+    ReplaceField("state", Field("state", StateType, resolve = _.value.state)),
     ReplaceField("trees", Field("trees", ListType(TreeType), resolve = _.value.trees)),
     ReplaceField("treeSpecies", Field("treeSpecies", ListType(SpeciesType), resolve = _.value.treeSpecies)),
     ReplaceField("zipCities", Field("zipCities", ListType(ZipCityType), resolve = _.value.zipCities)),
@@ -440,10 +438,10 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
       SelectionInput(
-        includeNtaList = ad.get("includeNtaList").asInstanceOf[Vector[Uri]],
-        includeBlocks = ad.get("includeBlocks").asInstanceOf[Vector[Uri]],
-        excludeNtaList = ad.get("excludeNtaList").asInstanceOf[Vector[Uri]],
-        excludeBlocks = ad.get("excludeBlocks").asInstanceOf[Vector[Uri]]
+        includeNtaList = ad("includeNtaList").asInstanceOf[Vector[Uri]],
+        includeBlocks = ad("includeBlocks").asInstanceOf[Vector[Uri]],
+        excludeNtaList = ad("excludeNtaList").asInstanceOf[Vector[Uri]],
+        excludeBlocks = ad("excludeBlocks").asInstanceOf[Vector[Uri]]
       )
     }
   }
@@ -468,7 +466,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     Field("getBoroughsByCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city"))),
     Field("getGeometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
 
-    Field("getTreesBySelection", SelectionResultsType, arguments= SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selection"))),
+    Field("getTreesBySelection", SelectionResultsType, arguments= SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selectionInput"))),
 
     Field("getBlockGeometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getBlockGeometries()),
     Field("getNtaGeometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getNtaGeometries()),
@@ -480,6 +478,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     Field("getBoroughHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughHierarchy(boroughUri = ctx.args.arg("boroughUri"))),
     Field("getNtaHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtaHierarchy(ntaUri = ctx.args.arg("ntaUri"))),
     Field("getBlockHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlockHierarchy(blockUri = ctx.args.arg("blockUri"))),
+
+    Field("getNtasByBoroughGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBoroughGeometry(borough = ctx.args.arg("uri"))),
+    Field("getBlocksByNtaGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNtaGeometry(Nta = ctx.args.arg("uri"))),
 
     Field("getGeometryOfBoroughs", ListType(GeometryType), arguments= BoroughsArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBoroughs(boroughs = ctx.args.arg("boroughs"))),
     Field("getGeometryOfBorough", GeometryType, arguments= BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBorough(borough = ctx.args.arg("borough"))),

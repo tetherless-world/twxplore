@@ -12,6 +12,9 @@ trait Store {
   def getBoroughsByCity(city: City): List[Borough]
   def getTrees(limit: Int, offset: Int): List[Tree]
 
+  def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry]
+  def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry]
+
   def getTreesBySelection(selection: SelectionInput): SelectionResults
 
   def getBlockGeometries(): List[SelectionGeometry]

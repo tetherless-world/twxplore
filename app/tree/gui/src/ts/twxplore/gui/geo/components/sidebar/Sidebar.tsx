@@ -5,7 +5,6 @@ import Sidebar from "react-sidebar";
 import {Select} from "./Select"
 import { ActiveSidebarItem } from './ActiveSidebarItem'
 import { Button } from 'reactstrap';
-const mql = window.matchMedia(`(min-width: 800px)`);
  
 type State = {
   sidebarOpen: boolean

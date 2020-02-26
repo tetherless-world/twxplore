@@ -67,4 +67,8 @@ object TestStore extends Store {
   override def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = ???
 
   override def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = ???
+
+  override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = ???
+
+  override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = ???
 }

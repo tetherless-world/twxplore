@@ -1,0 +1,9 @@
+query BlocksQuery {
+  getBlockGeometries{
+      geometry{
+        label
+        wkt
+      }
+      uri
+  }
+}

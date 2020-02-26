@@ -102,6 +102,7 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
          |} WHERE {
          |  VALUES ?feature { ${selections.map(selection => "<" + selection.toString() + ">").mkString(" ")} } .
          |  ?tree treeP:$property ?feature .
+         |  ?tree rdf:type treeR:tree .
          |  ?tree ?treePred ?treeObj .
          |}
          |""".stripMargin)
@@ -112,24 +113,24 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
   }
 
   override def getTreesBySelection(selection: SelectionInput): SelectionResults = {
-    val treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
-    val boroughMap: mutable.HashMap[String, Borough] = new mutable.HashMap()
-    val ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
-    val blockMap: mutable.HashMap[String, Block] = new mutable.HashMap()
-    val postalCode: mutable.HashMap[String, Postcode] = new mutable.HashMap()
-    val zipCityMap: mutable.HashMap[String, ZipCity] = new mutable.HashMap()
-    val censusTractMap: mutable.HashMap[String, CensusTract] = new mutable.HashMap()
+    val treeSpeciesMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val boroughMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val ntaMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val blockMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val postalCode: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val zipCityMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
+    val censusTractMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
     val city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" +"New York City".replace(" ", "_")))
     val state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
 
     def processTree(tree: Tree) = {
-      if(tree.species != None) treeSpeciesMap(tree.species.get.toString) = getSpeciesByUris(List(tree.species.get)).head
-      zipCityMap(tree.zipCity.toString) = getZipCityByUris(List(tree.zipCity)).head
-      postalCode(tree.postcode.toString) = getPostcodeByUris(List(tree.postcode)).head
-      censusTractMap(tree.block.toString) = getCensusTractByUris(List(tree.block)).head
-      boroughMap(tree.borough.toString) = getBoroughByUri(tree.borough)
-      ntaMap(tree.borough.toString) = getNtaByUri(tree.NTA)
-      blockMap(tree.block.toString) = getBlockByUris(List(tree.block)).head
+      if(tree.species != None) treeSpeciesMap += (tree.species.toString -> tree.species.get)
+      zipCityMap += (tree.zipCity.toString -> tree.zipCity)
+      postalCode += (tree.postcode.toString -> tree.postcode)
+      if(tree.censusTract != None) censusTractMap += (tree.censusTract.toString -> tree.censusTract.get)
+      boroughMap += (tree.borough.toString -> tree.borough)
+      ntaMap += (tree.NTA.toString -> tree.NTA)
+      blockMap += (tree.block.toString -> tree.block)
     }
 
     val trees = getTreesByBlockUris(selection.includeBlocks.toList).map(tree => {
@@ -143,22 +144,22 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
     }).to[ListBuffer]
 
     SelectionResults(
-      blocks = blockMap.values.toList,
-      boroughs = boroughMap.values.toList,
-      censusTracts = censusTractMap.values.toList,
+      blocks = getBlockByUris(blockMap.values.toList),
+      boroughs = getBoroughByUris(boroughMap.values.toList),
+      censusTracts = getCensusTractByUris(censusTractMap.values.toList),
       city = city,
-      ntaList = ntaMap.values.toList,
-      postcodes = postalCode.values.toList,
+      ntaList = getNtaByUris(ntaMap.values.toList),
+      postcodes = getPostcodeByUris(postalCode.values.toList),
       state = state,
       trees = trees.toList,
-      treeSpecies = treeSpeciesMap.values.toList,
-      zipCities = zipCityMap.values.toList
+      treeSpecies = getSpeciesByUris(treeSpeciesMap.values.toList),
+      zipCities = getZipCityByUris(zipCityMap.values.toList)
     )
   }
 
   def getTreesByBoroughUris(boroughUris: List[Uri]): List[Tree] = getTreesBySelections(boroughUris, "borough")
-  def getTreesByNtaUris(ntaUris: List[Uri]): List[Tree] = getTreesBySelections(ntaUris, "borough")
-  def getTreesByBlockUris(blockUris: List[Uri]): List[Tree] = getTreesBySelections(blockUris, "borough")
+  def getTreesByNtaUris(ntaUris: List[Uri]): List[Tree] = getTreesBySelections(ntaUris, "nta")
+  def getTreesByBlockUris(blockUris: List[Uri]): List[Tree] = getTreesBySelections(blockUris, "block")
 
   def getStateByUri(stateUri: Uri)(implicit rdfReader: RdfReader[State]): State = getPropertyByUris(List(stateUri), "state").head
   def getCityByUri(cityUri: Uri)(implicit rdfReader: RdfReader[City]): City = getPropertyByUris(List(cityUri), "city").head
@@ -357,8 +358,28 @@ class TwksStore @Inject() (configuration: TwksStoreConfiguration) extends Abstra
     }
   }
 
+  private def getPropertyUrisByUri(overlayProp: Uri, componentPropName: String): List[Uri] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX dc: <${DCTerms.getURI}>
+         |PREFIX treeR: <${TREE.resourceURI}>
+         |PREFIX treeP: <${TREE.propertyURI}>
+         |SELECT DISTINCT ?componentProp WHERE {
+         |  VALUES ?overlayProp { ${"<" + overlayProp.toString() + ">"} }
+         |  ?overlayProp treeP:$componentPropName ?componentProp .
+         |  ?componentProp rdf:type treeR:$componentPropName .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution => {
+        queryExecution.execSelect().asScala.map(querySolution => Uri.parse(querySolution.get("componentProp").asResource().getURI)).toList
+      }
+    }
+  }
+
   override def getBlocksByNta(nta: Nta): List[Block] = getPropertyByProperty[Block](nta.uri, "block")
   override def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
 
-
+  override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
+  override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(Nta, "block"), "block")
 }

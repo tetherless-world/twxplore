@@ -1,0 +1,9 @@
+query BlocksByNtaQuery($uri: String!) {
+  getBlocksByNtaGeometry(uri: $uri){
+      geometry{
+        label
+        wkt
+      }
+      uri
+  }
+}

@@ -19,7 +19,9 @@
     "react-sidebar": "^3.0.2",
     "redux": "^4.0.5",
     "redux-actions": "^2.6.5",
-    "styled-components": "^5.0.0"
+    "styled-components": "^5.0.0",
+    "terraformer-wkt-parser": "^1.2.1",
+    "wicket": "^1.3.5"
   },
   "license": "Apache 2",
   "scripts": {

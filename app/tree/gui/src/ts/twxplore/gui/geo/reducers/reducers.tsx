@@ -22,18 +22,72 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import {routerReducer} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
+import {ActionTypes} from 'kepler.gl/actions';
 
 // INITIAL_APP_STATE
-const initialAppState = {
-  appName: 'example',
-  loaded: false
+type INITIAL_APP_STATE = {
+  info: any,
+  loaded: Boolean,
+  blocks: Array<String>[],
+  NTAs: Array<String>[],
+  scope: String,
+  parentUri: String,
+  createSelection: Boolean
+}
+
+const initialAppState: INITIAL_APP_STATE= {
+  info: {},
+  loaded: false,
+  blocks: [],
+  NTAs: [],
+  scope: "borough",
+  parentUri: "",
+  createSelection: false
 };
+
+
 
 const reducers = combineReducers({
   // mount keplerGl reducer
   keplerGl: keplerGlReducer,
   app: handleActions({
-    // empty
+    [ActionTypes.LAYER_CLICK]: (state, action) => {
+      switch(action.payload.info.picked) {
+        case true: {
+          console.log(action.payload)
+          var result = {}
+          switch(action.payload.info.object.properties.type) {
+            case "block": {
+              alert("in Block!")
+              state.blocks.push(action.payload.info.object.properties.uri)
+              result = {
+                blocks: state.blocks,
+                createSelection: true
+              }
+              console.log(result)
+              break;
+            }
+            case "NTA": {
+              // result = {
+              //   NTAs: state.NTAs += action.payload.info.object.properties.uri
+              // }
+              break;
+            }
+          }
+          return ({
+            ...state,
+            ...result,
+            scope: action.payload.info.object.properties.child,
+            parentUri: action.payload.info.object.properties.uri
+          })
+        }
+        default: {
+          return ({
+            ...state
+          })
+        }
+      }
+    },
   }, initialAppState),
   routing: routerReducer
 });
