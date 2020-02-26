@@ -28,4 +28,4 @@ export const BoroughList: React.FunctionComponent<{}> = () => {
 
 //<TreeCollapse uri={feature.uri} longitude={feature.longitude} 
 //latitude={feature.latitude}/>
-export default BoroughList
+export const BoroughList
