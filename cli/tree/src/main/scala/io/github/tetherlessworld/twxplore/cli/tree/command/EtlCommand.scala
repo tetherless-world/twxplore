@@ -2,7 +2,8 @@ package io.github.tetherlessworld.twxplore.cli.tree.command
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
-import io.github.tetherlessworld.twxplore.lib.base.TwksClientFactory
+import edu.rpi.tw.twks.client.direct.DirectTwksClient
+import edu.rpi.tw.twks.factory.{TwksFactory, TwksFactoryConfiguration}
 import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
@@ -14,7 +15,7 @@ object EtlCommand extends Command {
   private val logger = Logger(getClass.getName)
 
   def apply(): Unit = {
-    val twksClient = TwksClientFactory.createTwksClient()
+    val twksClient = new DirectTwksClient(TwksFactory.getInstance().createTwks(TwksFactoryConfiguration.builder().setFromEnvironment().build()))
     val twksStore = new TwksStore(twksClient)
 
     if (twksStore.getTrees(1, 0).isEmpty || true) {
