@@ -5,7 +5,7 @@ import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
 import KeplerMap from 'twxplore/gui/geo/components/map/Map'
-import SelectionHome from 'twxplore/gui/geo/components/SelectionHome/SelectionHome'
+import {SelectionHome} from 'twxplore/gui/geo/components/SelectionHome/SelectionHome'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';

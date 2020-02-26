@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }
 }))
 
+enum modes =
+
 
 
 export const PanelParent: React.FunctionComponent<{}> = () => {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
-import PanelParent from '../PanelParent/PanelParent';
+import {PanelParent} from '../PanelParent/PanelParent';
 
 export const Home: React.FunctionComponent<{}> = () => (
     <Frame

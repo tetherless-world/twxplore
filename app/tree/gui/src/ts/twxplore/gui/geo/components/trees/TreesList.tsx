@@ -30,7 +30,4 @@ export const TreesList: React.FunctionComponent<TreeListProps> = ({callSetMode})
     );
 }
 
-
-//<TreeCollapse uri={feature.uri} longitude={feature.longitude} 
-//latitude={feature.latitude}/>
 export default TreesList

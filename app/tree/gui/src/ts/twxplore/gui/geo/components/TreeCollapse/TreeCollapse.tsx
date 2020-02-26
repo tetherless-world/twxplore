@@ -11,10 +11,6 @@ import {TreesQuery_trees} from 'twxplore/gui/geo/api/queries/types/TreesQuery'
 
 
 
-type TreeCardProps = {
-  features: TreesQuery_trees,
-  callSetMode: Function
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,21 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-export const TreeCollapse: React.FunctionComponent<TreeCardProps> = ({features, callSetMode}) => {
+export const TreeCollapse: React.FunctionComponent<{features: TreesQuery_trees, callSetMode: Function}> = ({features, callSetMode}) => {
     const classes = useStyles();
-
-
-    const handleClick = (e) => {
-      e.preventDefault()
-      if (e.target.id == 'species'){
-        callSetMode('species')
-      }
-      else if (e.target.id == 'city'){
-        callSetMode('city')
-      }
-      
-
-    }
     
     return (
         <div>
@@ -62,8 +45,11 @@ export const TreeCollapse: React.FunctionComponent<TreeCardProps> = ({features, 
                       
 
                         {Object.keys(features).map(key =>
-                          String(features[key]).toLowerCase().indexOf("resource") === -1? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
-                          <ListGroupItem> {key}: <a href="" onClick = {(handleClick)} id = {key}> {features[key]} </a> </ListGroupItem> 
+                          {
+                            const onClick = () => callSetMode(key);
+                            String(features[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
+                          <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {features[key]} </a> </ListGroupItem> 
+                          }
                         )}
                     </ListGroup>
                 </ExpansionPanelDetails>
