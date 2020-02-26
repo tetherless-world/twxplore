@@ -19,7 +19,7 @@ class TwksStoreSpec extends WordSpec with Matchers {
         feature should equal(currentTreeList)
       }
     }
-    "Twks Store" can {
+    "Twks Store" can {x
 //      val currentTreeList = TestData.treeList
 //
 //      "a valid URI" should {
