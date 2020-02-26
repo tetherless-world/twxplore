@@ -8,6 +8,8 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 // Constants
 val scenaVersion = "1.0.0-SNAPSHOT"
 val playVersion = "2.8.0"
+val slf4jVersion = "1.7.25"
+val twksVersion = "1.0.4-SNAPSHOT"
 
 
 // Publish settings
@@ -49,6 +51,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 // Projects
 lazy val root = project
   .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
+  .disablePlugins(AssemblyPlugin)
   .settings(
     skip in publish := true
   )
@@ -56,6 +59,7 @@ lazy val root = project
 lazy val baseLib =
   (project in file("lib/scala/base"))
     .dependsOn(testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         filters,
@@ -63,8 +67,10 @@ lazy val baseLib =
         ws,
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-        "edu.rpi.tw.twks" % "twks-client" % "1.0.4-SNAPSHOT",
+        "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+        "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
         organization.value %% "scena" % scenaVersion,
+        "nl.grons" %% "metrics4-scala" % "4.1.1",
         "org.apache.jena" % "jena-geosparql" % "3.13.1",
         "org.sangria-graphql" %% "sangria" % "1.4.2",
         "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",
@@ -75,6 +81,7 @@ lazy val baseLib =
 
 lazy val geoApp = (project in file("app/geo"))
   .dependsOn(geoLib % "compile->compile;test->test")
+  .disablePlugins(AssemblyPlugin)
   .enablePlugins(PlayScala)
   .settings(
     name := "geo-app",
@@ -90,6 +97,7 @@ lazy val geoApp = (project in file("app/geo"))
 lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib, testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       name := "twxplore-geo-lib",
       skip in publish := true
@@ -101,6 +109,13 @@ lazy val treeCli = (project in file("cli/tree"))
   .settings(
     assemblyMergeStrategy in assembly := {
       case "logback.xml" => MergeStrategy.first
+      case "module-info.class" => MergeStrategy.discard // Jackson has many of these, not needed
+      case PathList("javax", "activation", xs@_*) => MergeStrategy.first // Conflicting versions
+      case PathList("javax", "xml", "bind", xs@_*) => MergeStrategy.first // Conflicting versions
+      case PathList("META-INF", "versions", "9", "javax", "xml", "bind", "ModuleUtil.class") => MergeStrategy.first // Same as above
+      case PathList("META-INF", "c.tld") => MergeStrategy.last // Part of the taglibs
+      case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first // Pick jcl-over-slf4j
+      case PathList("org", "apache", "taglibs", "standard", xs@_*) => MergeStrategy.last
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
@@ -109,7 +124,8 @@ lazy val treeCli = (project in file("cli/tree"))
     mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.tree.TreeCli"),
     libraryDependencies ++= Seq(
       "com.github.tototoshi" %% "scala-csv" % "1.3.6",
-      "com.beust" % "jcommander" % "1.78"
+      "com.beust" % "jcommander" % "1.78",
+      "org.slf4j" % "slf4j-simple" % slf4jVersion
     ),
     name := "tree-cli",
     skip in publish := true
@@ -117,12 +133,13 @@ lazy val treeCli = (project in file("cli/tree"))
 
 lazy val testLib =
   (project in file("lib/scala/test"))
+    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         organization.value %% "scena" % scenaVersion,
         // "org.scalatest" %% "scalatest" % "3.0.8",
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3",
-        "org.slf4j" % "slf4j-simple" % "1.7.25",
+        "org.slf4j" % "slf4j-simple" % slf4jVersion,
       ),
       name := "twxplore-test-lib"
     )
@@ -130,6 +147,7 @@ lazy val testLib =
 lazy val treeLib =
   (project in file("lib/scala/tree"))
     .dependsOn(geoLib, testLib % "test->compile")
+    .disablePlugins(AssemblyPlugin)
     .settings(
       name := "twxplore-tree-lib",
       libraryDependencies ++= Seq(
@@ -140,6 +158,7 @@ lazy val treeLib =
 
 lazy val treeApp = (project in file("app/tree"))
   .dependsOn(treeLib % "compile->compile;test->test")
+  .disablePlugins(AssemblyPlugin)
   .enablePlugins(PlayScala)
   .settings(
     libraryDependencies ++= Seq(

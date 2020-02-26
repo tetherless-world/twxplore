@@ -2,8 +2,9 @@ package io.github.tetherlessworld.twxplore.cli.tree
 
 import com.beust.jcommander.{JCommander, Parameter}
 import io.github.tetherlessworld.twxplore.cli.tree.command.EtlCommand
+import nl.grons.metrics4.scala.DefaultInstrumented
 
-object CliMain {
+object TreeCli extends DefaultInstrumented {
 
   class GlobalArgs {
     @Parameter(names = Array("-h", "--help"))
@@ -34,7 +35,15 @@ object CliMain {
       return
     }
 
+    import java.util.concurrent.TimeUnit
+
+    import com.codahale.metrics.ConsoleReporter
+    val reporter = ConsoleReporter.forRegistry(metricRegistry).build
+    reporter.start(5, TimeUnit.SECONDS)
+
     val command = commands(commandName)
     command()
+
+    reporter.report()
   }
 }

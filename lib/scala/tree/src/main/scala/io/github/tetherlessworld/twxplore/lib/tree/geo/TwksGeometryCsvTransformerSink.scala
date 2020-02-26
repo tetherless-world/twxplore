@@ -1,14 +1,15 @@
 package io.github.tetherlessworld.twxplore.lib.tree.geo
 
-import edu.rpi.tw.twks.client.RestTwksClient
+import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.nanopub.Nanopublication
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}
-import io.github.tetherlessworld.twxplore.lib.base.stores.TwksStoreConfiguration
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
+import io.github.tetherlessworld.twxplore.lib.tree.AbstractTwksTransformerSink
 import org.apache.jena.rdf.model.ModelFactory
 
-class TwksGeometryCsvTransformerSink(twksStoreConfiguration: TwksStoreConfiguration) extends GeometryCsvTransformerSink {
-  private val twksClient = new RestTwksClient(twksStoreConfiguration.twksClientConfiguration)
+final class TwksGeometryCsvTransformerSink(twksClient: TwksClient)
+  extends AbstractTwksTransformerSink(twksClient)
+    with GeometryCsvTransformerSink {
 
   override def accept(feature: Feature): Unit = accept[Feature](feature)
 

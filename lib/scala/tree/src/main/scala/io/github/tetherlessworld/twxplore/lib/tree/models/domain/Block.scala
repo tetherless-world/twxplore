@@ -17,7 +17,6 @@ object Block {
 
   implicit object BlockRdfReader extends RdfReader[Block] {
     override def read(resource: Resource): Block = {
-      resource.getModel.write(System.out, "TTL")
       Block(
         id = resource.identifier.get.toInt,
         name = resource.identifier.get,
