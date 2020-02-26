@@ -113,7 +113,9 @@ lazy val treeCli = (project in file("cli/tree"))
       case PathList("javax", "activation", xs@_*) => MergeStrategy.first // Conflicting versions
       case PathList("javax", "xml", "bind", xs@_*) => MergeStrategy.first // Conflicting versions
       case PathList("META-INF", "versions", "9", "javax", "xml", "bind", "ModuleUtil.class") => MergeStrategy.first // Same as above
+      case PathList("META-INF", "c.tld") => MergeStrategy.last // Part of the taglibs
       case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first // Pick jcl-over-slf4j
+      case PathList("org", "apache", "taglibs", "standard", xs@_*) => MergeStrategy.last
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
