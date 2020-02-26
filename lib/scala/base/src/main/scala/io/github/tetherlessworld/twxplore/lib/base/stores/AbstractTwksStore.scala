@@ -29,6 +29,6 @@ object AbstractTwksStore {
       }
     }
 
-    new RestTwksClient(RestTwksClientConfiguration.builder().setFromEnvironment().set(properties).build())
+    new RestTwksClient(RestTwksClientConfiguration.builder().setFromEnvironment().set(properties).set(properties.subset("twks")).build())
   }
 }
