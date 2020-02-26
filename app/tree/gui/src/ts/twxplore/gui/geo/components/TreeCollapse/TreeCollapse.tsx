@@ -7,40 +7,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TreesQuery_trees from 'twxplore\gui\geo\api\queries\types\TreesQuery'
+import {TreesQuery_trees} from 'twxplore/gui/geo/api/queries/types/TreesQuery'
 
 
-export interface Feature_List = {
-  createdAt: string;
-  dbh: number;
-  stump: number,
-  curbLoc: string,
-  status: string,
-  health: string | null,
-  species: string | null,
-  steward: string | null,
-  guards: string | null,
-  sidewalk: string | null,
-  userType: string,
-  problems: string[],
-  address: string,
-  city: string,
-  community: number,
-  cncldist: number,
-  stateAssembly: number,
-  stateSenate: number,
-  boroughCount: number,
-  latitude: number,
-  longitude: number,
-  x_sp: number,
-  y_sp: number,
-  bin: number | null,
-  bbl: any | null,
-  uri: string
-}
 
 type TreeCardProps = {
-  features: Feature_List,
+  features: TreesQuery_trees,
   callSetMode: Function
 }
 
