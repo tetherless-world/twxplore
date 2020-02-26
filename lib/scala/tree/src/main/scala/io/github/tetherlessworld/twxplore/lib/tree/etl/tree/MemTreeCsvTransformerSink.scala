@@ -1,4 +1,5 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
+
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
 import scala.collection.mutable
@@ -17,13 +18,24 @@ final class MemTreeCsvTransformerSink extends TreeCsvTransformerSink {
   var stateBuffer: State = _
 
   override def accept(block: Block): Unit = blockMap += (block.id -> block)
+
   override def accept(borough: Borough): Unit = boroughMap += (borough.borocode -> borough)
+
   override def accept(censusTract: CensusTract): Unit = censusTractMap += (censusTract.id -> censusTract)
+
   override def accept(city: City): Unit = cityBuffer = city
+
   override def accept(nta: Nta): Unit = ntaMap += (nta.nta -> nta)
+
   override def accept(postcode: Postcode): Unit = postalCode += (postcode.code -> postcode)
+
   override def accept(species: TreeSpecies): Unit = treeSpeciesMap += (species.common -> species)
+
   override def accept(state: State): Unit = stateBuffer = state
+
   override def accept(tree: Tree): Unit = treeList += tree
+
   override def accept(zipCity: ZipCity): Unit = zipCityMap += (zipCity.city -> zipCity)
+
+  override def flush(): Unit = {}
 }

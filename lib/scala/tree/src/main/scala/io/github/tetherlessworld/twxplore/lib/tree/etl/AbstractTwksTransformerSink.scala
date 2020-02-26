@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl
 
 import edu.rpi.tw.twks.api.TwksClient
 

@@ -1,4 +1,5 @@
-package io.github.tetherlessworld.twxplore.lib.tree.geo
+package io.github.tetherlessworld.twxplore.lib.tree.etl.geo
+
 import java.io.{BufferedWriter, File, FileWriter}
 
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}

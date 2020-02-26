@@ -1,10 +1,10 @@
-package io.github.tetherlessworld.twxplore.lib.tree.geo
+package io.github.tetherlessworld.twxplore.lib.tree.etl.geo
 
 import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.nanopub.Nanopublication
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
-import io.github.tetherlessworld.twxplore.lib.tree.AbstractTwksTransformerSink
+import io.github.tetherlessworld.twxplore.lib.tree.etl.AbstractTwksTransformerSink
 
 final class TwksGeometryCsvTransformerSink(twksClient: TwksClient)
   extends AbstractTwksTransformerSink(twksClient)

@@ -1,22 +1,25 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl
 
 import com.github.tototoshi.csv.CSVReader
 
 import scala.io.BufferedSource
 
 trait CsvTransformer {
-  protected def openCsvFile(filename: String): CSVReader = {
-    var source: BufferedSource = null
+  protected final def openCsvSource(filename: String): BufferedSource = {
     if (sys.env.contains("CI")) {
-      source = scala.io.Source.fromResource(filename)
+      scala.io.Source.fromResource(filename)
     } else {
+      var source: BufferedSource = null
       try {
         source = scala.io.Source.fromResource(filename)
         source.getLines.zipWithIndex
       } catch {
         case _: Throwable => source = scala.io.Source.fromFile(filename)
       }
+      source
     }
-    CSVReader.open(source)
   }
+
+  protected def openCsvReader(filename: String): CSVReader =
+    CSVReader.open(openCsvSource(filename))
 }

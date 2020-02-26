@@ -1,7 +1,8 @@
 package io.github.tetherlessworld.twxplore.lib.tree
 
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{MemTreeCsvTransformerSink, TreeCsvTransformer}
 
 object TestData {
   private val testData = new MemTreeCsvTransformerSink

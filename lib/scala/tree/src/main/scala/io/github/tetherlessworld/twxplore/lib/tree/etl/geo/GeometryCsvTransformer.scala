@@ -1,13 +1,13 @@
-package io.github.tetherlessworld.twxplore.lib.tree.geo
+package io.github.tetherlessworld.twxplore.lib.tree.etl.geo
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
-import io.github.tetherlessworld.twxplore.lib.tree.CsvTransformer
+import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 
 abstract class GeometryCsvTransformer extends CsvTransformer {
   final def parseCsv(filename: String, sink: GeometryCsvTransformerSink): Unit = {
-    val reader = openCsvFile(filename)
+    val reader = openCsvReader(filename)
     try {
       for (cols <- reader) {
         parseCsvRow(cols, sink)
@@ -18,7 +18,7 @@ abstract class GeometryCsvTransformer extends CsvTransformer {
     sink.flush()
   }
 
-  protected abstract def parseCsvRow(cols: Seq[String], sink: GeometryCsvTransformerSink): Unit
+  protected def parseCsvRow(cols: Seq[String], sink: GeometryCsvTransformerSink): Unit
 
   protected final def processLabel(label: String): Option[String] = Some(label)
 

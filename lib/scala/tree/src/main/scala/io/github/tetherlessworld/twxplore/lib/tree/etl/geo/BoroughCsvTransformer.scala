@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.tree.geo
+package io.github.tetherlessworld.twxplore.lib.tree.etl.geo
 
 final class BoroughCsvTransformer extends GeometryCsvTransformer {
   override protected def parseCsvRow(cols: Seq[String], sink: GeometryCsvTransformerSink): Unit =

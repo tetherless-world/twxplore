@@ -1,6 +1,7 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.TransformerSink
 
 trait TreeCsvTransformerSink extends TransformerSink {
   def accept(block: Block): Unit

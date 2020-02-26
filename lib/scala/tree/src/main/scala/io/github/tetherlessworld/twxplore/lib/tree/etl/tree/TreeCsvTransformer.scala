@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 
 import java.util.Date
 
@@ -6,6 +6,7 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 import nl.grons.metrics4.scala.DefaultInstrumented
 
 import scala.collection.mutable
@@ -26,7 +27,7 @@ class TreeCsvTransformer extends CsvTransformer with DefaultInstrumented {
 
   def parseCsv(filename: String, sink: TreeCsvTransformerSink): Unit = {
     //change it back to fromResource after you're done
-    val source: BufferedSource = openSource(filename)
+    val source: BufferedSource = openCsvSource(filename)
     val lineProcessor = new LineProcessor()
     for ((line, line_no) <- source.getLines.zipWithIndex) {
       line_no match {
@@ -43,7 +44,7 @@ class TreeCsvTransformer extends CsvTransformer with DefaultInstrumented {
     lineProcessor.generateCityList()
 
     source.close()
-    val source2: BufferedSource = checkSource(filename)
+    val source2: BufferedSource = openCsvSource(filename)
     for ((line, line_no) <- source2.getLines.zipWithIndex) {
       line_no match {
         case 0 => {}

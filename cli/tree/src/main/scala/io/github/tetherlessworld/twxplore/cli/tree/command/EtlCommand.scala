@@ -3,9 +3,9 @@ package io.github.tetherlessworld.twxplore.cli.tree.command
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
 import io.github.tetherlessworld.twxplore.lib.base.TwksClientFactory
-import io.github.tetherlessworld.twxplore.lib.tree.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
+import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
-import io.github.tetherlessworld.twxplore.lib.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
 
 object EtlCommand extends Command {
 
