@@ -12,7 +12,11 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import scala.collection.mutable
 import scala.io.BufferedSource
 
-class TreeCsvTransformer extends CsvTransformer with DefaultInstrumented {
+object TreeCsvTransformer {
+  val TreeBufferSizeDefault = 1000
+}
+
+class TreeCsvTransformer(treeBufferSize: Int = TreeCsvTransformer.TreeBufferSizeDefault) extends CsvTransformer with DefaultInstrumented {
   val uri = TREE.resourceURI
   private val treeMeter = metrics.meter("treeMeter")
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
@@ -65,7 +69,7 @@ class TreeCsvTransformer extends CsvTransformer with DefaultInstrumented {
               val tree = process(line)
               sink.accept(tree)
               treeMeter.mark()
-              if (line_no % 100 == 0) {
+              if (line_no % treeBufferSize == 0) {
                 sink.flush()
               }
             }

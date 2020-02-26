@@ -18,7 +18,7 @@ object EtlCommand extends Command {
     val twksStore = new TwksStore(twksClient)
 
     if (twksStore.getTrees(1, 0).isEmpty || true) {
-      new TreeCsvTransformer().parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksClient))
+      new TreeCsvTransformer(treeBufferSize = args.treeBufferSize).parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksClient))
       new CityCsvTransformer().parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
       new BoroughCsvTransformer().parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksClient))
       new NtaCsvTransformer().parseCsv("test_ntadata.csv", new TwksGeometryCsvTransformerSink(twksClient))
@@ -30,6 +30,8 @@ object EtlCommand extends Command {
   class Args {
     @Parameter(names = Array("--csv-file-path"), required = true)
     var csvFilePath: String = null
+    @Parameter(names = Array("--tree-buffer-size"))
+    var treeBufferSize: Int = TreeCsvTransformer.TreeBufferSizeDefault
   }
 
 }
