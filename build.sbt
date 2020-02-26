@@ -68,6 +68,7 @@ lazy val baseLib =
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
         "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+        "edu.rpi.tw.twks" % "twks-rest-client" % twksVersion,
         "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
         organization.value %% "scena" % scenaVersion,
         "nl.grons" %% "metrics4-scala" % "4.1.1",

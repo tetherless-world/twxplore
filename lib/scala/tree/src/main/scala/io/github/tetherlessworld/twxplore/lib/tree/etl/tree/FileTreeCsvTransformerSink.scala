@@ -1,4 +1,5 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
+
 import java.io.{BufferedWriter, File, FileWriter}
 
 import io.github.tetherlessworld.scena.{Rdf, RdfWriter}
@@ -7,6 +8,7 @@ import org.apache.jena.rdf.model.ModelFactory
 
 final class FileTreeCsvTransformerSink extends TreeCsvTransformerSink {
   override def accept(block: Block): Unit = accept("block-" + block.id, block)
+
   override def accept(borough: Borough): Unit = accept("borough-" + borough.borocode, borough)
   override def accept(censusTract: CensusTract): Unit = accept("censusTract-" + censusTract.id, censusTract)
   override def accept(city: City): Unit = accept("city-" + city.name, city)
@@ -33,4 +35,6 @@ final class FileTreeCsvTransformerSink extends TreeCsvTransformerSink {
       fileWriter.close()
     }
   }
+
+  override def flush(): Unit = {}
 }
