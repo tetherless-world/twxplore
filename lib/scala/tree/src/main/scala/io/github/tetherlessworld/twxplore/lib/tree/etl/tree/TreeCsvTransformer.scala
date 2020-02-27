@@ -93,7 +93,7 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
     acceptValues((value: Borough) => sink.accept(value), "borough", boroughMap.values)
     acceptValues((value: Block) => sink.accept(value), "block", blockMap.values)
     acceptValues((value: Postcode) => sink.accept(value), "postalCode", postalCode.values)
-    acceptValues((value: City) => sink.accept(value), "city", zipCityMap.values)
+    acceptValues((value: ZipCity) => sink.accept(value), "city", zipCityMap.values)
     acceptValues((value: TreeSpecies) => sink.accept(value), "species", treeSpeciesMap.values)
     acceptValues((value: CensusTract) => sink.accept(value), "censusTract", censusTractMap.values)
 
