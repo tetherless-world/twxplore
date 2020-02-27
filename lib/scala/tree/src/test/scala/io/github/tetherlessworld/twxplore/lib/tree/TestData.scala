@@ -11,11 +11,11 @@ object TestData {
   private val ntaData = new MemGeometryCsvTransformerSink
   private val blockData = new MemGeometryCsvTransformerSink
 
-  new TreeCsvTransformer().parseCsv("test_treedata.csv", testData)
+  new TreeCsvTransformer().parseCsv("tree.csv", testData)
   new CityCsvTransformer().parseCsv("city.csv", cityData)
-  new BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
-  new NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)
-  new BlockCsvTransformer().parseCsv("test_blockdata.csv", blockData)
+  new BoroughCsvTransformer().parseCsv("borough.csv", boroughData)
+  new NtaCsvTransformer().parseCsv("nta.csv", ntaData)
+  new BlockCsvTransformer().parseCsv("block.csv", blockData)
 
   val cityGeoMap = cityData.featureMap
   val boroughGeoMap = boroughData.featureMap
@@ -23,11 +23,6 @@ object TestData {
   val blockGeoMap = blockData.featureMap
   val treeList = testData.treeList.toList
 
-  new TreeCsvTransformer().parseCsv("test_treedata.csv", testData)
-  new CityCsvTransformer().parseCsv("city.csv", cityData)
-  new BoroughCsvTransformer().parseCsv("nybb.csv", boroughData)
-  new NtaCsvTransformer().parseCsv("test_ntadata.csv", ntaData)
-  new BlockCsvTransformer().parseCsv("test_blockdata.csv", blockData)
   val treeSpeciesMap: Map[String, TreeSpecies] = testData.treeSpeciesMap.toMap
   val boroughMap: Map[Int, Borough] = testData.boroughMap.toMap
   val ntaMap: Map[String, Nta] = testData.ntaMap.toMap

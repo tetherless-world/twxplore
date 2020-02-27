@@ -11,12 +11,12 @@ trait CsvTransformer {
     } else {
       var source: BufferedSource = null
       try {
-        source = scala.io.Source.fromResource(filename)
-        source.getLines.zipWithIndex
+        source = scala.io.Source.fromFile(filename)
+        //        source.getLines()
+        source
       } catch {
-        case _: Throwable => source = scala.io.Source.fromFile(filename)
+        case _: Throwable => scala.io.Source.fromResource(filename)
       }
-      source
     }
   }
 
