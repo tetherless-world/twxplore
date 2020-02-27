@@ -5,12 +5,15 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 
-abstract class GeometryCsvTransformer extends CsvTransformer {
+abstract class GeometryCsvTransformer(bufferSize: Int) extends CsvTransformer {
   final def parseCsv(filename: String, sink: GeometryCsvTransformerSink): Unit = {
     val reader = openCsvReader(filename)
     try {
-      for (cols <- reader) {
+      for ((cols, rowIndex) <- reader.toStream.zipWithIndex) {
         parseCsvRow(cols, sink)
+        if (rowIndex > 0 && rowIndex % bufferSize == 0) {
+          sink.flush()
+        }
       }
     } finally {
       reader.close()

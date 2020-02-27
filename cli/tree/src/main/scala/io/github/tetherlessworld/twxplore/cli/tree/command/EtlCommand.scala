@@ -4,6 +4,7 @@ import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
 import edu.rpi.tw.twks.client.direct.DirectTwksClient
 import edu.rpi.tw.twks.factory.{TwksFactory, TwksFactoryConfiguration}
+import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
@@ -19,20 +20,18 @@ object EtlCommand extends Command {
     val twksStore = new TwksStore(twksClient)
 
     if (twksStore.getTrees(1, 0).isEmpty || true) {
-      new TreeCsvTransformer(treeBufferSize = args.treeBufferSize).parseCsv(args.csvFilePath, new TwksTreeCsvTransformerSink(twksClient))
-      new CityCsvTransformer().parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new BoroughCsvTransformer().parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new NtaCsvTransformer().parseCsv("test_ntadata.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new BlockCsvTransformer().parseCsv("test_blockdata.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new TreeCsvTransformer(bufferSize = args.bufferSize).parseCsv("tree.csv", new TwksTreeCsvTransformerSink(twksClient))
+      new CityCsvTransformer(bufferSize = args.bufferSize).parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new BoroughCsvTransformer(bufferSize = args.bufferSize).parseCsv("borough.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new NtaCsvTransformer(bufferSize = args.bufferSize).parseCsv("nta.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new BlockCsvTransformer(bufferSize = args.bufferSize).parseCsv("block.csv", new TwksGeometryCsvTransformerSink(twksClient))
     }
   }
 
   @Parameters(commandDescription = "Run the extract-transform-load (ETL) pipeline")
   class Args {
-    @Parameter(names = Array("--csv-file-path"), required = true)
-    var csvFilePath: String = null
-    @Parameter(names = Array("--tree-buffer-size"))
-    var treeBufferSize: Int = TreeCsvTransformer.TreeBufferSizeDefault
+    @Parameter(names = Array("--buffer-size"))
+    var bufferSize: Int = CsvTransformer.BufferSizeDefault
   }
 
 }

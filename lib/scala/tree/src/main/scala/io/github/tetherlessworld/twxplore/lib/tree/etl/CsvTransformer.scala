@@ -23,3 +23,7 @@ trait CsvTransformer {
   protected def openCsvReader(filename: String): CSVReader =
     CSVReader.open(openCsvSource(filename))
 }
+
+object CsvTransformer {
+  val BufferSizeDefault = 1000
+}
