@@ -14,7 +14,6 @@ import scala.io.BufferedSource
 
 class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) extends CsvTransformer with DefaultInstrumented {
   val uri = TREE.resourceURI
-  private val treeMeter = metrics.meter("treeMeter")
   private var treeSpeciesMap: mutable.HashMap[String, TreeSpecies] = new mutable.HashMap()
   private var boroughMap: mutable.HashMap[Int, Borough] = new mutable.HashMap()
   private var ntaMap: mutable.HashMap[String, Nta] = new mutable.HashMap()
@@ -48,6 +47,7 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
 
     {
       val source: BufferedSource = openCsvSource(filename)
+      val meter = metrics.meter(filename)
       try {
         for ((line, line_no) <- source.getLines.zipWithIndex) {
           line_no match {
@@ -64,7 +64,7 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
               }
               val tree = process(line)
               sink.accept(tree)
-              treeMeter.mark()
+              meter.mark()
               if (line_no % bufferSize == 0) {
                 sink.flush()
               }
@@ -80,13 +80,22 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
 
     sink.accept(city)
     sink.accept(state)
-    for ((_, nta) <- ntaMap) sink.accept(nta)
-    for ((_, borough) <- boroughMap) sink.accept(borough)
-    for ((_, block) <- blockMap) sink.accept(block)
-    for ((_, code) <- postalCode) sink.accept(code)
-    for ((_, city) <- zipCityMap) sink.accept(city)
-    for ((_, species) <- treeSpeciesMap) sink.accept(species)
-    for ((_, census) <- censusTractMap) sink.accept(census)
+
+    def acceptValues[T](acceptCall: T => Unit, metricName: String, values: Iterable[T]): Unit = {
+      val counter = metrics.counter(metricName)
+      for (value <- values) {
+        counter.inc()
+        acceptCall(value)
+      }
+    }
+
+    acceptValues((value: Nta) => sink.accept(value), "nta", ntaMap.values)
+    acceptValues((value: Borough) => sink.accept(value), "borough", boroughMap.values)
+    acceptValues((value: Block) => sink.accept(value), "block", blockMap.values)
+    acceptValues((value: Postcode) => sink.accept(value), "postalCode", postalCode.values)
+    acceptValues((value: City) => sink.accept(value), "city", zipCityMap.values)
+    acceptValues((value: TreeSpecies) => sink.accept(value), "species", treeSpeciesMap.values)
+    acceptValues((value: CensusTract) => sink.accept(value), "censusTract", censusTractMap.values)
 
     sink.flush()
   }
