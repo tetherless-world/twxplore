@@ -5,4 +5,9 @@ export class Hrefs {
   static get map() {
     return '/map';
   }
+
+  static get selection() {
+    return '/selection';
+  }
 }
+
