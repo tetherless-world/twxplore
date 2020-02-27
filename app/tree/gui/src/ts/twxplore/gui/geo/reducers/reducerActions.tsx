@@ -3,12 +3,14 @@ import reducers from "./reducers"
 
 const composedReducer = (state, action) => {
   switch (action.type) {
-    case 'nah':
-      alert("you clicked me man!")
+    case 'appendToMap': {
+      state.app[action.map].set(action.uri, action.uri)
+      let result = state
       return {
-        ...state,
+        ...result
         }
-      };
+    }
+  };
   return reducers(state, action);
  };
 

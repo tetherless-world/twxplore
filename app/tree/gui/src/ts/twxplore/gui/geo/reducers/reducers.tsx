@@ -28,6 +28,9 @@ import {ActionTypes} from 'kepler.gl/actions';
 type INITIAL_APP_STATE = {
   info: any,
   loaded: Boolean,
+  blockMap: Map<String, String>,
+  ntaMap: Map<String, String>,
+  boroughMap: Map<String, String>,
   blocks: Array<String>[],
   NTAs: Array<String>[],
   scope: String,
@@ -38,6 +41,9 @@ type INITIAL_APP_STATE = {
 const initialAppState: INITIAL_APP_STATE= {
   info: {},
   loaded: false,
+  blockMap: new Map(),
+  ntaMap: new Map(),
+  boroughMap: new Map(),
   blocks: [],
   NTAs: [],
   scope: "borough",
@@ -54,23 +60,20 @@ const reducers = combineReducers({
     [ActionTypes.LAYER_CLICK]: (state, action) => {
       switch(action.payload.info.picked) {
         case true: {
-          console.log(action.payload)
           var result = {}
           switch(action.payload.info.object.properties.type) {
             case "block": {
-              alert("in Block!")
-              state.blocks.push(action.payload.info.object.properties.uri)
+              if(!(state.blockMap.has(action.payload.info.object.properties.uri))){
+                state.blocks.push(action.payload.info.object.properties.uri)
+              }
+              
               result = {
                 blocks: state.blocks,
                 createSelection: true
               }
-              console.log(result)
               break;
             }
             case "NTA": {
-              // result = {
-              //   NTAs: state.NTAs += action.payload.info.object.properties.uri
-              // }
               break;
             }
           }

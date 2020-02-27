@@ -6,9 +6,12 @@ import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
 
-class TreeDataCsvTransformerSpec extends WordSpec with Matchers {
+class TreeCsvTransformerSpec extends WordSpec with Matchers {
 
-  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
+  implicit class TreeUri(uri: Uri) {
+    def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)
+  }
+
   "TreeDataCsvTranformerSpec" can {
     val testData = TestData
 

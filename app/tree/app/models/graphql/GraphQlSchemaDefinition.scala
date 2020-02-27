@@ -458,36 +458,53 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   val CityArgument = Argument("city", CityInputType, description = "City Input")
   val SelectionInputArgument = Argument("selectionInput", SelectionInputType, description = "Selection Input")
 
+
+  val CitiesType =  sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
+    Field("geometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
+    Field("geometries", SelectionGeometryType, arguments= Nil, resolve = (ctx) => ctx.ctx.store.getCityGeometry()),
+    Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getCityHierarchy(cityUri = ctx.args.arg("cityUri"))),
+  ))
+
+  val BlocksType = sangria.schema.ObjectType("Blocks", fields[GraphQlSchemaContext, Int](
+    Field("byNta", ListType(BlockType), arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNta(nta = ctx.args.arg("nta"))),
+    Field("geometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getBlockGeometries()),
+    Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlockHierarchy(blockUri = ctx.args.arg("blockUri"))),
+    Field("byNtaGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNtaGeometry(Nta = ctx.args.arg("uri"))),
+    Field("geometryOfBlocks", ListType(GeometryType), arguments= BlocksArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlocks(blocks = ctx.args.arg("blocks"))),
+    Field("geometryOfBlock", GeometryType, arguments= BlockArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlock(block = ctx.args.arg("block"))),
+  ))
+
+  val BoroughsType = sangria.schema.ObjectType("Boroughs", fields[GraphQlSchemaContext, Int](
+    Field("byCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city"))),
+    Field("geometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getBoroughGeometries()),
+    Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughHierarchy(boroughUri = ctx.args.arg("boroughUri"))),
+    Field("geometryOfBoroughs", ListType(GeometryType), arguments= BoroughsArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBoroughs(boroughs = ctx.args.arg("boroughs"))),
+    Field("geometryOfBorough", GeometryType, arguments= BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBorough(borough = ctx.args.arg("borough"))),
+  ))
+
+  val NtasType = sangria.schema.ObjectType("Ntas", fields[GraphQlSchemaContext, Int](
+    Field("byBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough"))),
+    Field("geometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getNtaGeometries()),
+    Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtaHierarchy(ntaUri = ctx.args.arg("ntaUri"))),
+    Field("byBoroughGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBoroughGeometry(borough = ctx.args.arg("uri"))),
+    Field("geometryOfNtas", ListType(GeometryType), arguments= NtasArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNtas(ntas = ctx.args.arg("ntas"))),
+    Field("geometryOfNta", GeometryType, arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNta(nta = ctx.args.arg("nta"))),
+  ))
+
+
+
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
     Field("trees", ListType(TreeType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTrees(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("getNtasByBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBorough(borough = ctx.args.arg("borough"))),
-    Field("getBlocksByNta", ListType(BlockType), arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNta(nta = ctx.args.arg("nta"))),
-    Field("getBoroughsByCity", ListType(BoroughType), arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughsByCity(city = ctx.args.arg("city"))),
-    Field("getGeometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
+    Field("TreesBySelection", SelectionResultsType, arguments= SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selectionInput"))),
 
-    Field("getTreesBySelection", SelectionResultsType, arguments= SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selectionInput"))),
+    Field("blocks", BlocksType, resolve = ctx => 1),
+    Field("ntas", NtasType, resolve = ctx => 1),
+    Field("boroughs", BoroughsType, resolve = ctx => 1),
+    Field("cities", CitiesType, resolve = ctx => 1),
 
-    Field("getBlockGeometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getBlockGeometries()),
-    Field("getNtaGeometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getNtaGeometries()),
-    Field("getBoroughGeometries", ListType(SelectionGeometryType), arguments= Nil, resolve = (ctx) => ctx.ctx.store.getBoroughGeometries()),
-    Field("getCityGeometries", SelectionGeometryType, arguments= Nil, resolve = (ctx) => ctx.ctx.store.getCityGeometry()),
+    Field("StateHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getStateHierarchy(stateUri = ctx.args.arg("stateUri"))),
 
-    Field("getStateHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getStateHierarchy(stateUri = ctx.args.arg("stateUri"))),
-    Field("getCityHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getCityHierarchy(cityUri = ctx.args.arg("cityUri"))),
-    Field("getBoroughHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughHierarchy(boroughUri = ctx.args.arg("boroughUri"))),
-    Field("getNtaHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtaHierarchy(ntaUri = ctx.args.arg("ntaUri"))),
-    Field("getBlockHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlockHierarchy(blockUri = ctx.args.arg("blockUri"))),
-
-    Field("getNtasByBoroughGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtasByBoroughGeometry(borough = ctx.args.arg("uri"))),
-    Field("getBlocksByNtaGeometry", ListType(SelectionGeometryType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlocksByNtaGeometry(Nta = ctx.args.arg("uri"))),
-
-    Field("getGeometryOfBoroughs", ListType(GeometryType), arguments= BoroughsArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBoroughs(boroughs = ctx.args.arg("boroughs"))),
-    Field("getGeometryOfBorough", GeometryType, arguments= BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBorough(borough = ctx.args.arg("borough"))),
-    Field("getGeometryOfNtas", ListType(GeometryType), arguments= NtasArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNtas(ntas = ctx.args.arg("ntas"))),
-    Field("getGeometryOfNta", GeometryType, arguments= NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfNta(nta = ctx.args.arg("nta"))),
-    Field("getGeometryOfBlocks", ListType(GeometryType), arguments= BlocksArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlocks(blocks = ctx.args.arg("blocks"))),
-    Field("getGeometryOfBlock", GeometryType, arguments= BlockArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfBlock(block = ctx.args.arg("block"))),
   ))
 
   // Schema

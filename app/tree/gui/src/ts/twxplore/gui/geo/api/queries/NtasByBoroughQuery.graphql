@@ -1,9 +1,11 @@
 query NtasByBoroughQuery($uri: String!) {
-  getNtasByBoroughGeometry(uri: $uri){
-      geometry{
-        label
-        wkt
-      }
-      uri
+  ntas{
+    byBoroughGeometry(uri: $uri){
+        geometry{
+          label
+          wkt
+        }
+        uri
+    }
   }
 }

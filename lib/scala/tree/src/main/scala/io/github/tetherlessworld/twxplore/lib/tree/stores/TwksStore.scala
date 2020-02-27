@@ -200,10 +200,10 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
   def getStateUri(): Uri = getPropertyUris("state").head
 
   def getSelectionGeometries(uriList: List[Uri], property: String) = {
-    val geometries = getGeometryOfProperties(property, uriList)
     val result = ListBuffer[SelectionGeometry]()
-    for((geometry, i) <- geometries.zipWithIndex){
-      result += SelectionGeometry(geometry, uriList(i))
+    for(uri <- uriList){
+      val geometry = getGeometryOfProperties(property, List(uri)).head
+      result += SelectionGeometry(geometry, uri)
     }
     result.toList
   }
@@ -327,7 +327,7 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[Geometry](resource))
+      model.listSubjectsWithProperty(RDF.`type`).asScala.map(resource => Rdf.read[Geometry](resource)).toList
     }
   }
 

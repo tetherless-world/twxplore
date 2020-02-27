@@ -6,18 +6,23 @@
 // GraphQL query operation: BoroughsQuery
 // ====================================================
 
-export interface BoroughsQuery_getBoroughGeometries_geometry {
+export interface BoroughsQuery_boroughs_geometries_geometry {
   __typename: "Geometry";
   label: string | null;
   wkt: string;
 }
 
-export interface BoroughsQuery_getBoroughGeometries {
+export interface BoroughsQuery_boroughs_geometries {
   __typename: "SelectionGeometry";
-  geometry: BoroughsQuery_getBoroughGeometries_geometry;
+  geometry: BoroughsQuery_boroughs_geometries_geometry;
   uri: string;
 }
 
+export interface BoroughsQuery_boroughs {
+  __typename: "Boroughs";
+  geometries: BoroughsQuery_boroughs_geometries[];
+}
+
 export interface BoroughsQuery {
-  getBoroughGeometries: BoroughsQuery_getBoroughGeometries[];
+  boroughs: BoroughsQuery_boroughs;
 }

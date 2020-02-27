@@ -6,18 +6,23 @@
 // GraphQL query operation: NtasQuery
 // ====================================================
 
-export interface NtasQuery_getNtaGeometries_geometry {
+export interface NtasQuery_ntas_geometries_geometry {
   __typename: "Geometry";
   label: string | null;
   wkt: string;
 }
 
-export interface NtasQuery_getNtaGeometries {
+export interface NtasQuery_ntas_geometries {
   __typename: "SelectionGeometry";
-  geometry: NtasQuery_getNtaGeometries_geometry;
+  geometry: NtasQuery_ntas_geometries_geometry;
   uri: string;
 }
 
+export interface NtasQuery_ntas {
+  __typename: "Ntas";
+  geometries: NtasQuery_ntas_geometries[];
+}
+
 export interface NtasQuery {
-  getNtaGeometries: NtasQuery_getNtaGeometries[];
+  ntas: NtasQuery_ntas;
 }

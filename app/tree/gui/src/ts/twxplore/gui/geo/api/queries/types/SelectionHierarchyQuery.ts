@@ -6,15 +6,20 @@
 // GraphQL query operation: SelectionHierarchyQuery
 // ====================================================
 
-export interface SelectionHierarchyQuery_getBlockHierarchy {
+export interface SelectionHierarchyQuery_blocks_hierarchy {
   __typename: "SelectionArea";
   name: string;
   uri: string;
   parent: string;
 }
 
+export interface SelectionHierarchyQuery_blocks {
+  __typename: "Blocks";
+  hierarchy: SelectionHierarchyQuery_blocks_hierarchy[];
+}
+
 export interface SelectionHierarchyQuery {
-  getBlockHierarchy: SelectionHierarchyQuery_getBlockHierarchy[];
+  blocks: SelectionHierarchyQuery_blocks;
 }
 
 export interface SelectionHierarchyQueryVariables {

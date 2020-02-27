@@ -1,9 +1,11 @@
 query BlocksQuery {
-  getBlockGeometries{
-      geometry{
-        label
-        wkt
-      }
-      uri
+  blocks{
+    geometries{
+        geometry{
+          label
+          wkt
+        }
+        uri
+    }
   }
 }

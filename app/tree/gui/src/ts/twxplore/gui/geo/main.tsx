@@ -1,10 +1,10 @@
 import 'twxplore/gui/geo/custom_bootstrap.scss';
-
 import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
 import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
-import {treeMap} from 'twxplore/gui/geo/components/map/Map'
+import {treeMap} from 'twxplore/gui/geo/components/map/treeMap'
+import {SelectionHome} from 'twxplore/gui/geo/components/SelectionHome/SelectionHome'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -14,7 +14,6 @@ import {Route, Router, Switch} from 'react-router';
 import {ConsoleLogger, LoggerContext} from '@tetherless-world/twxplore-base-lib';
 import { Provider } from 'react-redux'
 import store from './store'
-// require('dotenv').config()
 
 const logger = new ConsoleLogger();
 
@@ -30,6 +29,7 @@ ReactDOM.render(
               <Switch>
                   <Route exact path={Hrefs.home} component={Home}/>
                   <Route exact path = {Hrefs.map} component={treeMap}/>
+                  <Route exact path = {Hrefs.selection} component = {SelectionHome}/>
                   <Route component={NoRoute}/>
               </Switch>
           </Router>

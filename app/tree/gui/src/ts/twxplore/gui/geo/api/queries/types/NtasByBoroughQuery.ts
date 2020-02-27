@@ -6,20 +6,25 @@
 // GraphQL query operation: NtasByBoroughQuery
 // ====================================================
 
-export interface NtasByBoroughQuery_getNtasByBoroughGeometry_geometry {
+export interface NtasByBoroughQuery_ntas_byBoroughGeometry_geometry {
   __typename: "Geometry";
   label: string | null;
   wkt: string;
 }
 
-export interface NtasByBoroughQuery_getNtasByBoroughGeometry {
+export interface NtasByBoroughQuery_ntas_byBoroughGeometry {
   __typename: "SelectionGeometry";
-  geometry: NtasByBoroughQuery_getNtasByBoroughGeometry_geometry;
+  geometry: NtasByBoroughQuery_ntas_byBoroughGeometry_geometry;
   uri: string;
 }
 
+export interface NtasByBoroughQuery_ntas {
+  __typename: "Ntas";
+  byBoroughGeometry: NtasByBoroughQuery_ntas_byBoroughGeometry[];
+}
+
 export interface NtasByBoroughQuery {
-  getNtasByBoroughGeometry: NtasByBoroughQuery_getNtasByBoroughGeometry[];
+  ntas: NtasByBoroughQuery_ntas;
 }
 
 export interface NtasByBoroughQueryVariables {

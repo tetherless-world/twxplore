@@ -6,18 +6,23 @@
 // GraphQL query operation: BlocksQuery
 // ====================================================
 
-export interface BlocksQuery_getBlockGeometries_geometry {
+export interface BlocksQuery_blocks_geometries_geometry {
   __typename: "Geometry";
   label: string | null;
   wkt: string;
 }
 
-export interface BlocksQuery_getBlockGeometries {
+export interface BlocksQuery_blocks_geometries {
   __typename: "SelectionGeometry";
-  geometry: BlocksQuery_getBlockGeometries_geometry;
+  geometry: BlocksQuery_blocks_geometries_geometry;
   uri: string;
 }
 
+export interface BlocksQuery_blocks {
+  __typename: "Blocks";
+  geometries: BlocksQuery_blocks_geometries[];
+}
+
 export interface BlocksQuery {
-  getBlockGeometries: BlocksQuery_getBlockGeometries[];
+  blocks: BlocksQuery_blocks;
 }

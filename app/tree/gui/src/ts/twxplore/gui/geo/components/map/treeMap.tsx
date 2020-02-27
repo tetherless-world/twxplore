@@ -15,7 +15,7 @@ import {useQuery, useLazyQuery} from '@apollo/react-hooks'
 import {ApolloException, FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
 import * as ReactLoader from "react-loader";
 import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/types/BlocksByNtaQuery';
-import { BoroughsQuery } from '../../api/queries/types/BoroughsQuery'
+import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
 import { TreeMapQuery, TreeMapQueryVariables } from '../../api/queries/types/TreeMapQuery'
 
@@ -27,7 +27,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
   const dispatch = useDispatch();
   
   //const blockQuery = useQuery<BlocksQuery, BlocksQuery_getBlockGeometries>(blckQuery, {});
-  const boroughQuery = useQuery<BoroughsQuery>(brghQuery, {});
+  const boroughQuery = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(brghQuery, {});
   
   const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery);
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
@@ -50,7 +50,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
       "type": "FeatureCollection",
       "features": trees
     }
-    console.log(featureData)
+    //console.log(featureData)
     const dataset = {
       data: Processors.processGeojson(featureData),
       info: {
@@ -73,6 +73,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         }
       }
     })
+    console.log(features)
     const featuredata = {
       "type": "FeatureCollection",
       "features": features
@@ -99,7 +100,8 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         break;
       }
       case "NTA": {
-        if(!(counter.app.parentUri in counter.app.boroughMap )){
+        if(!(counter.app.boroughMap.has(counter.app.parentUri))){
+          //console.log("NTA")
           getNtasByBoroughUri({"variables": {uri: counter.app.parentUri}})
           if(NTAQuery.data){
             addGeometryData(NTAQuery.data!.ntas.byBoroughGeometry, "NTA", "block")
@@ -113,7 +115,8 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         break;
       }
       case "block": {
-        if(counter.app.parentUri in counter.app.ntaMap ){
+        if(!(counter.app.parentUri in counter.app.ntaMap) ){
+          //console.log("block")
           getBlocksByNtaUri({"variables": {uri: counter.app.parentUri}})
           if(BlockQuery.data){
             addGeometryData(BlockQuery.data!.blocks.byNtaGeometry, "block", "tree")
@@ -127,7 +130,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         break;
       }
       case "tree": {
-        if(counter.app.parentUri in counter.app.blockMap){
+        if(!(counter.app.parentUri in counter.app.blockMap)){
           getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
           if(ResultQuery.data){
             addTreeData(ResultQuery.data!.TreesBySelection.trees)

@@ -2,7 +2,7 @@ package io.github.tetherlessworld.twxplore.lib.tree.models.domain
 
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
-case class SelectionResults(
+final case class SelectionResults(
                          blocks: List[Block],
                          boroughs: List[Borough],
                          censusTracts: List[CensusTract],
