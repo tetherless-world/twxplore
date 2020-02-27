@@ -35,8 +35,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$borough: BoroughFieldsInput!) {
-              getNtasByBorough(borough: $$borough) {
-                uri
+              ntas{
+                byBorough(borough: $$borough) {
+                  uri
+                }
               }
            }
         """
@@ -50,7 +52,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"getNtasByBorough":[${TestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}
+           |{"data":{"ntas":{"byBorough":[${TestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -58,8 +60,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$nta: NtaFieldsInput!) {
-              getBlocksByNta(nta: $$nta) {
-                uri
+              blocks{
+                byNta(nta: $$nta) {
+                  uri
+                }
               }
            }
         """
@@ -74,7 +78,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"getBlocksByNta":[${TestData.ntaMap("MN14").blocks.map(block => "{\"uri\":" + "\"" + block + "\"").mkString("},")}}]}}
+           |{"data":{"blocks":{"byNta":[${TestData.ntaMap("MN14").blocks.map(block => "{\"uri\":" + "\"" + block + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -82,8 +86,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$city: CityFieldsInput!) {
-              getBoroughsByCity(city: $$city) {
-                uri
+              boroughs{
+                byCity(city: $$city) {
+                  uri
+                }
               }
            }
         """
@@ -97,7 +103,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"getBoroughsByCity":[${TestData.city.boroughs.map(borough => "{\"uri\":" + "\"" + borough + "\"").mkString("},")}}]}}
+           |{"data":{"boroughs":{"byCity":[${TestData.city.boroughs.map(borough => "{\"uri\":" + "\"" + borough + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -105,8 +111,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$city: CityFieldsInput!) {
-              getGeometryOfCity(city: $$city) {
-                wkt
+              cities{
+                geometryOfCity(city: $$city) {
+                  wkt
+                }
               }
            }
         """
@@ -120,7 +128,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"getGeometryOfCity": { "wkt": "${TestData.cityGeoMap("New York").geometry.wkt}" }}}
+           |{"data":{"cities": {"geometryOfCity": { "wkt": "${TestData.cityGeoMap("New York").geometry.wkt}" }}}}
            |""".stripMargin
       ))
     }
@@ -128,8 +136,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$boroughs: [BoroughFieldsInput!]!) {
-              getGeometryOfBoroughs(boroughs: $$boroughs) {
-                wkt
+              boroughs{
+                geometryOfBoroughs(boroughs: $$boroughs) {
+                  wkt
+                }
               }
            }
         """
@@ -144,7 +154,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
         ))))
       result must be(Json.parse(
         s"""
-           |{"data":{"getGeometryOfBoroughs": [{ "wkt": "${TestData.boroughGeoMap("Manhattan").geometry.wkt}" }]}}
+           |{"data":{"boroughs": {"geometryOfBoroughs": [{ "wkt": "${TestData.boroughGeoMap("Manhattan").geometry.wkt}" }]}}}
            |""".stripMargin
       ))
     }
@@ -152,8 +162,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$ntas: [NtaFieldsInput!]!) {
-              getGeometryOfNtas(ntas: $$ntas) {
-                wkt
+              ntas{
+                geometryOfNtas(ntas: $$ntas) {
+                  wkt
+                }
               }
            }
         """
@@ -168,7 +180,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       ))))
       result must be(Json.parse(
         s"""
-           |{"data":{"getGeometryOfNtas": [{ "wkt": "${TestData.ntaGeoMap("Lincoln Square").geometry.wkt}" }]}}
+           |{"data":{"ntas": {"geometryOfNtas": [{ "wkt": "${TestData.ntaGeoMap("Lincoln Square").geometry.wkt}" }]}}}
            |""".stripMargin
       ))
     }
@@ -176,8 +188,10 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
            query TreesQuery($$blocks: [BlockFieldsInput!]!) {
-              getGeometryOfBlocks(blocks: $$blocks) {
-                wkt
+              blocks{
+                geometryOfBlocks(blocks: $$blocks) {
+                  wkt
+                }
               }
            }
         """
@@ -190,7 +204,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       ))))
       result must be(Json.parse(
         s"""
-           |{"data":{"getGeometryOfBlocks": [{ "wkt": "${TestData.blockGeoMap("348711").geometry.wkt}" }]}}
+           |{"data":{"blocks":{"geometryOfBlocks": [{ "wkt": "${TestData.blockGeoMap("348711").geometry.wkt}" }]}}}
            |""".stripMargin
       ))
     }

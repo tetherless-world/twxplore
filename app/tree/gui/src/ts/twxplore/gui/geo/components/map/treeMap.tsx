@@ -115,7 +115,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         break;
       }
       case "block": {
-        if(!(counter.app.parentUri in counter.app.ntaMap) ){
+        if(!(counter.app.ntaMap.has(counter.app.parentUri)) ){
           //console.log("block")
           getBlocksByNtaUri({"variables": {uri: counter.app.parentUri}})
           if(BlockQuery.data){
@@ -130,7 +130,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         break;
       }
       case "tree": {
-        if(!(counter.app.parentUri in counter.app.blockMap)){
+        if(!(counter.app.blockMap.has(counter.app.parentUri))){
           getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
           if(ResultQuery.data){
             addTreeData(ResultQuery.data!.TreesBySelection.trees)
