@@ -22,7 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }
 }))
 
-
+enum Mode{
+    home = 'home',
+    borough = 'borough',
+    city = 'city',
+    species = 'species'
+}
 
 
 export const PanelParent: React.FunctionComponent<{}> = () => {
@@ -36,7 +41,7 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
         setMode('home')
     }
 
-    const [mode, setMode] = React.useState('home')
+    const [mode, setMode] = React.useState<string>('home')
     React.useEffect(() => {
          console.log(mode)
     });
@@ -45,10 +50,10 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
             <IconButton onClick = {backArrowClick} disabled = {mode == 'home'}>
                 <ArrowBackIcon className = {(mode == 'home' ? classes.arrow_disabled : classes.arrow)} />
             </IconButton>
-            { mode == 'home' && <TreesList callSetMode = {callSetMode}/>}
-            { mode == 'borough' && <BoroughList/>}
-            { mode == 'city' && <CityList/>}
-            { mode == 'species' && <SpeciesList/>}
+            { mode == Mode.home && <TreesList callSetMode = {callSetMode}/>}
+            { mode == Mode.borough && <BoroughList/>}
+            { mode == Mode.city && <CityList/>}
+            { mode ==  Mode.species && <SpeciesList/>}
         </div>
     );
 }
