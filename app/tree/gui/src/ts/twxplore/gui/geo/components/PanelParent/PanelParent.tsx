@@ -38,22 +38,22 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
     }
 
     const backArrowClick = (e) => {
-        setMode('home')
+        setMode(Mode.home)
     }
 
-    const [mode, setMode] = React.useState<string>('home')
+    const [mode, setMode] = React.useState<string>(Mode.home)
     React.useEffect(() => {
          console.log(mode)
     });
     return (
         <div>
-            <IconButton onClick = {backArrowClick} disabled = {mode == 'home'}>
-                <ArrowBackIcon className = {(mode == 'home' ? classes.arrow_disabled : classes.arrow)} />
+            <IconButton onClick = {backArrowClick} disabled = {mode === Mode.home}>
+                <ArrowBackIcon className = {(mode === Mode.home ? classes.arrow_disabled : classes.arrow)} />
             </IconButton>
-            { mode == Mode.home && <TreesList callSetMode = {callSetMode}/>}
-            { mode == Mode.borough && <BoroughList/>}
-            { mode == Mode.city && <CityList/>}
-            { mode ==  Mode.species && <SpeciesList/>}
+            { mode ===Mode.home && <TreesList callSetMode = {callSetMode}/>}
+            { mode === Mode.borough && <BoroughList/>}
+            { mode === Mode.city && <CityList/>}
+            { mode ===  Mode.species && <SpeciesList/>}
         </div>
     );
 }
