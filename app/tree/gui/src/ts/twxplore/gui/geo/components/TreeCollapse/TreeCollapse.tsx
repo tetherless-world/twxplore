@@ -44,13 +44,12 @@ export const TreeCollapse: React.FunctionComponent<{features: TreesQuery_trees, 
                     <ListGroup className = 'eachFeature'>
                       
 
-                        {Object.keys(features).map(key =>
-                          {
-                            const onClick = () => callSetMode(key);
-                            String(features[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
-                          <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {features[key]} </a> </ListGroupItem> 
-                          }
-                        )}
+                        {Object.keys(features).map(key =>{ 
+                          const onClick = (e) => { e.preventDefault(); callSetMode(key);}
+                          return (String(features[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
+                          <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {features[key]} </a> </ListGroupItem>)
+                          
+                      })}
                     </ListGroup>
                 </ExpansionPanelDetails>
             </ExpansionPanel>

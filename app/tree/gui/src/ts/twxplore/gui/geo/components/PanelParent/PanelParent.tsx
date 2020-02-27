@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }
 }))
 
-enum modes =
 
 
 
@@ -33,11 +32,11 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
         setMode(newMode)
     }
 
-    const backArrowClick = () => {
+    const backArrowClick = (e) => {
         setMode('home')
     }
 
-    const [mode, setMode] = React.useState<enum>()
+    const [mode, setMode] = React.useState('home')
     React.useEffect(() => {
          console.log(mode)
     });

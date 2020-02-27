@@ -30,4 +30,3 @@ export const TreesList: React.FunctionComponent<TreeListProps> = ({callSetMode})
     );
 }
 
-export default TreesList
