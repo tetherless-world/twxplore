@@ -1,13 +1,8 @@
-import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarItem';
-import {ActiveSidebarItem} from 'twxplore/gui/geo/components/sidebar/ActiveSidebarItem';
-import {Hrefs} from 'twxplore/gui/geo/Hrefs';
-import * as React from 'react';
-import { compose } from 'redux'
-import {connect, MapDispatchToProps} from 'react-redux';
-import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
-import {Form, FormGroup, Input, Nav, Navbar as BootstrapNavbar, NavbarBrand, NavItem, NavLink,} from 'reactstrap';
-import { Dispatch } from 'react';
 
+import * as React from 'react';
+
+
+/*
 const mapStateToProps = (state:any) => state;
 const mapDispatchToProps = (dispatch:Dispatch<any>) => {
   return {
@@ -21,8 +16,9 @@ interface Props {
     dispatch: ReturnType<typeof mapDispatchToProps>
 
 }
-
-const NavbarImpl: React.FunctionComponent<Props> = ({activeNavItem, activeSideItem, dispatch}) => {
+*/
+class Navbar extends React.Component<{}> {
+  /*
   const handleClick = (toolType:ActiveSidebarItem) => {
     dispatch.changeTool(toolType)
   }
@@ -82,9 +78,13 @@ const NavbarImpl: React.FunctionComponent<Props> = ({activeNavItem, activeSideIt
                 </Nav>
             </BootstrapNavbar>
         </div>);
+  */
 }
 
+/*
 export const Navbar = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(NavbarImpl);
+*/
+export default Navbar
