@@ -125,6 +125,11 @@ export const treeMap: React.FunctionComponent<{}> = () => {
               map: 'ntaMap',
               uri: counter.app.parentUri
             })
+            dispatch({
+              type: 'infoPanelInfo', 
+
+            })
+            
           }
         }
         break;
@@ -138,6 +143,10 @@ export const treeMap: React.FunctionComponent<{}> = () => {
               type: 'appendToMap', 
               map: 'blockMap',
               uri: counter.app.parentUri
+            })
+            dispatch({
+              type: 'sendSelectionData',
+              selection_data: ResultQuery.data!.TreesBySelection
             })
             console.log(ResultQuery)
           }
