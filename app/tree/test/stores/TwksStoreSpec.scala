@@ -1,16 +1,13 @@
 package stores
 
-import edu.rpi.tw.twks.client.rest.RestTwksClientConfiguration
-import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksStoreSpec extends WordSpec with Matchers {
-  val storeConfiguration = new TwksStoreConfiguration(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build())
-  val store = new TwksStore(storeConfiguration)
-
-  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
+//  val storeConfiguration = new TwksStoreConfiguration(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build())
+//  val store = new TwksStore(storeConfiguration)
+//
+//  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
 
 
   "Test Twks Store" can {
