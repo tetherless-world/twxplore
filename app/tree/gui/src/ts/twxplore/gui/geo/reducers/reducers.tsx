@@ -23,6 +23,7 @@ import {handleActions} from 'redux-actions';
 import {routerReducer} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
 import {ActionTypes} from 'kepler.gl/actions';
+import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
 
 // INITIAL_APP_STATE
 type INITIAL_APP_STATE = {
@@ -35,7 +36,8 @@ type INITIAL_APP_STATE = {
   NTAs: Array<String>[],
   scope: String,
   parentUri: String,
-  createSelection: Boolean
+  createSelection: Boolean,
+  treeInfo: Array<ResultsQuery>[]
 }
 
 const initialAppState: INITIAL_APP_STATE= {
@@ -48,7 +50,8 @@ const initialAppState: INITIAL_APP_STATE= {
   NTAs: [],
   scope: "borough",
   parentUri: "",
-  createSelection: false
+  createSelection: false,
+  treeInfo: []
 };
 
 
