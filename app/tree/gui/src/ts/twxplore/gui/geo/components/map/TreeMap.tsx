@@ -8,6 +8,7 @@ import {addDataToMap} from 'kepler.gl/actions';
 import Processors from 'kepler.gl/processors';
 import ReactResizeDetector from 'react-resize-detector';
 import * as blckQuery from "twxplore/gui/geo/api/queries/BlocksByNtaQuery.graphql";
+import * as blckHrchyQuery from "twxplore/gui/geo/api/queries/SelectionHierarchyQuery.graphql";
 import * as brghQuery from "twxplore/gui/geo/api/queries/BoroughGeometriesQuery.graphql";
 import * as ntaQuery from "twxplore/gui/geo/api/queries/NtasByBoroughQuery.graphql";
 import * as rsltQuery from "twxplore/gui/geo/api/queries/TreeMapQuery.graphql";
@@ -15,6 +16,7 @@ import {useQuery, useLazyQuery} from '@apollo/react-hooks'
 import {ApolloException, FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
 import * as ReactLoader from "react-loader";
 import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/types/BlocksByNtaQuery';
+import { SelectionHierarchyQuery, SelectionHierarchyQueryVariables } from  '../../api/queries/types/SelectionHierarchyQuery';
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
 import { TreeMapQuery, TreeMapQueryVariables } from '../../api/queries/types/TreeMapQuery'
@@ -32,8 +34,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
   const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery)
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
   const [getResult, ResultQuery] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(rsltQuery);
-  
-  
+  const [getBlockHierarchy, BlockHierarchyQuery] = useLazyQuery<SelectionHierarchyQuery, SelectionHierarchyQueryVariables>(blckHrchyQuery)
 
   const addTreeData = (treeData, id: String) => {
     const trees = treeData.map(tree => {
@@ -90,13 +91,17 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
     //setFeature(dataset)
     dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
   }
+
+  const [boroughRendered, setBoroughRender] = useState<Boolean>(false)
   const [rendering, setRenderState] = useState<Boolean>(false)
+  const [hierarchyRendering, setHierarchyRenderState] = useState<Boolean>(false)
   const [previousState, setPreviousState] = useState({
     nta: "",
     block: "",
-    tree: ""
+    tree: "",
+    hierarchy: ""
   })
-  const [boroughRendered, setBoroughRender] = useState<Boolean>(false)
+  
 
   useEffect(()=> {
     mapRender()
@@ -167,17 +172,19 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
         }
         case "tree": {
           if(!(counter.app.blockMap.has(counter.app.parentUri))){
-            if(counter.app.blockMap.size > 0 && !rendering){
-              console.log("setting up refetch!")
+            if(counter.app.blockMap.size > 0 && !rendering && !hierarchyRendering){
               ResultQuery.refetch({selectionInput: {includeBlocks: [counter.app.parentUri], includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}})
+              BlockHierarchyQuery.refetch({uri: counter.app.parentUri})
               setRenderState(true)
-            }else if(!rendering){ 
+              setHierarchyRenderState(true)
+            }else if(!rendering && !hierarchyRendering){ 
               getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
+              getBlockHierarchy({"variables": {uri: counter.app.parentUri}})
               setRenderState(true)
+              setHierarchyRenderState(true)
             }
             
             if(ResultQuery.data && (previousState.tree !== ResultQuery.data!.TreesBySelection.trees[0].uri || previousState.tree === "") ){
-              console.log(ResultQuery.data!.TreesBySelection)
               addTreeData(ResultQuery.data!.TreesBySelection.trees, counter.app.parentUri)
               setPreviousState({
                 ...previousState,
@@ -189,6 +196,15 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
                 uri: counter.app.parentUri
               })
               setRenderState(false)
+            }
+
+            if(BlockHierarchyQuery.data! && (previousState.hierarchy !== BlockHierarchyQuery.data!.blocks.hierarchy[4].uri || previousState.hierarchy === "")){
+              console.log(BlockHierarchyQuery.data!.blocks.hierarchy)
+              setPreviousState({
+                ...previousState,
+                hierarchy: BlockHierarchyQuery.data!.blocks.hierarchy[4].uri
+              })
+              setHierarchyRenderState(false)
             }
           }
         }
