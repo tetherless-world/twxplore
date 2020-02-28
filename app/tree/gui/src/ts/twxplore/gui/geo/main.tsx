@@ -3,7 +3,7 @@ import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
 import {createBrowserHistory} from 'history';
 import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
 import {Home} from 'twxplore/gui/geo/components/home/Home';
-import {treeMap} from 'twxplore/gui/geo/components/map/treeMap'
+import {treeMap} from 'twxplore/gui/geo/components/map/TreeMap'
 import {SelectionHome} from 'twxplore/gui/geo/components/SelectionHome/SelectionHome'
 import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';

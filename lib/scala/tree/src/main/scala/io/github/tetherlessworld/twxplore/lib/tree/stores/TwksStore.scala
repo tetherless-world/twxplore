@@ -379,4 +379,10 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
 
   override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
   override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(Nta, "block"), "block")
+
+  def getSelectionGeometry(uri: Uri, componentProp: String): SelectionGeometry = getSelectionGeometries(List(uri), componentProp).head
+  override def getBlockGeometry(blockUri: Uri): SelectionGeometry = getSelectionGeometry(blockUri, "block")
+  override def getNtaGeometry(ntaUri: Uri): SelectionGeometry = getSelectionGeometry(ntaUri, "NTA")
+  override def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = getSelectionGeometry(boroughUri, "borough")
+  override def getCityGeometry(cityUri: Uri): SelectionGeometry = getSelectionGeometry(cityUri, "city")
 }

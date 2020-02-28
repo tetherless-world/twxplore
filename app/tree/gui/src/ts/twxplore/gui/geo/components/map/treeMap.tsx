@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
@@ -29,11 +29,13 @@ export const treeMap: React.FunctionComponent<{}> = () => {
   //const blockQuery = useQuery<BlocksQuery, BlocksQuery_getBlockGeometries>(blckQuery, {});
   const boroughQuery = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(brghQuery, {});
   
-  const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery);
+  const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery)
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
   const [getResult, ResultQuery] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(rsltQuery);
   
-  const addTreeData = (treeData) => {
+  
+
+  const addTreeData = (treeData, id: String) => {
     const trees = treeData.map(tree => {
       const point = "POINT (" + tree.longitude + " " + tree.latitude + ")"
       return {
@@ -50,17 +52,17 @@ export const treeMap: React.FunctionComponent<{}> = () => {
       "type": "FeatureCollection",
       "features": trees
     }
-    //console.log(featureData)
     const dataset = {
       data: Processors.processGeojson(featureData),
       info: {
-        id: "tree"
+        id: "tree:" + id.toString()
       }
     }
     dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
   }
 
-  const addGeometryData = (dataQuery, type: String, child: String) => {
+  const addGeometryData = async (dataQuery, id: String, type: String, child: String) => {
+    
     const features = dataQuery.map(feature => {
       return {
         "type": "Feature",
@@ -73,7 +75,6 @@ export const treeMap: React.FunctionComponent<{}> = () => {
         }
       }
     })
-    console.log(features)
     const featuredata = {
       "type": "FeatureCollection",
       "features": features
@@ -82,71 +83,120 @@ export const treeMap: React.FunctionComponent<{}> = () => {
     const dataset = {
       data: Processors.processGeojson(featuredata),
       info: {
-        id: type
+        label: id.toString(),
+        id: type + id.toString(),
       }
     }
+    //setFeature(dataset)
     dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
   }
-
+  const [rendering, setRenderState] = useState<Boolean>(false)
+  const [previousState, setPreviousState] = useState({
+    nta: "",
+    block: "",
+    tree: ""
+  })
   const [boroughRendered, setBoroughRender] = useState<Boolean>(false)
 
-  useEffect(() => {
-    if(boroughQuery.data! && !boroughRendered) {
-      addGeometryData(boroughQuery.data!.boroughs.geometries, "borough", "NTA")
-      setBoroughRender(true)
+  useEffect(()=> {
+    mapRender()
+  })
+
+    const mapRender = async () => {
+      if(boroughQuery.data! && !boroughRendered) {
+        addGeometryData(boroughQuery.data!.boroughs.geometries, counter.app.parentUri, "borough", "NTA")
+        setBoroughRender(true)
+      }
+      switch (counter.app.scope) {
+        case "borough": {
+          break;
+        }
+        case "NTA": {
+          if(!(counter.app.boroughMap.has(counter.app.parentUri))){
+            if(counter.app.boroughMap.size > 0 && !rendering){
+              NTAQuery.refetch({uri: counter.app.parentUri})
+              setRenderState(true)
+            }else if(!rendering){ 
+              getNtasByBoroughUri({
+                "variables": {uri: counter.app.parentUri}
+              })
+              setRenderState(true)
+            }
+            if(NTAQuery.data! && (previousState.nta !== NTAQuery.data!.ntas.byBoroughGeometry[0].uri || previousState.nta === "")){
+              setPreviousState({
+                ...previousState,
+                nta: NTAQuery.data!.ntas.byBoroughGeometry[0].uri
+              })
+              dispatch({
+                type: 'appendToMap', 
+                map: 'boroughMap',
+                uri: counter.app.parentUri
+              })
+              setRenderState(false)
+              addGeometryData(NTAQuery.data!.ntas.byBoroughGeometry, counter.app.parentUri, "NTA", "block")
+            }
+          }
+          break;
+        }
+        case "block": {
+          if(!(counter.app.ntaMap.has(counter.app.parentUri)) ){
+            if(counter.app.ntaMap.size > 0 && !rendering){
+              BlockQuery.refetch({uri: counter.app.parentUri})
+              setRenderState(true)
+            }else if(!rendering){ 
+              getBlocksByNtaUri({
+                "variables": {uri: counter.app.parentUri}
+              })
+              setRenderState(true)
+            }
+            if(BlockQuery.data && (previousState.block !== BlockQuery.data!.blocks.byNtaGeometry[0].uri || previousState.block === "") ){
+              addGeometryData(BlockQuery.data!.blocks.byNtaGeometry, counter.app.parentUri, "block", "tree")
+              setPreviousState({
+                ...previousState,
+                block: BlockQuery.data!.blocks.byNtaGeometry[0].uri
+              })
+              dispatch({
+                type: 'appendToMap', 
+                map: 'ntaMap',
+                uri: counter.app.parentUri
+              })
+              setRenderState(false)
+            }
+          }
+          break;
+        }
+        case "tree": {
+          if(!(counter.app.blockMap.has(counter.app.parentUri))){
+            if(counter.app.blockMap.size > 0 && !rendering){
+              console.log("setting up refetch!")
+              ResultQuery.refetch({selectionInput: {includeBlocks: [counter.app.parentUri], includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}})
+              setRenderState(true)
+            }else if(!rendering){ 
+              getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
+              setRenderState(true)
+            }
+            
+            if(ResultQuery.data && (previousState.tree !== ResultQuery.data!.TreesBySelection.trees[0].uri || previousState.tree === "") ){
+              console.log(ResultQuery.data!.TreesBySelection.trees[0].uri)
+              addTreeData(ResultQuery.data!.TreesBySelection.trees, counter.app.parentUri)
+              setPreviousState({
+                ...previousState,
+                tree: ResultQuery.data!.TreesBySelection.trees[0].uri
+              })
+              dispatch({
+                type: 'appendToMap', 
+                map: 'blockMap',
+                uri: counter.app.parentUri
+              })
+              setRenderState(false)
+            }
+          }
+        }
+        default : {
+        }
+      }
     }
-    switch (counter.app.scope) {
-      case "borough": {
-        break;
-      }
-      case "NTA": {
-        if(!(counter.app.boroughMap.has(counter.app.parentUri))){
-          //console.log("NTA")
-          getNtasByBoroughUri({"variables": {uri: counter.app.parentUri}})
-          if(NTAQuery.data){
-            addGeometryData(NTAQuery.data!.ntas.byBoroughGeometry, "NTA", "block")
-            dispatch({
-              type: 'appendToMap', 
-              map: 'boroughMap',
-              uri: counter.app.parentUri
-            })
-          }
-        }
-        break;
-      }
-      case "block": {
-        if(!(counter.app.ntaMap.has(counter.app.parentUri)) ){
-          //console.log("block")
-          getBlocksByNtaUri({"variables": {uri: counter.app.parentUri}})
-          if(BlockQuery.data){
-            addGeometryData(BlockQuery.data!.blocks.byNtaGeometry, "block", "tree")
-            dispatch({
-              type: 'appendToMap', 
-              map: 'ntaMap',
-              uri: counter.app.parentUri
-            })
-          }
-        }
-        break;
-      }
-      case "tree": {
-        if(!(counter.app.blockMap.has(counter.app.parentUri))){
-          getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
-          if(ResultQuery.data){
-            addTreeData(ResultQuery.data!.TreesBySelection.trees)
-            dispatch({
-              type: 'appendToMap', 
-              map: 'blockMap',
-              uri: counter.app.parentUri
-            })
-            console.log(ResultQuery)
-          }
-        }
-      }
-      default : {
-      }
-    }
-  })  
+
   
   if (boroughQuery.error) {
     return <FatalErrorModal exception={new ApolloException(boroughQuery.error)}/>;

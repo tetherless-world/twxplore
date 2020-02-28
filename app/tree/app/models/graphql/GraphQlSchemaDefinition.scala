@@ -503,6 +503,11 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     Field("boroughs", BoroughsType, resolve = ctx => 1),
     Field("cities", CitiesType, resolve = ctx => 1),
 
+    Field("block", SelectionGeometryType, arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlockGeometry(blockUri = ctx.args.arg("uri"))),
+    Field("nta", SelectionGeometryType, arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtaGeometry(ntaUri = ctx.args.arg("uri"))),
+    Field("borough", SelectionGeometryType, arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBoroughGeometry(boroughUri = ctx.args.arg("uri"))),
+    Field("city", SelectionGeometryType, arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getCityGeometry(cityUri = ctx.args.arg("uri"))),
+
     Field("StateHierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getStateHierarchy(stateUri = ctx.args.arg("stateUri"))),
 
   ))

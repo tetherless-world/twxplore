@@ -22,6 +22,11 @@ trait Store {
   def getBoroughGeometries(): List[SelectionGeometry]
   def getCityGeometry(): SelectionGeometry
 
+  def getBlockGeometry(blockUri: Uri): SelectionGeometry
+  def getNtaGeometry(ntaUri: Uri): SelectionGeometry
+  def getBoroughGeometry(boroughUri: Uri): SelectionGeometry
+  def getCityGeometry(cityUri: Uri): SelectionGeometry
+
   def getStateHierarchy(stateUri: Uri): List[SelectionArea]
   def getCityHierarchy(cityUri: Uri): List[SelectionArea]
   def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea]
