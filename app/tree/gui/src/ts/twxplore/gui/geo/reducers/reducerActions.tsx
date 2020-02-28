@@ -10,6 +10,14 @@ const composedReducer = (state, action) => {
         ...result
         }
     }
+    case 'sendSelectionData' : {
+      const result = Object.assign({}, state)
+      result.app.selectionData = action.sendSelectionData
+      return{
+        ...result
+      }
+
+    }
   };
   return reducers(state, action);
  };

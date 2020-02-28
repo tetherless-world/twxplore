@@ -37,7 +37,7 @@ type INITIAL_APP_STATE = {
   scope: String,
   parentUri: String,
   createSelection: Boolean,
-  treeInfo: Array<ResultsQuery>[]
+  selectionData: Array<ResultsQuery>[]
 }
 
 const initialAppState: INITIAL_APP_STATE= {
@@ -51,7 +51,7 @@ const initialAppState: INITIAL_APP_STATE= {
   scope: "borough",
   parentUri: "",
   createSelection: false,
-  treeInfo: []
+  selectionData: []
 };
 
 
