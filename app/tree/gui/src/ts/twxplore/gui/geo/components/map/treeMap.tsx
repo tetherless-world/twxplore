@@ -22,7 +22,7 @@ import { TreeMapQuery, TreeMapQueryVariables } from '../../api/queries/types/Tre
 var wkt = require('terraformer-wkt-parser');
 const MAPBOX_TOKEN = "pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
 
-export const treeMap: React.FunctionComponent<{}> = () => {
+export const TreeMap: React.FunctionComponent<{}> = () => {
   const counter:any = useSelector(state => state);
   const dispatch = useDispatch();
   
