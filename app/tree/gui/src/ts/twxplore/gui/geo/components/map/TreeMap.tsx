@@ -177,7 +177,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
             }
             
             if(ResultQuery.data && (previousState.tree !== ResultQuery.data!.TreesBySelection.trees[0].uri || previousState.tree === "") ){
-              console.log(ResultQuery.data!.TreesBySelection.trees[0].uri)
+              console.log(ResultQuery.data!.TreesBySelection)
               addTreeData(ResultQuery.data!.TreesBySelection.trees, counter.app.parentUri)
               setPreviousState({
                 ...previousState,
