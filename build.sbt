@@ -67,9 +67,7 @@ lazy val baseLib =
         ws,
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-        "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
         "edu.rpi.tw.twks" % "twks-rest-client" % twksVersion,
-        "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
         organization.value %% "scena" % scenaVersion,
         "nl.grons" %% "metrics4-scala" % "4.1.1",
         "org.apache.jena" % "jena-geosparql" % "3.13.1",
@@ -126,6 +124,8 @@ lazy val treeCli = (project in file("cli/tree"))
     libraryDependencies ++= Seq(
       "com.github.tototoshi" %% "scala-csv" % "1.3.6",
       "com.beust" % "jcommander" % "1.78",
+      "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+      "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
       "org.slf4j" % "slf4j-simple" % slf4jVersion
     ),
     name := "tree-cli",
@@ -138,6 +138,8 @@ lazy val testLib =
     .settings(
       libraryDependencies ++= Seq(
         organization.value %% "scena" % scenaVersion,
+        "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+        "edu.rpi.tw.twks" % "twks-mem" % twksVersion,
         // "org.scalatest" %% "scalatest" % "3.0.8",
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3",
         "org.slf4j" % "slf4j-simple" % slf4jVersion,
