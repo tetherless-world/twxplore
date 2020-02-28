@@ -4,8 +4,12 @@ import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksStoreSpec extends WordSpec with Matchers {
-//  val storeConfiguration = new TwksStoreConfiguration(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build())
-//  val store = new TwksStore(storeConfiguration)
+  // If you're going to populate the store yourself:
+  //  val store = new TwksStore(new DirectTwksClient(new MemTwks(MemTwksConfiguration.builder().build())))
+  // Populate here
+
+  // If using a store that's been pre-populated out-of-band
+  //  val store = new TwksStore(new RestTwksClient(RestTwksClientConfiguration.builder().setServerBaseUrl("http://twks-server:8080").build()))
 
   //implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
 
