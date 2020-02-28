@@ -4,10 +4,9 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.SelectionArea
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Block(id: Int, name: String, nta: Uri, feature: Uri, uri: Uri) extends Ordered[Block] with SelectionArea{
+final case class Block(id: Int, name: String, nta: Uri, feature: Uri, uri: Uri) extends Ordered[Block]{
   def compare(that: Block) = this.id compare that.id
 }
 
@@ -17,6 +16,7 @@ object Block {
 
   implicit object BlockRdfReader extends RdfReader[Block] {
     override def read(resource: Resource): Block = {
+      resource.getModel.write(System.out, "TTL")
       Block(
         id = resource.identifier.get.toInt,
         name = resource.identifier.get,
@@ -35,7 +35,7 @@ object Block {
       resource.ntaUri = value.nta
       resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.BLOCK_URI_PREFIX)
-
+      resource.label = value.id.toString
       resource
     }
   }

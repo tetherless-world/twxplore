@@ -1,28 +1,19 @@
-
+import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarItem';
+import {ActiveSidebarItem} from 'twxplore/gui/geo/components/sidebar/ActiveSidebarItem';
+import {Hrefs} from 'twxplore/gui/geo/Hrefs';
 import * as React from 'react';
+import {Link} from 'react-router-dom';
+import {Form, FormGroup, Input, Nav, Navbar as BootstrapNavbar, NavbarBrand, NavItem, NavLink,} from 'reactstrap';
 
 
-/*
-const mapStateToProps = (state:any) => state;
-const mapDispatchToProps = (dispatch:Dispatch<any>) => {
-  return {
-    changeTool: (tool: ActiveSidebarItem) => dispatch({ type: 'ActiveTool', activeTool: tool})
-  }
-};
 
 interface Props {
     activeNavItem?: ActiveNavbarItem;
     activeSideItem?: ActiveSidebarItem;
-    dispatch: ReturnType<typeof mapDispatchToProps>
 
 }
-*/
-class Navbar extends React.Component<{}> {
-  /*
-  const handleClick = (toolType:ActiveSidebarItem) => {
-    dispatch.changeTool(toolType)
-  }
-  
+
+export const Navbar: React.FunctionComponent<Props> = ({activeNavItem, activeSideItem}) => {
   return (
         <div>
             <BootstrapNavbar className="py-0 " color="light" light expand="md">
@@ -52,9 +43,10 @@ class Navbar extends React.Component<{}> {
                     <NavItem active={activeNavItem === ActiveNavbarItem.Map}>
                         <NavLink
                           active={activeSideItem === ActiveSidebarItem.Select}
-                          onClick={() => handleClick(ActiveSidebarItem.Select)}
+                          tag={Link}
+                          to={Hrefs.map}
                         >
-                          Select
+                          Map
                         </NavLink>
                     </NavItem>
                     <NavItem active={activeNavItem === ActiveNavbarItem.Map}>
@@ -78,13 +70,4 @@ class Navbar extends React.Component<{}> {
                 </Nav>
             </BootstrapNavbar>
         </div>);
-  */
 }
-
-/*
-export const Navbar = compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
-)(NavbarImpl);
-*/
-export default Navbar

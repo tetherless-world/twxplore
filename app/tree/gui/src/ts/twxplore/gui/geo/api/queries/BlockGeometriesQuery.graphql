@@ -1,0 +1,11 @@
+query BlocksQuery {
+  blocks{
+    geometries{
+        geometry{
+          label
+          wkt
+        }
+        uri
+    }
+  }
+}

@@ -3,6 +3,7 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.Store
 
 object TestStore extends Store {
@@ -46,4 +47,28 @@ object TestStore extends Store {
   }
 
   override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(Vector(block)).head
+
+  override def getBlockHierarchy(block: Uri): List[SelectionArea] = ???
+
+  override def getTreesBySelection(selection: SelectionInput): SelectionResults = ???
+
+  override def getBlockGeometries(): List[SelectionGeometry] = ???
+
+  override def getNtaGeometries(): List[SelectionGeometry] = ???
+
+  override def getBoroughGeometries(): List[SelectionGeometry] = ???
+
+  override def getCityGeometry(): SelectionGeometry = ???
+
+  override def getStateHierarchy(stateUri: Uri): List[SelectionArea] = ???
+
+  override def getCityHierarchy(cityUri: Uri): List[SelectionArea] = ???
+
+  override def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = ???
+
+  override def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = ???
+
+  override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = ???
+
+  override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = ???
 }

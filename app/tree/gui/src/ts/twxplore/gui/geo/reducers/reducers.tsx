@@ -22,18 +22,75 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import {routerReducer} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
+import {ActionTypes} from 'kepler.gl/actions';
 
 // INITIAL_APP_STATE
-const initialAppState = {
-  appName: 'example',
-  loaded: false
+type INITIAL_APP_STATE = {
+  info: any,
+  loaded: Boolean,
+  blockMap: Map<String, String>,
+  ntaMap: Map<String, String>,
+  boroughMap: Map<String, String>,
+  blocks: Array<String>[],
+  NTAs: Array<String>[],
+  scope: String,
+  parentUri: String,
+  createSelection: Boolean
+}
+
+const initialAppState: INITIAL_APP_STATE= {
+  info: {},
+  loaded: false,
+  blockMap: new Map(),
+  ntaMap: new Map(),
+  boroughMap: new Map(),
+  blocks: [],
+  NTAs: [],
+  scope: "borough",
+  parentUri: "",
+  createSelection: false
 };
+
+
 
 const reducers = combineReducers({
   // mount keplerGl reducer
   keplerGl: keplerGlReducer,
   app: handleActions({
-    // empty
+    [ActionTypes.LAYER_CLICK]: (state, action) => {
+      switch(action.payload.info.picked) {
+        case true: {
+          var result = {}
+          switch(action.payload.info.object.properties.type) {
+            case "block": {
+              if(!(state.blockMap.has(action.payload.info.object.properties.uri))){
+                state.blocks.push(action.payload.info.object.properties.uri)
+              }
+              
+              result = {
+                blocks: state.blocks,
+                createSelection: true
+              }
+              break;
+            }
+            case "NTA": {
+              break;
+            }
+          }
+          return ({
+            ...state,
+            ...result,
+            scope: action.payload.info.object.properties.child,
+            parentUri: action.payload.info.object.properties.uri
+          })
+        }
+        default: {
+          return ({
+            ...state
+          })
+        }
+      }
+    },
   }, initialAppState),
   routing: routerReducer
 });

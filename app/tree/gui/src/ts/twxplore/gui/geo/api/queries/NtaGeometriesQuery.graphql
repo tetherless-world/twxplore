@@ -1,0 +1,11 @@
+query NtasQuery {
+  ntas{
+    geometries{
+        geometry{
+          label
+          wkt
+        }
+        uri
+    }
+  }
+}

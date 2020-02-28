@@ -6,6 +6,13 @@
 // START Enums and Input Objects
 //==============================================================
 
+export interface SelectionInputFieldsInput {
+  includeNtaList: string[];
+  includeBlocks: string[];
+  excludeNtaList: string[];
+  excludeBlocks: string[];
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

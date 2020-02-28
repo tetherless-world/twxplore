@@ -1,0 +1,9 @@
+query SelectionHierarchyQuery($uri: String!){
+  blocks{
+    hierarchy(uri: $uri){
+      name
+      uri
+      parent
+    }
+  }
+}

@@ -26,10 +26,15 @@ object EtlCommand extends Command {
 
     if (twksStore.getTrees(1, 0).isEmpty || true) {
       new CityCsvTransformer(bufferSize = args.bufferSize).parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new BoroughCsvTransformer(bufferSize = args.bufferSize).parseCsv("borough.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new NtaCsvTransformer(bufferSize = args.bufferSize).parseCsv("nta.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new BlockCsvTransformer(bufferSize = args.bufferSize).parseCsv("block.csv", new TwksGeometryCsvTransformerSink(twksClient))
-      new TreeCsvTransformer(bufferSize = args.bufferSize).parseCsv("tree.csv", new TwksTreeCsvTransformerSink(twksClient))
+      new BoroughCsvTransformer(bufferSize = args.bufferSize).parseCsv("nybb.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new NtaCsvTransformer(bufferSize = args.bufferSize).parseCsv("test_ntadata.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new BlockCsvTransformer(bufferSize = args.bufferSize).parseCsv("test_blockdata.csv", new TwksGeometryCsvTransformerSink(twksClient))
+      new TreeCsvTransformer(bufferSize = args.bufferSize).parseCsv("test_treedata.csv", new TwksTreeCsvTransformerSink(twksClient))
+//      new CityCsvTransformer(bufferSize = args.bufferSize).parseCsv("city.csv", new TwksGeometryCsvTransformerSink(twksClient))
+//      new BoroughCsvTransformer(bufferSize = args.bufferSize).parseCsv("borough.csv", new TwksGeometryCsvTransformerSink(twksClient))
+//      new NtaCsvTransformer(bufferSize = args.bufferSize).parseCsv("nta.csv", new TwksGeometryCsvTransformerSink(twksClient))
+//      new BlockCsvTransformer(bufferSize = args.bufferSize).parseCsv("block.csv", new TwksGeometryCsvTransformerSink(twksClient))
+//      new TreeCsvTransformer(bufferSize = args.bufferSize).parseCsv("tree.csv", new TwksTreeCsvTransformerSink(twksClient))
     }
   }
 
