@@ -11,11 +11,13 @@ abstract class GeometryCsvTransformer(bufferSize: Int) extends CsvTransformer wi
     val meter = metrics.meter(filename)
     val reader = openCsvReader(filename)
     try {
-      for ((cols, rowIndex) <- reader.toStream.zipWithIndex) {
-        parseCsvRow(cols, sink)
-        meter.mark()
-        if (rowIndex > 0 && rowIndex % bufferSize == 0) {
-          sink.flush()
+      for ((cols, lineIndex) <- reader.toStream.zipWithIndex) {
+        if (lineIndex > 0) {
+          parseCsvRow(cols, sink)
+          meter.mark()
+          if (lineIndex % bufferSize == 0) {
+            sink.flush()
+          }
         }
       }
     } finally {
