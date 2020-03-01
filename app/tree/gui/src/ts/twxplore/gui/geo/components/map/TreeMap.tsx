@@ -28,14 +28,69 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
   const counter:any = useSelector(state => state);
   const dispatch = useDispatch();
   
-  //const blockQuery = useQuery<BlocksQuery, BlocksQuery_getBlockGeometries>(blckQuery, {});
+  /* 
+    Apollo query that grabs all borough geometries in database. 
+    It is run immediately after the component is rendered 
+  */
   const boroughQuery = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(brghQuery, {});
   
+
+  /* 
+    Apollo query that grabs all the NTAs (Neighborhood Tract Areas ie. 
+    Lincoln Square, Manahattanville, Clinton Park) based off a specific borough area 
+    which the user selects (ie. Manahattan)
+  */
   const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery)
+  
+
+  /* 
+    Apollo query that grabs all the blockfaces (streets in the map represented by 6 digit IDs) 
+    based off a specific NTA area which the user selects (ie. Lincoln Square)
+  */
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
+
+
+  /* 
+    EFFECTS: Apollo query that grabs all trees in a given blockface, as well as all associated information
+    to those trees. 
+    PARAMS: It takes in a list of blockface uris, NTA uris, excluded blockface uris, 
+    and excluded NTA uris.
+    RETURNS: A tree selection object, which includes:
+      - A list of tree objects
+      - the city object
+      - the state object
+      - A list of borough objects
+      - A list of NTA objects
+      - A list of blockface objects
+      - A list of Zipcity objects
+      - A list of species objects
+      - A list of postalcode objects
+      - A list of census tract objects
+        ../../api/queries/types/TreeMapQuery (for more info)
+  */
   const [getResult, ResultQuery] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(rsltQuery);
+
+  
+  /*
+    EFFECTS: Apollo query that grabs the selection hiearchy of a given blockface 
+    (ie. the blockface's NTA, borough, city, and state) for the Selection Treeview feature
+    PARAMS: blockface Uri
+    RETURNS: A list of Selection Area objects, which includes: 
+      - the label of the current object (Manahattan)
+      - the uri of the object (urn:treedata:resource:borough:1)
+      - the uri of the parent area (urn:treedata:resource:city:New_York)
+
+  */
   const [getBlockHierarchy, BlockHierarchyQuery] = useLazyQuery<SelectionHierarchyQuery, SelectionHierarchyQueryVariables>(blckHrchyQuery)
 
+
+  /* 
+    EFFECTS: adds tree data points to kepler map. 
+    PARAMS: 
+      - treeData: Query data result type
+      - id: blockface Id associated with a given tree 
+    RETURN: void
+  */
   const addTreeData = (treeData, id: String) => {
     const trees = treeData.map(tree => {
       const point = "POINT (" + tree.longitude + " " + tree.latitude + ")"
@@ -62,6 +117,17 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
     dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
   }
 
+  /* 
+    EFFECTS: adds geometery/polygon data points to kepler map. Used to add boroughs, NTAs, 
+    and blockfaces to the map 
+    PARAMS: 
+      - dataQuery: Query data result type
+      - id: blockface Id associated with a given tree 
+      - child: indicates the child area type: 
+        (ie. for city, it would be borough, borough-NTA, NTA-block, block-tree, tree-"")
+      - type: indicates the area type (borough, NTA, block, or tree)
+    RETURN: void
+  */
   const addGeometryData = async (dataQuery, id: String, type: String, child: String) => {
     
     const features = dataQuery.map(feature => {
@@ -87,15 +153,49 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
       info: {
         label: id.toString(),
         id: type + id.toString(),
-      }
+      },
     }
     //setFeature(dataset)
-    dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
+    dispatch(addDataToMap({ 
+      datasets: dataset, 
+      options: {centerMap: true, readOnly: true, keepExistingConfig: false},
+      config: {
+        visState: {
+          layers: [{
+            'type': 'multipolygon',
+            'config': {
+              dataId: type + id.toString(),
+              isVisible: false,
+              visConfig: {
+                opacity: 0
+              }
+            }
+          }]
+        }
+      }
+    }))
   }
 
+  /* Mutex state on borough.. determining whether or not the borough should be rendered */
   const [boroughRendered, setBoroughRender] = useState<Boolean>(false)
+
+  /*  
+    Mutex state on all renders past the initial borough render.. determining whether or 
+    not NTA, blockface, or trees should be rendered 
+  */
   const [rendering, setRenderState] = useState<Boolean>(false)
+
+  /* 
+    Mutex state on the hierarchy apollo query. This hierarchy query is run 
+    in conjunction with the tree result query 
+  */
   const [hierarchyRendering, setHierarchyRenderState] = useState<Boolean>(false)
+  
+  /* 
+    state workaround to apollo query refetch. (refetch upon execution returns 
+    the result of the previous query). This state keeps the result of a given query to be used
+    as comparison for the refetch function.
+  */
   const [previousState, setPreviousState] = useState({
     nta: "",
     block: "",
@@ -105,14 +205,33 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
   
 
   useEffect(()=> {
+    /* Acts as the controller for the map, executing queries and displaying geometries*/
     mapRender()
   })
 
     const mapRender = async () => {
+      /* 
+        Initial borough query check. When the borough query returns data, 
+        the borough geometries returned are rendered on the map 
+      */
       if(boroughQuery.data! && !boroughRendered) {
         addGeometryData(boroughQuery.data!.boroughs.geometries, counter.app.parentUri, "borough", "NTA")
         setBoroughRender(true)
       }
+
+      /* 
+        Checks the scope of the map. This scope changes upon user click to indicate the result child area type 
+        of what they clicked (ie. for borough thats NTA, NTA-block, block-tree).
+       
+        If the current parentUri (the selected area's uri) is not a value pair in their respective Map types (ie boroughMap),
+        then a query is run. 
+        
+        The mutex rendering state is set to "true", until new data is returned (then set to false).
+        previous state is set for each return of data to record the current data results 
+        (and to prevent refetching from returning previous query results)
+
+        The resulting query data is added to the map (addGeometryData or addTreeData)
+      */
       switch (counter.app.scope) {
         case "borough": {
           break;
@@ -218,7 +337,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
       }
     }
 
-  
+  /* intial loading bar for borough query */
   if (boroughQuery.error) {
     return <FatalErrorModal exception={new ApolloException(boroughQuery.error)}/>;
   } else if (boroughQuery.loading) {
