@@ -65,6 +65,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
   const addGeometryData = async (dataQuery, id: String, type: String, child: String) => {
     
     const features = dataQuery.map(feature => {
+      console.log(feature)
       return {
         "type": "Feature",
         "geometry": wkt.parse(feature.geometry.wkt),
@@ -203,6 +204,10 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
               setPreviousState({
                 ...previousState,
                 hierarchy: BlockHierarchyQuery.data!.blocks.hierarchy[4].uri
+              })
+              dispatch({
+                type: "treeHierarchy",
+                treeHierarchy: BlockHierarchyQuery.data!.blocks.hierarchy
               })
               setHierarchyRenderState(false)
             }
