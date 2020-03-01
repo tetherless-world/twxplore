@@ -102,6 +102,7 @@ object Tree {
           case "TrunkOther" => TrunkOther
           case "TrunkWire" => TrunkWire
           case "RootGrate" => RootGrate
+          case "RootOther" => RootOther
           case "RootLights" => RootLights
           case "RootStone" => RootStone
           case "Sneakers" => Sneakers
