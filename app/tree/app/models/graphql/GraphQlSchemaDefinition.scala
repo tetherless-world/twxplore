@@ -6,32 +6,11 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.AbstractGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
-import play.api.libs.json
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, FloatType, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
 
 object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
-  // Scalar Formats
-  implicit val uriFormat = new json.Format[Uri] {
-    override def reads(json: JsValue): JsResult[Uri] = JsSuccess(Uri.parse(json.asInstanceOf[JsString].value))
-    override def writes(o: Uri): JsValue = JsString(o.toString)
-  }
-
-
-  implicit val ScalaFloatType = ScalarAlias[Float, Double](
-    FloatType, _.toDouble, value => {
-      Right(value.toFloat)
-    }
-  )
-
-  implicit val DateType = ScalarAlias[Date, String](
-    StringType, _.toString, date => {
-      val dateFormatter = new java.text.SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy")
-      Right(dateFormatter.parse(date))
-    }
-  )
   implicit val CurbLocType = ScalarAlias[CurbLoc, String](
     StringType, _.label, curbLoc => {
       val result = curbLoc match {
@@ -199,8 +178,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 //  )
 
   implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
+    //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
+    //    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
   )
 
   implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
