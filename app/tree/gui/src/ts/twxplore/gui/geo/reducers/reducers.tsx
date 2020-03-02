@@ -20,7 +20,7 @@
 
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import {routerReducer} from 'react-router-redux';
+import {routerReducer, RouterState} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
 import {ActionTypes} from 'kepler.gl/actions';
 import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
@@ -38,6 +38,12 @@ export type APP_STATE = {
   parentUri: String,
   createSelection: Boolean,
   selectionData: Array<ResultsQuery>[]
+}
+
+export type Real_State = {
+  keplerGL: {}
+  app: APP_STATE
+  routing: RouterState
 }
 
 const initialAppState: APP_STATE= {
