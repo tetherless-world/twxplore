@@ -7,6 +7,7 @@ import {CityList} from "../CityList/CityList";
 import SpeciesList from "../SpeciesList/SpeciesList";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     arrow: {
@@ -29,15 +30,14 @@ enum Mode{
     species = 'species'
 }
 
-
-export const PanelParent: React.FunctionComponent<{}> = () => {
+export const PanelParent: React.FunctionComponent<{}> = ({}) => {
     const classes = useStyles();
 
     const callSetMode = (newMode) => {
         setMode(newMode)
     }
 
-    const backArrowClick = (e) => {
+    const backArrowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         setMode(Mode.home)
     }
 
@@ -50,13 +50,15 @@ export const PanelParent: React.FunctionComponent<{}> = () => {
             <IconButton onClick = {backArrowClick} disabled = {mode === Mode.home}>
                 <ArrowBackIcon className = {(mode === Mode.home ? classes.arrow_disabled : classes.arrow)} />
             </IconButton>
-            { mode ===Mode.home && <TreesList callSetMode = {callSetMode}/>}
+            { mode === Mode.home && <TreesList callSetMode = {callSetMode} />}
             { mode === Mode.borough && <BoroughList/>}
             { mode === Mode.city && <CityList/>}
-            { mode ===  Mode.species && <SpeciesList/>}
+            { mode === Mode.species && <SpeciesList/>}
         </div>
     );
 }
+
+
 
 
 
