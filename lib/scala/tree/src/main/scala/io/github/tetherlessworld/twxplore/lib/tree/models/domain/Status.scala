@@ -10,8 +10,9 @@ object Status {
 
   case object Alive extends Status
 
-  case object Dead extends Status {
+  case object Dead extends Status
 
   case object Stump extends Status
 
+  val values = Seq(Alive, Dead, Stump)
 }

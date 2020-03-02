@@ -14,4 +14,5 @@ object UserType {
 
   case object Volunteer extends UserType
 
+  val values = Seq(TreesCountStaff, NYCParksStaff, Volunteer)
 }

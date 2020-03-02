@@ -12,4 +12,5 @@ object Steward {
 
   case object ThreeOrFour extends Steward
 
+  val values = Seq(OneOrTwo, ThreeOrFour)
 }

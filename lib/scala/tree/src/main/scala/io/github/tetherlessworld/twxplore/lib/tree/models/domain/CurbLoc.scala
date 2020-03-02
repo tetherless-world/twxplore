@@ -13,4 +13,5 @@ object CurbLoc {
 
   case object OnCurb extends CurbLoc
 
+  val values = Seq(OffsetFromCurb, OnCurb)
 }

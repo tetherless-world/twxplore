@@ -69,15 +69,15 @@ object Tree {
           case _ => Status.Dead
         },
         health = resource.health map ({
-          case "Fair" => Fair
-          case "Good" => Good
-          case "Poor" => Poor
+          case "Fair" => Health.Fair
+          case "Good" => Health.Good
+          case "Poor" => Health.Poor
         }),
         //        species = Some(Rdf.read[TreeSpecies](resource.getPropertyResourceValue(TREE.species))),
         species = resource.speciesUri,
         steward = resource.steward map ({
-          case "OneOrTwo" => OneOrTwo
-          case "ThreeOrFour" => ThreeOrFour
+          case "OneOrTwo" => Steward.OneOrTwo
+          case "ThreeOrFour" => Steward.ThreeOrFour
         }),
         guards = resource.guards map ({
           case "Helpful" => Guards.Helpful
@@ -85,29 +85,29 @@ object Tree {
           case "Unsure" => Guards.Unsure
         }),
         sidewalk = resource.sidewalk map ({
-          case "NoDamage" => NoDamage
-          case "Damage" => Damage
+          case "NoDamage" => Sidewalk.NoDamage
+          case "Damage" => Sidewalk.Damage
         }),
         userType = resource.userType match {
-          case Some("TreesCountStaff") => TreesCountStaff
-          case Some("NYCParksStaff") => NYCParksStaff
-          case Some("Volunteer") => Volunteer
+          case Some("TreesCountStaff") => UserType.TreesCountStaff
+          case Some("NYCParksStaff") => UserType.NYCParksStaff
+          case Some("Volunteer") => UserType.Volunteer
         },
         problems = resource.problems.map {
-          case "BranchLights" => BranchLights
-          case "BranchOther" => BranchOther
-          case "BranchShoe" => BranchShoe
-          case "MetalGrates" => MetalGrates
-          case "Stones" => Stones
-          case "TrunkLights" => TrunkLights
-          case "TrunkOther" => TrunkOther
-          case "TrunkWire" => TrunkWire
-          case "RootGrate" => RootGrate
-          case "RootOther" => RootOther
-          case "RootLights" => RootLights
-          case "RootStone" => RootStone
-          case "Sneakers" => Sneakers
-          case "WiresRope" => WiresRope
+          case "BranchLights" => Problems.BranchLights
+          case "BranchOther" => Problems.BranchOther
+          case "BranchShoe" => Problems.BranchShoe
+          case "MetalGrates" => Problems.MetalGrates
+          case "Stones" => Problems.Stones
+          case "TrunkLights" => Problems.TrunkLights
+          case "TrunkOther" => Problems.TrunkOther
+          case "TrunkWire" => Problems.TrunkWire
+          case "RootGrate" => Problems.RootGrate
+          case "RootOther" => Problems.RootOther
+          case "RootLights" => Problems.RootLights
+          case "RootStone" => Problems.RootStone
+          case "Sneakers" => Problems.Sneakers
+          case "WiresRope" => Problems.WiresRope
         },
         address = resource.address.get,
         //postcode = Rdf.read[Postcode](resource.getPropertyResourceValue(Schema.postalCode)),

@@ -15,4 +15,5 @@ object Health {
 
   case object Poor extends Health
 
+  val values = Seq(Fair, Good, Poor)
 }

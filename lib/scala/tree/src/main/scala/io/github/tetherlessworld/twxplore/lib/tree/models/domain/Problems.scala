@@ -36,4 +36,5 @@ object Problems {
 
   case object WiresRope extends Problems
 
+  val values = Seq(BranchLights, BranchOther, BranchShoe, MetalGrates, Stones, TrunkLights, TrunkOther, TrunkWire, RootGrate, RootLights, RootOther, RootStone, Sneakers, WiresRope)
 }

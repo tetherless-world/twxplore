@@ -15,4 +15,5 @@ object Guards {
 
   case object Unsure extends Guards
 
+  val values = Seq(Helpful, Harmful, Unsure)
 }
