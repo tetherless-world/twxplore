@@ -23,7 +23,8 @@ import {handleActions} from 'redux-actions';
 import {routerReducer, RouterState} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
 import {ActionTypes} from 'kepler.gl/actions';
-import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
+import { TreeMapQuery_TreesBySelection } from 'twxplore/gui/geo/api/queries/types/TreeMapQuery'
+
 
 // INITIAL_APP_STATE
 export type APP_STATE = {
@@ -37,11 +38,11 @@ export type APP_STATE = {
   scope: String,
   parentUri: String,
   createSelection: Boolean,
-  selectionData: Array<ResultsQuery>[]
+  selectionData: Array<TreeMapQuery_TreesBySelection>[]
 }
 
 export type Real_State = {
-  keplerGL: {}
+  keplerGl: {}
   app: APP_STATE
   routing: RouterState
 }

@@ -28,5 +28,5 @@ const composedReducer = (state: Real_State, action: ActionTypes) => {
   */
   return reducers(state, action);
  };
-
+}
  export default composedReducer

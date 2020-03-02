@@ -19,7 +19,7 @@ import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/t
 import { SelectionHierarchyQuery, SelectionHierarchyQueryVariables } from  '../../api/queries/types/SelectionHierarchyQuery';
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
-import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection } from '../../api/queries/types/TreeMapQuery'
+import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery'
 import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/Actions'
 
 var wkt = require('terraformer-wkt-parser');
@@ -92,7 +92,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
       - id: blockface Id associated with a given tree 
     RETURN: void
   */
-  const addTreeData = (treeData, id: String) => {
+  const addTreeData = (treeData: TreeMapQuery_TreesBySelection_trees[], id: String) => {
     const trees = treeData.map(tree => {
       const point = "POINT (" + tree.longitude + " " + tree.latitude + ")"
       return {
