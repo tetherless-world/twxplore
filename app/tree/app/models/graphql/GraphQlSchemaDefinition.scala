@@ -214,7 +214,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
     Field("ntas", NtasType, resolve = ctx => 1),
     Field("boroughs", BoroughsType, resolve = ctx => 1),
     Field("cities", CitiesType, resolve = ctx => 1),
-    Field("trees", SelectionResultsType, arguments = SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selectionInput"))),
+    Field("treesBySelection", SelectionResultsType, arguments = SelectionInputArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getTreesBySelection(selection = ctx.args.arg("selectionInput"))),
 
     Field("block", SelectionGeometryType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getBlockGeometry(blockUri = ctx.args.arg("uri"))),
     Field("nta", SelectionGeometryType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getNtaGeometry(ntaUri = ctx.args.arg("uri"))),
