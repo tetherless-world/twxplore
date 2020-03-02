@@ -3,7 +3,7 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.LegacyStore
 
 object TestStore extends LegacyStore {
@@ -55,13 +55,13 @@ object TestStore extends LegacyStore {
 
   override def getTreesBySelection(selection: SelectionInput): SelectionResults = ???
 
-  override def getBlockGeometries(): List[SelectionGeometry] = ???
+  override def getBlockGeometries(): List[Feature] = ???
 
-  override def getNtaGeometries(): List[SelectionGeometry] = ???
+  override def getNtaGeometries(): List[Feature] = ???
 
-  override def getBoroughGeometries(): List[SelectionGeometry] = ???
+  override def getBoroughGeometries(): List[Feature] = ???
 
-  override def getCityGeometry(): SelectionGeometry = ???
+  override def getCityGeometry(): Feature = ???
 
   override def getStateHierarchy(stateUri: Uri): List[SelectionArea] = ???
 
@@ -71,38 +71,38 @@ object TestStore extends LegacyStore {
 
   override def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = ???
 
-  override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = ???
+  override def getNtasByBoroughGeometry(borough: Uri): List[Feature] = ???
 
-  override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = ???
+  override def getBlocksByNtaGeometry(Nta: Uri): List[Feature] = ???
 
-  override def getBlockGeometry(blockUri: Uri): SelectionGeometry = {
+  override def getBlockGeometry(blockUri: Uri): Feature = {
     if (blockUri != null) {
-      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
-    } else{
+      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else {
       null
     }
   }
 
-  override def getNtaGeometry(ntaUri: Uri): SelectionGeometry = {
+  override def getNtaGeometry(ntaUri: Uri): Feature = {
     if (ntaUri != null) {
-      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
-    } else{
+      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else {
       null
     }
   }
 
-  override def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = {
+  override def getBoroughGeometry(boroughUri: Uri): Feature = {
     if (boroughUri != null) {
-      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
-    } else{
+      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else {
       null
     }
   }
 
-  override def getCityGeometry(boroughUri: Uri): SelectionGeometry = {
+  override def getCityGeometry(boroughUri: Uri): Feature = {
     if (boroughUri != null) {
-      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
-    } else{
+      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else {
       null
     }
   }

@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import com.google.inject.ImplementedBy
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
 
 @ImplementedBy(classOf[TwksLegacyStore])
 trait LegacyStore {
@@ -15,27 +15,27 @@ trait LegacyStore {
 
   def getTrees(limit: Int, offset: Int): List[Tree]
 
-  def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry]
+  def getNtasByBoroughGeometry(borough: Uri): List[Feature]
 
-  def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry]
+  def getBlocksByNtaGeometry(Nta: Uri): List[Feature]
 
   def getTreesBySelection(selection: SelectionInput): SelectionResults
 
-  def getBlockGeometries(): List[SelectionGeometry]
+  def getBlockGeometries(): List[Feature]
 
-  def getNtaGeometries(): List[SelectionGeometry]
+  def getNtaGeometries(): List[Feature]
 
-  def getBoroughGeometries(): List[SelectionGeometry]
+  def getBoroughGeometries(): List[Feature]
 
-  def getCityGeometry(): SelectionGeometry
+  def getCityGeometry(): Feature
 
-  def getBlockGeometry(blockUri: Uri): SelectionGeometry
+  def getBlockGeometry(blockUri: Uri): Feature
 
-  def getNtaGeometry(ntaUri: Uri): SelectionGeometry
+  def getNtaGeometry(ntaUri: Uri): Feature
 
-  def getBoroughGeometry(boroughUri: Uri): SelectionGeometry
+  def getBoroughGeometry(boroughUri: Uri): Feature
 
-  def getCityGeometry(cityUri: Uri): SelectionGeometry
+  def getCityGeometry(cityUri: Uri): Feature
 
   def getStateHierarchy(stateUri: Uri): List[SelectionArea]
 
