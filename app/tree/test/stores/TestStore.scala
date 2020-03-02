@@ -4,10 +4,13 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
-import io.github.tetherlessworld.twxplore.lib.tree.stores.Store
+import io.github.tetherlessworld.twxplore.lib.tree.stores.LegacyStore
 
-object TestStore extends Store {
-  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
+object TestStore extends LegacyStore {
+
+  implicit class TreeUri(uri: Uri) {
+    def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)
+  }
 
   override def getTrees(limit: Int, offset: Int): List[Tree] = if (offset == 0) TestData.treeList else List()
 

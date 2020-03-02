@@ -17,7 +17,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-final class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with Store {
+final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with LegacyStore {
   override final def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
   }

@@ -8,7 +8,7 @@ import edu.rpi.tw.twks.factory.{TwksFactory, TwksFactoryConfiguration}
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
-import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksStore
+import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksLegacyStore
 
 object EtlCommand extends Command {
   val args = new Args()
@@ -21,7 +21,7 @@ object EtlCommand extends Command {
         new DirectTwksClient(TwksFactory.getInstance().createTwks(TwksFactoryConfiguration.builder().setFromEnvironment().build()))
       else
         new RestTwksClient(RestTwksClientConfiguration.builder().setFromEnvironment().build())
-    val twksStore = new TwksStore(twksClient)
+    val twksStore = new TwksLegacyStore(twksClient)
 
     args.dataSource = args.dataSource.toLowerCase
 
