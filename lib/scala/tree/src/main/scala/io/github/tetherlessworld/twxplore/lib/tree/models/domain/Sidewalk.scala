@@ -4,14 +4,13 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 sealed trait Sidewalk {
   val uri = TREE.SIDEWALK_URI_PREFIX
-  val label: String
 }
 
-case object NoDamage extends Sidewalk {
-  val label = "NoDamage"
-}
+object Sidewalk {
 
-case object Damage extends Sidewalk {
-  val label = "Damage"
-}
+  case object NoDamage extends Sidewalk
 
+  case object Damage extends Sidewalk
+
+  val values = Seq(NoDamage, Damage)
+}

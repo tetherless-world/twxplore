@@ -5,13 +5,13 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 sealed trait CurbLoc {
   val uri = Uri.parse(TREE.CURBLOC_URI_PREFIX)
-  val label: String
 }
 
-case object OffsetFromCurb extends CurbLoc {
-  val label = "OffsetFromCurb"
-}
+object CurbLoc {
 
-case object OnCurb extends CurbLoc {
-  val label = "OnCurb"
+  case object OffsetFromCurb extends CurbLoc
+
+  case object OnCurb extends CurbLoc
+
+  val values = Seq(OffsetFromCurb, OnCurb)
 }
