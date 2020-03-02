@@ -7,11 +7,14 @@ sealed trait Sidewalk {
   val label: String
 }
 
-case object NoDamage extends Sidewalk {
-  val label = "NoDamage"
-}
+object Sidewalk {
 
-case object Damage extends Sidewalk {
-  val label = "Damage"
-}
+  case object NoDamage extends Sidewalk {
+    val label = "NoDamage"
+  }
 
+  case object Damage extends Sidewalk {
+    val label = "Damage"
+  }
+
+}

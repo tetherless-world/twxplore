@@ -4,17 +4,14 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 sealed trait UserType {
   val uri = TREE.userType
-  val label: String
 }
 
-case object TreesCountStaff extends UserType {
-  val label = "TreesCountStaff"
-}
+object UserType {
 
-case object NYCParksStaff extends UserType {
-  val label = "NYCParksStaff"
-}
+  case object TreesCountStaff extends UserType
 
-case object Volunteer extends UserType {
-  val label = "Volunteer"
+  case object NYCParksStaff extends UserType
+
+  case object Volunteer extends UserType
+
 }

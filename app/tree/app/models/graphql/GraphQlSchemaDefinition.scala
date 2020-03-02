@@ -10,47 +10,12 @@ import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
 
-object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
-  implicit val CurbLocType = ScalarAlias[CurbLoc, String](
-    StringType, _.label, curbLoc => {
-      val result = curbLoc match {
-        case "OffsetFromCurb" => OffsetFromCurb
-        case "OnCurb" => OnCurb
-      }
-      Right(result)
-    }
-  )
-  implicit val StatusType = ScalarAlias[Status, String](
-    StringType, _.label, status => {
-      val result = status match {
-        case "Alive" => Alive
-        case "Dead" => Dead
-        case "Stump" => Stump
-        case _ => Dead
-      }
-      Right(result)
-    }
-  )
-  implicit val GuardsType = ScalarAlias[Guards, String](
-    StringType, _.label, guards => {
-      val result = guards match {
-        case "Helpful" => Helpful
-        case "Harmful" => Harmful
-        case "Unsure" => Unsure
-      }
-      Right(result)
-    }
-  )
-  implicit val HealthType = ScalarAlias[Health, String](
-    StringType, _.label, health => {
-      val result = health match {
-        case "Fair" => Fair
-        case "Good" => Good
-        case "Poor" => Poor
-      }
-      Right(result)
-    }
-  )
+object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
+  implicit val CurbLocType = deriveEnumType[CurbLoc]()
+  implicit val HealthType = deriveEnumType[Health]()
+  implicit val GuardsType = deriveEnumType[Guards]()
+  implicit val StatusType = deriveEnumType[Status]()
+
   implicit val ProblemType = ScalarAlias[Problems, String](
     StringType, _.label, problem => {
       val result = problem match {

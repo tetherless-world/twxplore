@@ -59,14 +59,14 @@ object Tree {
         //block = Rdf.read[Block](resource.getPropertyResourceValue(TREE.block)),
         block = resource.blockUri.get,
         curbLoc = resource.curbLoc match {
-          case Some("OffsetFromCurb") => OffsetFromCurb
-          case Some("OnCurb") => OnCurb
+          case Some("OffsetFromCurb") => CurbLoc.OffsetFromCurb
+          case Some("OnCurb") => CurbLoc.OnCurb
         },
         status = resource.status match {
-          case Some("Alive") => Alive
-          case Some("Dead") => Dead
-          case Some("Stump") => Stump
-          case _ => Dead
+          case Some("Alive") => Status.Alive
+          case Some("Dead") => Status.Dead
+          case Some("Stump") => Status.Stump
+          case _ => Status.Dead
         },
         health = resource.health map ({
           case "Fair" => Fair
@@ -80,9 +80,9 @@ object Tree {
           case "ThreeOrFour" => ThreeOrFour
         }),
         guards = resource.guards map ({
-          case "Helpful" => Helpful
-          case "Harmful" => Harmful
-          case "Unsure" => Unsure
+          case "Helpful" => Guards.Helpful
+          case "Harmful" => Guards.Harmful
+          case "Unsure" => Guards.Unsure
         }),
         sidewalk = resource.sidewalk map ({
           case "NoDamage" => NoDamage
