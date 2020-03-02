@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import com.google.inject.ImplementedBy
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
 
 @ImplementedBy(classOf[TwksLegacyStore])
 trait LegacyStore {
@@ -13,13 +13,9 @@ trait LegacyStore {
 
   def getBoroughsByCity(city: City): List[Borough]
 
-  def getTrees(limit: Int, offset: Int): List[Tree]
-
   def getNtaFeaturesByBorough(borough: Uri): List[Feature]
 
   def getBlockFeaturesByNta(nta: Uri): List[Feature]
-
-  def getTreesBySelection(selection: SelectionInput): SelectionResults
 
   def getBlockFeatures(): List[Feature]
 

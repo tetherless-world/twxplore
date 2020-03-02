@@ -3,16 +3,14 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
 import io.github.tetherlessworld.twxplore.lib.tree.stores.LegacyStore
 
-object TestStore extends LegacyStore {
+object TestLegacyStore extends LegacyStore {
 
   implicit class TreeUri(uri: Uri) {
     def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)
   }
-
-  override def getTrees(limit: Int, offset: Int): List[Tree] = if (offset == 0) TestData.treeList else List()
 
   override def getNtasByBorough(borough: Borough): List[Nta] = if (borough != null && borough == TestData.boroughMap(1)) TestData.boroughMap(1).ntaList.map(nta => TestData.ntaMap(nta.lastPart)) else List()
 
@@ -52,8 +50,6 @@ object TestStore extends LegacyStore {
   override def getBlockGeometry(block: Block): Geometry = getBlockGeometries(List(block)).head
 
   override def getBlockHierarchy(block: Uri): List[SelectionArea] = ???
-
-  override def getTreesBySelection(selection: SelectionInput): SelectionResults = ???
 
   override def getBlockFeatures(): List[Feature] = ???
 
