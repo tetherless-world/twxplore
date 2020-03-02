@@ -302,17 +302,17 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
 
   override def getGeometryOfCity(city: City): Geometry = getGeometryOfProperty("city", city.uri)
 
-  override def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(Vector(borough)).head
+  override def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(List(borough)).head
 
-  override def getGeometryOfBoroughs(boroughs: Vector[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
+  override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
 
-  override def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(Vector(nta)).head
+  override def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(List(nta)).head
 
-  override def getGeometryOfNtas(ntas: Vector[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
+  override def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
 
-  override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(Vector(block)).head
+  override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(List(block)).head
 
-  override def getGeometryOfBlocks(blocks: Vector[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
+  override def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
 
   def getGeometryOfCityUri(cityUri: Uri): Geometry = getGeometryOfProperty("city", cityUri)
 
