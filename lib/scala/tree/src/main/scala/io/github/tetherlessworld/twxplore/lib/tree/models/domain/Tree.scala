@@ -153,18 +153,18 @@ object Tree {
 
       resource.blockUri = value.block
 
-      resource.curbLoc = value.curbLoc.label
-      resource.status = value.status.label
-      if (value.status.label == "Alive") {
-        if (value.health.isDefined) resource.health = value.health.get.label
+      resource.curbLoc = value.curbLoc.toString
+      resource.status = value.status.toString
+      if (value.status == Status.Alive) {
+        if (value.health.isDefined) resource.health = value.health.get.toString
         if (value.species.isDefined) {
           resource.speciesUri = value.species.get
         }
-        if (value.guards.isDefined) resource.guards = value.guards.get.label
-        if (value.sidewalk.isDefined) resource.sidewalk = value.sidewalk.get.label
+        if (value.guards.isDefined) resource.guards = value.guards.get.toString
+        if (value.sidewalk.isDefined) resource.sidewalk = value.sidewalk.get.toString
       }
-      resource.userType = value.userType.label
-      resource.problems = value.problems.map(problem => problem.label)
+      resource.userType = value.userType.toString
+      resource.problems = value.problems.map(problem => problem.toString)
       resource.address = value.address
       resource.postalCodeUri = value.postcode
       resource.zipCityUri = value.zipCity
