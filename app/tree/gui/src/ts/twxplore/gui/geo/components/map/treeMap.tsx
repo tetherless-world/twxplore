@@ -128,7 +128,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
       - type: indicates the area type (borough, NTA, block, or tree)
     RETURN: void
   */
-  const addGeometryData = async (dataQuery, id: String, type: String, child: String) => {
+  const addGeometryData = async (dataQuery:string, id: String, type: String, child: String) => {
     
     const features = dataQuery.map(feature => {
       console.log(feature)
