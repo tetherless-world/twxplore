@@ -71,4 +71,36 @@ object TestStore extends Store {
   override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = ???
 
   override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = ???
+
+  override def getBlockGeometry(blockUri: Uri): SelectionGeometry = {
+    if (blockUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getNtaGeometry(ntaUri: Uri): SelectionGeometry = {
+    if (ntaUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = {
+    if (boroughUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getCityGeometry(boroughUri: Uri): SelectionGeometry = {
+    if (boroughUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
 }

@@ -10,6 +10,12 @@ const composedReducer = (state, action) => {
         ...result
         }
     }
+    case 'treeHierarchy': {
+      return {
+        ...state,  
+        treeHierarchy: action.treeHierarchy
+      }
+    }
   };
   return reducers(state, action);
  };

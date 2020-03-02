@@ -13,7 +13,6 @@ class TwksStoreSpec extends WordSpec with Matchers {
 
   //implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
 
-
   "Test Twks Store" can {
     val currentTreeList = TestData.treeList
 
