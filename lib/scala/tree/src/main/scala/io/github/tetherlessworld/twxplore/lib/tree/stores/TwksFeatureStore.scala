@@ -4,16 +4,20 @@ import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.{DCTerms, RDF}
+import play.api.Configuration
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
 final class TwksFeatureStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with FeatureStore {
-//  private def getGeometryOfBoroughsUri(boroughsUri: List[Uri]): List[Geometry] = getGeometryOfProperties("borough", boroughsUri)
+  @Inject
+  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
 
   override final def getBlockFeatures(): List[Feature] = getFeatures(getBlockUris(), "block")
 

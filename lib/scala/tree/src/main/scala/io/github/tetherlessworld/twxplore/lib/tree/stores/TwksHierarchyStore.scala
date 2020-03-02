@@ -72,57 +72,6 @@ final class TwksHierarchyStore(twksClient: TwksClient) extends AbstractTwksStore
   @Inject
   def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
 
-  //  private def getTreesByBoroughUris(boroughUris: List[Uri]): List[Tree] = getTreesBySelections(boroughUris, "borough")
-  //
-  //  private def getStateByUri(stateUri: Uri)(implicit rdfReader: RdfReader[State]): State = getPropertyByUris(List(stateUri), "state").head
-  //
-  //  private def getCityByUri(cityUri: Uri)(implicit rdfReader: RdfReader[City]): City = getPropertyByUris(List(cityUri), "city").head
-  //
-  //  private def getNtaByUri(ntaUri: Uri): Nta = getNtaByUris(List(ntaUri)).head
-  //
-  //  private def getBlockByUri(blockUri: Uri): Block = getBlockByUris(List(blockUri)).head
-
-  //  private def getStateGeometry(): Feature = getSelectionGeometries(List(getStateUri()), "state").head
-  //
-  //  private def getStateUri(): Uri = getPropertyUris("state").head
-  //
-  //  private def getGeometryOfCityUri(cityUri: Uri): Geometry = getGeometryOfProperty("city", cityUri)
-  //
-  //  private def getGeometryOfBoroughUri(boroughUri: Uri): Geometry = getGeometryOfBoroughsUri(List(boroughUri)).head
-
-  //  private def getGeometryOfNtaUri(ntaUri: Uri): Geometry = getGeometryOfNtasUri(List(ntaUri)).head
-
-  //  private def getGeometryOfNtasUri(ntasUri: List[Uri]): List[Geometry] = getGeometryOfProperties("NTA", ntasUri)
-  //
-  //  private def getGeometryOfBlockUri(blockUri: Uri): Geometry = getGeometryOfBlocksUri(List(blockUri)).head
-
-  //  private def getGeometryOfBlocksUri(blocksUri: List[Uri]): List[Geometry] = getGeometryOfProperties("block", blocksUri)
-
-  //  private def getBoroughUris(limit: Int, offset: Int): List[Uri] = getTreeResourceUris(limit, offset, "borough")
-
-  //  private def getTreeResourceUris(limit: Int, offset: Int, model: String): List[Uri] = {
-  //    val query = QueryFactory.create(
-  //      s"""
-  //         |PREFIX rdf: <${RDF.getURI}>
-  //         |PREFIX tree: <${TREE.URI + "resource:"}>
-  //         |SELECT DISTINCT ?feature WHERE {
-  //         |  ?feature rdf:type tree:$model .
-  //         |} LIMIT $limit OFFSET $offset
-  //         |""".stripMargin)
-  //    withAssertionsQueryExecution(query) {
-  //      queryExecution =>
-  //        queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
-  //    }
-  //  }
-  //
-  //  private def getNtasByBoroughUri(boroughUri: Uri): List[Nta] = {
-  //    getNtasByBorough(getBoroughByUri(boroughUri))
-  //  }
-
-  private def getBoroughByUri(boroughUri: Uri): Borough = getBoroughByUris(List(boroughUri)).head
-
-  private def getBoroughByUris(boroughUris: List[Uri]): List[Borough] = getPropertyByUris[Borough](boroughUris, "borough")
-
   override final def getNtasByBorough(borough: Borough): List[Nta] = getPropertyByProperty[Nta](borough.uri, "NTA")
 
   private def getPropertyByProperty[P](overlayProp: Uri, componentPropName: String)(implicit rdfReader: RdfReader[P]): List[P] = {
