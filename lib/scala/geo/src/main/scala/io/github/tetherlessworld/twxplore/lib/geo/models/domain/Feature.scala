@@ -6,7 +6,7 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.{RdfProperties,
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Model, Resource}
 
-final case class Feature(geometry: Geometry, label: Option[String], uri: Uri)
+final case class Feature(geometry: Geometry, uri: Uri, label: Option[String] = None)
 
 object Feature {
 
