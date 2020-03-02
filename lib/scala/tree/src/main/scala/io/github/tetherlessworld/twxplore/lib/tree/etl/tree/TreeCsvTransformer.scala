@@ -49,27 +49,24 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
       val source: BufferedSource = openCsvSource(filename)
       val meter = metrics.meter(filename)
       try {
-        for ((line, line_no) <- source.getLines.zipWithIndex) {
-          line_no match {
-            case 0 => {}
-            case _ => {
-              val problemStart: Int = line.indexOf("\"")
-              var cols: Array[String] = new Array[String](3)
-              if (problemStart != -1) {
-                val problemEnd: Int = line.indexOf("\"", problemStart + 1)
-                val new_line = replaceComma(line, problemStart, problemEnd)
-                cols = new_line.split(",", -1).map(_.trim)
-              } else {
-                cols = line.split(",", -1).map(_.trim)
-              }
-              val tree = process(line)
+        for ((line, lineIndex) <- source.getLines.zipWithIndex) {
+          if (lineIndex > 0) {
+            val problemStart: Int = line.indexOf("\"")
+            var cols: Array[String] = new Array[String](3)
+            if (problemStart != -1) {
+              val problemEnd: Int = line.indexOf("\"", problemStart + 1)
+              val new_line = replaceComma(line, problemStart, problemEnd)
+              cols = new_line.split(",", -1).map(_.trim)
+            } else {
+              cols = line.split(",", -1).map(_.trim)
+            }
+            val tree = process(line)
               sink.accept(tree)
               meter.mark()
-              if (line_no % bufferSize == 0) {
-                sink.flush()
-              }
+            if (lineIndex % bufferSize == 0) {
+              sink.flush()
             }
-          }
+            }
         }
       } finally {
         source.close()
