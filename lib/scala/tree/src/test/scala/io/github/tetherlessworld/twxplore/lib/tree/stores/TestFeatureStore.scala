@@ -1,9 +1,8 @@
-package stores
+package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.stores.FeatureStore
 
 object TestFeatureStore extends FeatureStore {
   override def getCityGeometry(city: City): Geometry = if (city != null && city == TestData.city) TestData.cityGeoMap("New York").geometry else null

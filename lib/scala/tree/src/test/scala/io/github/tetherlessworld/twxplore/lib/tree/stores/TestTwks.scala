@@ -1,4 +1,4 @@
-package stores
+package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import edu.rpi.tw.twks.client.direct.DirectTwksClient
 import edu.rpi.tw.twks.mem.{MemTwks, MemTwksConfiguration}

@@ -1,7 +1,6 @@
-package stores
+package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksTreeStore
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksTreeStoreSpec extends WordSpec with Matchers {

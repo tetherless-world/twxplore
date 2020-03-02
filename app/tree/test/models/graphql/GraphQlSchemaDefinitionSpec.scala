@@ -1,6 +1,7 @@
 package models.graphql
 
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.stores.{TestFeatureStore, TestHierarchyStore, TestTreeStore}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -8,7 +9,6 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.{TestFeatureStore, TestHierarchyStore, TestTreeStore}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
