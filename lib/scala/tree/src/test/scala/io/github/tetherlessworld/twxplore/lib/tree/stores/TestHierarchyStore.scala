@@ -1,10 +1,9 @@
-package stores
+package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
-import io.github.tetherlessworld.twxplore.lib.tree.stores.HierarchyStore
 
 object TestHierarchyStore extends HierarchyStore {
 

@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.test
+package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE

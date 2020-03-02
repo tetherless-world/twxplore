@@ -1,9 +1,10 @@
-package io.github.tetherlessworld.twxplore.lib.tree
+package io.github.tetherlessworld.twxplore.lib.tree.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.apache.jena.rdf.model.{ModelFactory, Resource}
 import org.scalatest.{Matchers, WordSpec}
 
