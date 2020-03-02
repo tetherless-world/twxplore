@@ -5,8 +5,8 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
 
-@ImplementedBy(classOf[TwksLegacyStore])
-trait LegacyStore {
+@ImplementedBy(classOf[TwksHierarchyStore])
+trait HierarchyStore {
   def getNtasByBorough(borough: Borough): List[Nta]
 
   def getBlocksByNta(nta: Nta): List[Block]

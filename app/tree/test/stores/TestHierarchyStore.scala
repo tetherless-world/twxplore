@@ -4,9 +4,9 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
-import io.github.tetherlessworld.twxplore.lib.tree.stores.LegacyStore
+import io.github.tetherlessworld.twxplore.lib.tree.stores.HierarchyStore
 
-object TestLegacyStore extends LegacyStore {
+object TestHierarchyStore extends HierarchyStore {
 
   implicit class TreeUri(uri: Uri) {
     def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)
