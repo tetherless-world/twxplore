@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import com.google.inject.ImplementedBy
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 
 @ImplementedBy(classOf[TwksStore])
 trait Store {

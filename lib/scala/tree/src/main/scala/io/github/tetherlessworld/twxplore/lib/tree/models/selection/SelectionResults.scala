@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.tree.models.domain
+package io.github.tetherlessworld.twxplore.lib.tree.models.selection
 
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 
