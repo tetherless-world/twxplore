@@ -9,6 +9,7 @@ import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 final case class ZipCity(city: String, uri: Uri)
 
 object ZipCity {
+
   implicit class ZipCityResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
 
@@ -20,6 +21,7 @@ object ZipCity {
       )
     }
   }
+
   implicit object ZipCityRdfWriter extends RdfWriter[ZipCity] {
     override def write(model: Model, value: ZipCity): Resource = {
       val resource = Option(model.getResource(value.uri.toString))
@@ -29,4 +31,5 @@ object ZipCity {
       resource
     }
   }
+
 }

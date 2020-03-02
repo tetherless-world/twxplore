@@ -6,13 +6,14 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class State(name: String, cities: List[Uri], uri: Uri){
+final case class State(name: String, cities: List[Uri], uri: Uri) {
   def addCity(city: City): State = {
     this.copy(cities = cities :+ city.uri)
   }
 }
 
 object State {
+
   implicit class StateResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
 
@@ -25,6 +26,7 @@ object State {
       )
     }
   }
+
   implicit object StateRdfWriter extends RdfWriter[State] {
     override def write(model: Model, value: State): Resource = {
       val resource = Option(model.getResource(value.uri.toString))
@@ -35,4 +37,5 @@ object State {
       resource
     }
   }
+
 }

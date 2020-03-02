@@ -8,10 +8,14 @@ import org.apache.jena.rdf.model.{ModelFactory, Resource}
 import org.scalatest.{Matchers, WordSpec}
 
 class TreeSpec extends WordSpec with Matchers {
+
   implicit class TreeSpecResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties with GeoProperties
 
-  implicit class TreeUri(uri: Uri) { def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1) }
+  implicit class TreeUri(uri: Uri) {
+    def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)
+  }
+
   "TreeSpec" can {
     val testData = TestData
     val tree = TestData.treeList.head
@@ -20,7 +24,7 @@ class TreeSpec extends WordSpec with Matchers {
     "a valid tree write" should {
 
       "return a nonempty resource" in {
-        treeResourceOption should not be(None)
+        treeResourceOption should not be (None)
       }
     }
 
@@ -42,25 +46,25 @@ class TreeSpec extends WordSpec with Matchers {
 
     "tree resource" should {
       "have a specific ID" in {
-        treeResource.identifier.get should equal ("180683")
+        treeResource.identifier.get should equal("180683")
       }
 
       "point to specific city" in {
         treeResource.city.get should equal("New York City")
       }
       "point to a specific state" in {
-        treeResource.state.get should equal ("New York")
+        treeResource.state.get should equal("New York")
       }
       "point to a specific borough" in {
-        treeResource.borough.get should equal ("Queens")
+        treeResource.borough.get should equal("Queens")
       }
 
       "point to a specific NTA" in {
-        treeResource.nta.get should equal ("Forest Hills")
+        treeResource.nta.get should equal("Forest Hills")
       }
 
       "point to a specific block" in {
-        treeResource.block.get should equal ("348711")
+        treeResource.block.get should equal("348711")
       }
     }
 
@@ -73,7 +77,7 @@ class TreeSpec extends WordSpec with Matchers {
 
     "a tree derived from a resource" should {
       "have a specific ID" in {
-        treeRead.id should equal (180683)
+        treeRead.id should equal(180683)
       }
 
       "point to specific city" in {
@@ -81,61 +85,61 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "point to a specific state" in {
-        TestData.state.name should equal ("New York")
+        TestData.state.name should equal("New York")
       }
 
       "point to a specific borough" in {
-        borough.name should equal ("Queens")
+        borough.name should equal("Queens")
       }
 
       "point to a specific NTA" in {
-        nta.name should equal ("Forest Hills")
+        nta.name should equal("Forest Hills")
       }
 
       "point to a specific block" in {
-        block.id should equal (348711)
+        block.id should equal(348711)
       }
     }
 
     "a city resource derived from a tree" should {
       "have a specific feature label" in {
-        cityFeatureResource.label.get should equal ("New York")
+        cityFeatureResource.label.get should equal("New York")
       }
       "have a geometry" in {
-        cityFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:New_York"))
+        cityFeatureResource.hasDefaultGeometry.get should equal(Uri.parse("urn:treedata:resource:geometry:New_York"))
       }
     }
 
     "a nta resource derived from a tree" should {
       "have a specific feature label" in {
-        ntaFeatureResource.label.get should equal ("Forest Hills")
+        ntaFeatureResource.label.get should equal("Forest Hills")
       }
       "have a geometry" in {
-        ntaFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Forest_Hills"))
+        ntaFeatureResource.hasDefaultGeometry.get should equal(Uri.parse("urn:treedata:resource:geometry:Forest_Hills"))
       }
     }
 
     "a block resource derived from a tree" should {
       "have a specific feature label" in {
-        blockFeatureResource.label.get should equal ("348711")
+        blockFeatureResource.label.get should equal("348711")
       }
       "have a geometry" in {
-        blockFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:348711"))
+        blockFeatureResource.hasDefaultGeometry.get should equal(Uri.parse("urn:treedata:resource:geometry:348711"))
       }
     }
 
     "a borough resource derived from a tree" should {
       "have a specific feature label" in {
-        boroughFeatureResource.label.get should equal ("Queens")
+        boroughFeatureResource.label.get should equal("Queens")
       }
       "have a geometry" in {
-        boroughFeatureResource.hasDefaultGeometry.get should equal (Uri.parse("urn:treedata:resource:geometry:Queens"))
+        boroughFeatureResource.hasDefaultGeometry.get should equal(Uri.parse("urn:treedata:resource:geometry:Queens"))
       }
     }
 
     "a read from a state resource" should {
       "have a specific state name" in {
-        state.name should equal ("New York")
+        state.name should equal("New York")
       }
 
       "have a specific list of cities" in {
@@ -145,19 +149,19 @@ class TreeSpec extends WordSpec with Matchers {
 
     "a read from a city resource" should {
       "have a specific city name" in {
-        city.name should equal ("New York City")
+        city.name should equal("New York City")
       }
 
       "have 4 boroughs" in {
-        city.boroughs.size should equal (4)
+        city.boroughs.size should equal(4)
       }
 
       "have a specific list of boroughs" in {
-        assert(city.boroughs.contains( Uri.parse("urn:treedata:resource:borough:1")))
+        assert(city.boroughs.contains(Uri.parse("urn:treedata:resource:borough:1")))
       }
 
       "have 8 postcodes" in {
-        city.postcodes.size should equal (8)
+        city.postcodes.size should equal(8)
       }
 
       "have a specific list of postcodes" in {
@@ -165,22 +169,22 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "have a specific state it resides in" in {
-        city.state.toString should equal ("urn:treedata:resource:state:New_York")
+        city.state.toString should equal("urn:treedata:resource:state:New_York")
       }
     }
 
     "a read from a borough resource" should {
       "have a specific borough identifier" in {
-        borough.name should equal ("Queens")
-        borough.borocode should equal (4)
+        borough.name should equal("Queens")
+        borough.borocode should equal(4)
       }
 
       "have 2 NTAs" in {
-        borough.ntaList.size should equal (2)
+        borough.ntaList.size should equal(2)
       }
 
       "have a specific list of NTAs" in {
-        assert(borough.ntaList.contains( Uri.parse("urn:treedata:resource:NTA:QN17")))
+        assert(borough.ntaList.contains(Uri.parse("urn:treedata:resource:NTA:QN17")))
       }
 
       "have a specific city" in {
@@ -203,17 +207,17 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "point to a specific postal code area" in {
-        nta.postCode.toString should equal ("urn:treedata:resource:postcode:11375")
+        nta.postCode.toString should equal("urn:treedata:resource:postcode:11375")
       }
     }
 
     "a read from a block resource" should {
       "have a specific block id" in {
-        block.id should equal (348711)
+        block.id should equal(348711)
       }
 
       "have a specific NTA" in {
-        block.nta.toString should equal ("urn:treedata:resource:NTA:QN17")
+        block.nta.toString should equal("urn:treedata:resource:NTA:QN17")
       }
     }
   }

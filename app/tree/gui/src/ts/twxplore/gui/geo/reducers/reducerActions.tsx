@@ -16,7 +16,13 @@ const composedReducer = (state, action) => {
       return{
         ...result
       }
+    }
 
+    case 'treeHierarchy': {
+      return {
+        ...state,  
+        treeHierarchy: action.treeHierarchy
+      }
     }
   };
   return reducers(state, action);

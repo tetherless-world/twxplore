@@ -9,6 +9,7 @@ import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 final case class CensusTract(id: Int, shapefile: String, uri: Uri)
 
 object CensusTract {
+
   implicit class CensusTractResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
 
@@ -21,6 +22,7 @@ object CensusTract {
       )
     }
   }
+
   implicit object CensusTractRdfWriter extends RdfWriter[CensusTract] {
     override def write(model: Model, value: CensusTract): Resource = {
       val resource = Option(model.getResource(value.uri.toString))
@@ -31,4 +33,5 @@ object CensusTract {
       resource
     }
   }
+
 }

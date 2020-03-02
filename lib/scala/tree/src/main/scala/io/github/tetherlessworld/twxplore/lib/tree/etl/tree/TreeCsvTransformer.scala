@@ -49,25 +49,22 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
       val source: BufferedSource = openCsvSource(filename)
       val meter = metrics.meter(filename)
       try {
-        for ((line, line_no) <- source.getLines.zipWithIndex) {
-          line_no match {
-            case 0 => {}
-            case _ => {
-              val problemStart: Int = line.indexOf("\"")
-              var cols: Array[String] = new Array[String](3)
-              if (problemStart != -1) {
-                val problemEnd: Int = line.indexOf("\"", problemStart + 1)
-                val new_line = replaceComma(line, problemStart, problemEnd)
-                cols = new_line.split(",", -1).map(_.trim)
-              } else {
-                cols = line.split(",", -1).map(_.trim)
-              }
-              val tree = process(line)
-              sink.accept(tree)
-              meter.mark()
-              if (line_no % bufferSize == 0) {
-                sink.flush()
-              }
+        for ((line, lineIndex) <- source.getLines.zipWithIndex) {
+          if (lineIndex > 0) {
+            val problemStart: Int = line.indexOf("\"")
+            var cols: Array[String] = new Array[String](3)
+            if (problemStart != -1) {
+              val problemEnd: Int = line.indexOf("\"", problemStart + 1)
+              val new_line = replaceComma(line, problemStart, problemEnd)
+              cols = new_line.split(",", -1).map(_.trim)
+            } else {
+              cols = line.split(",", -1).map(_.trim)
+            }
+            val tree = process(line)
+            sink.accept(tree)
+            meter.mark()
+            if (lineIndex % bufferSize == 0) {
+              sink.flush()
             }
           }
         }
@@ -246,32 +243,16 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
     dateFormatter.parse(date)
   }
 
-  private def processCurbLoc(curbLoc: String): CurbLoc = {
-    curbLoc match {
-      case "OnCurb" => OnCurb
-      case "OffsetFromCurb" => OffsetFromCurb
-    }
-  }
+  private def processCurbLoc(curbLoc: String): CurbLoc =
+    CurbLoc.values.find(value => value.toString == curbLoc).get
 
   private def processDBH(dbh: String): Int = dbh.toInt
 
-  private def processGuards(guards: String): Option[Guards] = {
-    guards match {
-      case "Helpful" => Some(Helpful)
-      case "Harmful" => Some(Harmful)
-      case "Unsure" => Some(Unsure)
-      case _ => None
-    }
-  }
+  private def processGuards(guards: String): Option[Guards] =
+    Guards.values.find(value => value.toString == guards)
 
-  private def processHealth(health: String): Option[Health] = {
-    health match {
-      case "Fair" => Some(Fair)
-      case "Good" => Some(Good)
-      case "Poor" => Some(Poor)
-      case _ => None
-    }
-  }
+  private def processHealth(health: String): Option[Health] =
+    Health.values.find(value => value.toString == health)
 
   private def processLatitude(latitude: String): Float = latitude.toFloat
 
@@ -302,55 +283,21 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
     }
   }
 
-  private def processProblems(problems_str: String): List[Problems] = {
-    val problems = problems_str.split("\\+").map(_.trim).toList
-    val problemList = problems.flatMap({
-      case "BranchLights" => Some(BranchLights)
-      case "BranchOther" => Some(BranchOther)
-      case "BranchShoe" => Some(BranchShoe)
-      case "MetalGrates" => Some(MetalGrates)
-      case "Stones" => Some(Stones)
-      case "TrunkLights" => Some(TrunkLights)
-      case "TrunkOther" => Some(TrunkOther)
-      case "TrunkWire" => Some(TrunkWire)
-      case "RootGrate" => Some(RootGrate)
-      case "RootLights" => Some(RootLights)
-      case "RootOther" => Some(RootOther)
-      case "RootStone" => Some(RootStone)
-      case "Sneakers" => Some(Sneakers)
-      case "WiresRope" => Some(WiresRope)
-      case _ => None
-    })
-    problemList
-  }
+  private def processProblems(problems: String): List[Problems] =
+    problems.split("\\+").map(_.trim).flatMap(problem => Problems.values.find(value => value.toString == problem)).toList
 
-  private def processSidewalk(sidewalk: String): Option[Sidewalk] = {
-    sidewalk match {
-      case "NoDamage" => Some(NoDamage)
-      case "Damage" => Some(Damage)
-      case _ => None
-    }
-  }
+  private def processSidewalk(sidewalk: String): Option[Sidewalk] =
+    Sidewalk.values.find(value => value.toString == sidewalk)
 
   private def processStateAssembly(stateAssembly: String): Int = stateAssembly.toInt
 
   private def processStateSenate(stateSenate: String): Int = stateSenate.toInt
 
-  private def processStatus(status: String): Status = {
-    status match {
-      case "Alive" => Alive
-      case "Dead" => Dead
-      case "Stump" => Stump
-    }
-  }
+  private def processStatus(status: String): Status =
+    Status.values.find(value => value.toString == status).get
 
-  private def processSteward(steward: String): Option[Steward] = {
-    steward match {
-      case "1or2" => Some(OneOrTwo)
-      case "3or4" => Some(ThreeOrFour)
-      case _ => None
-    }
-  }
+  private def processSteward(steward: String): Option[Steward] =
+    Steward.values.find(value => value.toString == steward)
 
   private def processStumpDiameter(dia: String): Int = dia.toInt
 
@@ -372,13 +319,13 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
     }
   }
 
-  private def processUserType(userType: String): UserType = {
+  private def processUserType(userType: String): UserType =
     userType match {
-      case "TreesCount Staff" => TreesCountStaff
-      case "Volunteer" => Volunteer
-      case "NYC Parks Staff" => NYCParksStaff
+      case "TreesCount Staff" => UserType.TreesCountStaff
+      case "Volunteer" => UserType.Volunteer
+      case "NYC Parks Staff" => UserType.NYCParksStaff
+      case _ => throw new IllegalArgumentException(userType)
     }
-  }
 
   private def processXStatePlane(x_sp: String): Float = x_sp.toFloat
 

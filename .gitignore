@@ -12,3 +12,8 @@ target/
 
 /result.ttl
 /result.zip
+/city.csv
+/borough.csv
+/nta.csv
+/block.csv
+/tree.csv

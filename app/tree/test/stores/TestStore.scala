@@ -3,7 +3,7 @@ package stores
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import io.github.tetherlessworld.twxplore.lib.tree.stores.Store
 
 object TestStore extends Store {
@@ -71,4 +71,36 @@ object TestStore extends Store {
   override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = ???
 
   override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = ???
+
+  override def getBlockGeometry(blockUri: Uri): SelectionGeometry = {
+    if (blockUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getNtaGeometry(ntaUri: Uri): SelectionGeometry = {
+    if (ntaUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = {
+    if (boroughUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
+
+  override def getCityGeometry(boroughUri: Uri): SelectionGeometry = {
+    if (boroughUri != null) {
+      SelectionGeometry(TestData.geometry, Uri.parse("http://example.com/geometry"))
+    } else{
+      null
+    }
+  }
 }

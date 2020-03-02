@@ -5,17 +5,15 @@ import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 
 sealed trait Guards {
   val uri = Uri.parse(TREE.GUARDS_URI_PREFIX)
-  val label: String
 }
 
-case object Helpful extends Guards {
-  val label = "Helpful"
-}
+object Guards {
 
-case object Harmful extends Guards {
-  val label = "Harmful"
-}
+  case object Helpful extends Guards
 
-case object Unsure extends Guards {
-  val label = "Unsure"
+  case object Harmful extends Guards
+
+  case object Unsure extends Guards
+
+  val values = Seq(Helpful, Harmful, Unsure)
 }
