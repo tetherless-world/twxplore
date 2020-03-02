@@ -17,7 +17,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-final class TwksTreeStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with TreeStore {
+final class TwksTreeStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with TreeStore {
   @Inject
   def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
 

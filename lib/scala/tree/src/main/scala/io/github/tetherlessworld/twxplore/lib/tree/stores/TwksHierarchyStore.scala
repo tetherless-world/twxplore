@@ -15,7 +15,7 @@ import play.api.Configuration
 
 import scala.collection.JavaConverters._
 
-final class TwksHierarchyStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with HierarchyStore {
+final class TwksHierarchyStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with HierarchyStore {
   override final def getBlockHierarchy(blockUri: Uri): List[SelectionArea] = {
     val blockSelection = getSelection(blockUri, "block", TREE.propertyURI.toString + "NTA")
     getNtaHierarchy(blockSelection.parent) :+ blockSelection
