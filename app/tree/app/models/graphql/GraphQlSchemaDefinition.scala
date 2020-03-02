@@ -5,33 +5,12 @@ import java.util.Date
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.AbstractGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.models.domain.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
-import play.api.libs.json
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
+import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, FloatType, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
 
 object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
-  // Scalar Formats
-  implicit val uriFormat = new json.Format[Uri] {
-    override def reads(json: JsValue): JsResult[Uri] = JsSuccess(Uri.parse(json.asInstanceOf[JsString].value))
-    override def writes(o: Uri): JsValue = JsString(o.toString)
-  }
-
-
-  implicit val ScalaFloatType = ScalarAlias[Float, Double](
-    FloatType, _.toDouble, value => {
-      Right(value.toFloat)
-    }
-  )
-
-  implicit val DateType = ScalarAlias[Date, String](
-    StringType, _.toString, date => {
-      val dateFormatter = new java.text.SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy")
-      Right(dateFormatter.parse(date))
-    }
-  )
   implicit val CurbLocType = ScalarAlias[CurbLoc, String](
     StringType, _.label, curbLoc => {
       val result = curbLoc match {
@@ -199,8 +178,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 //  )
 
   implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
+    //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
+    //    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
   )
 
   implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
@@ -271,9 +250,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   )
 
 
-
-  implicit val geo = new FromInput[Geometry] {
+  implicit val geometryFromInput = new FromInput[Geometry] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -285,7 +264,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val feature = new FromInput[Feature] {
+  implicit val featureFromInput = new FromInput[Feature] {
     val marshaller = CoercedScalaResultMarshaller.default
 
     def fromResult(node: marshaller.Node) = {
@@ -299,8 +278,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val city = new FromInput[City] {
+  implicit val cityFromInput = new FromInput[City] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -315,8 +295,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualblock = new FromInput[Block] {
+  implicit val blockFromInput = new FromInput[Block] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -330,8 +311,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val nta = new FromInput[Nta] {
+  implicit val ntaFromInput = new FromInput[Nta] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -347,8 +329,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val borough = new FromInput[Borough] {
+  implicit val boroughFromInput = new FromInput[Borough] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -363,8 +346,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualTree = new FromInput[Tree] {
+  implicit val treeFromInput = new FromInput[Tree] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -407,32 +391,32 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val selectionGeometry = new FromInput[SelectionGeometry] {
-    val marshaller = CoercedScalaResultMarshaller.default
-    def fromResult(node: marshaller.Node) = {
-      val ad = node.asInstanceOf[Map[String, Any]]
-      SelectionGeometry(
-        geometry = ad.get("geometry").asInstanceOf[Geometry],
-        uri = ad.get("uri").asInstanceOf[Uri]
-      )
-    }
-  }
+  //  implicit val selectionGeometry = new FromInput[SelectionGeometry] {
+  //    val marshaller = CoercedScalaResultMarshaller.default
+  //    def fromResult(node: marshaller.Node) = {
+  //      val ad = node.asInstanceOf[Map[String, Any]]
+  //      SelectionGeometry(
+  //        geometry = ad.get("geometry").asInstanceOf[Geometry],
+  //        uri = ad.get("uri").asInstanceOf[Uri]
+  //      )
+  //    }
+  //  }
 
-  implicit val selectionArea = new FromInput[SelectionArea] {
-    val marshaller = CoercedScalaResultMarshaller.default
+  //  implicit val selectionArea = new FromInput[SelectionArea] {
+  //    val marshaller = CoercedScalaResultMarshaller.default
+  //
+  //    def fromResult(node: marshaller.Node) = {
+  //      val ad = node.asInstanceOf[Map[String, Any]]
+  //      SelectionArea(
+  //        name = ad.get("name").toString,
+  //        uri = ad.get("uri").asInstanceOf[Uri],
+  //        selection = ad.get("selection").toString,
+  //        parent = ad.get("parent").asInstanceOf[Uri]
+  //      )
+  //    }
+  //  }
 
-    def fromResult(node: marshaller.Node) = {
-      val ad = node.asInstanceOf[Map[String, Any]]
-      SelectionArea(
-        name = ad.get("name").toString,
-        uri = ad.get("uri").asInstanceOf[Uri],
-        selection = ad.get("selection").toString,
-        parent = ad.get("parent").asInstanceOf[Uri]
-      )
-    }
-  }
-
-  implicit val selectionInput = new FromInput[SelectionInput] {
+  implicit val selectionFromInput = new FromInput[SelectionInput] {
     val marshaller = CoercedScalaResultMarshaller.default
 
     def fromResult(node: marshaller.Node) = {
@@ -448,9 +432,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 
 
   // Argument types
-  val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
-  val BoroughArgument = Argument("borough", BoroughInputType, description="Borough Input")
-  val BoroughsArgument = Argument("boroughs", ListInputType(BoroughInputType), description="Boroughs Input")
+  val GeometryArgument = Argument("geometry", GeometryInputType, description = "Geometry Input")
+  val BoroughArgument = Argument("borough", BoroughInputType, description = "Borough Input")
+  val BoroughsArgument = Argument("boroughs", ListInputType(BoroughInputType), description = "Boroughs Input")
   val NtaArgument = Argument("nta", NtaInputType, description = "NTA Input")
   val NtasArgument = Argument("ntas", ListInputType(NtaInputType), description = "NTAs Input")
   val BlockArgument = Argument("block", BlockInputType, description = "Block Input")
@@ -459,8 +443,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   val SelectionInputArgument = Argument("selectionInput", SelectionInputType, description = "Selection Input")
 
 
-  val CitiesType =  sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
-    Field("geometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
+  val CitiesType = sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
+    Field("geometryOfCity", GeometryType, arguments = CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
     Field("geometries", SelectionGeometryType, arguments= Nil, resolve = (ctx) => ctx.ctx.store.getCityGeometry()),
     Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getCityHierarchy(cityUri = ctx.args.arg("cityUri"))),
   ))

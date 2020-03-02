@@ -8,10 +8,10 @@ sealed trait CurbLoc {
   val label: String
 }
 
-case object OffsetFromCurb extends CurbLoc{
+case object OffsetFromCurb extends CurbLoc {
   val label = "OffsetFromCurb"
 }
 
-case object OnCurb extends CurbLoc{
+case object OnCurb extends CurbLoc {
   val label = "OnCurb"
 }

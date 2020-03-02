@@ -10,6 +10,7 @@ final case class Postcode(code: Int, city: Uri, uri: Uri) {
 }
 
 object Postcode {
+
   implicit class PostcodeResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties
 
@@ -22,6 +23,7 @@ object Postcode {
       )
     }
   }
+
   implicit object PostcodeRdfWriter extends RdfWriter[Postcode] {
     override def write(model: Model, value: Postcode): Resource = {
       val resource = Option(model.getResource(value.uri.toString))
@@ -33,4 +35,5 @@ object Postcode {
       resource
     }
   }
+
 }

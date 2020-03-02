@@ -5,6 +5,9 @@ import com.github.tototoshi.csv.CSVReader
 import scala.io.BufferedSource
 
 trait CsvTransformer {
+  protected def openCsvReader(filename: String): CSVReader =
+    CSVReader.open(openCsvSource(filename))
+
   protected final def openCsvSource(filename: String): BufferedSource = {
     if (sys.env.contains("CI")) {
       scala.io.Source.fromResource(filename)
@@ -19,9 +22,6 @@ trait CsvTransformer {
       }
     }
   }
-
-  protected def openCsvReader(filename: String): CSVReader =
-    CSVReader.open(openCsvSource(filename))
 }
 
 object CsvTransformer {

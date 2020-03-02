@@ -61,12 +61,12 @@ class TreeCsvTransformer(bufferSize: Int = CsvTransformer.BufferSizeDefault) ext
               cols = line.split(",", -1).map(_.trim)
             }
             val tree = process(line)
-              sink.accept(tree)
-              meter.mark()
+            sink.accept(tree)
+            meter.mark()
             if (lineIndex % bufferSize == 0) {
               sink.flush()
             }
-            }
+          }
         }
       } finally {
         source.close()
