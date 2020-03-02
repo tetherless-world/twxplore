@@ -1,7 +1,7 @@
 import reducers from "./reducers"
 import {APP_STATE} from 'twxplore/gui/geo/reducers/reducers'
 import {Real_State} from 'twxplore/gui/geo/reducers/reducers'
-import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/ActionTypes'
+import {APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/Actions'
 
 
 
@@ -23,9 +23,9 @@ const composedReducer = (state: Real_State, action: ActionTypes) => {
       return{
         ...result
       }
-
     }
   };
+  */
   return reducers(state, action);
  };
 

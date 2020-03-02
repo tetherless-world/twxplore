@@ -19,7 +19,8 @@ import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/t
 import { SelectionHierarchyQuery, SelectionHierarchyQueryVariables } from  '../../api/queries/types/SelectionHierarchyQuery';
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
-import { TreeMapQuery, TreeMapQueryVariables } from '../../api/queries/types/TreeMapQuery'
+import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection } from '../../api/queries/types/TreeMapQuery'
+import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/Actions'
 
 var wkt = require('terraformer-wkt-parser');
 const MAPBOX_TOKEN = "pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
@@ -315,6 +316,8 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
                 map: 'blockMap',
                 uri: counter.app.parentUri
               })
+              dispatch(sendAppendMap('blockMap',counter.app.parentUri))
+              dispatch(sendSelectionData(ResultQuery.data!.TreesBySelection))
               setRenderState(false)
             }
 
