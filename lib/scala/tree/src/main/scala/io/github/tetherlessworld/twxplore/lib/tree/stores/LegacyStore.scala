@@ -13,26 +13,6 @@ trait LegacyStore {
 
   def getBoroughsByCity(city: City): List[Borough]
 
-  def getNtaFeaturesByBorough(borough: Uri): List[Feature]
-
-  def getBlockFeaturesByNta(nta: Uri): List[Feature]
-
-  def getBlockFeatures(): List[Feature]
-
-  def getNtaFeatures(): List[Feature]
-
-  def getBoroughFeatures(): List[Feature]
-
-  def getCityFeature(): Feature
-
-  def getBlockFeature(blockUri: Uri): Feature
-
-  def getNtaFeature(ntaUri: Uri): Feature
-
-  def getBoroughFeature(boroughUri: Uri): Feature
-
-  def getCityFeature(cityUri: Uri): Feature
-
   def getStateHierarchy(stateUri: Uri): List[SelectionArea]
 
   def getCityHierarchy(cityUri: Uri): List[SelectionArea]
@@ -42,19 +22,4 @@ trait LegacyStore {
   def getNtaHierarchy(ntaUri: Uri): List[SelectionArea]
 
   def getBlockHierarchy(blockUri: Uri): List[SelectionArea]
-
-  /*Getting geometries of specified areas*/
-  def getCityGeometry(city: City): Geometry
-
-  def getBoroughGeometries(boroughs: List[Borough]): List[Geometry]
-
-  def getBoroughGeometry(borough: Borough): Geometry
-
-  def getNtaGeometries(ntas: List[Nta]): List[Geometry]
-
-  def getNtaGeometry(nta: Nta): Geometry
-
-  def getBlockGeometries(blocks: List[Block]): List[Geometry]
-
-  def getBlockGeometry(block: Block): Geometry
 }
