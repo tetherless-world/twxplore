@@ -8,7 +8,7 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, Schema, fields}
+import sangria.schema.{Argument, Field, ListInputType, ListType, Schema, fields}
 
 object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   implicit val CurbLocType = deriveEnumType[CurbLoc]()
@@ -21,149 +21,41 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   implicit val UserTypeType = deriveEnumType[UserType]()
 
   // Domain model types, in dependence order
-  implicit val CensusTractInputType = deriveInputObjectType[CensusTract](
-    InputObjectTypeName("CensusTractFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
+  implicit val CensusTractInputType = deriveInputObjectType[CensusTract]()
+  implicit val PostCodeInputType = deriveInputObjectType[Postcode]()
+  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies]()
+  implicit val ZipCityInputType = deriveInputObjectType[ZipCity]()
+  implicit val BlockInputType = deriveInputObjectType[Block]()
+  implicit val NtaInputType = deriveInputObjectType[Nta]()
+  implicit val BoroughInputType = deriveInputObjectType[Borough]()
+  implicit val CityInputType = deriveInputObjectType[City]()
+  implicit val StateInputType = deriveInputObjectType[State]()
+  implicit val GeometryInputType = deriveInputObjectType[Geometry]()
+  implicit val SelectionInputType = deriveInputObjectType[SelectionInput]()
+  implicit val SelectionAreaInputType = deriveInputObjectType[SelectionArea]()
 
-  implicit val PostCodeInputType = deriveInputObjectType[Postcode](
-    InputObjectTypeName("PostcodeFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
+  //  implicit val TreeInputType = deriveInputObjectType[Tree](
+  //    InputObjectTypeName("TreeFieldsInput"),
+  //    ReplaceInputField("uri", InputField("uri", UriType)),
+  //    ReplaceInputField("createdAt", InputField("createdAt", DateType)),
+  //    ReplaceInputField("curbLoc", InputField("curbLoc", CurbLocType)),
+  //  )
 
-  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies](
-    InputObjectTypeName("SpeciesFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val ZipCityInputType = deriveInputObjectType[ZipCity](
-    InputObjectTypeName("ZipCityFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val BlockInputType = deriveInputObjectType[Block](
-    InputObjectTypeName("BlockFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val NtaInputType = deriveInputObjectType[Nta](
-    InputObjectTypeName("NtaFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val BoroughInputType = deriveInputObjectType[Borough](
-    InputObjectTypeName("BoroughFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val CityInputType = deriveInputObjectType[City](
-    InputObjectTypeName("CityFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val StateInputType = deriveInputObjectType[State](
-    InputObjectTypeName("StateFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val GeometryInputType = deriveInputObjectType[Geometry](
-    InputObjectTypeName("GeometryFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val SelectionInputType = deriveInputObjectType[SelectionInput](
-    InputObjectTypeName("SelectionInputFieldsInput"),
-    ReplaceInputField("includeNtaList", InputField("includeNtaList", ListInputType(UriType))),
-    ReplaceInputField("includeBlocks", InputField("includeBlocks", ListInputType(UriType))),
-    ReplaceInputField("excludeNtaList", InputField("excludeNtaList", ListInputType(UriType))),
-    ReplaceInputField("excludeBlocks", InputField("excludeBlocks", ListInputType(UriType))),
-  )
-
-  implicit val SelectionAreaInputType = deriveInputObjectType[SelectionArea](
-    InputObjectTypeName("SelectionAreaFieldsInput"),
-    ReplaceInputField("uri", InputField("uri", UriType)),
-    ReplaceInputField("parent", InputField("parent", UriType)),
-  )
-
-//  implicit val TreeInputType = deriveInputObjectType[Tree](
-//    InputObjectTypeName("TreeFieldsInput"),
-//    ReplaceInputField("uri", InputField("uri", UriType)),
-//    ReplaceInputField("createdAt", InputField("createdAt", DateType)),
-//    ReplaceInputField("curbLoc", InputField("curbLoc", CurbLocType)),
-//  )
-
-  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
-    //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-    //    ReplaceField("wkt", Field("wkt", StringType, resolve = _.value.wkt))
-  )
-
-  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val StateType = deriveObjectType[GraphQlSchemaContext, State](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val CityType = deriveObjectType[GraphQlSchemaContext, City](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val BoroughType = deriveObjectType[GraphQlSchemaContext, Borough](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val NtaType = deriveObjectType[GraphQlSchemaContext, Nta](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val BlockType = deriveObjectType[GraphQlSchemaContext, Block](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-  )
-
-  implicit val CensusTractType = deriveObjectType[GraphQlSchemaContext, CensusTract](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val PostCodeType = deriveObjectType[GraphQlSchemaContext, Postcode](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val SelectionAreaType = deriveObjectType[GraphQlSchemaContext, SelectionArea](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-    ReplaceField("parent", Field("parent", UriType, resolve = _.value.parent))
-  )
-
-  implicit val SelectionGeometryType = deriveObjectType[GraphQlSchemaContext, SelectionGeometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-    ReplaceField("geometry", Field("geometry", GeometryType, resolve = _.value.geometry))
-  )
-
-  implicit val TreeType = deriveObjectType[GraphQlSchemaContext, Tree](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri)),
-  )
-
-  implicit val SpeciesType = deriveObjectType[GraphQlSchemaContext, TreeSpecies](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val ZipCityType = deriveObjectType[GraphQlSchemaContext, ZipCity](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val SelectionResultsType = deriveObjectType[GraphQlSchemaContext, SelectionResults](
-    ReplaceField("blocks", Field("blocks", ListType(BlockType), resolve = _.value.blocks)),
-    ReplaceField("boroughs", Field("boroughs", ListType(BoroughType), resolve = _.value.boroughs)),
-    ReplaceField("censusTracts", Field("censusTracts", ListType(CensusTractType), resolve = _.value.censusTracts)),
-    ReplaceField("city", Field("city", CityType, resolve = _.value.city)),
-    ReplaceField("ntaList", Field("ntaList", ListType(NtaType), resolve = _.value.ntaList)),
-    ReplaceField("postcodes", Field("postcodes", ListType(PostCodeType), resolve = _.value.postcodes)),
-    ReplaceField("state", Field("state", StateType, resolve = _.value.state)),
-    ReplaceField("trees", Field("trees", ListType(TreeType), resolve = _.value.trees)),
-    ReplaceField("treeSpecies", Field("treeSpecies", ListType(SpeciesType), resolve = _.value.treeSpecies)),
-    ReplaceField("zipCities", Field("zipCities", ListType(ZipCityType), resolve = _.value.zipCities)),
-  )
-
+  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry]()
+  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature]()
+  implicit val StateType = deriveObjectType[GraphQlSchemaContext, State]()
+  implicit val CityType = deriveObjectType[GraphQlSchemaContext, City]()
+  implicit val BoroughType = deriveObjectType[GraphQlSchemaContext, Borough]()
+  implicit val NtaType = deriveObjectType[GraphQlSchemaContext, Nta]()
+  implicit val BlockType = deriveObjectType[GraphQlSchemaContext, Block]()
+  implicit val CensusTractType = deriveObjectType[GraphQlSchemaContext, CensusTract]()
+  implicit val PostcodeType = deriveObjectType[GraphQlSchemaContext, Postcode]()
+  implicit val SelectionAreaType = deriveObjectType[GraphQlSchemaContext, SelectionArea]()
+  implicit val SelectionGeometryType = deriveObjectType[GraphQlSchemaContext, SelectionGeometry]()
+  implicit val TreeType = deriveObjectType[GraphQlSchemaContext, Tree]()
+  implicit val TreeSpeciesType = deriveObjectType[GraphQlSchemaContext, TreeSpecies]()
+  implicit val ZipCityType = deriveObjectType[GraphQlSchemaContext, ZipCity]()
+  implicit val SelectionResultsType = deriveObjectType[GraphQlSchemaContext, SelectionResults]()
 
   implicit val geometryFromInput = new FromInput[Geometry] {
     val marshaller = CoercedScalaResultMarshaller.default
