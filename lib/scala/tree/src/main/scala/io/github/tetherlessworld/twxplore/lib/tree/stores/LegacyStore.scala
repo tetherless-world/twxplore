@@ -15,27 +15,27 @@ trait LegacyStore {
 
   def getTrees(limit: Int, offset: Int): List[Tree]
 
-  def getNtasByBoroughGeometry(borough: Uri): List[Feature]
+  def getNtaFeaturesByBorough(borough: Uri): List[Feature]
 
-  def getBlocksByNtaGeometry(Nta: Uri): List[Feature]
+  def getBlockFeaturesByNta(nta: Uri): List[Feature]
 
   def getTreesBySelection(selection: SelectionInput): SelectionResults
 
-  def getBlockGeometries(): List[Feature]
+  def getBlockFeatures(): List[Feature]
 
-  def getNtaGeometries(): List[Feature]
+  def getNtaFeatures(): List[Feature]
 
-  def getBoroughGeometries(): List[Feature]
+  def getBoroughFeatures(): List[Feature]
 
-  def getCityGeometry(): Feature
+  def getCityFeature(): Feature
 
-  def getBlockGeometry(blockUri: Uri): Feature
+  def getBlockFeature(blockUri: Uri): Feature
 
-  def getNtaGeometry(ntaUri: Uri): Feature
+  def getNtaFeature(ntaUri: Uri): Feature
 
-  def getBoroughGeometry(boroughUri: Uri): Feature
+  def getBoroughFeature(boroughUri: Uri): Feature
 
-  def getCityGeometry(cityUri: Uri): Feature
+  def getCityFeature(cityUri: Uri): Feature
 
   def getStateHierarchy(stateUri: Uri): List[SelectionArea]
 
@@ -48,17 +48,17 @@ trait LegacyStore {
   def getBlockHierarchy(blockUri: Uri): List[SelectionArea]
 
   /*Getting geometries of specified areas*/
-  def getGeometryOfCity(city: City): Geometry
+  def getCityGeometry(city: City): Geometry
 
-  def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry]
+  def getBoroughGeometries(boroughs: List[Borough]): List[Geometry]
 
-  def getGeometryOfBorough(borough: Borough): Geometry
+  def getBoroughGeometry(borough: Borough): Geometry
 
-  def getGeometryOfNtas(ntas: List[Nta]): List[Geometry]
+  def getNtaGeometries(ntas: List[Nta]): List[Geometry]
 
-  def getGeometryOfNta(nta: Nta): Geometry
+  def getNtaGeometry(nta: Nta): Geometry
 
-  def getGeometryOfBlocks(blocks: List[Block]): List[Geometry]
+  def getBlockGeometries(blocks: List[Block]): List[Geometry]
 
-  def getGeometryOfBlock(block: Block): Geometry
+  def getBlockGeometry(block: Block): Geometry
 }

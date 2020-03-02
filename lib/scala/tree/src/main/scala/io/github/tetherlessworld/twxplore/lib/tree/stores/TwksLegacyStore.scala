@@ -150,15 +150,15 @@ final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(tw
 
   private def getBlockByUris(blockUris: List[Uri]): List[Block] = getPropertyByUris[Block](blockUris, "block")
 
-  override final def getBlockGeometries(): List[Feature] = getSelectionGeometries(getBlockUris(), "block")
+  override final def getBlockFeatures(): List[Feature] = getSelectionGeometries(getBlockUris(), "block")
 
   private def getBlockUris(): List[Uri] = getPropertyUris("block")
 
-  override final def getNtaGeometries(): List[Feature] = getSelectionGeometries(getNtaUris(), "NTA")
+  override final def getNtaFeatures(): List[Feature] = getSelectionGeometries(getNtaUris(), "NTA")
 
   private def getNtaUris(): List[Uri] = getPropertyUris("NTA")
 
-  override final def getBoroughGeometries(): List[Feature] = getSelectionGeometries(getBoroughUris(), "borough")
+  override final def getBoroughFeatures(): List[Feature] = getSelectionGeometries(getBoroughUris(), "borough")
 
   private def getBoroughUris(): List[Uri] = getPropertyUris("borough")
 
@@ -188,7 +188,7 @@ final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(tw
     result.toList
   }
 
-  override final def getCityGeometry(): Feature = getSelectionGeometries(List(getCityUri()), "city").head
+  override final def getCityFeature(): Feature = getSelectionGeometries(List(getCityUri()), "city").head
 
   private def getCityUri(): Uri = getPropertyUris("city").head
 
@@ -241,17 +241,17 @@ final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(tw
     }
   }
 
-  override final def getGeometryOfCity(city: City): Geometry = getGeometryOfProperty("city", city.uri)
+  override final def getCityGeometry(city: City): Geometry = getGeometryOfProperty("city", city.uri)
 
   private def getGeometryOfProperty(componentPropName: String, property: Uri): Geometry = getGeometryOfProperties(componentPropName, List(property)).head
 
-  override final def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(List(borough)).head
+  override final def getBoroughGeometry(borough: Borough): Geometry = getBoroughGeometries(List(borough)).head
 
-  override final def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
+  override final def getBoroughGeometries(boroughs: List[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
 
-  override final def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(List(nta)).head
+  override final def getNtaGeometry(nta: Nta): Geometry = getNtaGeometries(List(nta)).head
 
-  override final def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
+  override final def getNtaGeometries(ntas: List[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
 
   private def getGeometryOfProperties(componentPropName: String, properties: List[Uri]): List[Geometry] = {
     val query = QueryFactory.create(
@@ -276,17 +276,17 @@ final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(tw
     }
   }
 
-  override final def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(List(block)).head
+  override final def getBlockGeometry(block: Block): Geometry = getBlockGeometries(List(block)).head
 
-  override final def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
+  override final def getBlockGeometries(blocks: List[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
 
   override final def getBlocksByNta(nta: Nta): List[Block] = getPropertyByProperty[Block](nta.uri, "block")
 
   override final def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
 
-  override final def getNtasByBoroughGeometry(borough: Uri): List[Feature] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
+  override final def getNtaFeaturesByBorough(borough: Uri): List[Feature] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
 
-  override final def getBlocksByNtaGeometry(Nta: Uri): List[Feature] = getSelectionGeometries(getPropertyUrisByUri(Nta, "block"), "block")
+  override final def getBlockFeaturesByNta(nta: Uri): List[Feature] = getSelectionGeometries(getPropertyUrisByUri(nta, "block"), "block")
 
   private def getPropertyUrisByUri(overlayProp: Uri, componentPropName: String): List[Uri] = {
     val query = QueryFactory.create(
@@ -307,15 +307,15 @@ final class TwksLegacyStore(twksClient: TwksClient) extends AbstractTwksStore(tw
     }
   }
 
-  override final def getBlockGeometry(blockUri: Uri): Feature = getFeature(blockUri, "block")
+  override final def getBlockFeature(blockUri: Uri): Feature = getFeature(blockUri, "block")
 
-  override final def getNtaGeometry(ntaUri: Uri): Feature = getFeature(ntaUri, "NTA")
+  override final def getNtaFeature(ntaUri: Uri): Feature = getFeature(ntaUri, "NTA")
 
   private def getFeature(uri: Uri, componentProp: String): Feature = getSelectionGeometries(List(uri), componentProp).head
 
-  override final def getBoroughGeometry(boroughUri: Uri): Feature = getFeature(boroughUri, "borough")
+  override final def getBoroughFeature(boroughUri: Uri): Feature = getFeature(boroughUri, "borough")
 
-  override final def getCityGeometry(cityUri: Uri): Feature = getFeature(cityUri, "city")
+  override final def getCityFeature(cityUri: Uri): Feature = getFeature(cityUri, "city")
 
   @Inject
   def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
