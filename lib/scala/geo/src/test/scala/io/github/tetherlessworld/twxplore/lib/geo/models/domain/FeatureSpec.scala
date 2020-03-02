@@ -1,6 +1,6 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
-import io.github.tetherlessworld.twxplore.lib.test.models.domain.DomainModelSpec
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.DomainModelSpec
 
 class FeatureSpec extends DomainModelSpec {
   "The Feature companion object" should {
