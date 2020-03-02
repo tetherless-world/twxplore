@@ -3,9 +3,9 @@ package stores
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
 import org.scalatest.{Matchers, WordSpec}
 
-class TwksStoreSpec extends WordSpec with Matchers {
+class TwksFeatureStoreSpec extends WordSpec with Matchers {
   // If you're going to populate the store yourself:
-  //  val store = new TwksStore(new DirectTwksClient(new MemTwks(MemTwksConfiguration.builder().build())))
+  val store = new TwksStore(new DirectTwksClient(new MemTwks(MemTwksConfiguration.builder().build())))
   // Populate here
 
   // If using a store that's been pre-populated out-of-band
