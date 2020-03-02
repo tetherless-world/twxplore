@@ -7,14 +7,14 @@ sealed trait Status {
   val label: String
 }
 
-case object Alive extends Status{
+case object Alive extends Status {
   val label = "Alive"
 }
 
-case object Dead extends Status{
+case object Dead extends Status {
   val label = "Dead"
 }
 
-case object Stump extends Status{
+case object Stump extends Status {
   val label = "Stump"
 }

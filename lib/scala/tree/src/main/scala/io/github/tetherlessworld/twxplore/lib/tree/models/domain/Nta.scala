@@ -16,6 +16,7 @@ final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri,
 }
 
 object Nta {
+
   implicit class NTAResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
 
@@ -49,4 +50,5 @@ object Nta {
       resource
     }
   }
+
 }

@@ -11,7 +11,7 @@ final class FileGeometryCsvTransformerSink extends GeometryCsvTransformerSink {
 
   private def accept[T](fileBaseName: String, value: T)(implicit writer: RdfWriter[T]): Unit = {
     val file = new File(s"./testdata/${fileBaseName.replace(" ", "_")}.ttl")
-    if(!file.exists()) {
+    if (!file.exists()) {
       file.createNewFile()
     }
 

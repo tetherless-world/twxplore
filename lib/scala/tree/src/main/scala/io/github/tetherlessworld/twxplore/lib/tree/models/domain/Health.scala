@@ -8,14 +8,14 @@ sealed trait Health {
   val label: String
 }
 
-case object Fair extends Health{
+case object Fair extends Health {
   val label = "Fair"
 }
 
-case object Good extends Health{
+case object Good extends Health {
   val label = "Good"
 }
 
-case object Poor extends Health{
+case object Poor extends Health {
   val label = "Poor"
 }

@@ -28,23 +28,23 @@ abstract class GeometryCsvTransformer(bufferSize: Int) extends CsvTransformer wi
 
   protected def parseCsvRow(cols: Seq[String], sink: GeometryCsvTransformerSink): Unit
 
-  protected final def processLabel(label: String): Option[String] = Some(label)
-
   protected final def processFeatureId(id: String): String = id
-
-  protected final def processGeometry(label: String, wkt: String, id: String): Geometry = {
-    Geometry(
-      label = processLabel(label),
-      uri = Uri.parse(TREE.GEOMETRY_URI_PREFIX + ":" + label.replace(" ", "_")),
-      wkt = wkt
-    )
-  }
 
   protected final def processFeature(label: String, wkt: String, id: String): Feature = {
     Feature(
       label = processLabel(label),
       uri = Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + label.replace(" ", "_")),
       geometry = processGeometry(label, wkt, id)
+    )
+  }
+
+  protected final def processLabel(label: String): Option[String] = Some(label)
+
+  protected final def processGeometry(label: String, wkt: String, id: String): Geometry = {
+    Geometry(
+      label = processLabel(label),
+      uri = Uri.parse(TREE.GEOMETRY_URI_PREFIX + ":" + label.replace(" ", "_")),
+      wkt = wkt
     )
   }
 }
