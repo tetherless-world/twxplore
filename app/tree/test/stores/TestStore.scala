@@ -19,7 +19,7 @@ object TestStore extends Store {
 
   override def getGeometryOfCity(city: City): Geometry = if (city != null && city == TestData.city) TestData.cityGeoMap("New York").geometry else null
 
-  override def getGeometryOfBoroughs(boroughs: Vector[Borough]): List[Geometry] = {
+  override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = {
     boroughs.map(borough => {
       if (borough != null && borough == TestData.boroughMap(borough.borocode))
         TestData.boroughGeoMap(borough.name).geometry
@@ -28,25 +28,25 @@ object TestStore extends Store {
 
   //override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = ???
 
-  override def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(Vector(borough)).head
+  override def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(List(borough)).head
 
-  override def getGeometryOfNtas(ntas: Vector[Nta]): List[Geometry] = {
+  override def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = {
     ntas.map(nta => {
       if (nta != null && nta == TestData.ntaMap(nta.nta))
         TestData.ntaGeoMap(nta.name).geometry
     }).toList.asInstanceOf[List[Geometry]]
   }
 
-  override def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(Vector(nta)).head
+  override def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(List(nta)).head
 
-  override def getGeometryOfBlocks(blocks: Vector[Block]): List[Geometry] = {
+  override def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = {
     blocks.map(block => {
       if (block != null && block == TestData.blockMap(block.id))
         TestData.blockGeoMap(block.id.toString).geometry
     }).toList.asInstanceOf[List[Geometry]]
   }
 
-  override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(Vector(block)).head
+  override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(List(block)).head
 
   override def getBlockHierarchy(block: Uri): List[SelectionArea] = ???
 

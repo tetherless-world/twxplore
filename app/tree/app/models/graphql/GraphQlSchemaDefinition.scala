@@ -337,10 +337,10 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
       SelectionInput(
-        includeNtaList = ad("includeNtaList").asInstanceOf[Vector[Uri]],
-        includeBlocks = ad("includeBlocks").asInstanceOf[Vector[Uri]],
-        excludeNtaList = ad("excludeNtaList").asInstanceOf[Vector[Uri]],
-        excludeBlocks = ad("excludeBlocks").asInstanceOf[Vector[Uri]]
+        includeNtaList = ad("includeNtaList").asInstanceOf[List[Uri]],
+        includeBlocks = ad("includeBlocks").asInstanceOf[List[Uri]],
+        excludeNtaList = ad("excludeNtaList").asInstanceOf[List[Uri]],
+        excludeBlocks = ad("excludeBlocks").asInstanceOf[List[Uri]]
       )
     }
   }
