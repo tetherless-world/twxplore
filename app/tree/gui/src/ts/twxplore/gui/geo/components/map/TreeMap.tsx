@@ -17,13 +17,13 @@ import * as ReactLoader from "react-loader";
 import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/types/BlocksByNtaQuery';
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
-import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection } from '../../api/queries/types/TreeMapQuery'
+import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery'
 import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/Actions'
 
 var wkt = require('terraformer-wkt-parser');
 const MAPBOX_TOKEN = "pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
 
-export const treeMap: React.FunctionComponent<{}> = () => {
+export const TreeMap: React.FunctionComponent<{}> = () => {
   const counter:any = useSelector(state => state);
   const dispatch = useDispatch();
   
@@ -34,7 +34,7 @@ export const treeMap: React.FunctionComponent<{}> = () => {
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
   const [getResult, ResultQuery] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(rsltQuery);
   
-  const addTreeData = (treeData:string) => {
+  const addTreeData = (treeData:TreeMapQuery_TreesBySelection_trees[]) => {
     const trees = treeData.map(tree => {
       const point = "POINT (" + tree.longitude + " " + tree.latitude + ")"
       return {

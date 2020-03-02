@@ -1,4 +1,3 @@
-import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
 import { TreeMapQuery_TreesBySelection } from 'twxplore/gui/geo/api/queries/types/TreeMapQuery'
 export const APPEND_MAP = 'AppendMap'
 export const SELECTION_DATA = 'SelectionData'
