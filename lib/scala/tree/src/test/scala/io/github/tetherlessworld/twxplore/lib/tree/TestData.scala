@@ -6,12 +6,12 @@ import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{MemTreeCsvTransformerSink, TreeCsvTransformer}
 
 object TestData {
-  val cityGeoMap = cityData.featureMap
-  val boroughGeoMap = boroughData.featureMap
-  val ntaGeoMap = ntaData.featureMap
-  val blockGeoMap = blockData.featureMap
-  val treeList = testData.treeList.toList
 
+  private val testData = new MemTreeCsvTransformerSink
+  private val cityData = new MemGeometryCsvTransformerSink
+  private val boroughData = new MemGeometryCsvTransformerSink
+  private val ntaData = new MemGeometryCsvTransformerSink
+  private val blockData = new MemGeometryCsvTransformerSink
   new TreeCsvTransformer().parseCsv("tree.csv", testData)
   new CityCsvTransformer().parseCsv("city.csv", cityData)
   new BoroughCsvTransformer().parseCsv("borough.csv", boroughData)
@@ -25,9 +25,9 @@ object TestData {
   val postalCode: Map[Int, Postcode] = testData.postalCode.toMap
   val state: State = testData.stateBuffer
   val city: City = testData.cityBuffer
-  private val testData = new MemTreeCsvTransformerSink
-  private val cityData = new MemGeometryCsvTransformerSink
-  private val boroughData = new MemGeometryCsvTransformerSink
-  private val ntaData = new MemGeometryCsvTransformerSink
-  private val blockData = new MemGeometryCsvTransformerSink
+  val cityGeoMap = cityData.featureMap
+  val boroughGeoMap = boroughData.featureMap
+  val ntaGeoMap = ntaData.featureMap
+  val blockGeoMap = blockData.featureMap
+  val treeList = testData.treeList.toList
 }
