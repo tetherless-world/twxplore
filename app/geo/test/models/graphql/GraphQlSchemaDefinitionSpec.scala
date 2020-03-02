@@ -50,7 +50,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "get features by geometry" in {
       val query =
         graphql"""
-          query FeaturesQuery($$geometry: GeometryFieldsInput!) {
+          query FeaturesQuery($$geometry: GeometryInput!) {
             featuresContaining(geometry: $$geometry) {
               uri
             }

@@ -34,7 +34,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "list of nta give a borough" in {
       val query =
         graphql"""
-           query TreesQuery($$borough: BoroughFieldsInput!) {
+           query TreesQuery($$borough: BoroughInput!) {
               ntas{
                 byBorough(borough: $$borough) {
                   uri
@@ -59,7 +59,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "list of block given a nta" in {
       val query =
         graphql"""
-           query TreesQuery($$nta: NtaFieldsInput!) {
+           query TreesQuery($$nta: NtaInput!) {
               blocks{
                 byNta(nta: $$nta) {
                   uri
@@ -85,7 +85,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "list of boroughs given a city" in {
       val query =
         graphql"""
-           query TreesQuery($$city: CityFieldsInput!) {
+           query TreesQuery($$city: CityInput!) {
               boroughs{
                 byCity(city: $$city) {
                   uri

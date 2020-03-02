@@ -21,21 +21,21 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   implicit val UserTypeType = deriveEnumType[UserType]()
 
   // Domain model types, in dependence order
-  implicit val CensusTractInputType = deriveInputObjectType[CensusTract]()
-  implicit val PostCodeInputType = deriveInputObjectType[Postcode]()
-  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies]()
-  implicit val ZipCityInputType = deriveInputObjectType[ZipCity]()
-  implicit val BlockInputType = deriveInputObjectType[Block]()
-  implicit val NtaInputType = deriveInputObjectType[Nta]()
-  implicit val BoroughInputType = deriveInputObjectType[Borough]()
-  implicit val CityInputType = deriveInputObjectType[City]()
-  implicit val StateInputType = deriveInputObjectType[State]()
-  implicit val GeometryInputType = deriveInputObjectType[Geometry]()
+  implicit val CensusTractInputType = deriveInputObjectType[CensusTract](InputObjectTypeName("CensusTractInput"))
+  implicit val PostCodeInputType = deriveInputObjectType[Postcode](InputObjectTypeName("PostcodeInput"))
+  implicit val SpeciesInputType = deriveInputObjectType[TreeSpecies](InputObjectTypeName("SpeciesInput"))
+  implicit val ZipCityInputType = deriveInputObjectType[ZipCity](InputObjectTypeName("ZipCityInput"))
+  implicit val BlockInputType = deriveInputObjectType[Block](InputObjectTypeName("BlockInput"))
+  implicit val NtaInputType = deriveInputObjectType[Nta](InputObjectTypeName("NtaInput"))
+  implicit val BoroughInputType = deriveInputObjectType[Borough](InputObjectTypeName("BoroughInput"))
+  implicit val CityInputType = deriveInputObjectType[City](InputObjectTypeName("CityInput"))
+  implicit val StateInputType = deriveInputObjectType[State](InputObjectTypeName("StateInput"))
+  implicit val GeometryInputType = deriveInputObjectType[Geometry](InputObjectTypeName("GeometryInput"))
   implicit val SelectionInputType = deriveInputObjectType[SelectionInput]()
-  implicit val SelectionAreaInputType = deriveInputObjectType[SelectionArea]()
+  implicit val SelectionAreaInputType = deriveInputObjectType[SelectionArea](InputObjectTypeName("SelectionAreaInput"))
 
   //  implicit val TreeInputType = deriveInputObjectType[Tree](
-  //    InputObjectTypeName("TreeFieldsInput"),
+  //    InputObjectTypeName("TreeInput"),
   //    ReplaceInputField("uri", InputField("uri", UriType)),
   //    ReplaceInputField("createdAt", InputField("createdAt", DateType)),
   //    ReplaceInputField("curbLoc", InputField("curbLoc", CurbLocType)),
