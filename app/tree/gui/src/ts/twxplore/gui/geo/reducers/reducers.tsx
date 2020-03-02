@@ -26,7 +26,7 @@ import {ActionTypes} from 'kepler.gl/actions';
 import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
 
 // INITIAL_APP_STATE
-type INITIAL_APP_STATE = {
+export type APP_STATE = {
   info: any,
   loaded: Boolean,
   blockMap: Map<String, String>,
@@ -40,7 +40,7 @@ type INITIAL_APP_STATE = {
   selectionData: Array<ResultsQuery>[]
 }
 
-const initialAppState: INITIAL_APP_STATE= {
+const initialAppState: APP_STATE= {
   info: {},
   loaded: false,
   blockMap: new Map(),
