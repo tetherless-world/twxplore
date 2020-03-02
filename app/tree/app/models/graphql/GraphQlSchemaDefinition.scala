@@ -407,30 +407,30 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val selectionGeometry = new FromInput[SelectionGeometry] {
-    val marshaller = CoercedScalaResultMarshaller.default
-    def fromResult(node: marshaller.Node) = {
-      val ad = node.asInstanceOf[Map[String, Any]]
-      SelectionGeometry(
-        geometry = ad.get("geometry").asInstanceOf[Geometry],
-        uri = ad.get("uri").asInstanceOf[Uri]
-      )
-    }
-  }
+  //  implicit val selectionGeometry = new FromInput[SelectionGeometry] {
+  //    val marshaller = CoercedScalaResultMarshaller.default
+  //    def fromResult(node: marshaller.Node) = {
+  //      val ad = node.asInstanceOf[Map[String, Any]]
+  //      SelectionGeometry(
+  //        geometry = ad.get("geometry").asInstanceOf[Geometry],
+  //        uri = ad.get("uri").asInstanceOf[Uri]
+  //      )
+  //    }
+  //  }
 
-  implicit val selectionArea = new FromInput[SelectionArea] {
-    val marshaller = CoercedScalaResultMarshaller.default
-
-    def fromResult(node: marshaller.Node) = {
-      val ad = node.asInstanceOf[Map[String, Any]]
-      SelectionArea(
-        name = ad.get("name").toString,
-        uri = ad.get("uri").asInstanceOf[Uri],
-        selection = ad.get("selection").toString,
-        parent = ad.get("parent").asInstanceOf[Uri]
-      )
-    }
-  }
+  //  implicit val selectionArea = new FromInput[SelectionArea] {
+  //    val marshaller = CoercedScalaResultMarshaller.default
+  //
+  //    def fromResult(node: marshaller.Node) = {
+  //      val ad = node.asInstanceOf[Map[String, Any]]
+  //      SelectionArea(
+  //        name = ad.get("name").toString,
+  //        uri = ad.get("uri").asInstanceOf[Uri],
+  //        selection = ad.get("selection").toString,
+  //        parent = ad.get("parent").asInstanceOf[Uri]
+  //      )
+  //    }
+  //  }
 
   implicit val selectionInput = new FromInput[SelectionInput] {
     val marshaller = CoercedScalaResultMarshaller.default
@@ -448,9 +448,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
 
 
   // Argument types
-  val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
-  val BoroughArgument = Argument("borough", BoroughInputType, description="Borough Input")
-  val BoroughsArgument = Argument("boroughs", ListInputType(BoroughInputType), description="Boroughs Input")
+  val GeometryArgument = Argument("geometry", GeometryInputType, description = "Geometry Input")
+  val BoroughArgument = Argument("borough", BoroughInputType, description = "Borough Input")
+  val BoroughsArgument = Argument("boroughs", ListInputType(BoroughInputType), description = "Boroughs Input")
   val NtaArgument = Argument("nta", NtaInputType, description = "NTA Input")
   val NtasArgument = Argument("ntas", ListInputType(NtaInputType), description = "NTAs Input")
   val BlockArgument = Argument("block", BlockInputType, description = "Block Input")
@@ -459,8 +459,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   val SelectionInputArgument = Argument("selectionInput", SelectionInputType, description = "Selection Input")
 
 
-  val CitiesType =  sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
-    Field("geometryOfCity", GeometryType, arguments= CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
+  val CitiesType = sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
+    Field("geometryOfCity", GeometryType, arguments = CityArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getGeometryOfCity(city = ctx.args.arg("city"))),
     Field("geometries", SelectionGeometryType, arguments= Nil, resolve = (ctx) => ctx.ctx.store.getCityGeometry()),
     Field("hierarchy", ListType(SelectionAreaType), arguments= UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getCityHierarchy(cityUri = ctx.args.arg("cityUri"))),
   ))
