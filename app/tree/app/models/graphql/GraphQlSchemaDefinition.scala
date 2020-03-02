@@ -271,9 +271,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   )
 
 
-
-  implicit val geo = new FromInput[Geometry] {
+  implicit val geometryFromInput = new FromInput[Geometry] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -285,7 +285,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val feature = new FromInput[Feature] {
+  implicit val featureFromInput = new FromInput[Feature] {
     val marshaller = CoercedScalaResultMarshaller.default
 
     def fromResult(node: marshaller.Node) = {
@@ -299,8 +299,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val city = new FromInput[City] {
+  implicit val cityFromInput = new FromInput[City] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -315,8 +316,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualblock = new FromInput[Block] {
+  implicit val blockFromInput = new FromInput[Block] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -330,8 +332,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val nta = new FromInput[Nta] {
+  implicit val ntaFromInput = new FromInput[Nta] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -347,8 +350,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val borough = new FromInput[Borough] {
+  implicit val boroughFromInput = new FromInput[Borough] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -363,8 +367,9 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
     }
   }
 
-  implicit val manualTree = new FromInput[Tree] {
+  implicit val treeFromInput = new FromInput[Tree] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
 
@@ -432,7 +437,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition{
   //    }
   //  }
 
-  implicit val selectionInput = new FromInput[SelectionInput] {
+  implicit val selectionFromInput = new FromInput[SelectionInput] {
     val marshaller = CoercedScalaResultMarshaller.default
 
     def fromResult(node: marshaller.Node) = {
