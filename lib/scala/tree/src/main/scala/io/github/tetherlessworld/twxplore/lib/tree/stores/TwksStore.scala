@@ -17,11 +17,8 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with Store {
-  @Inject
-  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
-
-  override def getTrees(limit: Int, offset: Int): List[Tree] = {
+final class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with Store {
+  override final def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))
   }
 
@@ -69,7 +66,7 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     }
   }
 
-  override def getTreesBySelection(selection: SelectionInput): SelectionResults = {
+  override final def getTreesBySelection(selection: SelectionInput): SelectionResults = {
     val treeSpeciesMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
     val boroughMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
     val ntaMap: mutable.HashMap[String, Uri] = new mutable.HashMap()
@@ -114,11 +111,11 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     )
   }
 
-  def getTreesByNtaUris(ntaUris: List[Uri]): List[Tree] = getTreesBySelections(ntaUris, "nta")
+  private def getTreesByNtaUris(ntaUris: List[Uri]): List[Tree] = getTreesBySelections(ntaUris, "nta")
 
-  def getTreesByBlockUris(blockUris: List[Uri]): List[Tree] = getTreesBySelections(blockUris, "block")
+  private def getTreesByBlockUris(blockUris: List[Uri]): List[Tree] = getTreesBySelections(blockUris, "block")
 
-  def getTreesBySelections(selections: List[Uri], property: String): List[Tree] = {
+  private def getTreesBySelections(selections: List[Uri], property: String): List[Tree] = {
     val query = QueryFactory.create(
       s"""
          |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
@@ -141,68 +138,31 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     }
   }
 
-  def getNtaByUris(ntaUris: List[Uri]): List[Nta] = getPropertyByUris[Nta](ntaUris, "NTA")
+  private def getCensusTractByUris(censusUris: List[Uri]): List[CensusTract] = getPropertyByUris[CensusTract](censusUris, "censusTract")
 
-  def getCensusTractByUris(censusUris: List[Uri]): List[CensusTract] = getPropertyByUris[CensusTract](censusUris, "censusTract")
+  private def getPostcodeByUris(postcodeUris: List[Uri]): List[Postcode] = getPropertyByUris[Postcode](postcodeUris, "postcode")
 
-  def getPostcodeByUris(postcodeUris: List[Uri]): List[Postcode] = getPropertyByUris[Postcode](postcodeUris, "postcode")
+  private def getZipCityByUris(zipCityUris: List[Uri]): List[ZipCity] = getPropertyByUris[ZipCity](zipCityUris, "zipCity")
 
-  def getZipCityByUris(zipCityUris: List[Uri]): List[ZipCity] = getPropertyByUris[ZipCity](zipCityUris, "zipCity")
+  private def getSpeciesByUris(speciesUris: List[Uri]): List[TreeSpecies] = getPropertyByUris[TreeSpecies](speciesUris, "species")
 
-  def getSpeciesByUris(speciesUris: List[Uri]): List[TreeSpecies] = getPropertyByUris[TreeSpecies](speciesUris, "species")
+  private def getNtaByUris(ntaUris: List[Uri]): List[Nta] = getPropertyByUris[Nta](ntaUris, "NTA")
 
-  def getTreesByBoroughUris(boroughUris: List[Uri]): List[Tree] = getTreesBySelections(boroughUris, "borough")
+  private def getBlockByUris(blockUris: List[Uri]): List[Block] = getPropertyByUris[Block](blockUris, "block")
 
-  def getStateByUri(stateUri: Uri)(implicit rdfReader: RdfReader[State]): State = getPropertyByUris(List(stateUri), "state").head
+  override final def getBlockGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBlockUris(), "block")
 
-  def getCityByUri(cityUri: Uri)(implicit rdfReader: RdfReader[City]): City = getPropertyByUris(List(cityUri), "city").head
+  private def getBlockUris(): List[Uri] = getPropertyUris("block")
 
-  def getPropertyByUris[P](propertyUris: List[Uri], property: String)(implicit rdfReader: RdfReader[P]): List[P] = {
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX tree: <${TREE.URI + "resource"}>
-         |CONSTRUCT {
-         |  ?property ?propertyP ?propertyO .
-         |  ?property rdf:type tree:$property .
-         |} WHERE {
-         |  VALUES ?property { ${propertyUris.map(propertyUri => "<" + propertyUri.toString() + ">").mkString(" ")} }
-         |  ?property ?propertyP ?propertyO .
-         |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) { queryExecution =>
-      val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[P](resource))
-    }
-  }
+  override final def getNtaGeometries(): List[SelectionGeometry] = getSelectionGeometries(getNtaUris(), "NTA")
 
-  def getNtaByUri(ntaUri: Uri): Nta = getNtaByUris(List(ntaUri)).head
+  private def getNtaUris(): List[Uri] = getPropertyUris("NTA")
 
-  def getBlockByUri(blockUri: Uri): Block = getBlockByUris(List(blockUri)).head
+  override final def getBoroughGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBoroughUris(), "borough")
 
-  def getBlockByUris(blockUris: List[Uri]): List[Block] = getPropertyByUris[Block](blockUris, "block")
+  private def getBoroughUris(): List[Uri] = getPropertyUris("borough")
 
-  override def getBlockGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBlockUris(), "block")
-
-  def getBlockUris(): List[Uri] = getPropertyUris("block")
-
-  override def getNtaGeometries(): List[SelectionGeometry] = getSelectionGeometries(getNtaUris(), "NTA")
-
-  def getNtaUris(): List[Uri] = getPropertyUris("NTA")
-
-  override def getBoroughGeometries(): List[SelectionGeometry] = getSelectionGeometries(getBoroughUris(), "borough")
-
-  def getBoroughUris(): List[Uri] = getPropertyUris("borough")
-
-  override def getCityGeometry(): SelectionGeometry = getSelectionGeometries(List(getCityUri()), "city").head
-
-  def getCityUri(): Uri = getPropertyUris("city").head
-
-  def getStateGeometry(): SelectionGeometry = getSelectionGeometries(List(getStateUri()), "state").head
-
-  def getStateUri(): Uri = getPropertyUris("state").head
-
-  def getPropertyUris(property: String): List[Uri] = {
+  private def getPropertyUris(property: String): List[Uri] = {
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
@@ -219,7 +179,7 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     }
   }
 
-  def getSelectionGeometries(uriList: List[Uri], property: String) = {
+  private def getSelectionGeometries(uriList: List[Uri], property: String) = {
     val result = ListBuffer[SelectionGeometry]()
     for (uri <- uriList) {
       val geometry = getGeometryOfProperties(property, List(uri)).head
@@ -228,45 +188,33 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     result.toList
   }
 
-  private def getGeometryOfProperties(componentPropName: String, properties: List[Uri]): List[Geometry] = {
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX treeR: <${TREE.resourceURI}>
-         |PREFIX treeP: <${TREE.propertyURI}>
-         |CONSTRUCT {
-         |  ?geometry ?geometryP ?geometryO .
-         |}
-         |WHERE {
-         |  VALUES ?componentProp { ${properties.map(property => "<" + property + ">").mkString(" ")} }
-         |  ?componentProp geo:spatialDimension ?feature .
-         |  ?feature geo:hasDefaultGeometry ?geometry .
-         |  ?geometry ?geometryP ?geometryO .
-         |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) { queryExecution =>
-      val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`).asScala.map(resource => Rdf.read[Geometry](resource)).toList
-    }
-  }
+  override final def getCityGeometry(): SelectionGeometry = getSelectionGeometries(List(getCityUri()), "city").head
 
-  override def getBlockHierarchy(blockUri: Uri): List[SelectionArea] = {
+  private def getCityUri(): Uri = getPropertyUris("city").head
+
+  override final def getBlockHierarchy(blockUri: Uri): List[SelectionArea] = {
     val blockSelection = getSelection(blockUri, "block", TREE.propertyURI.toString + "NTA")
     getNtaHierarchy(blockSelection.parent) :+ blockSelection
   }
 
-  override def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = {
+  override final def getNtaHierarchy(ntaUri: Uri): List[SelectionArea] = {
     val ntaSelection = getSelection(ntaUri, "NTA", TREE.propertyURI.toString + "borough")
     getBoroughHierarchy(ntaSelection.parent) :+ ntaSelection
   }
 
-  override def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = {
+  override final def getBoroughHierarchy(boroughUri: Uri): List[SelectionArea] = {
     val boroughSelection = getSelection(boroughUri, "borough", Schema.URI.toString + "city")
     getCityHierarchy(boroughSelection.parent) :+ boroughSelection
   }
 
-  def getSelection(uri: Uri, component: String, parentUri: String): SelectionArea = {
+  override final def getCityHierarchy(cityUri: Uri): List[SelectionArea] = {
+    val citySelection = getSelection(cityUri, "city", Schema.URI.toString + "state")
+    getStateHierarchy(citySelection.parent) :+ citySelection
+  }
+
+  override final def getStateHierarchy(stateUri: Uri): List[SelectionArea] = List(SelectionArea("New York", stateUri, "state", Uri.parse("")))
+
+  private def getSelection(uri: Uri, component: String, parentUri: String): SelectionArea = {
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
@@ -293,46 +241,19 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     }
   }
 
-  override def getCityHierarchy(cityUri: Uri): List[SelectionArea] = {
-    val citySelection = getSelection(cityUri, "city", Schema.URI.toString + "state")
-    getStateHierarchy(citySelection.parent) :+ citySelection
-  }
-
-  override def getStateHierarchy(stateUri: Uri): List[SelectionArea] = List(SelectionArea("New York", stateUri, "state", Uri.parse("")))
-
-  override def getGeometryOfCity(city: City): Geometry = getGeometryOfProperty("city", city.uri)
-
-  override def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(List(borough)).head
-
-  override def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
-
-  override def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(List(nta)).head
-
-  override def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
-
-  override def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(List(block)).head
-
-  override def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
-
-  def getGeometryOfCityUri(cityUri: Uri): Geometry = getGeometryOfProperty("city", cityUri)
+  override final def getGeometryOfCity(city: City): Geometry = getGeometryOfProperty("city", city.uri)
 
   private def getGeometryOfProperty(componentPropName: String, property: Uri): Geometry = getGeometryOfProperties(componentPropName, List(property)).head
 
-  def getGeometryOfBoroughUri(boroughUri: Uri): Geometry = getGeometryOfBoroughsUri(List(boroughUri)).head
+  override final def getGeometryOfBorough(borough: Borough): Geometry = getGeometryOfBoroughs(List(borough)).head
 
-  def getGeometryOfBoroughsUri(boroughsUri: List[Uri]): List[Geometry] = getGeometryOfProperties("borough", boroughsUri)
+  override final def getGeometryOfBoroughs(boroughs: List[Borough]): List[Geometry] = getGeometryOfProperties("borough", boroughs.map(borough => borough.uri).toList)
 
-  def getGeometryOfNtaUri(ntaUri: Uri): Geometry = getGeometryOfNtasUri(List(ntaUri)).head
+  override final def getGeometryOfNta(nta: Nta): Geometry = getGeometryOfNtas(List(nta)).head
 
-  def getGeometryOfNtasUri(ntasUri: List[Uri]): List[Geometry] = getGeometryOfProperties("NTA", ntasUri)
+  override final def getGeometryOfNtas(ntas: List[Nta]): List[Geometry] = getGeometryOfProperties("NTA", ntas.map(nta => nta.uri).toList)
 
-  def getGeometryOfBlockUri(blockUri: Uri): Geometry = getGeometryOfBlocksUri(List(blockUri)).head
-
-  def getGeometryOfBlocksUri(blocksUri: List[Uri]): List[Geometry] = getGeometryOfProperties("block", blocksUri)
-
-  override def getBlocksByNta(nta: Nta): List[Block] = getPropertyByProperty[Block](nta.uri, "block")
-
-  private def getPropertyByProperty[P](overlayProp: Uri, componentPropName: String)(implicit rdfReader: RdfReader[P]): List[P] = {
+  private def getGeometryOfProperties(componentPropName: String, properties: List[Uri]): List[Geometry] = {
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
@@ -340,27 +261,32 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
          |PREFIX treeR: <${TREE.resourceURI}>
          |PREFIX treeP: <${TREE.propertyURI}>
          |CONSTRUCT {
-         |  ?componentProp ?componentPropP ?componentPropO .
-         |  ?componentProp rdf:type treeR:$componentPropName .
+         |  ?geometry ?geometryP ?geometryO .
          |}
          |WHERE {
-         |  VALUES ?overlayProp { ${"<" + overlayProp.toString() + ">"} }
-         |  ?overlayProp treeP:$componentPropName ?componentProp .
-         |  ?componentProp rdf:type treeR:$componentPropName .
-         |  ?componentProp ?componentPropP ?componentPropO .
+         |  VALUES ?componentProp { ${properties.map(property => "<" + property + ">").mkString(" ")} }
+         |  ?componentProp geo:spatialDimension ?feature .
+         |  ?feature geo:hasDefaultGeometry ?geometry .
+         |  ?geometry ?geometryP ?geometryO .
          |}
          |""".stripMargin)
     withAssertionsQueryExecution(query) { queryExecution =>
       val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[P](resource))
+      model.listSubjectsWithProperty(RDF.`type`).asScala.map(resource => Rdf.read[Geometry](resource)).toList
     }
   }
 
-  override def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
+  override final def getGeometryOfBlock(block: Block): Geometry = getGeometryOfBlocks(List(block)).head
 
-  override def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
+  override final def getGeometryOfBlocks(blocks: List[Block]): List[Geometry] = getGeometryOfProperties("block", blocks.map(block => block.uri).toList)
 
-  override def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(Nta, "block"), "block")
+  override final def getBlocksByNta(nta: Nta): List[Block] = getPropertyByProperty[Block](nta.uri, "block")
+
+  override final def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
+
+  override final def getNtasByBoroughGeometry(borough: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(borough, "NTA"), "NTA")
+
+  override final def getBlocksByNtaGeometry(Nta: Uri): List[SelectionGeometry] = getSelectionGeometries(getPropertyUrisByUri(Nta, "block"), "block")
 
   private def getPropertyUrisByUri(overlayProp: Uri, componentPropName: String): List[Uri] = {
     val query = QueryFactory.create(
@@ -381,15 +307,46 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
     }
   }
 
-  override def getBlockGeometry(blockUri: Uri): SelectionGeometry = getSelectionGeometry(blockUri, "block")
+  override final def getBlockGeometry(blockUri: Uri): SelectionGeometry = getSelectionGeometry(blockUri, "block")
 
-  override def getNtaGeometry(ntaUri: Uri): SelectionGeometry = getSelectionGeometry(ntaUri, "NTA")
+  override final def getNtaGeometry(ntaUri: Uri): SelectionGeometry = getSelectionGeometry(ntaUri, "NTA")
 
-  def getSelectionGeometry(uri: Uri, componentProp: String): SelectionGeometry = getSelectionGeometries(List(uri), componentProp).head
+  private def getSelectionGeometry(uri: Uri, componentProp: String): SelectionGeometry = getSelectionGeometries(List(uri), componentProp).head
 
-  override def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = getSelectionGeometry(boroughUri, "borough")
+  override final def getBoroughGeometry(boroughUri: Uri): SelectionGeometry = getSelectionGeometry(boroughUri, "borough")
 
-  override def getCityGeometry(cityUri: Uri): SelectionGeometry = getSelectionGeometry(cityUri, "city")
+  override final def getCityGeometry(cityUri: Uri): SelectionGeometry = getSelectionGeometry(cityUri, "city")
+
+  @Inject
+  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
+
+  private def getTreesByBoroughUris(boroughUris: List[Uri]): List[Tree] = getTreesBySelections(boroughUris, "borough")
+
+  private def getStateByUri(stateUri: Uri)(implicit rdfReader: RdfReader[State]): State = getPropertyByUris(List(stateUri), "state").head
+
+  private def getCityByUri(cityUri: Uri)(implicit rdfReader: RdfReader[City]): City = getPropertyByUris(List(cityUri), "city").head
+
+  private def getNtaByUri(ntaUri: Uri): Nta = getNtaByUris(List(ntaUri)).head
+
+  private def getBlockByUri(blockUri: Uri): Block = getBlockByUris(List(blockUri)).head
+
+  private def getStateGeometry(): SelectionGeometry = getSelectionGeometries(List(getStateUri()), "state").head
+
+  private def getStateUri(): Uri = getPropertyUris("state").head
+
+  private def getGeometryOfCityUri(cityUri: Uri): Geometry = getGeometryOfProperty("city", cityUri)
+
+  private def getGeometryOfBoroughUri(boroughUri: Uri): Geometry = getGeometryOfBoroughsUri(List(boroughUri)).head
+
+  private def getGeometryOfBoroughsUri(boroughsUri: List[Uri]): List[Geometry] = getGeometryOfProperties("borough", boroughsUri)
+
+  private def getGeometryOfNtaUri(ntaUri: Uri): Geometry = getGeometryOfNtasUri(List(ntaUri)).head
+
+  private def getGeometryOfNtasUri(ntasUri: List[Uri]): List[Geometry] = getGeometryOfProperties("NTA", ntasUri)
+
+  private def getGeometryOfBlockUri(blockUri: Uri): Geometry = getGeometryOfBlocksUri(List(blockUri)).head
+
+  private def getGeometryOfBlocksUri(blocksUri: List[Uri]): List[Geometry] = getGeometryOfProperties("block", blocksUri)
 
   private def getBoroughUris(limit: Int, offset: Int): List[Uri] = getTreeResourceUris(limit, offset, "borough")
 
@@ -416,5 +373,48 @@ class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) wi
 
   private def getBoroughByUris(boroughUris: List[Uri]): List[Borough] = getPropertyByUris[Borough](boroughUris, "borough")
 
-  override def getNtasByBorough(borough: Borough): List[Nta] = getPropertyByProperty[Nta](borough.uri, "NTA")
+  private def getPropertyByUris[P](propertyUris: List[Uri], property: String)(implicit rdfReader: RdfReader[P]): List[P] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX tree: <${TREE.URI + "resource"}>
+         |CONSTRUCT {
+         |  ?property ?propertyP ?propertyO .
+         |  ?property rdf:type tree:$property .
+         |} WHERE {
+         |  VALUES ?property { ${propertyUris.map(propertyUri => "<" + propertyUri.toString() + ">").mkString(" ")} }
+         |  ?property ?propertyP ?propertyO .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution =>
+      val model = queryExecution.execConstruct()
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[P](resource))
+    }
+  }
+
+  override final def getNtasByBorough(borough: Borough): List[Nta] = getPropertyByProperty[Nta](borough.uri, "NTA")
+
+  private def getPropertyByProperty[P](overlayProp: Uri, componentPropName: String)(implicit rdfReader: RdfReader[P]): List[P] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX treeR: <${TREE.resourceURI}>
+         |PREFIX treeP: <${TREE.propertyURI}>
+         |CONSTRUCT {
+         |  ?componentProp ?componentPropP ?componentPropO .
+         |  ?componentProp rdf:type treeR:$componentPropName .
+         |}
+         |WHERE {
+         |  VALUES ?overlayProp { ${"<" + overlayProp.toString() + ">"} }
+         |  ?overlayProp treeP:$componentPropName ?componentProp .
+         |  ?componentProp rdf:type treeR:$componentPropName .
+         |  ?componentProp ?componentPropP ?componentPropO .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) { queryExecution =>
+      val model = queryExecution.execConstruct()
+      model.listSubjectsWithProperty(RDF.`type`).asScala.toList.map(resource => Rdf.read[P](resource))
+    }
+  }
 }

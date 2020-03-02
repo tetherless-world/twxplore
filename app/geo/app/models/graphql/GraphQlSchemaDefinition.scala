@@ -27,7 +27,7 @@ object GraphQlSchemaDefinition {
 
   // Domain model types, in dependence order
   implicit val GeometryInputType = deriveInputObjectType[Geometry](
-    InputObjectTypeName("GeometryFieldsInput"),
+    InputObjectTypeName("GeometryInput"),
     ReplaceInputField("uri", InputField("uri", UriType))
   )
 

@@ -17,24 +17,24 @@ import scala.concurrent.duration._
 class GraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
-    "list trees" in {
-      val query =
-        graphql"""
-         query TreesQuery {
-           trees(limit: 10, offset: 0) {
-               uri
-           }
-         }
-       """
-      executeQuery(query) must be(Json.parse(
-        s"""
-           |{"data":{"trees":[${TestData.treeList.map(tree => "{\"uri\":" + "\"" + tree.uri + "\"").mkString("},")}}]}}
-           |""".stripMargin))
-    }
+    //    "list trees" in {
+    //      val query =
+    //        graphql"""
+    //         query TreesQuery {
+    //           trees(limit: 10, offset: 0) {
+    //               uri
+    //           }
+    //         }
+    //       """
+    //      executeQuery(query) must be(Json.parse(
+    //        s"""
+    //           |{"data":{"trees":[${TestData.treeList.map(tree => "{\"uri\":" + "\"" + tree.uri + "\"").mkString("},")}}]}}
+    //           |""".stripMargin))
+    //    }
     "list of nta give a borough" in {
       val query =
         graphql"""
-           query TreesQuery($$borough: BoroughFieldsInput!) {
+           query TreesQuery($$borough: BoroughInput!) {
               ntas{
                 byBorough(borough: $$borough) {
                   uri
@@ -59,7 +59,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "list of block given a nta" in {
       val query =
         graphql"""
-           query TreesQuery($$nta: NtaFieldsInput!) {
+           query TreesQuery($$nta: NtaInput!) {
               blocks{
                 byNta(nta: $$nta) {
                   uri
@@ -85,7 +85,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
     "list of boroughs given a city" in {
       val query =
         graphql"""
-           query TreesQuery($$city: CityFieldsInput!) {
+           query TreesQuery($$city: CityInput!) {
               boroughs{
                 byCity(city: $$city) {
                   uri
@@ -139,8 +139,8 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj(
-          "boroughUri" -> TestData.boroughMap(1).uri.toString,
-        ))
+        "boroughUri" -> TestData.boroughMap(1).uri.toString,
+      ))
       result must be(Json.parse(
         s"""
            |{"data":{"borough": {"geometry": { "uri": "http://example.com/geometry" }}}}
@@ -188,6 +188,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
       ))
     }
   }
+
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
       variables = vars,
