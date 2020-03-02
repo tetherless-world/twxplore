@@ -1,31 +1,23 @@
 import reducers from "./reducers"
-import {ResultsQuery} from 'twxplore/gui/geo/api/queries/types/ResultsQuery.ts'
 import {APP_STATE} from 'twxplore/gui/geo/reducers/reducers'
+import {Real_State} from 'twxplore/gui/geo/reducers/reducers'
+import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/ActionTypes'
 
 
-interface selectionDataAction {
-  type:string
-  selection_data: ResultsQuery
-}
 
-interface AppendToMap{
-  type:string
-  map: string
-  uri: string
-}
 
-type Action= selectionDataAction | AppendToMap
+//type Action = selectionDataAction | AppendToMap
 
-const composedReducer = (state: APP_STATE, action: Action) => {
+const composedReducer = (state: Real_State, action: ActionTypes) => {
   switch (action.type) {
-    case 'appendToMap': {
+    case APPEND_MAP : {
       state.app[action.map].set(action.uri, action.uri)
       let result = state
       return {
         ...result
         }
     }
-    case 'sendSelectionData' : {
+    case SELECTION_DATA : {
       const result = Object.assign({}, state)
       result.app.selectionData = action.selection_data
       return{
