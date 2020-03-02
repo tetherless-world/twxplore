@@ -19,8 +19,11 @@ import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/t
 import { SelectionHierarchyQuery, SelectionHierarchyQueryVariables } from  '../../api/queries/types/SelectionHierarchyQuery';
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
+import { BoroughsQuery, BoroughsQuery_boroughs_geometries} from '../../api/queries/types/BoroughsQuery'
+import { NtasByBoroughQuery, NtasByBoroughQueryVariables, NtasByBoroughQuery_ntas_byBoroughGeometry } from '../../api/queries/types/NtasByBoroughQuery'
+import { BlocksByNtaQuery_blocks_byNtaGeometry} from '../../api/queries/types/BlocksByNtaQuery'
 import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery'
-import {sendSelectionData, sendAppendMap, APPEND_MAP,SELECTION_DATA, ActionTypes} from 'twxplore/gui/geo/actions/Actions'
+import {sendSelectionData, sendAppendMap} from 'twxplore/gui/geo/actions/Actions'
 
 var wkt = require('terraformer-wkt-parser');
 const MAPBOX_TOKEN = "pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
@@ -129,7 +132,8 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
       - type: indicates the area type (borough, NTA, block, or tree)
     RETURN: void
   */
-  const addGeometryData = async (dataQuery:string, id: String, type: String, child: String) => {
+  type geometryData = BoroughsQuery_boroughs_geometries | NtasByBoroughQuery_ntas_byBoroughGeometry | BlocksByNtaQuery_blocks_byNtaGeometry
+  const addGeometryData = async (dataQuery:geometryData[], id: String, type: String, child: String) => {
     
     const features = dataQuery.map(feature => {
       console.log(feature)
