@@ -8,69 +8,19 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionGeometry, SelectionInput, SelectionResults}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, InputField, ListInputType, ListType, Schema, fields}
 
 object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   implicit val CurbLocType = deriveEnumType[CurbLoc]()
   implicit val HealthType = deriveEnumType[Health]()
   implicit val GuardsType = deriveEnumType[Guards]()
+  implicit val ProblemType = deriveEnumType[Problems]()
+  implicit val SidewalkType = deriveEnumType[Sidewalk]()
   implicit val StatusType = deriveEnumType[Status]()
-
-  implicit val ProblemType = ScalarAlias[Problems, String](
-    StringType, _.label, problem => {
-      val result = problem match {
-        case "BranchLights" => BranchLights
-        case "BranchOther" => BranchOther
-        case "BranchShoe" => BranchShoe
-        case "MetalGrates" => MetalGrates
-        case "Stones" => Stones
-        case "TrunkLights" => TrunkLights
-        case "TrunkOther" => TrunkOther
-        case "TrunkWire" => TrunkWire
-        case "RootGrate" => RootGrate
-        case "RootLights" => RootLights
-        case "RootStone" => RootStone
-        case "Sneakers" => Sneakers
-        case "WiresRope" => WiresRope
-      }
-      Right(result)
-    }
-  )
-  implicit val SidewalkType = ScalarAlias[Sidewalk, String](
-    StringType, _.label, sidewalk => {
-      val result = sidewalk match {
-        case "NoDamage" => NoDamage
-        case "Damage" => Damage
-      }
-      Right(result)
-    }
-  )
-  implicit val StewardType = ScalarAlias[Steward, String](
-    StringType, _.label, steward => {
-      val result = steward match {
-        case "OneOrTwo" => OneOrTwo
-        case "ThreeOrFour" => ThreeOrFour
-      }
-      Right(result)
-    }
-  )
-  implicit val UserType = ScalarAlias[UserType, String](
-    StringType, _.label, user => {
-      val result = user match {
-        case "TreesCountStaff" => TreesCountStaff
-        case "NYCParksStaff" => NYCParksStaff
-        case "Volunteer" => Volunteer
-      }
-      Right(result)
-    }
-  )
-//  // Scalar argument types
-//  val LimitArgument = Argument("limit", IntType, description = "Limit")
-//  val OffsetArgument = Argument("offset", IntType, description = "Offset")
-//  val UriArgument = Argument("uri", UriType, description= "URI")
+  implicit val StewardType = deriveEnumType[Steward]()
+  implicit val UserTypeType = deriveEnumType[UserType]()
 
   // Domain model types, in dependence order
-
   implicit val CensusTractInputType = deriveInputObjectType[CensusTract](
     InputObjectTypeName("CensusTractFieldsInput"),
     ReplaceInputField("uri", InputField("uri", UriType))
