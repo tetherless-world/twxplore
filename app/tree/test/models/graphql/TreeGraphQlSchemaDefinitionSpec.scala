@@ -14,7 +14,7 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class GraphQlSchemaDefinitionSpec extends PlaySpec {
+class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
     //    "list trees" in {
@@ -190,9 +190,9 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
   }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
-    val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
+    val futureResult = Executor.execute(TreeGraphQlSchemaDefinition.schema, query,
       variables = vars,
-      userContext = new GraphQlSchemaContext(featureStore = TestFeatureStore, hierarchyStore = TestHierarchyStore, request = FakeRequest(), treeStore = TestTreeStore)
+      userContext = new TreeGraphQlSchemaContext(featureStore = TestFeatureStore, hierarchyStore = TestHierarchyStore, request = FakeRequest(), treeStore = TestTreeStore)
     )
     Await.result(futureResult, 10.seconds)
   }
