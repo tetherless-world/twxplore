@@ -16,7 +16,6 @@ import play.api.Configuration
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 final class TwksTreeStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with TreeStore {
   @Inject
@@ -27,6 +26,10 @@ final class TwksTreeStore(twksClient: TwksClient) extends BaseTwksStore(twksClie
   }
 
   private def getPropertyByUris[P](propertyUris: List[Uri], property: String)(implicit rdfReader: RdfReader[P]): List[P] = {
+    if (propertyUris.isEmpty) {
+      return List()
+    }
+
     val query = QueryFactory.create(
       s"""
          |PREFIX rdf: <${RDF.getURI}>
@@ -100,7 +103,8 @@ final class TwksTreeStore(twksClient: TwksClient) extends BaseTwksStore(twksClie
     val city: City = City("New York City", List[Uri](), List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "New_York"), Uri.parse(TREE.CITY_URI_PREFIX + ":" + "New York City".replace(" ", "_")))
     val state: State = State("New York", List[Uri](), Uri.parse(TREE.STATE_URI_PREFIX + ":" + "New York".replace(" ", "_")))
 
-    def processTree(tree: Tree) = {
+    val trees = getTreesByBlockUris(selection.includeBlocks) ++ getTreesByNtaUris(selection.includeNtaList)
+    for (tree <- trees) {
       if (tree.species != None) treeSpeciesMap += (tree.species.toString -> tree.species.get)
       zipCityMap += (tree.zipCity.toString -> tree.zipCity)
       postalCode += (tree.postcode.toString -> tree.postcode)
@@ -110,16 +114,6 @@ final class TwksTreeStore(twksClient: TwksClient) extends BaseTwksStore(twksClie
       blockMap += (tree.block.toString -> tree.block)
     }
 
-    val trees = getTreesByBlockUris(selection.includeBlocks.toList).map(tree => {
-      processTree(tree)
-      tree
-    }).to[ListBuffer]
-
-    trees ++= getTreesByNtaUris(selection.includeNtaList.toList).map(tree => {
-      processTree(tree)
-      tree
-    }).to[ListBuffer]
-
     SelectionResults(
       blocks = getBlockByUris(blockMap.values.toList),
       boroughs = getBoroughByUris(boroughMap.values.toList),
@@ -128,7 +122,7 @@ final class TwksTreeStore(twksClient: TwksClient) extends BaseTwksStore(twksClie
       ntaList = getNtaByUris(ntaMap.values.toList),
       postcodes = getPostcodeByUris(postalCode.values.toList),
       state = state,
-      trees = trees.toList,
+      trees = trees,
       treeSpecies = getSpeciesByUris(treeSpeciesMap.values.toList),
       zipCities = getZipCityByUris(zipCityMap.values.toList)
     )
