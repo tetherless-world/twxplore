@@ -23,8 +23,6 @@ import {routerReducer, RouterState} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
 import { TreeMapQuery_TreesBySelection } from 'twxplore/gui/geo/api/queries/types/TreeMapQuery'
 import {composedReducer} from 'twxplore/gui/geo/reducers/reducerActions.tsx'
-import { handleActions } from 'redux-actions';
-
 
 // INITIAL_APP_STATE
 export interface APP_STATE  {
@@ -39,10 +37,11 @@ export interface APP_STATE  {
   parentUri: String,
   createSelection: Boolean,
   selectionData: TreeMapQuery_TreesBySelection | null
+  mode:string
 }
 
 export type Real_State = {
-  keplerGl: {}
+  keplerGl: any
   app: APP_STATE
   routing: RouterState
 }
@@ -58,7 +57,8 @@ export const initialAppState: APP_STATE= {
   scope: "borough",
   parentUri: "",
   createSelection: false,
-  selectionData: null
+  selectionData: null,
+  mode: "home"
 };
 
 
@@ -73,5 +73,3 @@ export const reducers = combineReducers({
 
 export default reducers;
 
-
-const handleMap = {}
