@@ -9,7 +9,7 @@ import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConverters._
 
-abstract class TreeAbstractTwksStore(twksClient: TwksClient) extends io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore(twksClient) {
+abstract class TreeAbstractTwksStore(twksClient: TwksClient) extends io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore(twksClient) {
   protected final def getPropertyByUris[P](propertyUris: List[Uri], property: String)(implicit rdfReader: RdfReader[P]): List[P] = {
     val query = QueryFactory.create(
       s"""

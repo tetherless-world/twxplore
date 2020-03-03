@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.Schema
-import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
+import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionInput, SelectionResults}
@@ -20,7 +20,7 @@ import scala.collection.mutable.ListBuffer
 
 final class TwksTreeStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with TreeStore {
   @Inject
-  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
+  def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   override final def getTrees(limit: Int, offset: Int): List[Tree] = {
     getTreesByUris(getTreeUris(limit = limit, offset = offset))

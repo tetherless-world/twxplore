@@ -6,8 +6,8 @@ import org.apache.commons.configuration2.PropertiesConfiguration
 import org.apache.jena.query.{Query, QueryExecution}
 import play.api.{Configuration, Logging}
 
-abstract class AbstractTwksStore(protected val twksClient: TwksClient) extends Logging {
-  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
+abstract class BaseTwksStore(protected val twksClient: TwksClient) extends Logging {
+  def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   protected final def withAssertionsQueryExecution[T](query: Query)(f: (QueryExecution) => T): T = {
     val queryExecution = twksClient.queryAssertions(query)
@@ -19,7 +19,7 @@ abstract class AbstractTwksStore(protected val twksClient: TwksClient) extends L
   }
 }
 
-object AbstractTwksStore {
+object BaseTwksStore {
   final def createTwksClient(configuration: Configuration): TwksClient = {
     val properties = new PropertiesConfiguration
     for (entry <- configuration.entrySet) {
