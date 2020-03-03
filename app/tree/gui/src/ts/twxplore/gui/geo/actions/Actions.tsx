@@ -6,7 +6,6 @@ export type APPEND_MAP = 'APPEND_MAP';
 export const APPEND_MAP: APPEND_MAP = 'APPEND_MAP';
 export type SELECT_DATA = 'SELECT_DATA'
 export const SELECT_DATA: SELECT_DATA = 'SELECT_DATA';
-export const TEST = 'Tesht'
 
 export interface SelectDataAction extends Action<TreeMapQuery_TreesBySelection> {
     type: SELECT_DATA
@@ -20,15 +19,18 @@ export type Action_Types = SelectDataAction | AppendMapAction | Action<Real_Stat
 
 export function sendSelectionData(data: TreeMapQuery_TreesBySelection): Action_Types {
     return {
-        type: SELECTION_DATA,
-        selection_data: data
+        type: SELECT_DATA,
+        payload : data
     }
 }
 
-export function sendAppendMap(a_map: string, a_uri: String): Action_Types{
+export function sendAppendMap(a_map: string, a_uri: string): Action_Types{
     return {
         type: APPEND_MAP,
-        map: a_map,
-        uri: a_uri
+        payload: {
+            map: a_map,
+            uri: a_uri
+
+        }
     }
 }
