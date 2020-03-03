@@ -8,10 +8,11 @@ import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, InputField, IntType, ListType, ScalarAlias, Schema, StringType, fields}
 
-object GraphQlSchemaDefinition {
+object GeoGraphQlSchemaDefinition {
   // Scalar Formats
   implicit val uriFormat = new json.Format[Uri] {
     override def reads(json: JsValue): JsResult[Uri] = JsSuccess(Uri.parse(json.asInstanceOf[JsString].value))
+
     override def writes(o: Uri): JsValue = JsString(o.toString)
   }
 
@@ -31,11 +32,11 @@ object GraphQlSchemaDefinition {
     ReplaceInputField("uri", InputField("uri", UriType))
   )
 
-  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry](
+  implicit val GeometryType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature](
+  implicit val FeatureType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
@@ -55,10 +56,10 @@ object GraphQlSchemaDefinition {
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
 
   // Query types
-  val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
-    Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument ::  Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("featureByUri", FeatureType, arguments = UriArgument ::  Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
-    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry")) )
+  val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GeoGraphQlSchemaContext, Unit](
+    Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
+    Field("featureByUri", FeatureType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
+    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry")))
   ))
 
   // Schema

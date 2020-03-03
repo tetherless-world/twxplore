@@ -11,7 +11,7 @@ import org.apache.jena.vocabulary.{RDF, RDFS}
 
 import scala.collection.JavaConverters._
 
-class TwksStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with Store {
+class TwksGeoStore(twksClient: TwksClient) extends AbstractTwksStore(twksClient) with GeoStore {
   override def getFeatures(limit: Int, offset: Int): List[Feature] =
     getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
 

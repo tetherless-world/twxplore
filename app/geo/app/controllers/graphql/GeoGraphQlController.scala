@@ -3,11 +3,11 @@ package controllers.graphql
 import akka.actor.ActorSystem
 import io.github.tetherlessworld.twxplore.lib.base.controllers.graphql.AbstractGraphQlController
 import javax.inject.{Inject, Singleton}
-import models.graphql.{GraphQlSchemaContext, GraphQlSchemaDefinition}
+import models.graphql.{GeoGraphQlSchemaContext, GeoGraphQlSchemaDefinition}
 import play.api.mvc.Request
-import stores.Store
+import stores.GeoStore
 
 @Singleton
-class GraphQlController @Inject()(store: Store, system: ActorSystem) extends AbstractGraphQlController[GraphQlSchemaContext](GraphQlSchemaDefinition.schema, system) {
-  override protected def getContext(request: Request[_]): GraphQlSchemaContext = new GraphQlSchemaContext(request, store)
+class GeoGraphQlController @Inject()(store: GeoStore, system: ActorSystem) extends AbstractGraphQlController[GeoGraphQlSchemaContext](GeoGraphQlSchemaDefinition.schema, system) {
+  override protected def getContext(request: Request[_]): GeoGraphQlSchemaContext = new GeoGraphQlSchemaContext(request, store)
 }

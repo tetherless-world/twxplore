@@ -8,13 +8,13 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.TestStore
+import stores.TestGeoStore
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class GraphQlSchemaDefinitionSpec extends PlaySpec {
+class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
     "list features" in {
@@ -65,9 +65,9 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
   }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
-    val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
+    val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
       variables = vars,
-      userContext = new GraphQlSchemaContext(FakeRequest(), TestStore)
+      userContext = new GeoGraphQlSchemaContext(FakeRequest(), TestGeoStore)
     )
     Await.result(futureResult, 10.seconds)
 }}

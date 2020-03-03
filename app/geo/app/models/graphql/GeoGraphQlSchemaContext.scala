@@ -1,7 +1,7 @@
 package models.graphql
 
 import play.api.mvc.Request
-import stores.Store
+import stores.GeoStore
 
-class GraphQlSchemaContext(request: Request[_], val store: Store) {
+class GeoGraphQlSchemaContext(request: Request[_], val store: GeoStore) {
 }
