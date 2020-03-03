@@ -1,5 +1,11 @@
 import {APP_STATE} from 'twxplore/gui/geo/reducers/reducers'
-import {Action_Types, APPEND_MAP, AppendMap, SELECTION_DATA, SelectionData} from 'twxplore/gui/geo/actions/Actions'
+import {
+  Action_Types,
+  APPEND_MAP,
+  AppendMapAction,
+  SELECT_DATA,
+  SelectDataAction
+} from 'twxplore/gui/geo/actions/Actions'
 import {ActionTypes} from 'kepler.gl/actions';
 
 
@@ -9,12 +15,12 @@ export const composedReducer = (state: APP_STATE, action: Action_Types) => {
   const result = Object.assign({}, state)
   switch (action.type) {
     case APPEND_MAP : {
-      const appendMapAction = action as AppendMap;
-      ((result as any)[appendMapAction.map] as Map<String, String>).set(appendMapAction.uri, appendMapAction.uri);
+      const appendMapAction = action as AppendMapAction;
+      ((result as any)[appendMapAction.payload.map] as Map<String, String>).set(appendMapAction.uri, appendMapAction.uri);
       return result;
     }
-    case SELECTION_DATA: {
-      result.selectionData = (action as SelectionData).selection_data
+    case SELECT_DATA: {
+      result.selectionData = (action as SelectDataAction).payload
       return result;
     }
     case ActionTypes.LAYER_CLICK: {
