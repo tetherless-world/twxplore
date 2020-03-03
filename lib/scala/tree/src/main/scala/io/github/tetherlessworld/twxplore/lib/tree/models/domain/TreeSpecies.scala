@@ -11,7 +11,7 @@ final case class TreeSpecies(common: String, latin: String, uri: Uri)
 object TreeSpecies {
 
   implicit class TreeSpeciesResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties
 
   implicit object TreeSpeciesRdfReader extends RdfReader[TreeSpecies] {
     override def read(resource: Resource): TreeSpecies = {

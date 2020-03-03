@@ -15,7 +15,7 @@ final case class State(name: String, cities: List[Uri], uri: Uri) {
 object State {
 
   implicit class StateResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties
 
   implicit object StateRdfReader extends RdfReader[State] {
     override def read(resource: Resource): State = {

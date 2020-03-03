@@ -17,7 +17,7 @@ final case class Borough(name: String, borocode: Int, city: Uri, ntaList: List[U
 object Borough {
 
   implicit class BoroughResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties with GeoProperties
 
   implicit object BoroughRdfReader extends RdfReader[Borough] {
     override def read(resource: Resource): Borough = {

@@ -11,7 +11,7 @@ final case class CensusTract(id: Int, shapefile: String, uri: Uri)
 object CensusTract {
 
   implicit class CensusTractResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties
 
   implicit object CensusTractRdfReader extends RdfReader[CensusTract] {
     override def read(resource: Resource): CensusTract = {

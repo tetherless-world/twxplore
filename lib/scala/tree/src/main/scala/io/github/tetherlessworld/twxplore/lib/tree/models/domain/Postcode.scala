@@ -12,7 +12,7 @@ final case class Postcode(code: Int, city: Uri, uri: Uri) {
 object Postcode {
 
   implicit class PostcodeResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DCTermsProperties with SchemaProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DcTermsProperties with SchemaProperties
 
   implicit object PostcodeRdfReader extends RdfReader[Postcode] {
     override def read(resource: Resource): Postcode = {

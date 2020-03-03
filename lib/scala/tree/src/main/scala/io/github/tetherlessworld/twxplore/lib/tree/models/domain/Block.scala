@@ -13,7 +13,7 @@ final case class Block(id: Int, name: String, nta: Uri, feature: Uri, uri: Uri) 
 object Block {
 
   implicit class BlockResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties with GeoProperties
 
   implicit object BlockRdfReader extends RdfReader[Block] {
     override def read(resource: Resource): Block = {

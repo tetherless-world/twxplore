@@ -11,7 +11,7 @@ final case class ZipCity(city: String, uri: Uri)
 object ZipCity {
 
   implicit class ZipCityResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties
 
   implicit object ZipCityRdfReader extends RdfReader[ZipCity] {
     override def read(resource: Resource): ZipCity = {
