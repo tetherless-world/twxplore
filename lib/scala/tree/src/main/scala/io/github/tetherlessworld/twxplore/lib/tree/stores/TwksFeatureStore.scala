@@ -15,7 +15,7 @@ import play.api.Configuration
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
-final class TwksFeatureStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with FeatureStore {
+final class TwksFeatureStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with FeatureStore {
   @Inject
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
