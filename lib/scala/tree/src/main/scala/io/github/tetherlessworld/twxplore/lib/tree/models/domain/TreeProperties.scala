@@ -1,20 +1,30 @@
-package io.github.tetherlessworld.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.tree.models.domain
 
 import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.{PropertyGetters, PropertySetters}
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 
-trait TreeTermsProperties extends PropertyGetters with PropertySetters {
+trait TreeProperties extends PropertyGetters with PropertySetters {
   final def bbl = getPropertyObjectLong(TREE.bbl)
+
   final def bin = getPropertyObjectInt(TREE.bin)
+
   final def block = getPropertyObjectResourceIdentifier(TREE.block)
+
   final def blockUri = getPropertyObjectUri(TREE.block)
+
   final def blocksUri = getPropertyObjectUris(TREE.block)
+
   final def borough = getPropertyObjectResourceLabel(TREE.borough)
+
   final def boroughCount = getPropertyObjectInt(TREE.boroughCount)
+
   final def boroughUri = getPropertyObjectUri(TREE.borough)
+
   final def boroughs = getPropertyObjectStrings(TREE.borough)
+
   final def boroughsUri = getPropertyObjectUris(TREE.borough)
   final def censusTract = getPropertyObjectResourceIdentifier(TREE.censusTract)
   final def cncldist = getPropertyObjectInt(TREE.cncldist)

@@ -3,7 +3,8 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Block(id: Int, name: String, nta: Uri, feature: Uri, uri: Uri) extends Ordered[Block] {
@@ -13,7 +14,7 @@ final case class Block(id: Int, name: String, nta: Uri, feature: Uri, uri: Uri) 
 object Block {
 
   implicit class BlockResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties with GeoProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with SchemaProperties with DcTermsProperties with GeoProperties
 
   implicit object BlockRdfReader extends RdfReader[Block] {
     override def read(resource: Resource): Block = {

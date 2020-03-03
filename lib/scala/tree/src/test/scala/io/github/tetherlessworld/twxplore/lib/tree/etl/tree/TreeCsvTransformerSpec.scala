@@ -1,8 +1,8 @@
 package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.scalatest.{Matchers, WordSpec}
 
 

@@ -3,7 +3,8 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class State(name: String, cities: List[Uri], uri: Uri) {
@@ -15,7 +16,7 @@ final case class State(name: String, cities: List[Uri], uri: Uri) {
 object State {
 
   implicit class StateResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DcTermsProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with SchemaProperties with DcTermsProperties
 
   implicit object StateRdfReader extends RdfReader[State] {
     override def read(resource: Resource): State = {

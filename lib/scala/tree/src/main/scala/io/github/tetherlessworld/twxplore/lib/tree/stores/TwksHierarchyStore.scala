@@ -3,9 +3,10 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{Rdf, RdfReader}
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.Schema
 import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
 import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI

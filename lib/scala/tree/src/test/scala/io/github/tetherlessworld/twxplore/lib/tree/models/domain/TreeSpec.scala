@@ -11,7 +11,7 @@ import org.scalatest.{Matchers, WordSpec}
 class TreeSpec extends WordSpec with Matchers {
 
   implicit class TreeSpecResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DcTermsProperties with SchemaProperties with GeoProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with DcTermsProperties with SchemaProperties with GeoProperties
 
   implicit class TreeUri(uri: Uri) {
     def lastPart = uri.toString.substring(uri.toString.lastIndexOf(":") + 1)

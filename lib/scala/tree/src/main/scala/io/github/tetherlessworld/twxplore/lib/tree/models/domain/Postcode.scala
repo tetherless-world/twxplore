@@ -3,7 +3,8 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 final case class Postcode(code: Int, city: Uri, uri: Uri) {
@@ -12,7 +13,7 @@ final case class Postcode(code: Int, city: Uri, uri: Uri) {
 object Postcode {
 
   implicit class PostcodeResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with DcTermsProperties with SchemaProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with DcTermsProperties with SchemaProperties
 
   implicit object PostcodeRdfReader extends RdfReader[Postcode] {
     override def read(resource: Resource): Postcode = {
