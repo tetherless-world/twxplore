@@ -5,7 +5,7 @@ import java.util.Date
 import edu.rpi.tw.twks.uri.Uri
 import sangria.schema.{Argument, FloatType, IntType, ScalarAlias, StringType}
 
-abstract class AbstractGraphQlSchemaDefinition {
+abstract class BaseGraphQlSchemaDefinition {
   // Scalar aliases
   implicit val DateType = ScalarAlias[Date, String](
     StringType, _.toString, date => {

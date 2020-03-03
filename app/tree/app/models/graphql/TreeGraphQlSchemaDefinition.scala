@@ -1,14 +1,14 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.graphql.AbstractGraphQlSchemaDefinition
+import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, ListInputType, ListType, Schema, fields}
 
-object TreeGraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
+object TreeGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   implicit val CurbLocType = deriveEnumType[CurbLoc]()
   implicit val HealthType = deriveEnumType[Health]()
   implicit val GuardsType = deriveEnumType[Guards]()
