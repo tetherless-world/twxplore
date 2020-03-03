@@ -2,23 +2,21 @@ import {TreeMapQuery_TreesBySelection} from 'twxplore/gui/geo/api/queries/types/
 import {Action} from 'redux-actions';
 import {Real_State} from '../reducers/reducers';
 
-export const APPEND_MAP = 'AppendMap'
-export const SELECTION_DATA = 'SelectionData'
+export type APPEND_MAP = 'APPEND_MAP';
+export const APPEND_MAP: APPEND_MAP = 'APPEND_MAP';
+export type SELECT_DATA = 'SELECT_DATA'
+export const SELECT_DATA: SELECT_DATA = 'SELECT_DATA';
 export const TEST = 'Tesht'
 
-export interface SelectionData {
-    type: typeof SELECTION_DATA
-    selection_data: TreeMapQuery_TreesBySelection
+export interface SelectDataAction extends Action<TreeMapQuery_TreesBySelection> {
+    type: SELECT_DATA
 }
 
-export interface AppendMap {
-    type: typeof APPEND_MAP
-    map: string
-    uri: String
+export interface AppendMapAction extends Action<{ map: string, uri: string }> {
+    type: APPEND_MAP
 }
 
-
-export type Action_Types = SelectionData | AppendMap | Action<Real_State>
+export type Action_Types = SelectDataAction | AppendMapAction | Action<Real_State>
 
 export function sendSelectionData(data: TreeMapQuery_TreesBySelection): Action_Types {
     return {
