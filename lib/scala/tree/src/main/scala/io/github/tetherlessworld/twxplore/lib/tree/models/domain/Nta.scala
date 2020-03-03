@@ -3,7 +3,8 @@ package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
 //Nta
@@ -18,7 +19,7 @@ final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri,
 object Nta {
 
   implicit class NTAResource(val resource: Resource)
-    extends RdfProperties with RdfsProperties with SioProperties with TreeTermsProperties with SchemaProperties with DCTermsProperties with GeoProperties
+    extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with SchemaProperties with DcTermsProperties with GeoProperties
 
 
   implicit object NTARdfReader extends RdfReader[Nta] {

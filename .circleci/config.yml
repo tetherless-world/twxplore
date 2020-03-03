@@ -35,11 +35,13 @@ jobs:
           name: Create test-results directory
           command: mkdir -p test-results/scala
       - run:
-          name: Test
+          name: Build and test
           command: |
             sbt clean update package assembly test
             cp app/geo/target/test-reports/*.xml ~/project/test-results/scala
+            cp app/tree/target/test-reports/*.xml ~/project/test-results/scala
             # cp lib/scala/base/target/test-reports/*.xml ~/project/test-results/scala
+            cp lib/scala/tree/target/test-reports/*.xml ~/project/test-results/scala
       - store_test_results:
           path: test-results
       - run:
