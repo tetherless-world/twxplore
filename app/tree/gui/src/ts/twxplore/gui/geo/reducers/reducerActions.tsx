@@ -1,72 +1,48 @@
-import reducers from "./reducers"
-import {APP_STATE, initialAppState} from 'twxplore/gui/geo/reducers/reducers'
-import {APPEND_MAP,SELECTION_DATA, Action_Types} from 'twxplore/gui/geo/actions/Actions'
-import {handleActions} from 'redux-actions';
+import {APP_STATE} from 'twxplore/gui/geo/reducers/reducers'
+import {Action_Types, APPEND_MAP, AppendMap, SELECTION_DATA, SelectionData} from 'twxplore/gui/geo/actions/Actions'
 import {ActionTypes} from 'kepler.gl/actions';
-import keplerGlReducer from 'kepler.gl/reducers';
-import {Action} from import { handleActions } from 'redux-actions';
-
-
-
 
 
 //type Action = selectionDataAction | AppendToMap
 
 export const composedReducer = (state: APP_STATE, action: Action_Types) => {
+  const result = Object.assign({}, state)
   switch (action.type) {
-    case 'APPEND_MAP' : {
-      state[action.map].set(action.uri, action.uri)
-      let result = state
-      return {
-        ...result
-        }
+    case APPEND_MAP : {
+      const appendMapAction = action as AppendMap;
+      ((result as any)[appendMapAction.map] as Map<String, String>).set(appendMapAction.uri, appendMapAction.uri);
+      return result;
     }
-    case 'SELECTION_DATA' : {
-      const result = Object.assign({}, state)
-      result.selectionData = action.selection_data
-      return{
-        ...result
-      }     
+    case SELECTION_DATA: {
+      result.selectionData = (action as SelectionData).selection_data
+      return result;
     }
     case ActionTypes.LAYER_CLICK: {
-      handleActions({
-        [ActionTypes.LAYER_CLICK]: (state, action) => {
-          switch(action.payload.info.picked) {
-            case true: {
-              var result = {}
-              switch(action.payload.info.object.properties.type) {
-                case "block": {
-                  if(!(state.blockMap.has(action.payload.info.object.properties.uri))){
-                    state.blocks.push(action.payload.info.object.properties.uri)
-                }
-                
-                result = {
-                  blocks: state.blocks,
-                  createSelection: true
-                }
-                break;
-              ``}
-                case "NTA": {
-                  break;
-                }
-                }
-              return ({
-                ...state,
-                ...result,
-                scope: action.payload.info.object.properties.child,
-                parentUri: action.payload.info.object.properties.uri
-              })
-          }
-        default: {
-          return ({
-            ...state
-          })
-        }
+      const layerClickAction = action as any;
+      if (layerClickAction.payload.info.picked) {
+        return result;
       }
-    },
-  }, initialAppState)
- }
+      result.scope = layerClickAction.payload.info.object.properties.child;
+      result.parentUri = layerClickAction.payload.info.object.properties.uri;
+
+      switch (layerClickAction.payload.info.object.properties.type) {
+        case "block": {
+          if (!(result.blockMap.has(layerClickAction.payload.info.object.properties.uri))) {
+            result.blocks.push(layerClickAction.payload.info.object.properties.uri)
+          }
+          result.createSelection = true;
+          // result = {
+          //   blocks: state.blocks,
+          //   createSelection: true
+          // }
+        }
+          // case "NTA": {
+          //     break;
+          // }
+      }
+      return result;
+    }
+    default:
+      return result;
+  }
 }
-}
-  //return reducers(state, action);
-export default composedReducer
