@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary
+package io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary
 
 import org.apache.jena.rdf.model.ResourceFactory
 

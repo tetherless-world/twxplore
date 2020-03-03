@@ -1,14 +1,14 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.graphql.AbstractGraphQlSchemaDefinition
+import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.{SelectionArea, SelectionInput, SelectionResults}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, ListInputType, ListType, Schema, fields}
 
-object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
+object TreeGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   implicit val CurbLocType = deriveEnumType[CurbLoc]()
   implicit val HealthType = deriveEnumType[Health]()
   implicit val GuardsType = deriveEnumType[Guards]()
@@ -39,20 +39,20 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   //    ReplaceInputField("curbLoc", InputField("curbLoc", CurbLocType)),
   //  )
 
-  implicit val GeometryType = deriveObjectType[GraphQlSchemaContext, Geometry]()
-  implicit val FeatureType = deriveObjectType[GraphQlSchemaContext, Feature]()
-  implicit val StateType = deriveObjectType[GraphQlSchemaContext, State]()
-  implicit val CityType = deriveObjectType[GraphQlSchemaContext, City]()
-  implicit val BoroughType = deriveObjectType[GraphQlSchemaContext, Borough]()
-  implicit val NtaType = deriveObjectType[GraphQlSchemaContext, Nta]()
-  implicit val BlockType = deriveObjectType[GraphQlSchemaContext, Block]()
-  implicit val CensusTractType = deriveObjectType[GraphQlSchemaContext, CensusTract]()
-  implicit val PostcodeType = deriveObjectType[GraphQlSchemaContext, Postcode]()
-  implicit val SelectionAreaType = deriveObjectType[GraphQlSchemaContext, SelectionArea]()
-  implicit val TreeType = deriveObjectType[GraphQlSchemaContext, Tree]()
-  implicit val TreeSpeciesType = deriveObjectType[GraphQlSchemaContext, TreeSpecies]()
-  implicit val ZipCityType = deriveObjectType[GraphQlSchemaContext, ZipCity]()
-  implicit val SelectionResultsType = deriveObjectType[GraphQlSchemaContext, SelectionResults]()
+  implicit val GeometryType = deriveObjectType[TreeGraphQlSchemaContext, Geometry]()
+  implicit val FeatureType = deriveObjectType[TreeGraphQlSchemaContext, Feature]()
+  implicit val StateType = deriveObjectType[TreeGraphQlSchemaContext, State]()
+  implicit val CityType = deriveObjectType[TreeGraphQlSchemaContext, City]()
+  implicit val BoroughType = deriveObjectType[TreeGraphQlSchemaContext, Borough]()
+  implicit val NtaType = deriveObjectType[TreeGraphQlSchemaContext, Nta]()
+  implicit val BlockType = deriveObjectType[TreeGraphQlSchemaContext, Block]()
+  implicit val CensusTractType = deriveObjectType[TreeGraphQlSchemaContext, CensusTract]()
+  implicit val PostcodeType = deriveObjectType[TreeGraphQlSchemaContext, Postcode]()
+  implicit val SelectionAreaType = deriveObjectType[TreeGraphQlSchemaContext, SelectionArea]()
+  implicit val TreeType = deriveObjectType[TreeGraphQlSchemaContext, Tree]()
+  implicit val TreeSpeciesType = deriveObjectType[TreeGraphQlSchemaContext, TreeSpecies]()
+  implicit val ZipCityType = deriveObjectType[TreeGraphQlSchemaContext, ZipCity]()
+  implicit val SelectionResultsType = deriveObjectType[TreeGraphQlSchemaContext, SelectionResults]()
 
   implicit val cityFromInput = new FromInput[City] {
     val marshaller = CoercedScalaResultMarshaller.default
@@ -173,13 +173,13 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   val SelectionInputArgument = Argument("selectionInput", SelectionInputType, description = "Selection Input")
 
 
-  val CitiesType = sangria.schema.ObjectType("Cities", fields[GraphQlSchemaContext, Int](
+  val CitiesType = sangria.schema.ObjectType("Cities", fields[TreeGraphQlSchemaContext, Int](
     Field("geometryOfCity", GeometryType, arguments = CityArgument :: Nil, resolve = (ctx) => ctx.ctx.featureStore.getCityGeometry(city = ctx.args.arg("city"))),
     Field("geometries", FeatureType, arguments = Nil, resolve = (ctx) => ctx.ctx.featureStore.getCityFeature()),
     Field("hierarchy", ListType(SelectionAreaType), arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getCityHierarchy(cityUri = ctx.args.arg("cityUri"))),
   ))
 
-  val BlocksType = sangria.schema.ObjectType("Blocks", fields[GraphQlSchemaContext, Int](
+  val BlocksType = sangria.schema.ObjectType("Blocks", fields[TreeGraphQlSchemaContext, Int](
     Field("byNta", ListType(BlockType), arguments = NtaArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getBlocksByNta(nta = ctx.args.arg("nta"))),
     Field("geometries", ListType(FeatureType), arguments = Nil, resolve = (ctx) => ctx.ctx.featureStore.getBlockFeatures()),
     Field("hierarchy", ListType(SelectionAreaType), arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getBlockHierarchy(blockUri = ctx.args.arg("uri"))),
@@ -188,7 +188,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
     Field("geometryOfBlock", GeometryType, arguments = BlockArgument :: Nil, resolve = (ctx) => ctx.ctx.featureStore.getBlockGeometry(block = ctx.args.arg("block"))),
   ))
 
-  val BoroughsType = sangria.schema.ObjectType("Boroughs", fields[GraphQlSchemaContext, Int](
+  val BoroughsType = sangria.schema.ObjectType("Boroughs", fields[TreeGraphQlSchemaContext, Int](
     Field("byCity", ListType(BoroughType), arguments = CityArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getBoroughsByCity(city = ctx.args.arg("city"))),
     Field("geometries", ListType(FeatureType), arguments = Nil, resolve = (ctx) => ctx.ctx.featureStore.getBoroughFeatures()),
     Field("hierarchy", ListType(SelectionAreaType), arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getBoroughHierarchy(boroughUri = ctx.args.arg("boroughUri"))),
@@ -196,7 +196,7 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
     Field("geometryOfBorough", GeometryType, arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.featureStore.getBoroughGeometry(borough = ctx.args.arg("borough"))),
   ))
 
-  val NtasType = sangria.schema.ObjectType("Ntas", fields[GraphQlSchemaContext, Int](
+  val NtasType = sangria.schema.ObjectType("Ntas", fields[TreeGraphQlSchemaContext, Int](
     Field("byBorough", ListType(NtaType), arguments = BoroughArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getNtasByBorough(borough = ctx.args.arg("borough"))),
     Field("geometries", ListType(FeatureType), arguments = Nil, resolve = (ctx) => ctx.ctx.featureStore.getNtaFeatures()),
     Field("hierarchy", ListType(SelectionAreaType), arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.hierarchyStore.getNtaHierarchy(ntaUri = ctx.args.arg("ntaUri"))),
@@ -206,9 +206,8 @@ object GraphQlSchemaDefinition extends AbstractGraphQlSchemaDefinition {
   ))
 
 
-
   // Query types
-  val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GraphQlSchemaContext, Unit](
+  val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[TreeGraphQlSchemaContext, Unit](
     Field("blocks", BlocksType, resolve = ctx => 1),
     Field("ntas", NtasType, resolve = ctx => 1),
     Field("boroughs", BoroughsType, resolve = ctx => 1),

@@ -1,9 +1,9 @@
 package io.github.tetherlessworld.twxplore.lib.tree.etl.geo
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import nl.grons.metrics4.scala.DefaultInstrumented
 
 abstract class GeometryCsvTransformer(bufferSize: Int) extends CsvTransformer with DefaultInstrumented {

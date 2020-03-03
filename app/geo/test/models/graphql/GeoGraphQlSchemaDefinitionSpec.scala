@@ -1,6 +1,6 @@
 package models.graphql
 
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.TestData
+import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -8,13 +8,13 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.TestStore
+import stores.TestGeoStore
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class GraphQlSchemaDefinitionSpec extends PlaySpec {
+class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
     "list features" in {
@@ -28,7 +28,7 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
        """
       executeQuery(query) must be(Json.parse(
         s"""
-           |{"data":{"features":[{"uri":"${TestData.feature.uri.toString()}"}]}}
+           |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
            |""".stripMargin))
     }
 
@@ -41,9 +41,9 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
            }
          }
        """
-      executeQuery(query, vars = Json.obj("uri" -> TestData.feature.uri.toString)) must be(Json.parse(
+      executeQuery(query, vars = Json.obj("uri" -> GeoTestData.feature.uri.toString)) must be(Json.parse(
         s"""
-           |{"data":{"featureByUri":{"uri":"${TestData.feature.uri.toString()}"}}}
+           |{"data":{"featureByUri":{"uri":"${GeoTestData.feature.uri.toString()}"}}}
            |""".stripMargin))
     }
 
@@ -56,18 +56,18 @@ class GraphQlSchemaDefinitionSpec extends PlaySpec {
             }
           }
         """
-        val result = executeQuery(query, vars = Json.obj("geometry" -> Json.obj("wkt" -> TestData.geometry.wkt, "uri" -> TestData.geometry.uri.toString, "label" -> TestData.geometry.label)))
+      val result = executeQuery(query, vars = Json.obj("geometry" -> Json.obj("wkt" -> GeoTestData.geometry.wkt, "uri" -> GeoTestData.geometry.uri.toString, "label" -> GeoTestData.geometry.label)))
         result must be(Json.parse(
           s"""
-             |{"data":{"featuresContaining":[{"uri":"${TestData.feature.uri.toString()}"}]}}
+             |{"data":{"featuresContaining":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
              |""".stripMargin))
     }
   }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
-    val futureResult = Executor.execute(GraphQlSchemaDefinition.schema, query,
+    val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
       variables = vars,
-      userContext = new GraphQlSchemaContext(FakeRequest(), TestStore)
+      userContext = new GeoGraphQlSchemaContext(FakeRequest(), TestGeoStore)
     )
     Await.result(futureResult, 10.seconds)
 }}

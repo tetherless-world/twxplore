@@ -3,9 +3,9 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
-import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
+import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI
 import org.apache.jena.query.QueryFactory
@@ -15,9 +15,9 @@ import play.api.Configuration
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 
-final class TwksFeatureStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with FeatureStore {
+final class TwksFeatureStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with FeatureStore {
   @Inject
-  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
+  def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   override final def getBlockFeatures(): List[Feature] = getFeatures(getBlockUris(), "block")
 

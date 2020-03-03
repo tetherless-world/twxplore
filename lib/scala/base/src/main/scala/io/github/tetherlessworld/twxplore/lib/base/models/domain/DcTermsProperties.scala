@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.base.models.domain
 import org.apache.jena.rdf.model.ResourceFactory
 import org.apache.jena.vocabulary.DCTerms
 
-trait DCTermsProperties extends PropertyGetters with PropertySetters {
+trait DcTermsProperties extends PropertyGetters with PropertySetters {
   final def identifier = getPropertyObjectString(DCTerms.identifier)
 
 

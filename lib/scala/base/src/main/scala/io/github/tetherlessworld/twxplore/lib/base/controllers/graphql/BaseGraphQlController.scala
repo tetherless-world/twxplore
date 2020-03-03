@@ -13,7 +13,7 @@ import sangria.slowlog.SlowLog
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-abstract class AbstractGraphQlController[ContextT](schema: Schema[ContextT, Unit], system: ActorSystem) extends InjectedController {
+abstract class BaseGraphQlController[ContextT](schema: Schema[ContextT, Unit], system: ActorSystem) extends InjectedController {
 
   import system.dispatcher
 

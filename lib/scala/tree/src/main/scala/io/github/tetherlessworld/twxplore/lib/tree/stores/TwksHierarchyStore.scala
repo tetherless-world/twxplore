@@ -3,9 +3,10 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{Rdf, RdfReader}
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.{Schema, TREE}
-import io.github.tetherlessworld.twxplore.lib.base.stores.AbstractTwksStore
+import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.Schema
+import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.tree.models.selection.SelectionArea
 import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI
@@ -15,7 +16,7 @@ import play.api.Configuration
 
 import scala.collection.JavaConverters._
 
-final class TwksHierarchyStore(twksClient: TwksClient) extends TreeAbstractTwksStore(twksClient) with HierarchyStore {
+final class TwksHierarchyStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with HierarchyStore {
   override final def getBlockHierarchy(blockUri: Uri): List[SelectionArea] = {
     val blockSelection = getSelection(blockUri, "block", TREE.propertyURI.toString + "NTA")
     getNtaHierarchy(blockSelection.parent) :+ blockSelection
@@ -70,7 +71,7 @@ final class TwksHierarchyStore(twksClient: TwksClient) extends TreeAbstractTwksS
   override final def getBoroughsByCity(city: City): List[Borough] = getPropertyByProperty[Borough](city.uri, "borough")
 
   @Inject
-  def this(configuration: Configuration) = this(AbstractTwksStore.createTwksClient(configuration))
+  def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   override final def getNtasByBorough(borough: Borough): List[Nta] = getPropertyByProperty[Nta](borough.uri, "NTA")
 

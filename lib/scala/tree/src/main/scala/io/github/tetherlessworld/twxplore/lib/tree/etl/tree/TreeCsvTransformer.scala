@@ -3,10 +3,10 @@ package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.TREE
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
+import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import nl.grons.metrics4.scala.DefaultInstrumented
 
 import scala.collection.mutable
