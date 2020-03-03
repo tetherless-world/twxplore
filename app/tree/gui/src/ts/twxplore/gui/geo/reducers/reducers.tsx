@@ -19,15 +19,15 @@
 // THE SOFTWARE.
 
 import {combineReducers} from 'redux';
-import {handleActions} from 'redux-actions';
 import {routerReducer, RouterState} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
-import {ActionTypes} from 'kepler.gl/actions';
 import { TreeMapQuery_TreesBySelection } from 'twxplore/gui/geo/api/queries/types/TreeMapQuery'
+import {composedReducer} from 'twxplore/gui/geo/reducers/reducerActions.tsx'
+import { handleActions } from 'redux-actions';
 
 
 // INITIAL_APP_STATE
-export type APP_STATE = {
+export interface APP_STATE  {
   info: any,
   loaded: Boolean,
   blockMap: Map<String, String>,
@@ -38,7 +38,7 @@ export type APP_STATE = {
   scope: String,
   parentUri: String,
   createSelection: Boolean,
-  selectionData: Array<TreeMapQuery_TreesBySelection>[]
+  selectionData: TreeMapQuery_TreesBySelection | null
 }
 
 export type Real_State = {
@@ -47,7 +47,7 @@ export type Real_State = {
   routing: RouterState
 }
 
-const initialAppState: APP_STATE= {
+export const initialAppState: APP_STATE= {
   info: {},
   loaded: false,
   blockMap: new Map(),
@@ -58,51 +58,20 @@ const initialAppState: APP_STATE= {
   scope: "borough",
   parentUri: "",
   createSelection: false,
-  selectionData: []
+  selectionData: null
 };
 
 
 
-const reducers = combineReducers({
+
+export const reducers = combineReducers({
   // mount keplerGl reducer
   keplerGl: keplerGlReducer,
-  app: handleActions({
-    [ActionTypes.LAYER_CLICK]: (state, action) => {
-      switch(action.payload.info.picked) {
-        case true: {
-          var result = {}
-          switch(action.payload.info.object.properties.type) {
-            case "block": {
-              if(!(state.blockMap.has(action.payload.info.object.properties.uri))){
-                state.blocks.push(action.payload.info.object.properties.uri)
-              }
-              
-              result = {
-                blocks: state.blocks,
-                createSelection: true
-              }
-              break;
-            }
-            case "NTA": {
-              break;
-            }
-          }
-          return ({
-            ...state,
-            ...result,
-            scope: action.payload.info.object.properties.child,
-            parentUri: action.payload.info.object.properties.uri
-          })
-        }
-        default: {
-          return ({
-            ...state
-          })
-        }
-      }
-    },
-  }, initialAppState),
+  app: composedReducer,
   routing: routerReducer
 });
 
 export default reducers;
+
+
+const handleMap = {}

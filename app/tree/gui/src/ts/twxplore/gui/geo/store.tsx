@@ -25,6 +25,8 @@ import {taskMiddleware} from 'react-palm/tasks';
 import {routerMiddleware} from 'react-router-redux';
 import composedReducer from './reducers/reducerActions';
 import createHistory from 'history/createBrowserHistory'
+import {Real_State, initialAppState, reducers} from 'twxplore/gui/geo/reducers/reducers'
+
 
 const history = createHistory()
 export const middlewares = [
@@ -34,13 +36,19 @@ export const middlewares = [
 
 export const enhancers = [applyMiddleware(...middlewares)];
 
-const initialState = {};
+//const initialState = {};
+const initialState : Real_State = {
+  keplerGl: {},
+  app: initialAppState,
+  routing: {location: null}
+  
+}
+
 
 // add redux devtools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default createStore(
-  composedReducer,
-  initialState,
+  reducers,
   composeEnhancers(...enhancers)
 );

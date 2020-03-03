@@ -33,7 +33,7 @@ enum Mode{
 export const PanelParent: React.FunctionComponent<{}> = ({}) => {
     const classes = useStyles();
 
-    const callSetMode = (newMode) => {
+    const callSetMode = (newMode: string) => {
         setMode(newMode)
     }
 
