@@ -4,7 +4,8 @@ import {
   APPEND_MAP,
   AppendMapAction,
   SELECT_DATA,
-  SelectDataAction
+  SelectDataAction,
+  CHANGE_MODE
 } from 'twxplore/gui/geo/actions/Actions'
 import {ActionTypes} from 'kepler.gl/actions';
 
@@ -48,6 +49,10 @@ export const composedReducer = (state: APP_STATE, action: Action_Types) => {
       }
       return result;
     }
+    case CHANGE_MODE:{
+      result.mode = action.payload
+      return result
+      }
     default:
       return result;
   }
