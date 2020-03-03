@@ -19,15 +19,6 @@ interface ReduxProps {
 type ComponentProps = TreeListProps & ReduxProps
   
 export const TreesList: React.FunctionComponent<ComponentProps> = ({callSetMode, trees}) => {
-    /*const {loading, data, error} = useQuery<TreesQuery, TreesQuery_trees>(query, {});
-
-    if (error) {
-        return <FatalErrorModal exception={new ApolloException(error)}/>;
-    } else if (loading) {
-        return <ReactLoader loaded={false}/>;
-    }
-    */
-    //data!.trees.
     return (
         <div>
             {trees.map(feature =>
@@ -38,9 +29,9 @@ export const TreesList: React.FunctionComponent<ComponentProps> = ({callSetMode,
 }
 
 
-const mapStateToProps = (state: APP_STATE) => (
+const mapStateToProps = (state: Real_State) => (
      {
-      trees: state.selectionData.trees
+      trees: state.app.selectionData
     }
 )
 

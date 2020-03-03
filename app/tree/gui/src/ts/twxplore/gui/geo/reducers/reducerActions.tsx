@@ -16,7 +16,7 @@ export const composedReducer = (state: APP_STATE, action: Action_Types) => {
   switch (action.type) {
     case APPEND_MAP : {
       const appendMapAction = action as AppendMapAction;
-      ((result as any)[appendMapAction.payload.map] as Map<String, String>).set(appendMapAction.uri, appendMapAction.uri);
+      ((result as any)[appendMapAction.payload.map] as Map<String, String>).set(appendMapAction.payload.uri, appendMapAction.payload.uri);
       return result;
     }
     case SELECT_DATA: {
