@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.tree.etl.tree
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.TreeTestData
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 import org.scalatest.{Matchers, WordSpec}
 
@@ -13,7 +13,7 @@ class TreeCsvTransformerSpec extends WordSpec with Matchers {
   }
 
   "TreeDataCsvTranformerSpec" can {
-    val testData = TestData
+    val testData = TreeTestData
 
     "a valid csv" should {
       "a valid mapping of trees" should {
@@ -59,9 +59,9 @@ class TreeCsvTransformerSpec extends WordSpec with Matchers {
 
       "a valid mapping of boroughs" should {
         "return a nonempty mapping of boroughs" in {
-          assert(TestData.boroughGeoMap.size != 0)
+          assert(TreeTestData.boroughGeoMap.size != 0)
         }
-        val queens = TestData.boroughGeoMap("Queens")
+        val queens = TreeTestData.boroughGeoMap("Queens")
         "have a specific uri" in {
           queens.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Queens"))
         }
@@ -69,9 +69,9 @@ class TreeCsvTransformerSpec extends WordSpec with Matchers {
 
       "a valid mapping of ntas" should {
         "return a nonempty mapping of ntas" in {
-          assert(TestData.ntaGeoMap.size != 0)
+          assert(TreeTestData.ntaGeoMap.size != 0)
         }
-        val MN14 = TestData.ntaGeoMap("Lincoln Square")
+        val MN14 = TreeTestData.ntaGeoMap("Lincoln Square")
         "have a specific uri" in {
           MN14.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "Lincoln_Square"))
         }
@@ -79,10 +79,10 @@ class TreeCsvTransformerSpec extends WordSpec with Matchers {
 
       "a valid mapping of blocks" should {
         "return a nonempty mapping of blocks" in {
-          assert(TestData.blockGeoMap.size != 0)
+          assert(TreeTestData.blockGeoMap.size != 0)
         }
-        println(TestData.blockGeoMap.size)
-        val block = TestData.blockGeoMap("348711")
+        println(TreeTestData.blockGeoMap.size)
+        val block = TreeTestData.blockGeoMap("348711")
         "have a specific uri" in {
           block.uri should equal(Uri.parse(TREE.FEATURE_URI_PREFIX + ":" + "348711"))
         }
@@ -95,62 +95,62 @@ class TreeCsvTransformerSpec extends WordSpec with Matchers {
         }
 
         "be within a specific block" in {
-          val blockMap = TestData.blockMap
+          val blockMap = TreeTestData.blockMap
           blockMap(testTree.block.lastPart.toInt).id should equal(348711)
         }
 
         "be within a specific nta" in {
-          val ntaMap = TestData.ntaMap
+          val ntaMap = TreeTestData.ntaMap
           ntaMap(testTree.NTA.lastPart).nta should equal("QN17")
         }
 
         "be within a specific borough" in {
-          val boroughMap = TestData.boroughMap
+          val boroughMap = TreeTestData.boroughMap
           boroughMap(testTree.borough.lastPart.toInt).name should equal("Queens")
         }
 
         "be within a specific city" in {
-          val city = TestData.city
+          val city = TreeTestData.city
           city.name should equal("New York City")
         }
 
         "be within a specific state" in {
-          val state = TestData.state
+          val state = TreeTestData.state
           state.name should equal("New York")
         }
 
         "have a block that references specified NTA" in {
-          val blockMap = TestData.blockMap
+          val blockMap = TreeTestData.blockMap
           blockMap(testTree.block.lastPart.toInt).nta.toString should equal("urn:treedata:resource:NTA:QN17")
         }
 
         "have the block contained within specified NTA" in {
-          val ntaMap = TestData.ntaMap
+          val ntaMap = TreeTestData.ntaMap
           ntaMap(testTree.NTA.lastPart).blocks.contains(Uri.parse("urn:treedata:resource:block:348711"))
         }
 
         "have a nta that references specified borough" in {
-          val ntaMap = TestData.ntaMap
+          val ntaMap = TreeTestData.ntaMap
           ntaMap(testTree.NTA.lastPart).borough.toString should equal("urn:treedata:resource:borough:4")
         }
 
         "have the nta contained within specified borough" in {
-          val boroughMap = TestData.boroughMap
+          val boroughMap = TreeTestData.boroughMap
           boroughMap(testTree.borough.lastPart.toInt).ntaList.contains(Uri.parse("urn:treedata:resource:NTA:QN17"))
         }
 
         "have the borough that references specified city" in {
-          val boroughMap = TestData.boroughMap
+          val boroughMap = TreeTestData.boroughMap
           boroughMap(testTree.borough.lastPart.toInt).city.toString should equal("urn:treedata:resource:city:New_York_City")
         }
 
         "have a borough contained within specified city" in {
-          val city = TestData.city
+          val city = TreeTestData.city
           city.boroughs.contains(Uri.parse("urn:treedata:resource:borough:4"))
         }
 
         "have a city that references specified state" in {
-          val city = TestData.city
+          val city = TreeTestData.city
           city.state.toString should equal("urn:treedata:resource:state:New_York")
         }
 

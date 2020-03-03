@@ -1,24 +1,24 @@
 package stores
 
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.TestData
+import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksGeoStoreSpec extends WordSpec with Matchers {
   "Twks Store" can {
-    val currentGeometry = TestData.geometry
-    val currentUri = TestData.feature.uri
+    val currentGeometry = GeoTestData.geometry
+    val currentUri = GeoTestData.feature.uri
 
     "a valid URI" should {
       "return a valid feature" in {
         val feature = TestGeoStore.getFeatureByUri(currentUri)
-        feature should equal(TestData.feature)
+        feature should equal(GeoTestData.feature)
       }
     }
 
     "a valid geometry" should {
       "return a valid feature list" in {
         val featureList = TestGeoStore.getFeaturesContaining(currentGeometry)
-        featureList should equal(List(TestData.feature))
+        featureList should equal(List(GeoTestData.feature))
       }
     }
 

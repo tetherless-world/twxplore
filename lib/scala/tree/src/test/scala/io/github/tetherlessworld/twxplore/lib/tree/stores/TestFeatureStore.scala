@@ -2,15 +2,15 @@ package io.github.tetherlessworld.twxplore.lib.tree.stores
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.TreeTestData
 
 object TestFeatureStore extends FeatureStore {
-  override def getCityGeometry(city: City): Geometry = if (city != null && city == TestData.city) TestData.cityGeoMap("New York").geometry else null
+  override def getCityGeometry(city: City): Geometry = if (city != null && city == TreeTestData.city) TreeTestData.cityGeoMap("New York").geometry else null
 
   override def getBoroughGeometries(boroughs: List[Borough]): List[Geometry] = {
     boroughs.map(borough => {
-      if (borough != null && borough == TestData.boroughMap(borough.borocode))
-        TestData.boroughGeoMap(borough.name).geometry
+      if (borough != null && borough == TreeTestData.boroughMap(borough.borocode))
+        TreeTestData.boroughGeoMap(borough.name).geometry
     }).toList.asInstanceOf[List[Geometry]]
   }
 
@@ -20,8 +20,8 @@ object TestFeatureStore extends FeatureStore {
 
   override def getNtaGeometries(ntas: List[Nta]): List[Geometry] = {
     ntas.map(nta => {
-      if (nta != null && nta == TestData.ntaMap(nta.nta))
-        TestData.ntaGeoMap(nta.name).geometry
+      if (nta != null && nta == TreeTestData.ntaMap(nta.nta))
+        TreeTestData.ntaGeoMap(nta.name).geometry
     }).toList.asInstanceOf[List[Geometry]]
   }
 
@@ -29,8 +29,8 @@ object TestFeatureStore extends FeatureStore {
 
   override def getBlockGeometries(blocks: List[Block]): List[Geometry] = {
     blocks.map(block => {
-      if (block != null && block == TestData.blockMap(block.id))
-        TestData.blockGeoMap(block.id.toString).geometry
+      if (block != null && block == TreeTestData.blockMap(block.id))
+        TreeTestData.blockGeoMap(block.id.toString).geometry
     }).toList.asInstanceOf[List[Geometry]]
   }
 
@@ -50,7 +50,7 @@ object TestFeatureStore extends FeatureStore {
 
   override def getBlockFeature(blockUri: Uri): Feature = {
     if (blockUri != null) {
-      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+      Feature(TreeTestData.geometry, Uri.parse("http://example.com/geometry"))
     } else {
       null
     }
@@ -58,7 +58,7 @@ object TestFeatureStore extends FeatureStore {
 
   override def getNtaFeature(ntaUri: Uri): Feature = {
     if (ntaUri != null) {
-      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+      Feature(TreeTestData.geometry, Uri.parse("http://example.com/geometry"))
     } else {
       null
     }
@@ -66,7 +66,7 @@ object TestFeatureStore extends FeatureStore {
 
   override def getBoroughFeature(boroughUri: Uri): Feature = {
     if (boroughUri != null) {
-      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+      Feature(TreeTestData.geometry, Uri.parse("http://example.com/geometry"))
     } else {
       null
     }
@@ -74,7 +74,7 @@ object TestFeatureStore extends FeatureStore {
 
   override def getCityFeature(boroughUri: Uri): Feature = {
     if (boroughUri != null) {
-      Feature(TestData.geometry, Uri.parse("http://example.com/geometry"))
+      Feature(TreeTestData.geometry, Uri.parse("http://example.com/geometry"))
     } else {
       null
     }

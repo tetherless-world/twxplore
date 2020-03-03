@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
-import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.TreeTestData
 import org.apache.jena.rdf.model.{ModelFactory, Resource}
 import org.scalatest.{Matchers, WordSpec}
 
@@ -18,8 +18,8 @@ class TreeSpec extends WordSpec with Matchers {
   }
 
   "TreeSpec" can {
-    val testData = TestData
-    val tree = TestData.treeList.head
+    val testData = TreeTestData
+    val tree = TreeTestData.treeList.head
     val model = ModelFactory.createDefaultModel()
     val treeResourceOption = Option(Rdf.write[Tree](model, tree))
     "a valid tree write" should {
@@ -29,19 +29,19 @@ class TreeSpec extends WordSpec with Matchers {
       }
     }
 
-    val blockResource = Rdf.write[Block](model, TestData.blockMap(tree.block.lastPart.toInt))
-    val boroughResource = Rdf.write[Borough](model, TestData.boroughMap(tree.borough.lastPart.toInt))
-    val cityResource = Rdf.write[City](model, TestData.city)
-    val ntaResource = Rdf.write[Nta](model, TestData.ntaMap(tree.NTA.lastPart))
-    val postcodeResource = Rdf.write[Postcode](model, TestData.postalCode(tree.postcode.lastPart.toInt))
-    val stateResource = Rdf.write[State](model, TestData.state)
-    val cityFeatureResource = Rdf.write[Feature](model, TestData.cityGeoMap("New York"))
-    val boroughFeatureResource = Rdf.write[Feature](model, TestData.boroughGeoMap("Queens"))
-    val ntaFeatureResource = Rdf.write[Feature](model, TestData.ntaGeoMap("Forest Hills"))
-    val blockFeatureResource = Rdf.write[Feature](model, TestData.blockGeoMap("348711"))
+    val blockResource = Rdf.write[Block](model, TreeTestData.blockMap(tree.block.lastPart.toInt))
+    val boroughResource = Rdf.write[Borough](model, TreeTestData.boroughMap(tree.borough.lastPart.toInt))
+    val cityResource = Rdf.write[City](model, TreeTestData.city)
+    val ntaResource = Rdf.write[Nta](model, TreeTestData.ntaMap(tree.NTA.lastPart))
+    val postcodeResource = Rdf.write[Postcode](model, TreeTestData.postalCode(tree.postcode.lastPart.toInt))
+    val stateResource = Rdf.write[State](model, TreeTestData.state)
+    val cityFeatureResource = Rdf.write[Feature](model, TreeTestData.cityGeoMap("New York"))
+    val boroughFeatureResource = Rdf.write[Feature](model, TreeTestData.boroughGeoMap("Queens"))
+    val ntaFeatureResource = Rdf.write[Feature](model, TreeTestData.ntaGeoMap("Forest Hills"))
+    val blockFeatureResource = Rdf.write[Feature](model, TreeTestData.blockGeoMap("348711"))
 
 
-    val speciesResource = Rdf.write[TreeSpecies](model, TestData.treeSpeciesMap(tree.species.get.lastPart.replace("_", " ")))
+    val speciesResource = Rdf.write[TreeSpecies](model, TreeTestData.treeSpeciesMap(tree.species.get.lastPart.replace("_", " ")))
 
     val treeResource = treeResourceOption.get
 
@@ -82,11 +82,11 @@ class TreeSpec extends WordSpec with Matchers {
       }
 
       "point to specific city" in {
-        TestData.city.name should equal("New York City")
+        TreeTestData.city.name should equal("New York City")
       }
 
       "point to a specific state" in {
-        TestData.state.name should equal("New York")
+        TreeTestData.state.name should equal("New York")
       }
 
       "point to a specific borough" in {

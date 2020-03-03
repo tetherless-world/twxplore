@@ -1,6 +1,6 @@
 package models.graphql
 
-import io.github.tetherlessworld.twxplore.lib.tree.TestData
+import io.github.tetherlessworld.twxplore.lib.tree.TreeTestData
 import io.github.tetherlessworld.twxplore.lib.tree.stores.{TestFeatureStore, TestHierarchyStore, TestTreeStore}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
@@ -43,16 +43,16 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj("borough" -> Json.obj(
-        "borocode" -> TestData.boroughMap(1).borocode,
-        "name" -> TestData.boroughMap(1).name,
-        "city" -> TestData.boroughMap(1).city.toString,
-        "ntaList" -> TestData.boroughMap(1).ntaList.map(nta => nta.toString).toList,
-        "uri" -> TestData.boroughMap(1).uri.toString,
-        "feature" -> TestData.boroughMap(1).feature.toString
+        "borocode" -> TreeTestData.boroughMap(1).borocode,
+        "name" -> TreeTestData.boroughMap(1).name,
+        "city" -> TreeTestData.boroughMap(1).city.toString,
+        "ntaList" -> TreeTestData.boroughMap(1).ntaList.map(nta => nta.toString).toList,
+        "uri" -> TreeTestData.boroughMap(1).uri.toString,
+        "feature" -> TreeTestData.boroughMap(1).feature.toString
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"ntas":{"byBorough":[${TestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}}
+           |{"data":{"ntas":{"byBorough":[${TreeTestData.boroughMap(1).ntaList.map(nta => "{\"uri\":" + "\"" + nta + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -68,17 +68,17 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj("nta" -> Json.obj(
-        "nta" -> TestData.ntaMap("MN14").nta,
-        "name" -> TestData.ntaMap("MN14").name,
-        "blocks" -> TestData.ntaMap("MN14").blocks.map(block => block.toString).toList,
-        "borough" -> TestData.ntaMap("MN14").borough.toString,
-        "feature" -> TestData.ntaMap("MN14").feature.toString,
-        "postCode" -> TestData.ntaMap("MN14").postCode.toString,
-        "uri" -> TestData.ntaMap("MN14").uri.toString
+        "nta" -> TreeTestData.ntaMap("MN14").nta,
+        "name" -> TreeTestData.ntaMap("MN14").name,
+        "blocks" -> TreeTestData.ntaMap("MN14").blocks.map(block => block.toString).toList,
+        "borough" -> TreeTestData.ntaMap("MN14").borough.toString,
+        "feature" -> TreeTestData.ntaMap("MN14").feature.toString,
+        "postCode" -> TreeTestData.ntaMap("MN14").postCode.toString,
+        "uri" -> TreeTestData.ntaMap("MN14").uri.toString
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"blocks":{"byNta":[${TestData.ntaMap("MN14").blocks.map(block => "{\"uri\":" + "\"" + block + "\"").mkString("},")}}]}}}
+           |{"data":{"blocks":{"byNta":[${TreeTestData.ntaMap("MN14").blocks.map(block => "{\"uri\":" + "\"" + block + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -94,16 +94,16 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj("city" -> Json.obj(
-        "name" -> TestData.city.name,
-        "boroughs" -> TestData.city.boroughs.map(borough => borough.toString).toList,
-        "postcodes" -> TestData.city.postcodes.map(postcode => postcode.toString).toList,
-        "state" -> TestData.city.state.toString,
-        "feature" -> TestData.city.feature.toString,
-        "uri" -> TestData.city.uri.toString,
+        "name" -> TreeTestData.city.name,
+        "boroughs" -> TreeTestData.city.boroughs.map(borough => borough.toString).toList,
+        "postcodes" -> TreeTestData.city.postcodes.map(postcode => postcode.toString).toList,
+        "state" -> TreeTestData.city.state.toString,
+        "feature" -> TreeTestData.city.feature.toString,
+        "uri" -> TreeTestData.city.uri.toString,
       )))
       result must be(Json.parse(
         s"""
-           |{"data":{"boroughs":{"byCity":[${TestData.city.boroughs.map(borough => "{\"uri\":" + "\"" + borough + "\"").mkString("},")}}]}}}
+           |{"data":{"boroughs":{"byCity":[${TreeTestData.city.boroughs.map(borough => "{\"uri\":" + "\"" + borough + "\"").mkString("},")}}]}}}
            |""".stripMargin
       ))
     }
@@ -119,7 +119,7 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj(
-        "cityUri" -> TestData.city.uri.toString,
+        "cityUri" -> TreeTestData.city.uri.toString,
       ))
       result must be(Json.parse(
         s"""
@@ -139,7 +139,7 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj(
-        "boroughUri" -> TestData.boroughMap(1).uri.toString,
+        "boroughUri" -> TreeTestData.boroughMap(1).uri.toString,
       ))
       result must be(Json.parse(
         s"""
@@ -159,7 +159,7 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj(
-        "ntaUri" -> TestData.ntaMap("MN14").uri.toString
+        "ntaUri" -> TreeTestData.ntaMap("MN14").uri.toString
       ))
       result must be(Json.parse(
         s"""
@@ -179,7 +179,7 @@ class TreeGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
         """
       val result = executeQuery(query, vars = Json.obj(
-        "blockUri" -> TestData.blockMap(348711).uri.toString,
+        "blockUri" -> TreeTestData.blockMap(348711).uri.toString,
       ))
       result must be(Json.parse(
         s"""
