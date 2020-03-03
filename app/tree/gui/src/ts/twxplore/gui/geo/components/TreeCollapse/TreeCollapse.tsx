@@ -7,7 +7,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {TreesQuery_trees} from 'twxplore/gui/geo/api/queries/types/TreesQuery'
+import { TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery';
 
 
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-export const TreeCollapse: React.FunctionComponent<{features: TreesQuery_trees, callSetMode: Function}> = ({features, callSetMode}) => {
+export const TreeCollapse: React.FunctionComponent<{features: TreeMapQuery_TreesBySelection_trees}> = ({features}) => {
     const classes = useStyles();
     
     return (
@@ -43,11 +43,11 @@ export const TreeCollapse: React.FunctionComponent<{features: TreesQuery_trees, 
                 <ExpansionPanelDetails>
                     <ListGroup className = 'eachFeature'>
                       
-
+                        
                         {Object.keys(features).map(key =>{ 
-                          const onClick = (e) => { e.preventDefault(); callSetMode(key);}
-                          return (String(features[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {features[key]} </ListGroupItem> :
-                          <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {features[key]} </a> </ListGroupItem>)
+                          const onClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { e.preventDefault();}
+                          return (String((features as any)[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {(features as any)[key]} </ListGroupItem> :
+                          <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {(features as any)[key]} </a> </ListGroupItem>)
                           
                       })}
                     </ListGroup>

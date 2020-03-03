@@ -32,11 +32,11 @@ enum Mode{
 
 export const PanelParent: React.FunctionComponent<{}> = ({}) => {
     const classes = useStyles();
-
+/*
     const callSetMode = (newMode: string) => {
         setMode(newMode)
     }
-
+*/
     const backArrowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         setMode(Mode.home)
     }
@@ -50,7 +50,7 @@ export const PanelParent: React.FunctionComponent<{}> = ({}) => {
             <IconButton onClick = {backArrowClick} disabled = {mode === Mode.home}>
                 <ArrowBackIcon className = {(mode === Mode.home ? classes.arrow_disabled : classes.arrow)} />
             </IconButton>
-            { mode === Mode.home && <TreesList callSetMode = {callSetMode} />}
+            { mode === Mode.home && <TreesList />}
             { mode === Mode.borough && <BoroughList/>}
             { mode === Mode.city && <CityList/>}
             { mode === Mode.species && <SpeciesList/>}
