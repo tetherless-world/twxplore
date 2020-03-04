@@ -1,8 +1,8 @@
 import {RouterState} from "react-router-redux";
-import {AppState} from "twxplore/gui/geo/reducers/AppState";
+import {AppState} from "twxplore/gui/geo/states/app/AppState";
 
 export interface RootState {
-    keplerGl: any
     app: AppState
+    keplerGl: any
     routing: RouterState
 }
