@@ -36,13 +36,16 @@ const MapImpl: React.FunctionComponent = () => {
 
     if (state.features.length === 0) {
         // No tracking any features yet, add the boroughs we loaded
-        dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
-            childType: MapFeatureType.NTA,
-            geometry: boroughFeature.geometry,
-            state: MapFeatureState.LOADED,
-            type: MapFeatureType.BOROUGH,
-            uri: boroughFeature.uri
-        }))));
+        
+            dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
+                childType: MapFeatureType.NTA,
+                geometry: boroughFeature.geometry,
+                state: MapFeatureState.LOADED,
+                type: MapFeatureType.BOROUGH,
+                uri: boroughFeature.uri
+                }))))
+        
+
         return <ReactLoader loaded={false}/>;
     }
 
@@ -78,8 +81,10 @@ const MapImpl: React.FunctionComponent = () => {
                     //     id: "data"
                     // }
                 }
+                React.useEffect(() => {
+                    dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
+                }, )
                 
-                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
                 break;
             }
         }
