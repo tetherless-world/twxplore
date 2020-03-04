@@ -1,6 +1,7 @@
 import {MapState} from "twxplore/gui/geo/reducers/MapState";
+import {BaseAction} from "redux-actions";
 
-export const mapReducer = (state: MapState, action: AppAction): MapState => {
+export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state)
   // switch (action.type) {
   //   case APPEND_MAP : {
