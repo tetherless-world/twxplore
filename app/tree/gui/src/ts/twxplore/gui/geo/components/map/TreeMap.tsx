@@ -7,7 +7,6 @@ import {addDataToMap} from 'kepler.gl/actions';
 import Processors from 'kepler.gl/processors';
 import ReactResizeDetector from 'react-resize-detector';
 import * as blckQuery from "twxplore/gui/geo/api/queries/BlocksByNtaQuery.graphql";
-import * as blckHrchyQuery from "twxplore/gui/geo/api/queries/SelectionHierarchyQuery.graphql";
 import * as brghQuery from "twxplore/gui/geo/api/queries/BoroughGeometriesQuery.graphql";
 import * as ntaQuery from "twxplore/gui/geo/api/queries/NtasByBoroughQuery.graphql";
 import * as rsltQuery from "twxplore/gui/geo/api/queries/TreeMapQuery.graphql";
@@ -33,48 +32,12 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
   const counter:any = useSelector(state => state);
   const dispatch = useDispatch();
   
-  /* 
-    Apollo query that grabs all borough geometries in database. 
-    It is run immediately after the component is rendered 
-  */
+  //const blockQuery = useQuery<BlocksQuery, BlocksQuery_getBlockGeometries>(blckQuery, {});
   const boroughQuery = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(brghQuery, {});
   
-
-  /* 
-    Apollo query that grabs all the NTAs (Neighborhood Tract Areas ie. 
-    Lincoln Square, Manahattanville, Clinton Park) based off a specific borough area 
-    which the user selects (ie. Manahattan)
-  */
-  const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery)
-  
-
-  /* 
-    Apollo query that grabs all the blockfaces (streets in the map represented by 6 digit IDs) 
-    based off a specific NTA area which the user selects (ie. Lincoln Square)
-  */
+  const [getNtasByBoroughUri, NTAQuery] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntaQuery);
   const [getBlocksByNtaUri, BlockQuery] = useLazyQuery<BlocksByNtaQuery, BlocksByNtaQueryVariables>(blckQuery);
-
-
-  /* 
-    EFFECTS: Apollo query that grabs all trees in a given blockface, as well as all associated information
-    to those trees. 
-    PARAMS: It takes in a list of blockface uris, NTA uris, excluded blockface uris, 
-    and excluded NTA uris.
-    RETURNS: A tree selection object, which includes:
-      - A list of tree objects
-      - the city object
-      - the state object
-      - A list of borough objects
-      - A list of NTA objects
-      - A list of blockface objects
-      - A list of Zipcity objects
-      - A list of species objects
-      - A list of postalcode objects
-      - A list of census tract objects
-        ../../api/queries/types/TreeMapQuery (for more info)
-  */
   const [getResult, ResultQuery] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(rsltQuery);
-
   
   /*
     EFFECTS: Apollo query that grabs the selection hiearchy of a given blockface 
@@ -113,10 +76,11 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
       "type": "FeatureCollection",
       "features": trees
     }
+    //console.log(featureData)
     const dataset = {
       data: Processors.processGeojson(featureData),
       info: {
-        id: "tree:" + id.toString()
+        id: "tree"
       }
     }
     dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
@@ -137,7 +101,6 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
   const addGeometryData = async (dataQuery:geometryData[], id: String, type: String, child: String) => {
     
     const features = dataQuery.map(feature => {
-      console.log(feature)
       return {
         "type": "Feature",
         "geometry": wkt.parse(feature.geometry.wkt),
@@ -149,6 +112,7 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
         }
       }
     })
+    console.log(features)
     const featuredata = {
       "type": "FeatureCollection",
       "features": features
@@ -157,32 +121,12 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
     const dataset = {
       data: Processors.processGeojson(featuredata),
       info: {
-        label: id.toString(),
-        id: type + id.toString(),
-      },
-    }
-    //setFeature(dataset)
-    dispatch(addDataToMap({ 
-      datasets: dataset, 
-      options: {centerMap: true, readOnly: true, keepExistingConfig: false},
-      config: {
-        visState: {
-          layers: [{
-            'type': 'multipolygon',
-            'config': {
-              dataId: type + id.toString(),
-              isVisible: false,
-              visConfig: {
-                opacity: 0
-              }
-            }
-          }]
-        }
+        id: type
       }
-    }))
+    }
+    dispatch(addDataToMap({ datasets: dataset, options: {centerMap: true, readOnly: true}}))
   }
 
-  /* Mutex state on borough.. determining whether or not the borough should be rendered */
   const [boroughRendered, setBoroughRender] = useState<Boolean>(false)
 
   /*  
@@ -291,21 +235,24 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
               setRenderState(false)
             }
           }
-          break;
         }
-        case "tree": {
-          if(!(counter.app.blockMap.has(counter.app.parentUri))){
-            if(counter.app.blockMap.size > 0 && !rendering && !hierarchyRendering){
-              ResultQuery.refetch({selectionInput: {includeBlocks: [counter.app.parentUri], includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}})
-              BlockHierarchyQuery.refetch({uri: counter.app.parentUri})
-              setRenderState(true)
-              setHierarchyRenderState(true)
-            }else if(!rendering && !hierarchyRendering){ 
-              getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
-              getBlockHierarchy({"variables": {uri: counter.app.parentUri}})
-              setRenderState(true)
-              setHierarchyRenderState(true)
-            }
+        break;
+      }
+      case "block": {
+        if(!(counter.app.ntaMap.has(counter.app.parentUri)) ){
+          //console.log("block")
+          getBlocksByNtaUri({"variables": {uri: counter.app.parentUri}})
+          if(BlockQuery.data){
+            addGeometryData(BlockQuery.data!.blocks.byNtaGeometry, "block", "tree")
+            dispatch({
+              type: 'appendToMap', 
+              map: 'ntaMap',
+              uri: counter.app.parentUri
+            })
+            dispatch({
+              type: 'infoPanelInfo', 
+
+            })
             
             if(ResultQuery.data && (previousState.tree !== ResultQuery.data!.TreesBySelection.trees[0].uri || previousState.tree === "") ){
               addTreeData(ResultQuery.data!.TreesBySelection.trees, counter.app.parentUri)
@@ -337,12 +284,24 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
             }
           }
         }
-        default : {
+        break;
+      }
+      case "tree": {
+        if(!(counter.app.blockMap.has(counter.app.parentUri))){
+          getResult({"variables": {selectionInput: {includeBlocks: counter.app.blocks, includeNtaList: counter.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
+          if(ResultQuery.data){
+            addTreeData(ResultQuery.data!.TreesBySelection.trees)
+            dispatch(sendAppendMap('blockMap',counter.app.parentUri))
+            dispatch(sendSelectionData(ResultQuery.data!.TreesBySelection))
+            console.log(ResultQuery)
+          }
         }
       }
+      default : {
+      }
     }
-
-  /* intial loading bar for borough query */
+  })  
+  
   if (boroughQuery.error) {
     return <FatalErrorModal exception={new ApolloException(boroughQuery.error)}/>;
   } else if (boroughQuery.loading) {
