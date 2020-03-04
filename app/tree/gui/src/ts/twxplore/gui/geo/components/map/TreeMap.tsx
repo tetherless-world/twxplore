@@ -201,7 +201,7 @@ const TreesMapImp: React.FunctionComponent = () => {
   //               ...componentState,
   //               nta: NTAQuery.data!.ntas.byBoroughGeometry[0].uri
   //             })
-  //             dispatch(sendAppendMap('boroughMap', reduxRootState.app.parentUri))
+  //             dispatch(appendMap('boroughMap', reduxRootState.app.parentUri))
   //             setRenderState(false)
   //             addFeatures(NTAQuery.data!.ntas.byBoroughGeometry, reduxRootState.app.parentUri, "NTA", "block")
   //           }
@@ -225,7 +225,7 @@ const TreesMapImp: React.FunctionComponent = () => {
   //               ...componentState,
   //               block: BlockQuery.data!.blocks.byNtaGeometry[0].uri
   //             })
-  //             dispatch(sendAppendMap('ntaMap', reduxRootState.app.parentUri))
+  //             dispatch(appendMap('ntaMap', reduxRootState.app.parentUri))
   //             dispatch({
   //               type: 'infoPanelInfo',
   //
@@ -263,7 +263,7 @@ const TreesMapImp: React.FunctionComponent = () => {
   //     //           map: 'blockMap',
   //     //           uri: reduxRootState.app.parentUri
   //     //         })
-  //     //         dispatch(sendAppendMap('blockMap',reduxRootState.app.parentUri))
+  //     //         dispatch(appendMap('blockMap',reduxRootState.app.parentUri))
   //     //         dispatch(sendSelectionData(ResultQuery.data!.TreesBySelection))
   //     //         setRenderState(false)
   //     //       }
@@ -289,7 +289,7 @@ const TreesMapImp: React.FunctionComponent = () => {
   //     //     getResult({"variables": {selectionInput: {includeBlocks: reduxRootState.app.blocks, includeNtaList: reduxRootState.app.NTAs, excludeBlocks: [], excludeNtaList: []}}})
   //     //     if(ResultQuery.data){
   //     //       addTrees(ResultQuery.data!.TreesBySelection.trees)
-  //     //       dispatch(sendAppendMap('blockMap',reduxRootState.app.parentUri))
+  //     //       dispatch(appendMap('blockMap',reduxRootState.app.parentUri))
   //     //       dispatch(sendSelectionData(ResultQuery.data!.TreesBySelection))
   //     //       console.log(ResultQuery)
   //     //     }
