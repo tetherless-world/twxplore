@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useState, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
 import {Frame} from "twxplore/gui/geo/components/frame/Frame";
 import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
 import KeplerGl from 'kepler.gl'
@@ -17,14 +16,14 @@ import {ApolloException, FatalErrorModal} from "@tetherless-world/twxplore-base-
 import * as ReactLoader from "react-loader";
 import { BlocksByNtaQuery, BlocksByNtaQueryVariables } from '../../api/queries/types/BlocksByNtaQuery';
 import { SelectionHierarchyQuery, SelectionHierarchyQueryVariables } from  '../../api/queries/types/SelectionHierarchyQuery';
-import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
-import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
+//import { BoroughsQuery, BoroughsQuery_boroughs_geometries } from '../../api/queries/types/BoroughsQuery'
+//import { NtasByBoroughQuery, NtasByBoroughQueryVariables } from '../../api/queries/types/NtasByBoroughQuery'
 import { BoroughsQuery, BoroughsQuery_boroughs_geometries} from '../../api/queries/types/BoroughsQuery'
 import { NtasByBoroughQuery, NtasByBoroughQueryVariables, NtasByBoroughQuery_ntas_byBoroughGeometry } from '../../api/queries/types/NtasByBoroughQuery'
 import { BlocksByNtaQuery_blocks_byNtaGeometry} from '../../api/queries/types/BlocksByNtaQuery'
 import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery'
 import {sendSelectionData, sendAppendMap} from 'twxplore/gui/geo/actions/Actions'
-import { connect } from 'react-redux'
+import { connect, useSelector, useDispatch } from 'react-redux'
 
 
 var wkt = require('terraformer-wkt-parser');
