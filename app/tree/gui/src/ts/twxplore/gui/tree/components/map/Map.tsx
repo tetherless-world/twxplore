@@ -17,6 +17,7 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
 import {Frame} from "twxplore/gui/tree/components/frame/Frame";
+import { changeFeatureState } from "../../actions/map/ChangeFeatureStateAction";
 
 var wkt = require('terraformer-wkt-parser');
 
@@ -79,7 +80,11 @@ const MapImpl: React.FunctionComponent = () => {
                     //     id: "data"
                     // }
                 }
-                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}));
+                
+                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
+                featuresInState.map(feature => {
+                    dispatch(changeFeatureState(feature.uri, feature.state))
+                    })
                 break;
             }
         }
