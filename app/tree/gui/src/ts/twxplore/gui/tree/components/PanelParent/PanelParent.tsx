@@ -1,7 +1,7 @@
 import * as React from "react";
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import {TreesList} from "twxplore/gui/tree/components/trees/TreesList";
+// import {TreesList} from "twxplore/gui/tree/components/trees/TreesList";
 import {BoroughList} from "../BoroughList/BoroughList";
 import {CityList} from "../CityList/CityList";
 import SpeciesList from "../SpeciesList/SpeciesList";
@@ -50,8 +50,8 @@ export const PanelParent: React.FunctionComponent<{}> = ({}) => {
             <IconButton onClick = {backArrowClick} disabled = {mode === Mode.home}>
                 <ArrowBackIcon className = {(mode === Mode.home ? classes.arrow_disabled : classes.arrow)} />
             </IconButton>
-            { mode === Mode.home && <TreesList />}
-            { mode === Mode.borough && <BoroughList/>}
+            {/*{ mode === Mode.home && <TreesList />}*/}
+            {mode === Mode.borough && <BoroughList/>}
             { mode === Mode.city && <CityList/>}
             { mode === Mode.species && <SpeciesList/>}
         </div>

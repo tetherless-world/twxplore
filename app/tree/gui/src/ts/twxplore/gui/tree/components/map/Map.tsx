@@ -11,7 +11,8 @@ import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction
 import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
 import {MapFeatureType} from "twxplore/gui/tree/states/map/MapFeatureType";
 import {MapFeature} from "twxplore/gui/tree/states/map/MapFeature";
-import Processors, {addDataToMap} from "kepler.gl/*";
+import {addDataToMap} from 'kepler.gl/actions';
+import Processors from 'kepler.gl/processors';
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
