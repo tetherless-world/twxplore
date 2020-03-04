@@ -18,29 +18,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {createStore, applyMiddleware, compose} from 'redux';
+import {applyMiddleware, compose, createStore} from 'redux';
 
 import window from 'global/window';
 import {taskMiddleware} from 'react-palm/tasks';
 import {routerMiddleware} from 'react-router-redux';
-import composedReducer from './reducers/reducerActions';
 import createHistory from 'history/createBrowserHistory'
+import {reducers} from 'twxplore/gui/geo/reducers/reducers'
+import {initialRootState} from "twxplore/gui/geo/reducers/initialRootState";
 
 const history = createHistory()
+
 export const middlewares = [
-  taskMiddleware,
-  routerMiddleware(history)
+    taskMiddleware,
+    routerMiddleware(history)
 ];
 
 export const enhancers = [applyMiddleware(...middlewares)];
 
-const initialState = {};
+//const initialState = {};
 
 // add redux devtools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export default createStore(
-  composedReducer,
-  initialState,
-  composeEnhancers(...enhancers)
+export default createStore<any,any,any,any>(
+    reducers,
+    initialRootState,
+    composeEnhancers(...enhancers)
 );

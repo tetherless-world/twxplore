@@ -1,32 +1,36 @@
 import * as React from "react";
-import * as query from "twxplore/gui/geo/api/queries/TreesQuery.graphql";
-import {useQuery} from '@apollo/react-hooks'
-import {ApolloException, FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
-import * as ReactLoader from "react-loader";
-import {TreesQuery, TreesQuery_trees} from "twxplore/gui/geo/api/queries/types/TreesQuery";
-import { TreeCollapse } from "../TreeCollapse/TreeCollapse";
+import {TreeCollapse} from "../TreeCollapse/TreeCollapse";
+import {connect} from 'react-redux'
+import {RootState} from "twxplore/gui/geo/reducers/RootState";
 
 
-
-type TreeListProps = {
+/*
+interface TreeListProps  {
     callSetMode:Function
   }
 
-export const TreesList: React.FunctionComponent<TreeListProps> = ({callSetMode}) => {
-    const {loading, data, error} = useQuery<TreesQuery, TreesQuery_trees>(query, {});
+interface ReduxProps {
+    trees: ResultsQuery_getTreesBySelection_trees[]
+}
+*/
+//type ComponentProps = TreeListProps & ReduxProps
+const mapStateToProps = (state: RootState) => (
+    {
+     trees: state.app.selectionData!.trees,
+   }
+)
 
-    if (error) {
-        return <FatalErrorModal exception={new ApolloException(error)}/>;
-    } else if (loading) {
-        return <ReactLoader loaded={false}/>;
-    }
-
+type Props = ReturnType<typeof mapStateToProps>
+const TreesListImpl: React.FunctionComponent <Props> = ({trees}) => {
     return (
         <div>
-            {data!.trees.map(feature =>
-                <TreeCollapse features = {feature} callSetMode = {callSetMode}/>
+            {trees!.map(feature =>
+                <TreeCollapse features = {feature}/>
             )}
         </div>
     );
 }
 
+
+
+export const TreesList = connect(mapStateToProps)(TreesListImpl)
