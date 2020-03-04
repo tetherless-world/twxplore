@@ -1,5 +1,5 @@
-import {initialAppState} from "twxplore/gui/geo/reducers/initialAppState";
-import {RootState} from "twxplore/gui/geo/reducers/RootState";
+import {RootState} from "twxplore/gui/geo/states/root/RootState";
+import {initialAppState} from "twxplore/gui/geo/states/app/initialAppState";
 
 export const initialRootState: RootState = {
     keplerGl: {},

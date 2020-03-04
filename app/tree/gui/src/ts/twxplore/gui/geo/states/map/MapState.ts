@@ -1,4 +1,4 @@
-import {MapFeature} from "twxplore/gui/geo/components/map/MapFeature";
+import {MapFeature} from "twxplore/gui/geo/states/map/MapFeature";
 
 export interface MapState {
     features: MapFeature[];
