@@ -206,14 +206,15 @@ const TreesMapImp: React.FunctionComponent<{}> = () => {
     nta: "",
     block: "",
     tree: "",
-    hierarchy: ""
+    hierarchy: "",
   })
-  
+
 
   useEffect(()=> {
     /* Acts as the controller for the map, executing queries and displaying geometries*/
-    mapRender()
+    mapRender(),[]
   })
+
 
     const mapRender = async () => {
       /* 

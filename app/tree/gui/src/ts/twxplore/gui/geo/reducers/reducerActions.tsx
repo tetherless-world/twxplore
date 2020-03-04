@@ -25,7 +25,9 @@ export const composedReducer = (state: APP_STATE, action: Action_Types) => {
       return result;
     }
     case ActionTypes.LAYER_CLICK: {
+      console.log("This case opened")
       const layerClickAction = action as any;
+      console.log(layerClickAction)
       if (layerClickAction.payload.info.picked) {
         return result;
       }
