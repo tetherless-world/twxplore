@@ -24,11 +24,13 @@ import { NtasByBoroughQuery, NtasByBoroughQueryVariables, NtasByBoroughQuery_nta
 import { BlocksByNtaQuery_blocks_byNtaGeometry} from '../../api/queries/types/BlocksByNtaQuery'
 import { TreeMapQuery, TreeMapQueryVariables, TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery'
 import {sendSelectionData, sendAppendMap} from 'twxplore/gui/geo/actions/Actions'
+import { connect } from 'react-redux'
+
 
 var wkt = require('terraformer-wkt-parser');
 const MAPBOX_TOKEN = "pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
 
-export const TreeMap: React.FunctionComponent<{}> = () => {
+const TreesMapImp: React.FunctionComponent<{}> = () => {
   const counter:any = useSelector(state => state);
   const dispatch = useDispatch();
   
@@ -257,11 +259,7 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
                 ...previousState,
                 nta: NTAQuery.data!.ntas.byBoroughGeometry[0].uri
               })
-              dispatch({
-                type: 'appendToMap', 
-                map: 'boroughMap',
-                uri: counter.app.parentUri
-              })
+              dispatch(sendAppendMap('boroughMap', counter.app.parentUri))
               setRenderState(false)
               addGeometryData(NTAQuery.data!.ntas.byBoroughGeometry, counter.app.parentUri, "NTA", "block")
             }
@@ -285,10 +283,10 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
                 ...previousState,
                 block: BlockQuery.data!.blocks.byNtaGeometry[0].uri
               })
+              dispatch(sendAppendMap('ntaMap', counter.app.parentUri))
               dispatch({
-                type: 'appendToMap', 
-                map: 'ntaMap',
-                uri: counter.app.parentUri
+                type: 'infoPanelInfo', 
+  
               })
               setRenderState(false)
             }
@@ -377,3 +375,5 @@ export const TreeMap: React.FunctionComponent<{}> = () => {
     </div>
   );
 }
+
+export const TreeMap = connect()(TreesMapImp)
