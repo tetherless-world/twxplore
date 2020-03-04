@@ -6,8 +6,8 @@ import {AppAction} from "twxplore/gui/geo/actions/AppAction";
 
 //type Action = selectionDataAction | AppendToMap
 
-export const appReducer = (state: AppState, action: AppAction) => {
-  const result = Object.assign({}, state)
+export const appReducer = (state: AppState, action: AppAction): AppState => {
+  const result: AppState = Object.assign({}, state)
   switch (action.type) {
     case APPEND_MAP : {
       const appendMapAction = action as AppendMapAction;
