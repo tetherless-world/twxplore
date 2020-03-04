@@ -37,6 +37,8 @@ import {
 } from '../../api/queries/types/TreeMapQuery'
 import {connect, useDispatch, useSelector} from 'react-redux'
 import {RootState} from "twxplore/gui/geo/reducers/RootState";
+import {GeoJsonFeatureProperties} from "twxplore/gui/geo/components/map/GeoJsonFeatureProperties";
+import {MapFeatureType} from "twxplore/gui/geo/components/map/MapFeatureType";
 
 
 var wkt = require('terraformer-wkt-parser');
@@ -83,20 +85,21 @@ const TreesMapImp: React.FunctionComponent = () => {
       - type: indicates the area type (borough, NTA, block, or tree)
     RETURN: void
   */
-  const addFeatures = (features: (BoroughsQuery_boroughs_geometries | NtasByBoroughQuery_ntas_byBoroughGeometry | BlocksByNtaQuery_blocks_byNtaGeometry)[], type: String, child: String) => {
+  const addFeatures = (features: (BoroughsQuery_boroughs_geometries | NtasByBoroughQuery_ntas_byBoroughGeometry | BlocksByNtaQuery_blocks_byNtaGeometry)[], type: MapFeatureType, childType: MapFeatureType) => {
     const datasets = {
       data: Processors.processGeojson({
         "type": "FeatureCollection",
         "features": features.map(feature => {
+          const properties: GeoJsonFeatureProperties = {
+            childType,
+            label: feature.geometry.label,
+            type,
+            uri: feature.uri
+          };
           return {
             "type": "Feature",
             "geometry": wkt.parse(feature.geometry.wkt),
-            "properties": {
-              "uri": feature.uri,
-              "label": feature.geometry.label,
-              type,
-              child
-            }
+            properties
           }
         })
       }),
@@ -108,20 +111,20 @@ const TreesMapImp: React.FunctionComponent = () => {
   }
 
   const addTrees = (trees: TreeMapQuery_TreesBySelection_trees[]) => {
+
     const datasets = {
       data: Processors.processGeojson({
         "type": "FeatureCollection",
         "features": trees.map(tree => {
           const point = "POINT (" + tree.longitude + " " + tree.latitude + ")"
+          const properties: GeoJsonFeatureProperties = {
+            type: MapFeatureType.TREE,
+            uri: tree.uri
+          };
           return {
             "type": "Feature",
             "geometry": wkt.parse(point),
-            "properties": {
-              uri: tree.uri,
-              type: "tree",
-              child: null
-            }
-          }
+            "properties": properties
         })
       }),
       info: {
