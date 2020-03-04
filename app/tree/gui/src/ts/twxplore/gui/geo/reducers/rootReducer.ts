@@ -23,7 +23,7 @@ import {routerReducer} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
 import {appReducer} from "twxplore/gui/geo/reducers/appReducer";
 
-export const reducers = combineReducers({
+export const rootReducer = combineReducers({
   app: appReducer,
   keplerGl: keplerGlReducer,
   routing: routerReducer

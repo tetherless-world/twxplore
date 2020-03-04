@@ -24,7 +24,7 @@ import window from 'global/window';
 import {taskMiddleware} from 'react-palm/tasks';
 import {routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory'
-import {reducers} from 'twxplore/gui/geo/reducers/reducers'
+import {rootReducer} from 'twxplore/gui/geo/reducers/reducers'
 import {initialRootState} from "twxplore/gui/geo/reducers/initialRootState";
 
 const history = createHistory()
@@ -42,7 +42,7 @@ export const enhancers = [applyMiddleware(...middlewares)];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default createStore<any,any,any,any>(
-    reducers,
+    rootReducer,
     initialRootState,
     composeEnhancers(...enhancers)
 );
