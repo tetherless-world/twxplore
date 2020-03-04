@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {applyMiddleware, compose, createStore} from 'redux';
+import {applyMiddleware, createStore} from 'redux';
 
 import window from 'global/window';
 import {taskMiddleware} from 'react-palm/tasks';
@@ -39,10 +39,11 @@ export const enhancers = [applyMiddleware(...middlewares)];
 //const initialState = {};
 
 // add redux devtools
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default createStore<any,any,any,any>(
     rootReducer,
     initialRootState,
-    composeEnhancers(...enhancers)
+    // composeEnhancers(...enhancers)
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

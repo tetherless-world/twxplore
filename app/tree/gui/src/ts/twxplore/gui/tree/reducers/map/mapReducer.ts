@@ -1,6 +1,8 @@
 import {BaseAction} from "redux-actions";
 import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
+import {MapFeature} from "twxplore/gui/tree/states/map/MapFeature";
+import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -12,6 +14,20 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         result.features.push(feature);
       }
       break;
+    }
+    case "@@kepler.gl/ADD_DATA_TO_MAP":
+      const addDataToMapAction: any = action;
+      for (const row of addDataToMapAction.payload.datasets.data.rows) {
+        const addedFeature: MapFeature = row[0].properties;
+        for (const resultFeature of result.features) {
+          if (resultFeature.uri === addedFeature.uri) {
+            resultFeature.state = MapFeatureState.RENDERED;
+          }
+        }
+      }
+      break;
+    default: {
+      console.debug("mapReducer: ignoring action type " + action.type);
     }
   }
 

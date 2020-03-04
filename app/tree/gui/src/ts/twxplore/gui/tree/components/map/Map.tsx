@@ -71,12 +71,12 @@ const MapImpl: React.FunctionComponent = () => {
                             return {
                                 "type": "Feature",
                                 "geometry": wkt.parse(feature.geometry.wkt),
-                                "internal": feature
+                                "properties": feature
                             }
                         })
                     }),
                     // info: {
-                    //     id: type
+                    //     id: "data"
                     // }
                 }
                 dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}));
