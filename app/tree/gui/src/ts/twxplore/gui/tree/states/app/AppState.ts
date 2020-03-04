@@ -1,4 +1,4 @@
-import {MapState} from "twxplore/gui/geo/states/map/MapState";
+import {MapState} from "twxplore/gui/tree/states/map/MapState";
 
 export interface AppState {
     map: MapState

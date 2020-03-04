@@ -1,4 +1,4 @@
-import {Frame} from 'twxplore/gui/geo/components/frame/Frame';
+import {Frame} from 'twxplore/gui/tree/components/frame/Frame';
 import * as React from 'react';
 import {RouteComponentProps} from 'react-router';
 

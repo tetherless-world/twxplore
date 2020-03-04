@@ -1,6 +1,6 @@
 import {BaseAction} from "redux-actions";
-import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/geo/actions/map/AddMapFeaturesAction";
-import {MapState} from "twxplore/gui/geo/states/map/MapState";
+import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
+import {MapState} from "twxplore/gui/tree/states/map/MapState";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);

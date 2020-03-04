@@ -24,8 +24,8 @@ import window from 'global/window';
 import {taskMiddleware} from 'react-palm/tasks';
 import {routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory'
-import {rootReducer} from 'twxplore/gui/geo/reducers/reducers'
-import {initialRootState} from "twxplore/gui/geo/reducers/initialRootState";
+import {rootReducer} from 'twxplore/gui/tree/reducers/reducers'
+import {initialRootState} from "twxplore/gui/tree/reducers/initialRootState";
 
 const history = createHistory()
 

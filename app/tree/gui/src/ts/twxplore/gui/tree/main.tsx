@@ -1,11 +1,11 @@
-import 'twxplore/gui/geo/custom_bootstrap.scss';
-import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
+import 'twxplore/gui/tree/custom_bootstrap.scss';
+import {apolloClient} from "twxplore/gui/tree/api/apolloClient";
 import {createBrowserHistory} from 'history';
-import {NoRoute} from 'twxplore/gui/geo/components/error/NoRoute';
-import {Home} from 'twxplore/gui/geo/components/home/Home';
-import {DoNotUseTreeMap} from 'twxplore/gui/geo/components/map/TreeMap'
-import {SelectionHome} from 'twxplore/gui/geo/components/SelectionHome/SelectionHome'
-import {Hrefs} from 'twxplore/gui/geo/Hrefs';
+import {NoRoute} from 'twxplore/gui/tree/components/error/NoRoute';
+import {Home} from 'twxplore/gui/tree/components/home/Home';
+import {SelectionHome} from 'twxplore/gui/tree/components/SelectionHome/SelectionHome'
+import {Hrefs} from 'twxplore/gui/tree/Hrefs';
+import {Map} from 'twxplore/gui/tree/components/map/Map';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {ApolloProvider} from "react-apollo";
@@ -28,7 +28,7 @@ ReactDOM.render(
           <Router history={browserHistory}>
               <Switch>
                   <Route exact path={Hrefs.home} component={Home}/>
-                  <Route exact path={Hrefs.map} component={DoNotUseTreeMap}/>
+                  <Route exact path={Hrefs.map} component={Map}/>
                   <Route exact path={Hrefs.selection} component={SelectionHome}/>
                   <Route component={NoRoute}/>
               </Switch>

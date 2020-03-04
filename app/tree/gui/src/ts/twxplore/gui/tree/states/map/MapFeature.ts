@@ -1,5 +1,5 @@
-import {MapFeatureType} from "twxplore/gui/geo/states/map/MapFeatureType";
-import {MapFeatureState} from "twxplore/gui/geo/states/map/MapFeatureState";
+import {MapFeatureType} from "twxplore/gui/tree/states/map/MapFeatureType";
+import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
 
 export interface MapFeature {
    childType?: MapFeatureType;

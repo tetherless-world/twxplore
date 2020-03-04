@@ -1,7 +1,7 @@
 import * as React from "react";
 import {TreeCollapse} from "../TreeCollapse/TreeCollapse";
 import {connect} from 'react-redux'
-import {RootState} from "twxplore/gui/geo/reducers/RootState";
+import {RootState} from "twxplore/gui/tree/reducers/RootState";
 
 
 /*

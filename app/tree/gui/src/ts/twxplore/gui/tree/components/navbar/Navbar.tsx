@@ -1,10 +1,9 @@
-import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarItem';
-import {ActiveSidebarItem} from 'twxplore/gui/geo/components/sidebar/ActiveSidebarItem';
-import {Hrefs} from 'twxplore/gui/geo/Hrefs';
+import {ActiveNavbarItem} from 'twxplore/gui/tree/components/navbar/ActiveNavbarItem';
+import {ActiveSidebarItem} from 'twxplore/gui/tree/components/sidebar/ActiveSidebarItem';
+import {Hrefs} from 'twxplore/gui/tree/Hrefs';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {Form, FormGroup, Input, Nav, Navbar as BootstrapNavbar, NavbarBrand, NavItem, NavLink,} from 'reactstrap';
-
 
 
 interface Props {

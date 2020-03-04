@@ -1,21 +1,21 @@
 import {connect, useDispatch, useSelector} from "react-redux";
-import {MapState} from "twxplore/gui/geo/states/map/MapState";
-import {RootState} from "twxplore/gui/geo/states/root/RootState";
-import {BoroughsQuery, BoroughsQuery_boroughs_geometries} from "twxplore/gui/geo/api/queries/types/BoroughsQuery";
-import * as boroughsQueryDocument from "twxplore/gui/geo/api/queries/BoroughGeometriesQuery.graphql";
+import {MapState} from "twxplore/gui/tree/states/map/MapState";
+import {RootState} from "twxplore/gui/tree/states/root/RootState";
+import {BoroughsQuery, BoroughsQuery_boroughs_geometries} from "twxplore/gui/tree/api/queries/types/BoroughsQuery";
+import * as boroughsQueryDocument from "twxplore/gui/tree/api/queries/BoroughGeometriesQuery.graphql";
 import {useQuery} from '@apollo/react-hooks'
 import * as ReactLoader from "react-loader";
 import * as React from 'react';
 import {FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
-import {addMapFeatures} from "twxplore/gui/geo/actions/map/AddMapFeaturesAction";
-import {MapFeatureState} from "twxplore/gui/geo/states/map/MapFeatureState";
-import {MapFeatureType} from "twxplore/gui/geo/states/map/MapFeatureType";
-import {MapFeature} from "twxplore/gui/geo/states/map/MapFeature";
+import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
+import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
+import {MapFeatureType} from "twxplore/gui/tree/states/map/MapFeatureType";
+import {MapFeature} from "twxplore/gui/tree/states/map/MapFeature";
 import Processors, {addDataToMap} from "kepler.gl/*";
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
-import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
-import {Frame} from "twxplore/gui/geo/components/frame/Frame";
+import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
+import {Frame} from "twxplore/gui/tree/components/frame/Frame";
 
 var wkt = require('terraformer-wkt-parser');
 

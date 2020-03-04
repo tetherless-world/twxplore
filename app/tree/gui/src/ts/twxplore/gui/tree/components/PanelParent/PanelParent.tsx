@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import {TreesList} from "twxplore/gui/geo/components/trees/TreesList";
+import {TreesList} from "twxplore/gui/tree/components/trees/TreesList";
 import {BoroughList} from "../BoroughList/BoroughList";
 import {CityList} from "../CityList/CityList";
 import SpeciesList from "../SpeciesList/SpeciesList";
