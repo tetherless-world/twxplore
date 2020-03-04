@@ -19,57 +19,12 @@
 // THE SOFTWARE.
 
 import {combineReducers} from 'redux';
-import {routerReducer, RouterState} from 'react-router-redux';
+import {routerReducer} from 'react-router-redux';
 import keplerGlReducer from 'kepler.gl/reducers';
-import { TreeMapQuery_TreesBySelection } from 'twxplore/gui/geo/api/queries/types/TreeMapQuery'
-import {composedReducer} from 'twxplore/gui/geo/reducers/reducerActions.tsx'
-
-// INITIAL_APP_STATE
-export interface APP_STATE  {
-  info: any,
-  loaded: Boolean,
-  blockMap: Map<String, String>,
-  ntaMap: Map<String, String>,
-  boroughMap: Map<String, String>,
-  blocks: Array<String>[],
-  NTAs: Array<String>[],
-  scope: String,
-  parentUri: String,
-  createSelection: Boolean,
-  selectionData: TreeMapQuery_TreesBySelection | null
-  mode:string
-}
-
-export type Real_State = {
-  keplerGl: any
-  app: APP_STATE
-  routing: RouterState
-}
-
-export const initialAppState: APP_STATE= {
-  info: {},
-  loaded: false,
-  blockMap: new Map(),
-  ntaMap: new Map(),
-  boroughMap: new Map(),
-  blocks: [],
-  NTAs: [],
-  scope: "borough",
-  parentUri: "",
-  createSelection: false,
-  selectionData: null,
-  mode: "home"
-};
-
-
-
+import {appReducer} from "twxplore/gui/geo/reducers/appReducer";
 
 export const reducers = combineReducers({
-  // mount keplerGl reducer
+  app: appReducer,
   keplerGl: keplerGlReducer,
-  app: composedReducer,
   routing: routerReducer
 });
-
-export default reducers;
-

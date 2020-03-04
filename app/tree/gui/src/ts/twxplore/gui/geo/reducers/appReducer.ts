@@ -1,18 +1,18 @@
-import {APP_STATE} from 'twxplore/gui/geo/reducers/reducers'
 import {
   Action_Types,
   APPEND_MAP,
   AppendMapAction,
+  CHANGE_MODE,
   SELECT_DATA,
-  SelectDataAction,
-  CHANGE_MODE
+  SelectDataAction
 } from 'twxplore/gui/geo/actions/Actions'
 import {ActionTypes} from 'kepler.gl/actions';
+import {AppState} from "twxplore/gui/geo/reducers/AppState";
 
 
 //type Action = selectionDataAction | AppendToMap
 
-export const composedReducer = (state: APP_STATE, action: Action_Types) => {
+export const appReducer = (state: AppState, action: Action_Types) => {
   const result = Object.assign({}, state)
   switch (action.type) {
     case APPEND_MAP : {

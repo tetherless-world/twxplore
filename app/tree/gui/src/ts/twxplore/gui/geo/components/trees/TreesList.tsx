@@ -1,9 +1,7 @@
 import * as React from "react";
-import { TreeCollapse } from "../TreeCollapse/TreeCollapse";
-import { connect } from 'react-redux'
-import { Real_State } from "../../reducers/reducers";
-
-
+import {TreeCollapse} from "../TreeCollapse/TreeCollapse";
+import {connect} from 'react-redux'
+import {RootState} from "../../reducers/reducers";
 
 
 /*
@@ -16,7 +14,7 @@ interface ReduxProps {
 }
 */
 //type ComponentProps = TreeListProps & ReduxProps
-const mapStateToProps = (state: Real_State) => (
+const mapStateToProps = (state: RootState) => (
     {
      trees: state.app.selectionData!.trees,
    }
