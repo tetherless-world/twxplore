@@ -10,6 +10,14 @@ import {FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
 import {addMapFeatures} from "twxplore/gui/geo/actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "twxplore/gui/geo/states/map/MapFeatureState";
 import {MapFeatureType} from "twxplore/gui/geo/states/map/MapFeatureType";
+import {MapFeature} from "twxplore/gui/geo/states/map/MapFeature";
+import Processors, {addDataToMap} from "kepler.gl/*";
+import KeplerGl from "kepler.gl";
+import ReactResizeDetector from "react-resize-detector";
+import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
+import {Frame} from "twxplore/gui/geo/components/frame/Frame";
+
+var wkt = require('terraformer-wkt-parser');
 
 const MapImpl: React.FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -40,7 +48,65 @@ const MapImpl: React.FunctionComponent = () => {
 
     // At least borough features have been added to the state here.
 
-    return <div></div>;
+    // Organize the features by state
+    const featuresByState: { [index: string]: MapFeature[] } = {};
+    for (const feature of state.features) {
+        const features = featuresByState[feature.state];
+        if (features) {
+            features.push(feature);
+        } else {
+            featuresByState[feature.state] = [feature];
+        }
+    }
+
+    for (const featureState in featuresByState) {
+        const featuresInState = featuresByState[featureState];
+        switch (featureState) {
+            case MapFeatureState.LOADED: {
+                const datasets = {
+                    data: Processors.processGeojson({
+                        "type": "FeatureCollection",
+                        "features": featuresInState.map(feature => {
+                            return {
+                                "type": "Feature",
+                                "geometry": wkt.parse(feature.geometry.wkt),
+                                "internal": feature
+                            }
+                        })
+                    }),
+                    // info: {
+                    //     id: type
+                    // }
+                }
+                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}));
+                break;
+            }
+        }
+    }
+
+    return (
+        <div>
+            <Frame
+                activeNavItem={ActiveNavbarItem.Home}
+                documentTitle="Map"
+                cardTitle="Features"
+            >
+                <div style={{width: '100%'}}>
+                    <ReactResizeDetector handleWidth handleHeight
+                                         render={({width, height}) => (
+                                             <div>
+                                                 <KeplerGl
+                                                     id="map"
+                                                     width={width}
+                                                     mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
+                                                     height={height}
+                                                 />
+                                             </div>
+                                         )}
+                    />
+                </div>
+            </Frame>
+        </div>);
 };
 
 export const Map = connect()(MapImpl)

@@ -1,6 +1,6 @@
 export enum MapFeatureState {
-    CLICKED,
-    REQUESTED,
-    LOADED,
-    RENDERED
+    CLICKED = "clicked",
+    REQUESTED = "requested",
+    LOADED = "loaded",
+    RENDERED = "rendered"
 }
