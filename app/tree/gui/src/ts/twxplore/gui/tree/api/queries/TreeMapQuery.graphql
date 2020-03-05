@@ -1,5 +1,5 @@
-query TreeMapQuery($selectionInput: SelectionInputFieldsInput!) {
-  TreesBySelection(selectionInput: $selectionInput){
+query TreeMapQuery($selectionInput: SelectionInput!) {
+  treesBySelection(selectionInput: $selectionInput){
       blocks{
         id
         name

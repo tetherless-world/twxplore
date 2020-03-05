@@ -13,7 +13,7 @@ export interface NtasByBoroughQuery_ntas_byBoroughGeometry_geometry {
 }
 
 export interface NtasByBoroughQuery_ntas_byBoroughGeometry {
-  __typename: "SelectionGeometry";
+  __typename: "Feature";
   geometry: NtasByBoroughQuery_ntas_byBoroughGeometry_geometry;
   uri: string;
 }

@@ -13,7 +13,7 @@ export interface NtasQuery_ntas_geometries_geometry {
 }
 
 export interface NtasQuery_ntas_geometries {
-  __typename: "SelectionGeometry";
+  __typename: "Feature";
   geometry: NtasQuery_ntas_geometries_geometry;
   uri: string;
 }

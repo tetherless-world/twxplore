@@ -2,20 +2,20 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { SelectionInputFieldsInput } from "./../../graphqlGlobalTypes";
+import { SelectionInput, CurbLoc, Status, Health, Steward, Guards, Sidewalk, UserType, Problems } from "./../../../../geo/api/graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: TreeMapQuery
 // ====================================================
 
-export interface TreeMapQuery_TreesBySelection_blocks {
+export interface TreeMapQuery_treesBySelection_blocks {
   __typename: "Block";
   id: number;
   name: string;
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_boroughs {
+export interface TreeMapQuery_treesBySelection_boroughs {
   __typename: "Borough";
   borocode: number;
   name: string;
@@ -24,13 +24,13 @@ export interface TreeMapQuery_TreesBySelection_boroughs {
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_censusTracts {
+export interface TreeMapQuery_treesBySelection_censusTracts {
   __typename: "CensusTract";
   id: number;
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_city {
+export interface TreeMapQuery_treesBySelection_city {
   __typename: "City";
   name: string;
   boroughs: string[];
@@ -39,7 +39,7 @@ export interface TreeMapQuery_TreesBySelection_city {
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_ntaList {
+export interface TreeMapQuery_treesBySelection_ntaList {
   __typename: "Nta";
   nta: string;
   name: string;
@@ -49,34 +49,34 @@ export interface TreeMapQuery_TreesBySelection_ntaList {
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_postcodes {
+export interface TreeMapQuery_treesBySelection_postcodes {
   __typename: "Postcode";
   code: number;
   city: string;
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_state {
+export interface TreeMapQuery_treesBySelection_state {
   __typename: "State";
   name: string;
   cities: string[];
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_trees {
+export interface TreeMapQuery_treesBySelection_trees {
   __typename: "Tree";
   createdAt: string;
   dbh: number;
   stump: number;
-  curbLoc: string;
-  status: string;
-  health: string | null;
+  curbLoc: CurbLoc;
+  status: Status;
+  health: Health | null;
   species: string | null;
-  steward: string | null;
-  guards: string | null;
-  sidewalk: string | null;
-  userType: string;
-  problems: string[];
+  steward: Steward | null;
+  guards: Guards | null;
+  sidewalk: Sidewalk | null;
+  userType: UserType;
+  problems: Problems[];
   address: string;
   city: string;
   community: number;
@@ -93,37 +93,37 @@ export interface TreeMapQuery_TreesBySelection_trees {
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_treeSpecies {
+export interface TreeMapQuery_treesBySelection_treeSpecies {
   __typename: "TreeSpecies";
   common: string;
   latin: string;
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection_zipCities {
+export interface TreeMapQuery_treesBySelection_zipCities {
   __typename: "ZipCity";
   city: string;
   uri: string;
 }
 
-export interface TreeMapQuery_TreesBySelection {
+export interface TreeMapQuery_treesBySelection {
   __typename: "SelectionResults";
-  blocks: TreeMapQuery_TreesBySelection_blocks[];
-  boroughs: TreeMapQuery_TreesBySelection_boroughs[];
-  censusTracts: TreeMapQuery_TreesBySelection_censusTracts[];
-  city: TreeMapQuery_TreesBySelection_city;
-  ntaList: TreeMapQuery_TreesBySelection_ntaList[];
-  postcodes: TreeMapQuery_TreesBySelection_postcodes[];
-  state: TreeMapQuery_TreesBySelection_state;
-  trees: TreeMapQuery_TreesBySelection_trees[];
-  treeSpecies: TreeMapQuery_TreesBySelection_treeSpecies[];
-  zipCities: TreeMapQuery_TreesBySelection_zipCities[];
+  blocks: TreeMapQuery_treesBySelection_blocks[];
+  boroughs: TreeMapQuery_treesBySelection_boroughs[];
+  censusTracts: TreeMapQuery_treesBySelection_censusTracts[];
+  city: TreeMapQuery_treesBySelection_city;
+  ntaList: TreeMapQuery_treesBySelection_ntaList[];
+  postcodes: TreeMapQuery_treesBySelection_postcodes[];
+  state: TreeMapQuery_treesBySelection_state;
+  trees: TreeMapQuery_treesBySelection_trees[];
+  treeSpecies: TreeMapQuery_treesBySelection_treeSpecies[];
+  zipCities: TreeMapQuery_treesBySelection_zipCities[];
 }
 
 export interface TreeMapQuery {
-  TreesBySelection: TreeMapQuery_TreesBySelection;
+  treesBySelection: TreeMapQuery_treesBySelection;
 }
 
 export interface TreeMapQueryVariables {
-  selectionInput: SelectionInputFieldsInput;
+  selectionInput: SelectionInput;
 }

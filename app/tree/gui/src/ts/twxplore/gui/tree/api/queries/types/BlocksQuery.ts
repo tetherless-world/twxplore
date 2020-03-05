@@ -13,7 +13,7 @@ export interface BlocksQuery_blocks_geometries_geometry {
 }
 
 export interface BlocksQuery_blocks_geometries {
-  __typename: "SelectionGeometry";
+  __typename: "Feature";
   geometry: BlocksQuery_blocks_geometries_geometry;
   uri: string;
 }

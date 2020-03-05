@@ -13,7 +13,7 @@ export interface BlocksByNtaQuery_blocks_byNtaGeometry_geometry {
 }
 
 export interface BlocksByNtaQuery_blocks_byNtaGeometry {
-  __typename: "SelectionGeometry";
+  __typename: "Feature";
   geometry: BlocksByNtaQuery_blocks_byNtaGeometry_geometry;
   uri: string;
 }

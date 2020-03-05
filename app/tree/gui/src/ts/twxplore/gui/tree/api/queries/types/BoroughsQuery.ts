@@ -13,7 +13,7 @@ export interface BoroughsQuery_boroughs_geometries_geometry {
 }
 
 export interface BoroughsQuery_boroughs_geometries {
-  __typename: "SelectionGeometry";
+  __typename: "Feature";
   geometry: BoroughsQuery_boroughs_geometries_geometry;
   uri: string;
 }
