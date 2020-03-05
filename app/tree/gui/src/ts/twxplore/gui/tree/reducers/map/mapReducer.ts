@@ -32,8 +32,18 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
       break;
+
+    case "@@kepler.gl/LAYER_CLICK": {
+      const layerClickAction: any = action
+      for (const resultFeature of result.features) {
+        if (resultFeature.uri === layerClickAction.payload.info.object.properties.uri) {
+          resultFeature.state = MapFeatureState.CLICKED;
+          console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
+        }
+      }
+    }        
     default: {
-      console.debug("mapReducer: ignoring action type " + action.type);
+      console.log("mapReducer: ignoring action type " + action.type);
     }
 
   }
