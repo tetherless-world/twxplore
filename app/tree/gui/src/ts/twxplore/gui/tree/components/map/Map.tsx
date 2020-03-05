@@ -4,9 +4,7 @@ import {RootState} from "twxplore/gui/tree/states/root/RootState";
 import {BoroughsQuery, BoroughsQuery_boroughs_geometries} from "twxplore/gui/tree/api/queries/types/BoroughsQuery";
 import * as boroughsQueryDocument from "twxplore/gui/tree/api/queries/BoroughGeometriesQuery.graphql";
 import {useQuery} from '@apollo/react-hooks'
-import * as ReactLoader from "react-loader";
 import * as React from 'react';
-import {FatalErrorModal} from "@tetherless-world/twxplore-base-lib";
 import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
 import {MapFeatureType} from "twxplore/gui/tree/states/map/MapFeatureType";
@@ -21,39 +19,24 @@ import {Frame} from "twxplore/gui/tree/components/frame/Frame";
 var wkt = require('terraformer-wkt-parser');
 
 const MapImpl: React.FunctionComponent = () => {
-    console.debug("Map render");
-
     const dispatch = useDispatch();
     const state: MapState = useSelector((rootState: RootState) => rootState.app.map);
 
     // Load boroughs on first render
     const boroughsQueryResult = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(boroughsQueryDocument, {});
-    if (boroughsQueryResult.loading) {
-        return <ReactLoader loaded={false}/>
-    } else if (boroughsQueryResult.error) {
-        return <FatalErrorModal error={boroughsQueryResult.error}/>;
-    }
-    if (!boroughsQueryResult.data) {
-        throw new EvalError(); // Invariant
-    }
 
     if (state.features.length === 0) {
-        // No tracking any features yet, add the boroughs we loaded
-        console.debug("not tracking any map features yet, add loaded boroughs");
-
-        dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
-            childType: MapFeatureType.NTA,
-            geometry: boroughFeature.geometry,
-            state: MapFeatureState.LOADED,
-            type: MapFeatureType.BOROUGH,
-            uri: boroughFeature.uri
-        }))))
-
-
-        return <ReactLoader loaded={false}/>;
+        if (boroughsQueryResult.data) {
+            // No tracking any features yet, add the boroughs we loaded
+            dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
+                childType: MapFeatureType.NTA,
+                geometry: boroughFeature.geometry,
+                state: MapFeatureState.LOADED,
+                type: MapFeatureType.BOROUGH,
+                uri: boroughFeature.uri
+            }))))
+        }
     }
-
-    // At least borough features have been added to the state here.
 
     // Organize the features by state
     const featuresByState: { [index: string]: MapFeature[] } = {};
@@ -67,6 +50,7 @@ const MapImpl: React.FunctionComponent = () => {
         console.debug("feature " + feature.uri + " state: " + feature.state);
     }
 
+    // Feature state machine
     for (const featureState in featuresByState) {
         const featuresInState = featuresByState[featureState];
         switch (featureState) {
@@ -86,21 +70,15 @@ const MapImpl: React.FunctionComponent = () => {
                         id: "data"
                     }
                 }
-                console.debug("dispatching add data");
                 dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
                 break;
             }
         }
     }
 
-    // Don't return the KeplerGl component until we've successfully dispatched addDataToMap
-    // Otherwise Kepler asks the user to upload data.
-    if (!featuresByState[MapFeatureState.RENDERED]) {
-        console.debug("no features in state " + MapFeatureState.RENDERED);
-        return <ReactLoader loaded={false}/>;
-    }
-
-    console.debug("rendering full frame");
+    // Kepler.gl documentation:
+    // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
+    // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
 
     return (
         <div>
