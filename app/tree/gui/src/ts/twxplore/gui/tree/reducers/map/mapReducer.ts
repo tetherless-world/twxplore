@@ -3,6 +3,7 @@ import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
+import { CHANGE_FEATURE_STATE, ChangeFeatureStateAction } from "../../actions/map/ChangeFeatureStateAction";
 
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -17,7 +18,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       break;
     }
-    case "@@kepler.gl/ADD_DATA_TO_MAP":
+    case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
         const addedFeature: MapFeature = row[0].properties;
@@ -29,6 +30,16 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         }
       }
       break;
+    }
+    case CHANGE_FEATURE_STATE: {
+      const changeFeatureStateAction = action as ChangeFeatureStateAction
+      for (const resultFeature of result.features) {
+        if (resultFeature.uri === changeFeatureStateAction.payload.uri) {
+          resultFeature.state = changeFeatureStateAction.payload.state;
+          console.debug("changed map feature " + resultFeature.uri + " to state " + changeFeatureStateAction.payload.state);
+        }
+      }
+    }
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
       break;

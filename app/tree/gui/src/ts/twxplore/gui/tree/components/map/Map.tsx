@@ -1,9 +1,11 @@
 import {connect, useDispatch, useSelector} from "react-redux";
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
 import {RootState} from "twxplore/gui/tree/states/root/RootState";
-import {BoroughsQuery, BoroughsQuery_boroughs_geometries} from "twxplore/gui/tree/api/queries/types/BoroughsQuery";
+import {BoroughsQuery} from "twxplore/gui/tree/api/queries/types/BoroughsQuery";
+import {NtasByBoroughQuery, NtasByBoroughQueryVariables} from "twxplore/gui/tree/api/queries/types/NtasByBoroughQuery"
 import * as boroughsQueryDocument from "twxplore/gui/tree/api/queries/BoroughGeometriesQuery.graphql";
-import {useQuery} from '@apollo/react-hooks'
+import * as ntasByBoroughQueryDocument from "twxplore/gui/tree/api/queries/NtasByBoroughQuery.graphql"
+import {useQuery, useLazyQuery} from '@apollo/react-hooks'
 import * as React from 'react';
 import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "twxplore/gui/tree/states/map/MapFeatureState";
@@ -15,15 +17,27 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
 import {Frame} from "twxplore/gui/tree/components/frame/Frame";
+import { changeFeatureState } from "../../actions/map/ChangeFeatureStateAction";
 
 var wkt = require('terraformer-wkt-parser');
 
 const MapImpl: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const state: MapState = useSelector((rootState: RootState) => rootState.app.map);
-    
     // Load boroughs on first render
-    const boroughsQueryResult = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(boroughsQueryDocument, {});
+    const boroughsQueryResult = useQuery<BoroughsQuery>(boroughsQueryDocument, {});
+    
+    const [getNtasByBorough,{}] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntasByBoroughQueryDocument, {
+        onCompleted: (data: NtasByBoroughQuery) => { console.log("this is my story")
+            dispatch(addMapFeatures(data.ntas.byBoroughGeometry.map(ntaFeature => ({
+            childType: MapFeatureType.BLOCKFACE,
+            geometry: ntaFeature.geometry,
+            state: MapFeatureState.LOADED,
+            type: MapFeatureType.NTA,
+            uri: ntaFeature.uri
+        }))))}
+        
+    })
 
     if (state.features.length === 0) {
         if (boroughsQueryResult.data) {
@@ -48,7 +62,7 @@ const MapImpl: React.FunctionComponent = () => {
         } else {
             featuresByState[feature.state] = [feature];
         }
-        console.log("feature " + feature.uri + " state: " + feature.state);
+        console.log(featuresByState)
     }
 
     // Feature state machine
@@ -74,7 +88,14 @@ const MapImpl: React.FunctionComponent = () => {
                 dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
                 break;
             }
-        }
+            case MapFeatureState.CLICKED: {
+                for (const clickedFeature of featuresInState){
+                 getNtasByBorough({variables: {uri: clickedFeature.uri}})
+                 dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED))
+                }
+            }
+        
+        }        
     }
 
     // Kepler.gl documentation:
