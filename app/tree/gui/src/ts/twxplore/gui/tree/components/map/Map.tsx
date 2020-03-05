@@ -22,7 +22,7 @@ var wkt = require('terraformer-wkt-parser');
 const MapImpl: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const state: MapState = useSelector((rootState: RootState) => rootState.app.map);
-
+    
     // Load boroughs on first render
     const boroughsQueryResult = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(boroughsQueryDocument, {});
     if (boroughsQueryResult.loading) {
@@ -77,13 +77,12 @@ const MapImpl: React.FunctionComponent = () => {
                             }
                         })
                     }),
-                    // info: {
-                    //     id: "data"
-                    // }
+                     info: {
+                         id: "data"
+                     }
                 }
-                React.useEffect(() => {
                     dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
-                }, )
+    
                 
                 break;
             }
