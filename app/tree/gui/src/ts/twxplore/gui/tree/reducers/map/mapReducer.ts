@@ -29,6 +29,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         }
       }
       break;
+    case "@@kepler.gl/REGISTER_ENTRY":
+      result.keplerGlInstanceRegistered = true;
+      break;
     default: {
       console.debug("mapReducer: ignoring action type " + action.type);
     }

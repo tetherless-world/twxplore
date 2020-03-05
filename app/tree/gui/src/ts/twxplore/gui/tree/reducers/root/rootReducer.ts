@@ -25,6 +25,10 @@ import {appReducer} from "twxplore/gui/tree/reducers/app/appReducer";
 
 export const rootReducer = combineReducers({
   app: appReducer,
-  keplerGl: keplerGlReducer,
+  keplerGl: keplerGlReducer.initialState({
+    uiState: {
+      currentModal: null
+    }
+  }),
   routing: routerReducer
 });
