@@ -17,12 +17,15 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
 import {Frame} from "twxplore/gui/tree/components/frame/Frame";
+
 var wkt = require('terraformer-wkt-parser');
 
 const MapImpl: React.FunctionComponent = () => {
+    console.debug("Map render");
+
     const dispatch = useDispatch();
     const state: MapState = useSelector((rootState: RootState) => rootState.app.map);
-    
+
     // Load boroughs on first render
     const boroughsQueryResult = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(boroughsQueryDocument, {});
     if (boroughsQueryResult.loading) {
@@ -36,15 +39,16 @@ const MapImpl: React.FunctionComponent = () => {
 
     if (state.features.length === 0) {
         // No tracking any features yet, add the boroughs we loaded
-        
-            dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
-                childType: MapFeatureType.NTA,
-                geometry: boroughFeature.geometry,
-                state: MapFeatureState.LOADED,
-                type: MapFeatureType.BOROUGH,
-                uri: boroughFeature.uri
-                }))))
-        
+        console.debug("not tracking any map features yet, add loaded boroughs");
+
+        dispatch(addMapFeatures(boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
+            childType: MapFeatureType.NTA,
+            geometry: boroughFeature.geometry,
+            state: MapFeatureState.LOADED,
+            type: MapFeatureType.BOROUGH,
+            uri: boroughFeature.uri
+        }))))
+
 
         return <ReactLoader loaded={false}/>;
     }
@@ -60,6 +64,7 @@ const MapImpl: React.FunctionComponent = () => {
         } else {
             featuresByState[feature.state] = [feature];
         }
+        console.debug("feature " + feature.uri + " state: " + feature.state);
     }
 
     for (const featureState in featuresByState) {
@@ -77,17 +82,25 @@ const MapImpl: React.FunctionComponent = () => {
                             }
                         })
                     }),
-                     info: {
-                         id: "data"
-                     }
+                    info: {
+                        id: "data"
+                    }
                 }
-                    dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
-    
-                
+                console.debug("dispatching add data");
+                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
                 break;
             }
         }
     }
+
+    // Don't return the KeplerGl component until we've successfully dispatched addDataToMap
+    // Otherwise Kepler asks the user to upload data.
+    if (!featuresByState[MapFeatureState.RENDERED]) {
+        console.debug("no features in state " + MapFeatureState.RENDERED);
+        return <ReactLoader loaded={false}/>;
+    }
+
+    console.debug("rendering full frame");
 
     return (
         <div>

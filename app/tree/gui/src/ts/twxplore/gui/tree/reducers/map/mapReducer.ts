@@ -1,8 +1,8 @@
 import {BaseAction} from "redux-actions";
 import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
-import { MapFeatureState } from "../../states/map/MapFeatureState";
-import { MapFeature } from "../../states/map/MapFeature";
+import {MapFeatureState} from "../../states/map/MapFeatureState";
+import {MapFeature} from "../../states/map/MapFeature";
 
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -13,6 +13,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
+        console.debug("added map feature " + feature.uri);
       }
       break;
     }
@@ -23,6 +24,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === addedFeature.uri) {
             resultFeature.state = MapFeatureState.RENDERED;
+            console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
           }
         }
       }
@@ -30,7 +32,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     default: {
       console.debug("mapReducer: ignoring action type " + action.type);
     }
-    
+
   }
 
   return result;
