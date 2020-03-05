@@ -21,7 +21,7 @@ var wkt = require('terraformer-wkt-parser');
 const MapImpl: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const state: MapState = useSelector((rootState: RootState) => rootState.app.map);
-
+    
     // Load boroughs on first render
     const boroughsQueryResult = useQuery<BoroughsQuery, BoroughsQuery_boroughs_geometries>(boroughsQueryDocument, {});
 
@@ -35,6 +35,7 @@ const MapImpl: React.FunctionComponent = () => {
                 type: MapFeatureType.BOROUGH,
                 uri: boroughFeature.uri
             }))))
+            console.log(state.features.length)
         }
     }
 
@@ -47,7 +48,7 @@ const MapImpl: React.FunctionComponent = () => {
         } else {
             featuresByState[feature.state] = [feature];
         }
-        console.debug("feature " + feature.uri + " state: " + feature.state);
+        console.log("feature " + feature.uri + " state: " + feature.state);
     }
 
     // Feature state machine
