@@ -26,6 +26,8 @@ import {routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory'
 import {rootReducer} from "twxplore/gui/tree/reducers/root/rootReducer";
 import {initialRootState} from "twxplore/gui/tree/states/root/initialRootState";
+//import {ADD_MAP_FEATURES} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
+
 
 const history = createHistory()
 
@@ -34,16 +36,20 @@ export const middlewares = [
     routerMiddleware(history)
 ];
 
-export const enhancers = [applyMiddleware(...middlewares)];
+//export const enhancers = [applyMiddleware(...middlewares)];
 
 //const initialState = {};
 
 // add redux devtools
- const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
+/*
+ const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+    actionsBlacklist: ['@@kepler.gl/LAYER_HOVER','@@kepler.gl/LAYER_CLICK' ],
+    actionsWhiteList: [ADD_MAP_FEATURES]
+  }) || compose;
+*/
 export default createStore<any,any,any,any>(
     rootReducer,
     initialRootState,
-    composeEnhancers(applyMiddleware(...middlewares))
-    //compose(...enhancers)
+    compose(applyMiddleware(...middlewares))
 );
