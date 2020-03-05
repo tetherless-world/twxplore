@@ -82,7 +82,7 @@ const MapImpl: React.FunctionComponent = () => {
                         })
                     }),
                     info: {
-                        id: "data"
+                        id: featuresInState[0].type
                     }
                 }
                 dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
