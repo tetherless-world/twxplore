@@ -17,7 +17,7 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
 import {Frame} from "twxplore/gui/tree/components/frame/Frame";
-import { changeFeatureState } from "../../actions/map/ChangeFeatureStateAction";
+import { changeMapFeatureState } from "../../actions/map/ChangeMapFeatureStateAction";
 
 var wkt = require('terraformer-wkt-parser');
 
@@ -89,7 +89,7 @@ const MapImpl: React.FunctionComponent = () => {
             case MapFeatureState.CLICKED: {
                 for (const clickedFeature of featuresInState){
                     getNtasByBorough({variables: {uri: clickedFeature.uri}});
-                    dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED));
+                    dispatch(changeMapFeatureState(clickedFeature.uri, MapFeatureState.RENDERED));
                 }
                 break;
             }

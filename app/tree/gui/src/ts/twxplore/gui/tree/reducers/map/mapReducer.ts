@@ -3,7 +3,7 @@ import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
-import { CHANGE_FEATURE_STATE, ChangeFeatureStateAction } from "../../actions/map/ChangeFeatureStateAction";
+import { CHANGE_MAP_FEATURE_STATE, ChangeMapFeatureStateAction } from "../../actions/map/ChangeMapFeatureStateAction";
 
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -31,12 +31,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       break;
     }
-    case CHANGE_FEATURE_STATE: {
-      const changeFeatureStateAction = action as ChangeFeatureStateAction
+    case CHANGE_MAP_FEATURE_STATE: {
+      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction
       for (const resultFeature of result.features) {
-        if (resultFeature.uri === changeFeatureStateAction.payload.uri) {
-          resultFeature.state = changeFeatureStateAction.payload.state;
-          console.debug("changed map feature " + resultFeature.uri + " to state " + changeFeatureStateAction.payload.state);
+        if (resultFeature.uri === changeMapFeatureStateAction.payload.uri) {
+          resultFeature.state = changeMapFeatureStateAction.payload.state;
+          console.debug("changed map feature " + resultFeature.uri + " to state " + changeMapFeatureStateAction.payload.state);
         }
       }
     }
