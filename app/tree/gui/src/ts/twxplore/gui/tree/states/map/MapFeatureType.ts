@@ -1,6 +1,6 @@
 export enum MapFeatureType {
   BOROUGH = "borough",
   NTA = "nta",
-  BLOCKFACE = "blockface",
+  BLOCK = "block",
   TREE = "tree",
 }
