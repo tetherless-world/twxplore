@@ -3,7 +3,7 @@ package io.github.tetherlessworld.twxplore.lib.tree.models.domain
 import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.{PropertyGetters, PropertySetters}
+import io.github.tetherlessworld.scena.{PropertyGetters, PropertySetters}
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
 
 trait TreeProperties extends PropertyGetters with PropertySetters {

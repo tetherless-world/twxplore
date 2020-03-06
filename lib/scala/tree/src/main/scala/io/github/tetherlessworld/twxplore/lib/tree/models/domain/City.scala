@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.scena.{RdfProperties, RdfReader, RdfWriter, RdfsProperties}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
@@ -27,7 +27,7 @@ object City {
       City(
         name = resource.label.get,
         boroughs = resource.boroughsUri,
-        postcodes = resource.postalCodesUri,
+        postcodes = resource.postalCodeUris,
         state = resource.stateUri.get,
         uri = Uri.parse(resource.getURI),
         feature = resource.spatialDimensionProp.get
@@ -43,7 +43,7 @@ object City {
       resource.label = value.name
       resource.stateUri = value.state
       resource.boroughsUri = value.boroughs
-      resource.postalCodesUri = value.postcodes
+      resource.postalCodeUris = value.postcodes
       resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.CITY_URI_PREFIX)
       resource

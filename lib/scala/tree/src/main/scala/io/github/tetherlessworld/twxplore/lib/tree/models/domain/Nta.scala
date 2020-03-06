@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.scena.{DcTermsProperties, RdfProperties, RdfReader, RdfWriter, RdfsProperties}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
@@ -18,11 +18,11 @@ final case class Nta(nta: String, name: String, blocks: List[Uri], borough: Uri,
 
 object Nta {
 
-  implicit class NTAResource(val resource: Resource)
+  implicit class NtaResource(val resource: Resource)
     extends RdfProperties with RdfsProperties with SioProperties with TreeProperties with SchemaProperties with DcTermsProperties with GeoProperties
 
 
-  implicit object NTARdfReader extends RdfReader[Nta] {
+  implicit object NtaRdfReader extends RdfReader[Nta] {
     override def read(resource: Resource): Nta = {
       Nta(
         nta = resource.identifier.get,
@@ -36,7 +36,7 @@ object Nta {
     }
   }
 
-  implicit object NTARdfWriter extends RdfWriter[Nta] {
+  implicit object NtaRdfWriter extends RdfWriter[Nta] {
     override def write(model: Model, value: Nta): Resource = {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
