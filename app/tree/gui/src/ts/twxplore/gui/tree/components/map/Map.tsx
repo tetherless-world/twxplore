@@ -28,7 +28,7 @@ const MapImpl: React.FunctionComponent = () => {
     const boroughsQueryResult = useQuery<BoroughsQuery>(boroughsQueryDocument, {});
     
     const [getNtasByBorough,{}] = useLazyQuery<NtasByBoroughQuery, NtasByBoroughQueryVariables>(ntasByBoroughQueryDocument, {
-        onCompleted: (data: NtasByBoroughQuery) => { console.log("this is my story")
+        onCompleted: (data: NtasByBoroughQuery) => {
             dispatch(addMapFeatures(data.ntas.byBoroughGeometry.map(ntaFeature => ({
             childType: MapFeatureType.BLOCKFACE,
             geometry: ntaFeature.geometry,
@@ -48,8 +48,7 @@ const MapImpl: React.FunctionComponent = () => {
                 state: MapFeatureState.LOADED,
                 type: MapFeatureType.BOROUGH,
                 uri: boroughFeature.uri
-            }))))
-            console.log(state.features.length)
+            }))));
         }
     }
 
@@ -62,7 +61,6 @@ const MapImpl: React.FunctionComponent = () => {
         } else {
             featuresByState[feature.state] = [feature];
         }
-        console.log(featuresByState)
     }
 
     // Feature state machine
@@ -85,14 +83,15 @@ const MapImpl: React.FunctionComponent = () => {
                         id: featuresInState[0].type
                     }
                 }
-                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}))
+                dispatch(addDataToMap({datasets, options: {centerMap: true, readOnly: true}}));
                 break;
             }
             case MapFeatureState.CLICKED: {
                 for (const clickedFeature of featuresInState){
-                 getNtasByBorough({variables: {uri: clickedFeature.uri}})
-                 dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED))
+                 getNtasByBorough({variables: {uri: clickedFeature.uri}});
+                 dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED));
                 }
+                break;
             }
         
         }        
