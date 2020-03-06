@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE

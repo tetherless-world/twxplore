@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.tree.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.Rdf
+import io.github.tetherlessworld.scena.{DcTermsProperties, Rdf, RdfProperties, RdfsProperties}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.TreeTestData
@@ -50,23 +50,23 @@ class TreeSpec extends WordSpec with Matchers {
         treeResource.identifier.get should equal("180683")
       }
 
-      "point to specific city" in {
-        treeResource.city.get should equal("New York City")
-      }
-      "point to a specific state" in {
-        treeResource.state.get should equal("New York")
-      }
-      "point to a specific borough" in {
-        treeResource.borough.get should equal("Queens")
-      }
+//      "point to specific city" in {
+//        treeResource.city.get should equal("New York City")
+//      }
+//      "point to a specific state" in {
+//        treeResource.state.get should equal("New York")
+//      }
+//      "point to a specific borough" in {
+//        treeResource.borough.get should equal("Queens")
+//      }
 
-      "point to a specific NTA" in {
-        treeResource.nta.get should equal("Forest Hills")
-      }
-
-      "point to a specific block" in {
-        treeResource.block.get should equal("348711")
-      }
+//      "point to a specific NTA" in {
+//        treeResource.nta.get should equal("Forest Hills")
+//      }
+//
+//      "point to a specific block" in {
+//        treeResource.block.get should equal("348711")
+//      }
     }
 
     val treeRead = Rdf.read[Tree](treeResource)

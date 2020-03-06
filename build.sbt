@@ -6,7 +6,7 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 
 // Constants
-val scenaVersion = "1.0.0-SNAPSHOT"
+val scenaVersion = "1.0.1-SNAPSHOT"
 val playVersion = "2.8.0"
 val slf4jVersion = "1.7.25"
 val twksVersion = "1.0.4-SNAPSHOT"
