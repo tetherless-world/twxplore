@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { SelectionInputFieldsInput } from "./../../graphqlGlobalTypes";
+import {SelectionInputFieldsInput} from "./../../graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: ResultsQuery

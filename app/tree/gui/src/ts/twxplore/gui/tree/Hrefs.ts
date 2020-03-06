@@ -1,13 +1,12 @@
 export class Hrefs {
   static get home() {
-    return '/';
+    return "/";
   }
   static get map() {
-    return '/map';
+    return "/map";
   }
 
   static get selection() {
-    return '/selection';
+    return "/selection";
   }
 }
-

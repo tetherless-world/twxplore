@@ -1,4 +1,3 @@
-
 export enum ActiveSidebarItem {
-  Select
+  Select,
 }

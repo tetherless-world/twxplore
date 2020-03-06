@@ -1,9 +1,13 @@
-import {Frame} from 'twxplore/gui/tree/components/frame/Frame';
-import * as React from 'react';
-import {RouteComponentProps} from 'react-router';
+import {Frame} from "twxplore/gui/tree/components/frame/Frame";
+import * as React from "react";
+import {RouteComponentProps} from "react-router";
 
-export const NoRoute: React.FunctionComponent<RouteComponentProps> = ({location}) => (
-    <Frame documentTitle="Not Found">
-        <h3><code>{location.pathname}</code></h3>
-    </Frame>
+export const NoRoute: React.FunctionComponent<RouteComponentProps> = ({
+  location,
+}) => (
+  <Frame documentTitle="Not Found">
+    <h3>
+      <code>{location.pathname}</code>
+    </h3>
+  </Frame>
 );
