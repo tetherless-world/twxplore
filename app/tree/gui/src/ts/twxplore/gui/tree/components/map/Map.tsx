@@ -8,6 +8,7 @@ import {
 } from "twxplore/gui/tree/api/queries/types/NtasByBoroughQuery";
 import * as boroughsQueryDocument from "twxplore/gui/tree/api/queries/BoroughGeometriesQuery.graphql";
 import * as ntasByBoroughQueryDocument from "twxplore/gui/tree/api/queries/NtasByBoroughQuery.graphql";
+import * as blocksbyNtaQueryDocument from "twxplore/gui/tree/api/queries/BlocksByNtaQuery.graphql";
 import {useQuery, useLazyQuery} from "@apollo/react-hooks";
 import * as React from "react";
 import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
@@ -21,6 +22,10 @@ import ReactResizeDetector from "react-resize-detector";
 import {ActiveNavbarItem} from "twxplore/gui/tree/components/navbar/ActiveNavbarItem";
 import {Frame} from "twxplore/gui/tree/components/frame/Frame";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
+import {
+  BlocksByNtaQuery,
+  BlocksByNtaQueryVariables,
+} from "../../api/queries/types/BlocksByNtaQuery";
 
 var wkt = require("terraformer-wkt-parser");
 
@@ -35,6 +40,11 @@ const MapImpl: React.FunctionComponent = () => {
     {}
   );
 
+  /* Lazy Query to get Ntas that belong to a borough.
+  The onCompleted function dispatches an action that
+  puts each nta from the query into the feature list
+  on the state with a feature-state of 'LOADED'
+  */
   const [getNtasByBorough, {}] = useLazyQuery<
     NtasByBoroughQuery,
     NtasByBoroughQueryVariables
@@ -43,7 +53,7 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           data.ntas.byBoroughGeometry.map(ntaFeature => ({
-            childType: MapFeatureType.BLOCKFACE,
+            childType: MapFeatureType.BLOCK,
             geometry: ntaFeature.geometry,
             state: MapFeatureState.LOADED,
             type: MapFeatureType.NTA,
@@ -54,9 +64,28 @@ const MapImpl: React.FunctionComponent = () => {
     },
   });
 
+  const [getBlocksByNta, {}] = useLazyQuery<
+    BlocksByNtaQuery,
+    BlocksByNtaQueryVariables
+  >(blocksbyNtaQueryDocument, {
+    onCompleted: (data: BlocksByNtaQuery) => {
+      dispatch(
+        addMapFeatures(
+          data.blocks.byNtaGeometry.map(blockFeature => ({
+            childType: MapFeatureType.TREE,
+            geometry: blockFeature.geometry,
+            state: MapFeatureState.LOADED,
+            type: MapFeatureType.BLOCK,
+            uri: blockFeature.uri,
+          }))
+        )
+      );
+    },
+  });
+
   if (state.features.length === 0) {
     if (boroughsQueryResult.data) {
-      // No tracking any features yet, add the boroughs we loaded
+      // Not tracking any features yet, add the boroughs we loaded
       dispatch(
         addMapFeatures(
           boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
@@ -109,7 +138,13 @@ const MapImpl: React.FunctionComponent = () => {
       }
       case MapFeatureState.CLICKED: {
         for (const clickedFeature of featuresInState) {
-          getNtasByBorough({variables: {uri: clickedFeature.uri}});
+          if (clickedFeature.type === MapFeatureType.BOROUGH) {
+            //A borough was clicked. Query for ntas within that borough
+            getNtasByBorough({variables: {uri: clickedFeature.uri}});
+          } else if (clickedFeature.type === MapFeatureType.NTA) {
+            getBlocksByNta({variables: {uri: clickedFeature.uri}});
+          }
+
           dispatch(
             changeMapFeatureState(clickedFeature.uri, MapFeatureState.RENDERED)
           );
