@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{RdfReader, RdfWriter}
+import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
@@ -22,7 +22,7 @@ object State {
     override def read(resource: Resource): State = {
       State(
         name = resource.label.get,
-        cities = resource.citiesUri,
+        cities = resource.cityUris,
         uri = Uri.parse(resource.getURI)
       )
     }
@@ -33,7 +33,7 @@ object State {
       val resource = Option(model.getResource(value.uri.toString))
         .getOrElse(ResourceFactory.createResource(value.uri.toString))
       resource.label = value.name
-      resource.citiesUri = value.cities
+      resource.cityUris = value.cities
       resource.`type` = ResourceFactory.createResource(TREE.STATE_URI_PREFIX)
       resource
     }

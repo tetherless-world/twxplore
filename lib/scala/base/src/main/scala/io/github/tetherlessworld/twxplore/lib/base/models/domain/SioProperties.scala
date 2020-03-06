@@ -1,5 +1,6 @@
 package io.github.tetherlessworld.twxplore.lib.base.models.domain
 
+import io.github.tetherlessworld.scena.{PropertyGetters, PropertySetters}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.SIO
 import org.apache.jena.rdf.model.ResourceFactory
 
@@ -13,15 +14,15 @@ trait SioProperties extends PropertyGetters with PropertySetters {
 
   final def associatedWith = associatedWithP.headOption
 
-  final def spatioTempRelatedTo = getPropertyObjectString(SIO.isSpatioTempRelatedTo)
+  final def spatioTempRelatedTo = getPropertyObjectStrings(SIO.isSpatioTempRelatedTo).headOption
 
-  final def locationIn(): Option[String] = getPropertyObjectString(SIO.isLocationIn)
+  final def locationIn(): Option[String] = getPropertyObjectStrings(SIO.isLocationIn).headOption
 
-  final def locationOf(): Option[String] = getPropertyObjectString(SIO.isLocationOf)
+  final def locationOf(): Option[String] = getPropertyObjectStrings(SIO.isLocationOf).headOption
 
-  final  def hasValue(): Option[String] = getPropertyObjectString(SIO.hasValue)
+  final  def hasValue(): Option[String] = getPropertyObjectStrings(SIO.hasValue).headOption
 
-  final def hasUnit(): Option[String] = getPropertyObjectString(SIO.hasUnit)
+  final def hasUnit(): Option[String] = getPropertyObjectStrings(SIO.hasUnit).headOption
 
 
   //setters

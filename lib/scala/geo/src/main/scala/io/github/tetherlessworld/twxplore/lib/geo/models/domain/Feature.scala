@@ -1,8 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
-import io.github.tetherlessworld.twxplore.lib.base.models.domain.{RdfProperties, RdfsProperties}
+import io.github.tetherlessworld.scena.{Rdf, RdfProperties, RdfReader, RdfWriter, RdfsProperties}
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Model, Resource}
 
