@@ -1,0 +1,64 @@
+import {BaseAction} from "redux-actions";
+import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
+import {MapState} from "twxplore/gui/tree/states/map/MapState";
+import {MapFeatureState} from "../../states/map/MapFeatureState";
+import {MapFeature} from "../../states/map/MapFeature";
+import { CHANGE_MAP_FEATURE_STATE, ChangeMapFeatureStateAction } from "../../actions/map/ChangeMapFeatureStateAction";
+
+
+export const mapReducer = (state: MapState, action: BaseAction): MapState => {
+  const result: MapState = Object.assign({}, state);
+
+  switch (action.type) {
+    case ADD_MAP_FEATURES: {
+      const addMapFeaturesAction = action as AddMapFeaturesAction;
+      for (const feature of addMapFeaturesAction.payload.features) {
+        result.features.push(feature);
+        console.debug("added map feature " + feature.uri);
+      }
+      break;
+    }
+    case "@@kepler.gl/ADD_DATA_TO_MAP": {
+      const addDataToMapAction: any = action;
+      for (const row of addDataToMapAction.payload.datasets.data.rows) {
+        const addedFeature: MapFeature = row[0].properties;
+        for (const resultFeature of result.features) {
+          if (resultFeature.uri === addedFeature.uri) {
+            resultFeature.state = MapFeatureState.RENDERED;
+            console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
+          }
+        }
+      }
+      break;
+    }
+    case CHANGE_MAP_FEATURE_STATE: {
+      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction
+      for (const resultFeature of result.features) {
+        if (resultFeature.uri === changeMapFeatureStateAction.payload.uri) {
+          resultFeature.state = changeMapFeatureStateAction.payload.state;
+          console.debug("changed map feature " + resultFeature.uri + " to state " + changeMapFeatureStateAction.payload.state);
+        }
+      }
+    }
+    case "@@kepler.gl/REGISTER_ENTRY":
+      result.keplerGlInstanceRegistered = true;
+      break;
+
+    case "@@kepler.gl/LAYER_CLICK": {
+      const layerClickAction: any = action;
+      for (const resultFeature of result.features) {
+        if (resultFeature.uri === layerClickAction.payload.info.object.properties.uri) {
+          resultFeature.state = MapFeatureState.CLICKED;
+          console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
+        }
+      }
+      break;
+    }      
+    default: {
+      console.log("mapReducer: ignoring action type " + action.type);
+    }
+
+  }
+
+  return result;
+}

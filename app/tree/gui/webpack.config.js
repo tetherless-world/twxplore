@@ -17,7 +17,7 @@ module.exports = function (env, argv) {
   return merge(configBase(env, argv), configDevServer(distPath), {
     context: srcPath,
     entry: {
-      "geo-gui": './ts/twxplore/gui/geo/main.tsx'
+      "geo-gui": './ts/twxplore/gui/tree/main.tsx'
     },
     output: {
       path: distPath,

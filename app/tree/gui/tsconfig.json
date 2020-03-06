@@ -5,8 +5,7 @@
       "twxplore/*": [
         "src/ts/twxplore/*"
       ]
-    },
-    "typeRoots": ["./src/ts/twxplore/gui/geo/components/map"],
+    }
   },
-  "extends": "../../../lib/ts/base/tsconfig.base.json",
+  "extends": "../../../lib/ts/base/tsconfig.base.json"
 }
