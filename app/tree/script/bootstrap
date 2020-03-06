@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+# Change to the root of the repository
+cd "$(dirname "$0")/../../.."
+
+npm run lerna:bootstrap
+
+# Build the Scala middleware
+sbt "project treeApp" package
+
+# Build the Scala command line interface
+sbt "project treeCli" package assembly
+
+# Build the TypeScript base library
+cd lib/ts/base
+npm run build
+
+# Build the tree GUI
+# cd ../../../app/tree/gui
+# npm run build
