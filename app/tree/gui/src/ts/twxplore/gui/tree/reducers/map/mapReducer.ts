@@ -45,14 +45,15 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
 
     case "@@kepler.gl/LAYER_CLICK": {
-      const layerClickAction: any = action
+      const layerClickAction: any = action;
       for (const resultFeature of result.features) {
         if (resultFeature.uri === layerClickAction.payload.info.object.properties.uri) {
           resultFeature.state = MapFeatureState.CLICKED;
           console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
         }
       }
-    }        
+      break;
+    }      
     default: {
       console.log("mapReducer: ignoring action type " + action.type);
     }
@@ -61,49 +62,3 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
   return result;
 }
-
-
-// switch (action.type) {
-//   case APPEND_MAP : {
-//     const appendMapAction = action as AppendMapAction;
-//     ((result as any)[appendMapAction.payload.map] as Map<String, String>).set(appendMapAction.payload.uri, appendMapAction.payload.uri);
-//     return result;
-//   }
-//   case SELECT_DATA: {
-//     result.selectionData = (action as SelectDataAction).payload
-//     return result;
-//   }
-//   case ActionTypes.LAYER_CLICK: {
-//     console.log("This case opened")
-//     const layerClickAction = action as any;
-//     console.log(layerClickAction)
-//     if (layerClickAction.payload.info.picked) {
-//       return result;
-//     }
-//     result.scope = layerClickAction.payload.info.object.properties.child;
-//     result.parentUri = layerClickAction.payload.info.object.properties.uri;
-//
-//     switch (layerClickAction.payload.info.object.properties.type) {
-//       case "block": {
-//         if (!(result.blockMap.has(layerClickAction.payload.info.object.properties.uri))) {
-//           result.blocks.push(layerClickAction.payload.info.object.properties.uri)
-//         }
-//         result.createSelection = true;
-//         // result = {
-//         //   blocks: state.blocks,
-//         //   createSelection: true
-//         // }
-//       }
-//         // case "NTA": {
-//         //     break;
-//         // }
-//     }
-//     return result;
-//   }
-//   case CHANGE_MODE:{
-//     result.mode = action.payload
-//     return result
-//     }
-//   default:
-//     return result;
-// }

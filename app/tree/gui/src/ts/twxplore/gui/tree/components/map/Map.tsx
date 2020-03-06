@@ -88,8 +88,8 @@ const MapImpl: React.FunctionComponent = () => {
             }
             case MapFeatureState.CLICKED: {
                 for (const clickedFeature of featuresInState){
-                 getNtasByBorough({variables: {uri: clickedFeature.uri}});
-                 dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED));
+                    getNtasByBorough({variables: {uri: clickedFeature.uri}});
+                    dispatch(changeFeatureState(clickedFeature.uri, MapFeatureState.RENDERED));
                 }
                 break;
             }
