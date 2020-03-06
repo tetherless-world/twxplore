@@ -1,7 +1,7 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.scena.{DcTermsProperties, RdfProperties, RdfReader, RdfWriter, RdfsProperties}
+import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain._
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.TreeProperties
 import io.github.tetherlessworld.twxplore.lib.tree.models.domain.vocabulary.TREE
@@ -29,7 +29,7 @@ object Nta {
         name = resource.label.get,
         borough = resource.boroughUri.get,
         postCode = resource.postalCodeUri.get,
-        blocks = resource.blocksUri,
+        blocks = resource.blockUris,
         feature = resource.spatialDimensionProp.get,
         uri = Uri.parse(resource.getURI)
       )
@@ -44,7 +44,7 @@ object Nta {
       resource.label = value.name
       resource.identifier = value.nta
       resource.postalCodeUri = value.postCode
-      resource.blocksUri = value.blocks
+      resource.blockUris = value.blocks
       resource.boroughUri = value.borough
       resource.spatialDimensionProp = value.feature
       resource.`type` = ResourceFactory.createResource(TREE.NTA_URI_PREFIX)
