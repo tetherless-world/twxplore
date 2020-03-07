@@ -19,7 +19,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
-        console.debug("added map feature " + feature.uri);
+        console.log("added map feature " + feature.uri);
       }
       break;
     }

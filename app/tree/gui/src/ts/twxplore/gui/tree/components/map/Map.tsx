@@ -9,6 +9,7 @@ import {
 import * as boroughsQueryDocument from "twxplore/gui/tree/api/queries/BoroughGeometriesQuery.graphql";
 import * as ntasByBoroughQueryDocument from "twxplore/gui/tree/api/queries/NtasByBoroughQuery.graphql";
 import * as blocksbyNtaQueryDocument from "twxplore/gui/tree/api/queries/BlocksByNtaQuery.graphql";
+import * as treeMapQueryDocument from "twxplore/gui/tree/api/queries/TreeMapQuery.graphql";
 import {useQuery, useLazyQuery} from "@apollo/react-hooks";
 import * as React from "react";
 import {addMapFeatures} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
@@ -26,6 +27,10 @@ import {
   BlocksByNtaQuery,
   BlocksByNtaQueryVariables,
 } from "../../api/queries/types/BlocksByNtaQuery";
+import {
+  TreeMapQuery,
+  TreeMapQueryVariables,
+} from "../../api/queries/types/TreeMapQuery";
 
 var wkt = require("terraformer-wkt-parser");
 
@@ -64,7 +69,8 @@ const MapImpl: React.FunctionComponent = () => {
     },
   });
 
-  const [getBlocksByNta, {}] = useLazyQuery<
+  /* Same lazy query above except to get Blocks under an Nta*/
+  const [getBlocksByNta] = useLazyQuery<
     BlocksByNtaQuery,
     BlocksByNtaQueryVariables
   >(blocksbyNtaQueryDocument, {
@@ -82,6 +88,44 @@ const MapImpl: React.FunctionComponent = () => {
       );
     },
   });
+
+  /* This is a very comprehensive query. Takes in a filter that will specifify what info to return*/
+  const [getTreeMap, {}] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(
+    treeMapQueryDocument,
+    {
+      onCompleted: (data: TreeMapQuery) => {
+        dispatch(
+          addMapFeatures(
+            data.treesBySelection.trees.map(tree => ({
+              geometry: wkt.parse(
+                "POINT (" + tree.longitude + " " + tree.latitude + ")"
+              ),
+              state: MapFeatureState.LOADED,
+              type: MapFeatureType.TREE,
+              uri: tree.uri,
+            }))
+          )
+        );
+      },
+    }
+  );
+
+  /*Function to call the getTreeMapQuery while filtering for trees in a certain block
+  const getTreesByBorough = (blockUri: string ) => {
+    const treeData =  getMapInfo({"variables" : {selectionInput: { includeBlocks: [blockUri], includeNtaList: [], excludeBlocks: [], excludeNtaList: [] }}})
+    dispatch(
+      addMapFeatures(
+        treeData.trees   data.boroughs.geometries.map(boroughFeature => ({
+          childType: MapFeatureType.NTA,
+          geometry: boroughFeature.geometry,
+          state: MapFeatureState.LOADED,
+          type: MapFeatureType.BOROUGH,
+          uri: boroughFeature.uri,
+        }))
+      )
+    );
+  }
+*/
 
   if (state.features.length === 0) {
     if (boroughsQueryResult.data) {
@@ -128,7 +172,7 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: featuresInState[0].type,
+            id: featuresInState[0].uri,
           },
         };
         dispatch(
@@ -143,6 +187,17 @@ const MapImpl: React.FunctionComponent = () => {
             getNtasByBorough({variables: {uri: clickedFeature.uri}});
           } else if (clickedFeature.type === MapFeatureType.NTA) {
             getBlocksByNta({variables: {uri: clickedFeature.uri}});
+          } else if (clickedFeature.type === MapFeatureType.BLOCK) {
+            getTreeMap({
+              variables: {
+                selectionInput: {
+                  includeBlocks: [clickedFeature.uri],
+                  includeNtaList: [],
+                  excludeBlocks: [],
+                  excludeNtaList: [],
+                },
+              },
+            });
           }
 
           dispatch(
