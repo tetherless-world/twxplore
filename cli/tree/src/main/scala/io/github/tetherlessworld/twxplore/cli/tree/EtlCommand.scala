@@ -1,28 +1,18 @@
 package io.github.tetherlessworld.twxplore.cli.tree
 
 import com.beust.jcommander.{Parameter, Parameters}
-import com.typesafe.scalalogging.Logger
-import edu.rpi.tw.twks.client.direct.DirectTwksClient
-import edu.rpi.tw.twks.client.rest.{RestTwksClient, RestTwksClientConfiguration}
-import edu.rpi.tw.twks.factory.{TwksFactory, TwksFactoryConfiguration}
-import io.github.tetherlessworld.twxplore.lib.cli.Command
+import io.github.tetherlessworld.twxplore.lib.cli.{Command, TwksClientFactory}
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
-import io.github.tetherlessworld.twxplore.lib.tree.stores.TwksHierarchyStore
 
 object EtlCommand extends Command {
   val args = new Args()
   val name = "etl"
-  private val logger = Logger(getClass.getName)
+//  private val logger = Logger(getClass.getName)
 
   def apply(): Unit = {
-    val twksClient =
-      if (args.direct)
-        new DirectTwksClient(TwksFactory.getInstance().createTwks(TwksFactoryConfiguration.builder().setFromEnvironment().build()))
-      else
-        new RestTwksClient(RestTwksClientConfiguration.builder().setFromEnvironment().build())
-    val twksStore = new TwksHierarchyStore(twksClient)
+    val twksClient = if (args.direct) TwksClientFactory.createDirectTwksClient() else TwksClientFactory.createRestTwksClient()
 
     args.dataSource = args.dataSource.toLowerCase
 
