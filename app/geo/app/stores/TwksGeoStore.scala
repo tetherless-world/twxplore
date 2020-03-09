@@ -5,13 +5,18 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import javax.inject.Inject
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
 import org.apache.jena.vocabulary.{RDF, RDFS}
+import play.api.Configuration
 
 import scala.collection.JavaConverters._
 
 class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with GeoStore {
+  @Inject
+  def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
+
   override def getFeatures(limit: Int, offset: Int): List[Feature] =
     getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
 
