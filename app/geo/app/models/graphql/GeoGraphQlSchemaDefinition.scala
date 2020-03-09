@@ -59,7 +59,8 @@ object GeoGraphQlSchemaDefinition {
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GeoGraphQlSchemaContext, Unit](
     Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
     Field("featureByUri", FeatureType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
-    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry")))
+    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry"))),
+    Field("featuresWithin", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesWithin(ctx.args.arg("geometry")))
   ))
 
   // Schema

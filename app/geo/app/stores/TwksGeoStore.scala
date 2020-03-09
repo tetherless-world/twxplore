@@ -104,4 +104,27 @@ class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) wit
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
     }
   }
+
+  override def getFeaturesWithin(geometry: Geometry): List[Feature] = {
+    val query = QueryFactory.create(
+      s"""
+         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+         |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
+         |PREFIX rdf: <${RDF.getURI}>
+         |PREFIX rdfs: <${RDFS.getURI}>
+         |SELECT ?feature ?featureLabel ?featureGeometry ?featureGeometryLabel ?featureGeometryWkt
+         |WHERE {
+         |  ?feature geo:hasDefaultGeometry ?featureGeometry .
+         |  ?feature rdfs:label ?featureLabel .
+         |  ?featureGeometry geo:asWKT ?featureGeometryWkt .
+         |  ?featureGeometry rdfs:label ?featureGeometryLabel .
+         |  FILTER(geof:sfWithin(<${geometry.uri}>, ?featureGeometryWkt)) .
+         |}
+         |""".stripMargin)
+    withAssertionsQueryExecution(query) {
+      queryExecution =>
+        val model = queryExecution.execConstruct()
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
+    }
+  }
 }

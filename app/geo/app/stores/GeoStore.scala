@@ -13,4 +13,6 @@ trait GeoStore {
   def getFeatureByUri(featureUri: Uri): Feature
 
   def getFeaturesContaining(geometry: Geometry): List[Feature]
+
+  def getFeaturesWithin(geometry: Geometry): List[Feature]
 }

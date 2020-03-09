@@ -12,4 +12,6 @@ object TestGeoStore extends GeoStore {
   override def getFeaturesCount() = 1
 
   override def getFeatureByUri(featureUri: Uri): Feature = if (featureUri == GeoTestData.feature.uri) GeoTestData.feature else throw new NoSuchElementException()
+
+  override def getFeaturesWithin(geometry: Geometry): List[Feature] = if (geometry != null && geometry.uri == GeoTestData.geometry.uri) List(GeoTestData.feature) else List()
 }
