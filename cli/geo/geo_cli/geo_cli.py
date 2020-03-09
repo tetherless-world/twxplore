@@ -1,4 +1,5 @@
 import os.path
+import subprocess
 from pathlib import Path
 
 from rdflib import Graph
@@ -23,4 +24,6 @@ def main():
             with TigerLineZipFile(zip_file_path=DATA_DIR_PATH / (file_base_name + ".zip"), shapefile_record_type=shapefile_record_type) as tiger_line_zip_file:
                 for feature in tiger_line_zip_file.extract_features():
                     feature.to_rdf(feature_graph)
-    feature_graph.serialize(destination=str(DATA_DIR_PATH / "features.ttl"), format="ttl")
+    features_ttl_file_path = str(DATA_DIR_PATH / "features.ttl")
+    feature_graph.serialize(destination=features_ttl_file_path, format="ttl")
+    subprocess.call(["bzip2", "-9", features_ttl_file_path])
