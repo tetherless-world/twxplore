@@ -8,14 +8,14 @@ from zipfile import ZipFile
 import pygeoif
 import shapefile
 
-from .feature import Feature
-from .geometry import Geometry
-from .namespace import DSA_GEO, SCHEMA
+from ..feature import Feature
+from ..geometry import Geometry
+from ..namespace import DSA_GEO
 
 
 class TigerLineZipFile(object):
-    def __init__(self, type: str, zip_file_path: Path):
-        self.__type = type.lower()
+    def __init__(self, shapefile_record_type, zip_file_path: Path):
+        self.__shapefile_record_type = shapefile_record_type
         self.__zip_file_path = zip_file_path
 
     @property
@@ -46,21 +46,20 @@ class TigerLineZipFile(object):
                         continue
                     print(field_name, shape.record[field_name])
                 print()
-                label = None
-                for label_key in ("FULLNAME", "NAME"):
-                    try:
-                        label = shape.record[label_key]
-                        break
-                    except IndexError:
-                        pass
-                if label is None:
-                    raise RuntimeError
-                type = None
-                if self.__type == "state":
-                    type = SCHEMA.State
-                wkt = pygeoif.geometry.as_shape(shape).geometry.wkt
-                geometry = Geometry(label=label, uri=DSA_GEO[base_name + "/geometry/" + str(shape_i)], wkt=wkt)
-                feature = Feature(label=label, geometry=geometry, type=type, uri=DSA_GEO[base_name + "/feature/" + str(shape_i)])
+                record = self.__shapefile_record_type(shape.record)
+                geometry = \
+                    Geometry(
+                        label=record.label,
+                        uri=DSA_GEO[base_name + "/geometry/" + str(shape_i)],
+                        wkt=pygeoif.geometry.as_shape(shape).geometry.wkt
+                    )
+                feature = \
+                    Feature(
+                        label=record.label,
+                        geometry=geometry,
+                        type=record.type,
+                        uri=DSA_GEO[base_name + "/feature/" + str(shape_i)]
+                    )
                 yield feature
 
     def __shapefile_reader(self):
