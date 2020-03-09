@@ -1,2 +1,2 @@
-from geo_cli import main
+from .geo_cli import main
 main()
