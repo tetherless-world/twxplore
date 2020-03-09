@@ -8,7 +8,7 @@ import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {
   CHANGE_MAP_FEATURE_STATE,
-  ChangeMapFeatureStateAction,
+  ChangeMapFeatureStateAction
 } from "../../actions/map/ChangeMapFeatureStateAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -43,15 +43,18 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case CHANGE_MAP_FEATURE_STATE: {
       const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction;
-      for (const resultFeature of result.features) {
-        if (resultFeature.uri === changeMapFeatureStateAction.payload.uri) {
-          resultFeature.state = changeMapFeatureStateAction.payload.state;
-          console.debug(
-            "changed map feature " +
-              resultFeature.uri +
-              " to state " +
-              changeMapFeatureStateAction.payload.state
-          );
+      for (const actionUri of changeMapFeatureStateAction.payload.uris)
+      {
+        for (const resultFeature of result.features) {
+          if (resultFeature.uri === actionUri) {
+            resultFeature.state = changeMapFeatureStateAction.payload.state;
+            console.debug(
+              "changed map feature " +
+                resultFeature.uri +
+                " to state " +
+                changeMapFeatureStateAction.payload.state
+            );
+          }
         }
       }
     }
