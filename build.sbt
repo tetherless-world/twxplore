@@ -50,7 +50,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
+  .aggregate(geoApp, baseLib, cliLib, geoLib, treeCli, treeLib)
   .disablePlugins(AssemblyPlugin)
   .settings(
     skip in publish := true
@@ -82,6 +82,19 @@ lazy val baseLib =
       name := "twxplore-base-lib"
     )
 
+lazy val cliLib = (project in file("lib/scala/cli"))
+  .dependsOn(baseLib)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.beust" % "jcommander" % "1.78",
+      "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+      "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
+      "org.slf4j" % "slf4j-simple" % slf4jVersion
+    ),
+    name := "twxplore-cli-lib",
+    skip in publish := true
+  )
+
 lazy val geoApp = (project in file("app/geo"))
   .dependsOn(geoLib % "compile->compile;test->test")
   .disablePlugins(AssemblyPlugin)
@@ -97,6 +110,30 @@ lazy val geoApp = (project in file("app/geo"))
     skip in publish := true
   )
 
+lazy val geoCli = (project in file("cli/geo"))
+  .dependsOn(cliLib, geoLib)
+  .enablePlugins(AssemblyPlugin)
+  .settings(
+//    assemblyMergeStrategy in assembly := {
+//      case "logback.xml" => MergeStrategy.first
+//      case "module-info.class" => MergeStrategy.discard // Jackson has many of these, not needed
+//      case PathList("javax", "activation", xs@_*) => MergeStrategy.first // Conflicting versions
+//      case PathList("javax", "xml", "bind", xs@_*) => MergeStrategy.first // Conflicting versions
+//      case PathList("META-INF", "versions", "9", "javax", "xml", "bind", "ModuleUtil.class") => MergeStrategy.first // Same as above
+//      case PathList("META-INF", "c.tld") => MergeStrategy.last // Part of the taglibs
+//      case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first // Pick jcl-over-slf4j
+//      case PathList("org", "apache", "taglibs", "standard", xs@_*) => MergeStrategy.last
+//      case x =>
+//        val oldStrategy = (assemblyMergeStrategy in assembly).value
+//        oldStrategy(x)
+//    },
+    assemblyOutputPath in assembly := baseDirectory.value / "dist" / (name.value + ".jar"),
+    mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.geo.GeoCli"),
+    name := "geo-cli",
+    skip in publish := true
+  )
+
+
 lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib % "compile->compile;test->test")
@@ -107,7 +144,7 @@ lazy val geoLib =
     )
 
 lazy val treeCli = (project in file("cli/tree"))
-  .dependsOn(treeLib)
+  .dependsOn(cliLib, treeLib)
   .enablePlugins(AssemblyPlugin)
   .settings(
     assemblyMergeStrategy in assembly := {

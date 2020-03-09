@@ -1,7 +1,6 @@
 package io.github.tetherlessworld.twxplore.cli.tree
 
 import com.beust.jcommander.{JCommander, Parameter}
-import io.github.tetherlessworld.twxplore.cli.tree.command.EtlCommand
 import nl.grons.metrics4.scala.DefaultInstrumented
 
 object TreeCli extends DefaultInstrumented {

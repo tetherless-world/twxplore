@@ -1,10 +1,11 @@
-package io.github.tetherlessworld.twxplore.cli.tree.command
+package io.github.tetherlessworld.twxplore.cli.tree
 
 import com.beust.jcommander.{Parameter, Parameters}
 import com.typesafe.scalalogging.Logger
 import edu.rpi.tw.twks.client.direct.DirectTwksClient
 import edu.rpi.tw.twks.client.rest.{RestTwksClient, RestTwksClientConfiguration}
 import edu.rpi.tw.twks.factory.{TwksFactory, TwksFactoryConfiguration}
+import io.github.tetherlessworld.twxplore.lib.cli.Command
 import io.github.tetherlessworld.twxplore.lib.tree.etl.CsvTransformer
 import io.github.tetherlessworld.twxplore.lib.tree.etl.geo._
 import io.github.tetherlessworld.twxplore.lib.tree.etl.tree.{TreeCsvTransformer, TwksTreeCsvTransformerSink}
