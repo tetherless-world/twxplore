@@ -1,4 +1,5 @@
-import {MapFeature} from "twxplore/gui/tree/states/map/MapFeature";
+import { MapFeature } from "./MapFeature";
+
 
 export interface MapState {
   keplerGlInstanceRegistered: boolean;

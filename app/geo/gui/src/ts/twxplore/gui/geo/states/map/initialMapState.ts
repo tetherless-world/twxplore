@@ -1,4 +1,5 @@
-import {MapState} from "twxplore/gui/tree/states/map/MapState";
+import { MapState } from "./MapState";
+
 
 export const initialMapState: MapState = {
   keplerGlInstanceRegistered: false,
