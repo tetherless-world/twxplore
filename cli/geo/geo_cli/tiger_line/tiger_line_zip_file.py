@@ -47,15 +47,19 @@ class TigerLineZipFile(object):
                     print(field_name, shape.record[field_name])
                 print()
                 record = self.__shapefile_record_type(shape.record)
+                label = record.label
+                label = label.strip()
+                if not label:
+                    continue
                 geometry = \
                     Geometry(
-                        label=record.label,
+                        label=label,
                         uri=DSA_GEO[base_name + "/geometry/" + str(shape_i)],
                         wkt=pygeoif.geometry.as_shape(shape).geometry.wkt
                     )
                 feature = \
                     Feature(
-                        label=record.label,
+                        label=label,
                         geometry=geometry,
                         type=record.type,
                         uri=DSA_GEO[base_name + "/feature/" + str(shape_i)]
