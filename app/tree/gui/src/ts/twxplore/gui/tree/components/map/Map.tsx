@@ -41,16 +41,15 @@ const MapImpl: React.FunctionComponent = () => {
   );
   // Load boroughs on first render
   const boroughsQueryResult = useQuery<BoroughsQuery>(
-    boroughsQueryDocument,
-    {}
+    boroughsQueryDocument
   );
 
   /* Lazy Query to get Ntas that belong to a borough.
   The onCompleted function dispatches an action that
-  puts each nta from the query into the feature list
+  puts each NTA from the query into the feature list
   on the state with a feature-state of 'LOADED'
   */
-  const [getNtasByBorough, {}] = useLazyQuery<
+  const [getNtasByBorough] = useLazyQuery<
     NtasByBoroughQuery,
     NtasByBoroughQueryVariables
   >(ntasByBoroughQueryDocument, {
@@ -58,7 +57,6 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           data.ntas.byBoroughGeometry.map(ntaFeature => ({
-            childType: MapFeatureType.BLOCK,
             geometry: ntaFeature.geometry,
             state: MapFeatureState.LOADED,
             type: MapFeatureType.NTA,
@@ -78,7 +76,6 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           data.blocks.byNtaGeometry.map(blockFeature => ({
-            childType: MapFeatureType.TREE,
             geometry: blockFeature.geometry,
             state: MapFeatureState.LOADED,
             type: MapFeatureType.BLOCK,
@@ -89,7 +86,11 @@ const MapImpl: React.FunctionComponent = () => {
     },
   });
 
-  /* This is a very comprehensive query. Takes in a filter that will specifify what info to return*/
+  /* This is a very comprehensive query. Takes in a filter-list of type SelectionInput that will specifify what trees to return 
+  based on the filters it is given.
+  Already I see a problem with my implementation in that the onCompleted property assumes that this query
+  will be used to add trees to the map all the time.
+  */
   const [getTreeMap, {}] = useLazyQuery<TreeMapQuery, TreeMapQueryVariables>(
     treeMapQueryDocument,
     {
@@ -110,22 +111,6 @@ const MapImpl: React.FunctionComponent = () => {
     }
   );
 
-  /*Function to call the getTreeMapQuery while filtering for trees in a certain block
-  const getTreesByBorough = (blockUri: string ) => {
-    const treeData =  getMapInfo({"variables" : {selectionInput: { includeBlocks: [blockUri], includeNtaList: [], excludeBlocks: [], excludeNtaList: [] }}})
-    dispatch(
-      addMapFeatures(
-        treeData.trees   data.boroughs.geometries.map(boroughFeature => ({
-          childType: MapFeatureType.NTA,
-          geometry: boroughFeature.geometry,
-          state: MapFeatureState.LOADED,
-          type: MapFeatureType.BOROUGH,
-          uri: boroughFeature.uri,
-        }))
-      )
-    );
-  }
-*/
 
   if (state.features.length === 0) {
     if (boroughsQueryResult.data) {
@@ -133,7 +118,6 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           boroughsQueryResult.data.boroughs.geometries.map(boroughFeature => ({
-            childType: MapFeatureType.NTA,
             geometry: boroughFeature.geometry,
             state: MapFeatureState.LOADED,
             type: MapFeatureType.BOROUGH,
@@ -160,6 +144,13 @@ const MapImpl: React.FunctionComponent = () => {
     const featuresInState = featuresByState[featureState];
     switch (featureState) {
       case MapFeatureState.LOADED: {
+        /*
+        Features in this state have been queried, created and pushed into the 
+        features state list that is located on the store. The next step is to
+        add the data of the features to the map using the addDataToMap action which is reduced by
+        keplerGL reducer.. The geometry of the feature is used
+        to display its location and shape on the map.
+        */ 
         const datasets = {
           data: Processors.processGeojson({
             type: "FeatureCollection",
@@ -181,30 +172,43 @@ const MapImpl: React.FunctionComponent = () => {
         break;
       }
       case MapFeatureState.CLICKED: {
+        /*
+        Features in this state have been clicked on the map. They now need to
+        LOAD in their child features.
+        */ 
+        const clickedUris : string[] = []
         for (const clickedFeature of featuresInState) {
-          if (clickedFeature.type === MapFeatureType.BOROUGH) {
-            //A borough was clicked. Query for ntas within that borough
-            getNtasByBorough({variables: {uri: clickedFeature.uri}});
-          } else if (clickedFeature.type === MapFeatureType.NTA) {
-            getBlocksByNta({variables: {uri: clickedFeature.uri}});
-          } else if (clickedFeature.type === MapFeatureType.BLOCK) {
-            getTreeMap({
-              variables: {
-                selectionInput: {
-                  includeBlocks: [clickedFeature.uri],
-                  includeNtaList: [],
-                  excludeBlocks: [],
-                  excludeNtaList: [],
-                },
-              },
-            });
-          }
+          switch (clickedFeature.type){
+            case MapFeatureType.BOROUGH : {
+              getNtasByBorough({variables: {uri: clickedFeature.uri}});
+              break;
+            }
 
-          dispatch(
-            changeMapFeatureState(clickedFeature.uri, MapFeatureState.RENDERED)
-          );
+            case MapFeatureType.NTA : {
+              getBlocksByNta({variables: {uri: clickedFeature.uri}});
+              break;
+            }
+
+            case MapFeatureType.BLOCK : {
+              getTreeMap({
+                variables: {
+                  selectionInput: {
+                    includeBlocks: [clickedFeature.uri],
+                    includeNtaList: [],
+                    excludeBlocks: [],
+                    excludeNtaList: [],
+                  },
+                },
+              });
+              break;
+            }
+            
+          }
+        clickedUris.push(clickedFeature.uri)
         }
-        break;
+        dispatch(
+          changeMapFeatureState(clickedUris, MapFeatureState.RENDERED)
+        );
       }
     }
   }
