@@ -5,11 +5,23 @@ import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSch
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, ListType, Schema, fields}
+import sangria.schema.{Argument, Field, InputField, ListType, OptionInputType, Schema, fields}
 
 object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
+  // Enum types
+  implicit val FeatureTypeType = deriveEnumType[FeatureType]()
+
+  // Object types, in dependence order
+  implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
+  implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
   // Input types
-  implicit val GeometryInputType = deriveInputObjectType[Geometry](
+  implicit val GeometryInputObjectType = deriveInputObjectType[Geometry](
     InputObjectTypeName("GeometryInput"),
     ReplaceInputField("uri", InputField("uri", UriType))
   )
@@ -27,24 +39,16 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
     }
   }
 
-  // Object types, in dependence order
-  implicit val GeometryType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val FeatureType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
   // Argument types
-  val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
+  val GeometryArgument = Argument("geometry", GeometryInputObjectType, description="Geometry Input")
+  val OptionalFeatureTypeArgument = Argument("featureType", OptionInputType(FeatureTypeType), description="optional feature type")
 
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GeoGraphQlSchemaContext, Unit](
-    Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("featureByUri", FeatureType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
-    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry"))),
-    Field("featuresWithin", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesWithin(ctx.args.arg("geometry")))
+    Field("features", ListType(FeatureObjectType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
+    Field("featureByUri", FeatureObjectType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
+    Field("featuresContaining", ListType(FeatureObjectType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry"))),
+    Field("featuresWithin", ListType(FeatureObjectType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesWithin(ctx.args.arg("geometry")))
   ))
 
   // Schema
