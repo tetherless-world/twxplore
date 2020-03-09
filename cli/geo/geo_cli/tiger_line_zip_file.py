@@ -10,11 +10,12 @@ import shapefile
 
 from .feature import Feature
 from .geometry import Geometry
-from .namespace import DSA_GEO
+from .namespace import DSA_GEO, SCHEMA
 
 
 class TigerLineZipFile(object):
-    def __init__(self, zip_file_path: Path):
+    def __init__(self, type: str, zip_file_path: Path):
+        self.__type = type.lower()
         self.__zip_file_path = zip_file_path
 
     @property
@@ -38,32 +39,28 @@ class TigerLineZipFile(object):
         areaids = set()
         with self.__shapefile_reader() as shapefile_reader:
             print("Shapefile fields:", shapefile_reader.fields)
-            for shape in shapefile_reader:
-                areaid = shape.record["AREAID"]
-                assert not areaid in areaids, areaid
-                areaids.add(areaid)
-# ALAND = {int} 1443458
-# ANSICODE = {str} ''
-# AREAID = {str} '110509768024'
-# AWATER = {int} 0
-# FULLNAME = {str} 'Tripler Army Medical Ctr'
-# INTPTLAT = {str} '+21.3620086'
-# INTPTLON = {str} '-157.8896492'
-# MTFCC = {str} 'K2110'
-# oid = {int} -1
-# 0 = {str} ''
-# 1 = {str} '110509768024'
-# 2 = {str} 'Tripler Army Medical Ctr'
-# 3 = {str} 'K2110'
-# 4 = {int} 1443458
-# 5 = {int} 0
-# 6 = {str} '+21.3620086'
-# 7 = {str} '-157.8896492'
-# __len__ = {int} 8
-                fullname = shape.record["FULLNAME"]
+            field_names = tuple(field[0] for field in shapefile_reader.fields)
+            for shape_i, shape in enumerate(shapefile_reader):
+                for field_name in field_names:
+                    if field_name == "DeletionFlag":
+                        continue
+                    print(field_name, shape.record[field_name])
+                print()
+                label = None
+                for label_key in ("FULLNAME", "NAME"):
+                    try:
+                        label = shape.record[label_key]
+                        break
+                    except IndexError:
+                        pass
+                if label is None:
+                    raise RuntimeError
+                type = None
+                if self.__type == "state":
+                    type = SCHEMA.State
                 wkt = pygeoif.geometry.as_shape(shape).geometry.wkt
-                geometry = Geometry(label=fullname, uri=DSA_GEO[base_name + "/geometry/" + areaid], wkt=wkt)
-                feature = Feature(label=fullname, geometry=geometry, uri=DSA_GEO[base_name + "/feature/" + areaid])
+                geometry = Geometry(label=label, uri=DSA_GEO[base_name + "/geometry/" + str(shape_i)], wkt=wkt)
+                feature = Feature(label=label, geometry=geometry, type=type, uri=DSA_GEO[base_name + "/feature/" + str(shape_i)])
                 yield feature
 
     def __shapefile_reader(self):

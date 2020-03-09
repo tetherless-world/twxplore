@@ -15,7 +15,7 @@ class Geometry:
         graph.add((self.__uri, RDF.type, SF.Geometry))
         if self.__label is not None:
             graph.add((self.__uri, RDFS.label, Literal(self.__label)))
-        graph.add((self.__uri, GEO.asWKT, Literal(self.__wkt, datatype=GEO.wktLiteral))
+        graph.add((self.__uri, GEO.asWKT, Literal(self.__wkt, datatype=GEO.wktLiteral)))
 
     @property
     def uri(self) -> URIRef:
