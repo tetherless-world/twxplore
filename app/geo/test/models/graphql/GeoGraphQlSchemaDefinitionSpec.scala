@@ -47,7 +47,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
            |""".stripMargin))
     }
 
-    "get features by geometry" in {
+    "get features containing a geometry" in {
       val query =
         graphql"""
           query FeaturesQuery($$geometry: GeometryInput!) {
@@ -63,6 +63,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
              |""".stripMargin))
     }
   }
+
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
