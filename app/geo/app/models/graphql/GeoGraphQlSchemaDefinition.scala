@@ -1,46 +1,20 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
+import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
-import play.api.libs.json
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, IntType, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, InputField, ListType, Schema, fields}
 
-object GeoGraphQlSchemaDefinition {
-  // Scalar Formats
-  implicit val uriFormat = new json.Format[Uri] {
-    override def reads(json: JsValue): JsResult[Uri] = JsSuccess(Uri.parse(json.asInstanceOf[JsString].value))
-
-    override def writes(o: Uri): JsValue = JsString(o.toString)
-  }
-
-  // Scalar aliases
-  implicit val UriType = ScalarAlias[Uri, String](
-    StringType, _.toString, uri => Right(Uri.parse(uri))
-  )
-
-  // Scalar argument types
-  val LimitArgument = Argument("limit", IntType, description = "Limit")
-  val OffsetArgument = Argument("offset", IntType, description = "Offset")
-  val UriArgument = Argument("uri", UriType, description= "URI")
-
-  // Domain model types, in dependence order
+object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
+  // Input types
   implicit val GeometryInputType = deriveInputObjectType[Geometry](
     InputObjectTypeName("GeometryInput"),
     ReplaceInputField("uri", InputField("uri", UriType))
   )
 
-  implicit val GeometryType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val FeatureType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
-  implicit val manual = new FromInput[Geometry] {
+  implicit val geometryFromInput = new FromInput[Geometry] {
     val marshaller = CoercedScalaResultMarshaller.default
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
@@ -52,6 +26,16 @@ object GeoGraphQlSchemaDefinition {
       )
     }
   }
+
+  // Object types, in dependence order
+  implicit val GeometryType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
+  implicit val FeatureType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
+    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  )
+
   // Argument types
   val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
 
