@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "twxplore geo GUI",
   "dependencies": {
-    "@tetherless-world/twxplore-base-lib": "1.0.0"
+    "@tetherless-world/twxplore-base-lib": "1.0.0",
+    "kepler.gl": "^2.0.1"
   },
   "license": "Apache 2",
   "scripts": {
