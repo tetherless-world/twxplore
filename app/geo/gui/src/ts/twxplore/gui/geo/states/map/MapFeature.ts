@@ -1,4 +1,5 @@
 import { MapFeatureType } from "./MapFeatureType";
+import { MapFeatureState } from "./MapFeatureState";
 
 
 export interface MapFeature {
@@ -9,4 +10,5 @@ export interface MapFeature {
   label: string | null;
   parentUri?: string;
   uri: string;
+  state: MapFeatureState
 }
