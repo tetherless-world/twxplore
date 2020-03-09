@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.cli.tree.command
+package io.github.tetherlessworld.twxplore.lib.cli
 
 trait Command {
   def apply(): Unit

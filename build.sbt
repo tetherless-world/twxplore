@@ -6,8 +6,8 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 
 // Constants
-val scenaVersion = "1.0.1-SNAPSHOT"
 val playVersion = "2.8.0"
+val scenaVersion = "1.0.1-SNAPSHOT"
 val slf4jVersion = "1.7.25"
 val twksVersion = "1.0.4-SNAPSHOT"
 
@@ -47,10 +47,9 @@ parallelExecution in ThisBuild := false
 //resolvers in ThisBuild += Resolver.mavenLocal
 resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
-
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib, geoLib, treeCli, treeLib)
+  .aggregate(geoApp, baseLib, cliLib, geoLib, treeCli, treeLib)
   .disablePlugins(AssemblyPlugin)
   .settings(
     skip in publish := true
@@ -82,6 +81,19 @@ lazy val baseLib =
       name := "twxplore-base-lib"
     )
 
+lazy val cliLib = (project in file("lib/scala/cli"))
+  .dependsOn(baseLib)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.beust" % "jcommander" % "1.78",
+      "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
+      "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
+      "org.slf4j" % "slf4j-simple" % slf4jVersion
+    ),
+    name := "twxplore-cli-lib",
+    skip in publish := true
+  )
+
 lazy val geoApp = (project in file("app/geo"))
   .dependsOn(geoLib % "compile->compile;test->test")
   .disablePlugins(AssemblyPlugin)
@@ -107,7 +119,7 @@ lazy val geoLib =
     )
 
 lazy val treeCli = (project in file("cli/tree"))
-  .dependsOn(treeLib)
+  .dependsOn(cliLib, treeLib)
   .enablePlugins(AssemblyPlugin)
   .settings(
     assemblyMergeStrategy in assembly := {
@@ -126,11 +138,7 @@ lazy val treeCli = (project in file("cli/tree"))
     assemblyOutputPath in assembly := baseDirectory.value / "dist" / ("tree-cli.jar"),
     mainClass in assembly := Some("io.github.tetherlessworld.twxplore.cli.tree.TreeCli"),
     libraryDependencies ++= Seq(
-      "com.github.tototoshi" %% "scala-csv" % "1.3.6",
-      "com.beust" % "jcommander" % "1.78",
-      "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
-      "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
-      "org.slf4j" % "slf4j-simple" % slf4jVersion
+      "com.github.tototoshi" %% "scala-csv" % "1.3.6"
     ),
     name := "tree-cli",
     skip in publish := true
