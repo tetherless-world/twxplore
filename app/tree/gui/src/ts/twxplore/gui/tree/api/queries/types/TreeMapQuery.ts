@@ -2,7 +2,17 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { SelectionInput, CurbLoc, Status, Health, Steward, Guards, Sidewalk, UserType, Problems } from "./../../../../geo/api/graphqlGlobalTypes";
+import {
+  SelectionInput,
+  CurbLoc,
+  Status,
+  Health,
+  Steward,
+  Guards,
+  Sidewalk,
+  UserType,
+  Problems,
+} from "./../../../../geo/api/graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: TreeMapQuery

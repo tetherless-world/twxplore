@@ -1,10 +1,15 @@
 import {BaseAction} from "redux-actions";
-import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
+import {
+  ADD_MAP_FEATURES,
+  AddMapFeaturesAction,
+} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 import {MapState} from "twxplore/gui/tree/states/map/MapState";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
-import { CHANGE_MAP_FEATURE_STATE, ChangeMapFeatureStateAction } from "../../actions/map/ChangeMapFeatureStateAction";
-
+import {
+  CHANGE_MAP_FEATURE_STATE,
+  ChangeMapFeatureStateAction
+} from "../../actions/map/ChangeMapFeatureStateAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -14,7 +19,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
-        console.debug("added map feature " + feature.uri);
+        console.log("added map feature " + feature.uri);
       }
       break;
     }
@@ -25,18 +30,31 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === addedFeature.uri) {
             resultFeature.state = MapFeatureState.RENDERED;
-            console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
+            console.debug(
+              "changed map feature " +
+                resultFeature.uri +
+                " to state " +
+                MapFeatureState.RENDERED
+            );
           }
         }
       }
       break;
     }
     case CHANGE_MAP_FEATURE_STATE: {
-      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction
-      for (const resultFeature of result.features) {
-        if (resultFeature.uri === changeMapFeatureStateAction.payload.uri) {
-          resultFeature.state = changeMapFeatureStateAction.payload.state;
-          console.debug("changed map feature " + resultFeature.uri + " to state " + changeMapFeatureStateAction.payload.state);
+      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction;
+      for (const actionUri of changeMapFeatureStateAction.payload.uris)
+      {
+        for (const resultFeature of result.features) {
+          if (resultFeature.uri === actionUri) {
+            resultFeature.state = changeMapFeatureStateAction.payload.state;
+            console.debug(
+              "changed map feature " +
+                resultFeature.uri +
+                " to state " +
+                changeMapFeatureStateAction.payload.state
+            );
+          }
         }
       }
     }
@@ -47,18 +65,25 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     case "@@kepler.gl/LAYER_CLICK": {
       const layerClickAction: any = action;
       for (const resultFeature of result.features) {
-        if (resultFeature.uri === layerClickAction.payload.info.object.properties.uri) {
+        if (
+          resultFeature.uri ===
+          layerClickAction.payload.info.object.properties.uri
+        ) {
           resultFeature.state = MapFeatureState.CLICKED;
-          console.debug("changed map feature " + resultFeature.uri + " to state " + MapFeatureState.RENDERED);
+          console.debug(
+            "changed map feature " +
+              resultFeature.uri +
+              " to state " +
+              MapFeatureState.RENDERED
+          );
         }
       }
       break;
-    }      
+    }
     default: {
       console.log("mapReducer: ignoring action type " + action.type);
     }
-
   }
 
   return result;
-}
+};

@@ -18,17 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {combineReducers} from 'redux';
-import {routerReducer} from 'react-router-redux';
-import keplerGlReducer from 'kepler.gl/reducers';
+import {combineReducers} from "redux";
+import {routerReducer} from "react-router-redux";
+import keplerGlReducer from "kepler.gl/reducers";
 import {appReducer} from "twxplore/gui/tree/reducers/app/appReducer";
 
 export const rootReducer = combineReducers({
   app: appReducer,
   keplerGl: keplerGlReducer.initialState({
     uiState: {
-      currentModal: null
-    }
+      currentModal: null,
+    },
   }),
-  routing: routerReducer
+  routing: routerReducer,
 });

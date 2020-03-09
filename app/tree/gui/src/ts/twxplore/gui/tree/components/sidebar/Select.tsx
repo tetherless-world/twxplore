@@ -1,7 +1,8 @@
-import * as React from 'react'
-import { FunctionComponent } from 'react';
+import * as React from "react";
+import {FunctionComponent} from "react";
 
-export const Select: FunctionComponent<{}> = () => 
+export const Select: FunctionComponent<{}> = () => (
   <>
     <b>Select HUD</b>
   </>
+);

@@ -9,9 +9,6 @@
 // import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // import { TreeMapQuery_TreesBySelection_trees } from '../../api/queries/types/TreeMapQuery';
 
-
-
-
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
 //     root: {
@@ -24,12 +21,9 @@
 //   }),
 // );
 
-
-
-
 // export const TreeCollapse: React.FunctionComponent = () => {
 //     const classes = useStyles();
-    
+
 //     return (
 //         <div>
 //             <ExpansionPanel>
@@ -42,13 +36,12 @@
 //                 </ExpansionPanelSummary>
 //                 <ExpansionPanelDetails>
 //                     <ListGroup className = 'eachFeature'>
-                      
-                        
-//                         {Object.keys(features).map(key =>{ 
+
+//                         {Object.keys(features).map(key =>{
 //                           const onClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { e.preventDefault();}
 //                           return (String((features as any)[key]).toLowerCase().indexOf("resource") === -1 ? <ListGroupItem> {key}: {(features as any)[key]} </ListGroupItem> :
 //                           <ListGroupItem> {key}: <a href="" onClick = {onClick} id = {key}> {(features as any)[key]} </a> </ListGroupItem>)
-                          
+
 //                       })}
 //                     </ListGroup>
 //                 </ExpansionPanelDetails>
@@ -56,4 +49,3 @@
 //         </div>
 //     );
 // }
-
