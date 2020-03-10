@@ -5,4 +5,4 @@ set -e
 # Assumes TWKS is checked out as a sibling
 cd "$(dirname "$0")/../../../../twks/java"
 
-mvn package -DskipTests jetty:run
+MAVEN_OPTS="-Dtwks.enableGeoSPARQL" mvn package -DskipTests jetty:run
