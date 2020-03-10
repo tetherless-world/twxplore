@@ -35,15 +35,15 @@ class TwksGeoStoreSpec extends WordSpec with Matchers {
       actual should equal(List())
     }
 
-    "get features containing a geometry" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = Some("POINT (30 10)"), `type` = None, withinWkt = None))
-      actual should equal(List(GeoTestData.feature))
-    }
-
-    "get features within a geometry" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = None, withinWkt = Some(GeoTestData.geometry.wkt)))
-      actual should equal(List(GeoTestData.feature))
-    }
+//    "get features containing a geometry" in {
+//      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = Some("POINT (30 10)"), `type` = None, withinWkt = None))
+//      actual should equal(List(GeoTestData.feature))
+//    }
+//
+//    "get features within a geometry" in {
+//      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = None, withinWkt = Some(GeoTestData.geometry.wkt)))
+//      actual should equal(List(GeoTestData.feature))
+//    }
   }
 }
 
