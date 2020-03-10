@@ -1,5 +1,6 @@
-import {initialMapState} from "twxplore/gui/tree/states/map/initialMapState";
-import {AppState} from "twxplore/gui/tree/states/app/AppState";
+import { AppState } from "./AppState";
+import { initialMapState } from "../map/initialMapState";
+
 
 export const initialAppState: AppState = {
   map: initialMapState,

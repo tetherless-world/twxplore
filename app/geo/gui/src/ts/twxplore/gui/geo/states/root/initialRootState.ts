@@ -1,5 +1,6 @@
-import {RootState} from "twxplore/gui/tree/states/root/RootState";
-import {initialAppState} from "twxplore/gui/tree/states/app/initialAppState";
+import { initialAppState } from "../app/initialAppState";
+import { RootState } from "./RootState";
+
 
 export const initialRootState: RootState = {
   keplerGl: {},
