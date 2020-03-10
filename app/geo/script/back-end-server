@@ -5,4 +5,4 @@ set -e
 # Change to the root of the repository
 cd "$(dirname "$0")/../../.."
 
-sbt "project treeApp" run
+sbt "project geoApp" run
