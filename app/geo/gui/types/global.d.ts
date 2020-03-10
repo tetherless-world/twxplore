@@ -1,5 +1,3 @@
 // declare module '*' 
 
-declare module 'kepler.gl/reducers';
-
-declare module 'kepler.gl/middleware';
+declare module 'global/window'
