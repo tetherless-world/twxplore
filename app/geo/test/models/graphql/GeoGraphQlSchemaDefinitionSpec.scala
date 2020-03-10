@@ -73,14 +73,12 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
             }
           }
         """
-    val result = executeQuery(query, vars = Json.obj("wkt" -> GeoTestData.featureGeometry.wkt))
+    val result = executeQuery(query, vars = Json.obj("wkt" -> GeoTestData.containingWkt))
     result must be(Json.parse(
       s"""
-         |{"data":{"features":[]}}
+         |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
          |""".stripMargin))
   }
-
-
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
