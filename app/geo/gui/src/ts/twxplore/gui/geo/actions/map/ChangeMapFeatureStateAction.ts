@@ -11,9 +11,9 @@ export interface ChangeMapFeatureStateAction
 }
 
 export const changeMapFeatureState = (
-  a_uri: string[],
-  a_state: MapFeatureState
+  featureUris: string[],
+  newState: MapFeatureState
 ): ChangeMapFeatureStateAction => ({
-  payload: {uris: a_uri, state: a_state},
+  payload: {uris: featureUris, state: newState},
   type: CHANGE_MAP_FEATURE_STATE,
 });
