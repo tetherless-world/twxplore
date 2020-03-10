@@ -1,7 +1,6 @@
 package models.graphql
 
 import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
-import io.github.tetherlessworld.twxplore.lib.geo.stores.TestTwks
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -9,7 +8,7 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.TwksGeoStore
+import stores.{TestTwks, TwksGeoStore}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global

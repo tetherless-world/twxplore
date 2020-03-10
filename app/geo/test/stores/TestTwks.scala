@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.geo.stores
+package stores
 
 import edu.rpi.tw.twks.client.direct.DirectTwksClient
 import edu.rpi.tw.twks.configuration.TwksGeoSPARQLConfiguration

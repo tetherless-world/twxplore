@@ -2,7 +2,6 @@ package stores
 
 import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.FeatureType
-import io.github.tetherlessworld.twxplore.lib.geo.stores.TestTwks
 import models.graphql.FeatureQuery
 import org.scalatest.{Matchers, WordSpec}
 
