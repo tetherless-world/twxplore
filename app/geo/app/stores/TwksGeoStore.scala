@@ -53,7 +53,6 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
          |${PREFIXES}
          |CONSTRUCT {
          |  ?feature ?featureP ?featureO .
-         |  ?feature rdf:type geo:Feature .
          |  ?geometry ?geometryP ?geometryO .
          |} WHERE {
          |  VALUES ?feature { ${featureUris.map(featureUri => "<" + featureUri.toString() + ">").mkString(" ")} }
@@ -86,8 +85,11 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       "?feature geo:hasDefaultGeometry ?geometry .",
       "?geometry rdf:type sf:Geometry .",
     ) ++
-  //
-      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?featureGeometryWkt, "${wkt}"^geo:wktLiteral))""").toList ++
-      query.`type`.map(`type` => s"?feature rdf:type ${`type`.uri.toString} .").toList ++
-      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?featureGeometryWkt, "${wkt}"^geo:wktLiteral))""").toList
+      // Features that contain the given WKT
+      // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
+      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?geometry, "${wkt}"^^geo:wktLiteral))""").toList ++
+      query.`type`.map(`type` => s"?feature rdf:type <${`type`.uri.toString}> .").toList ++
+      // Features within the given WKT
+      // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
+      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?geometry, "${wkt}"^^geo:wktLiteral))""").toList
 }

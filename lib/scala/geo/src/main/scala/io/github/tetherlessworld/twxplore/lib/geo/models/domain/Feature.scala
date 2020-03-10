@@ -4,6 +4,7 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena._
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Model, Resource}
+import org.apache.jena.vocabulary.RDF
 
 final case class Feature(geometry: Geometry, uri: Uri, label: Option[String] = None, `type`: Option[FeatureType])
 
@@ -30,6 +31,7 @@ object Feature {
       resource.`type` = Geo.FEATURE_RES
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
       if (value.label.isDefined) resource.label = value.label.get
+      if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))
       resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](model, value.geometry))
     }
   }
