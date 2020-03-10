@@ -27,11 +27,11 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
     val marshaller = CoercedScalaResultMarshaller.default
 
     def fromResult(node: marshaller.Node) = {
-      val ad = node.asInstanceOf[Map[String, String]]
+      val ad = node.asInstanceOf[Map[String, Any]]
       FeatureQuery(
-        containsWkt = ad.get("containsWkt"),
-        `type` = ad.get("type").flatMap(value => FeatureType.values.find(testValue => testValue.toString == value)),
-        withinWkt = ad.get("withinWkt")
+        containsWkt = ad.get("containsWkt").flatMap(value => value.asInstanceOf[Option[String]]),
+        `type` = ad.get("type").flatMap(value => value.asInstanceOf[Option[FeatureType]]),
+        withinWkt = ad.get("withinWkt").flatMap(value => value.asInstanceOf[Option[String]])
       )
     }
   }

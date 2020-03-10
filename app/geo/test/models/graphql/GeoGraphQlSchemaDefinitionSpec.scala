@@ -48,22 +48,39 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
            |""".stripMargin))
     }
 
-//    "get features containing a geometry" in {
-//      val query =
-//        graphql"""
-//          query FeaturesContaining($$geometry: GeometryInput!) {
-//            featuresContaining(geometry: $$geometry) {
-//              uri
-//            }
-//          }
-//        """
-//      val result = executeQuery(query, vars = Json.obj("geometry" -> Json.obj("wkt" -> GeoTestData.geometry.wkt, "uri" -> GeoTestData.geometry.uri.toString, "label" -> GeoTestData.geometry.label)))
-//        result must be(Json.parse(
-//          s"""
-//             |{"data":{"featuresContaining":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
-//             |""".stripMargin))
-//    }
+    "get features by type" in {
+      val query =
+        graphql"""
+          query FeaturesByType($$type: FeatureType!) {
+            features(query: {type: $$type}, limit: 10, offset: 0) {
+              uri
+            }
+          }
+        """
+      val result = executeQuery(query, vars = Json.obj("type" -> GeoTestData.feature.`type`.get.toString))
+        result must be(Json.parse(
+          s"""
+             |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
+             |""".stripMargin))
+    }
   }
+
+  "get features within WKT" in {
+    val query =
+      graphql"""
+          query FeaturesByType($$wkt: String!) {
+            features(query: {withinWkt: $$wkt}, limit: 10, offset: 0) {
+              uri
+            }
+          }
+        """
+    val result = executeQuery(query, vars = Json.obj("wkt" -> GeoTestData.geometry.wkt))
+    result must be(Json.parse(
+      s"""
+         |{"data":{"features":[]}}
+         |""".stripMargin))
+  }
+
 
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
