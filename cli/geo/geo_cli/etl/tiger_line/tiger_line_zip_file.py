@@ -2,15 +2,9 @@ import os.path
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Generator
 from zipfile import ZipFile
 
-import pygeoif
 import shapefile
-
-from ..feature import Feature
-from ..geometry import Geometry
-from ..namespace import DSA_GEO
 
 
 class TigerLineZipFile(object):
@@ -34,37 +28,5 @@ class TigerLineZipFile(object):
     def __exit__(self, *args, **kwds):
         shutil.rmtree(self.__tempdir)
 
-    def extract_features(self) -> Generator[Feature, None, None]:
-        base_name = self.__base_name
-        areaids = set()
-        with self.__shapefile_reader() as shapefile_reader:
-            print("Shapefile fields:", shapefile_reader.fields)
-            field_names = tuple(field[0] for field in shapefile_reader.fields)
-            for shape_i, shape in enumerate(shapefile_reader):
-                for field_name in field_names:
-                    if field_name == "DeletionFlag":
-                        continue
-                    print(field_name, shape.record[field_name])
-                print()
-                record = self.__shapefile_record_type(shape.record)
-                label = record.label
-                label = label.strip()
-                if not label:
-                    continue
-                geometry = \
-                    Geometry(
-                        label=label,
-                        uri=DSA_GEO[base_name + "/geometry/" + str(shape_i)],
-                        wkt=pygeoif.geometry.as_shape(shape).geometry.wkt
-                    )
-                feature = \
-                    Feature(
-                        label=label,
-                        geometry=geometry,
-                        type=record.type,
-                        uri=DSA_GEO[base_name + "/feature/" + str(shape_i)]
-                    )
-                yield feature
-
-    def __shapefile_reader(self):
+    def shapefile_reader(self):
         return shapefile.Reader(os.path.join(self.__tempdir, self.__base_name))
