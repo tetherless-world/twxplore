@@ -47,22 +47,26 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     getFeaturesByUris(List(featureUri)).head
 
   private def getFeaturesByUris(featureUris: List[Uri]): List[Feature] = {
-    // Should be safe to inject featureUris since they've already been parsed as URIs
-    withAssertionsQueryExecution(QueryFactory.create(
-      s"""
-         |${PREFIXES}
-         |CONSTRUCT {
-         |  ?feature ?featureP ?featureO .
-         |  ?geometry ?geometryP ?geometryO .
-         |} WHERE {
-         |  VALUES ?feature { ${featureUris.map(featureUri => "<" + featureUri.toString() + ">").mkString(" ")} }
-         |  ?feature geo:hasDefaultGeometry ?geometry .
-         |  ?feature ?featureP ?featureO .
-         |  ?geometry ?geometryP ?geometryO .
-         |}
-         |""".stripMargin)) { queryExecution =>
-      val model = queryExecution.execConstruct()
-      model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
+    if (!featureUris.isEmpty) {
+      // Should be safe to inject featureUris since they've already been parsed as URIs
+      withAssertionsQueryExecution(QueryFactory.create(
+        s"""
+           |${PREFIXES}
+           |CONSTRUCT {
+           |  ?feature ?featureP ?featureO .
+           |  ?geometry ?geometryP ?geometryO .
+           |} WHERE {
+           |  VALUES ?feature { ${featureUris.map(featureUri => "<" + featureUri.toString() + ">").mkString(" ")} }
+           |  ?feature geo:hasDefaultGeometry ?geometry .
+           |  ?feature ?featureP ?featureO .
+           |  ?geometry ?geometryP ?geometryO .
+           |}
+           |""".stripMargin)) { queryExecution =>
+        val model = queryExecution.execConstruct()
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
+      }
+    } else {
+      List()
     }
   }
 
