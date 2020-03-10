@@ -2,8 +2,8 @@ from typing import Optional
 
 from rdflib import Graph, URIRef, RDF, RDFS, Literal
 
-from .geometry import Geometry
-from .namespace import GEO
+from geo_cli.model.geometry import Geometry
+from geo_cli.namespace import GEO
 
 
 class Feature:

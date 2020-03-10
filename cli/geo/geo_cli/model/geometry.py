@@ -2,7 +2,7 @@ from typing import Optional
 
 from rdflib import Graph, URIRef, RDFS, RDF, Literal
 
-from .namespace import GEO, SF
+from geo_cli.namespace import GEO, SF
 
 
 class Geometry:
