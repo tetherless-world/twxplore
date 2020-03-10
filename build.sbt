@@ -49,7 +49,7 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib, geoLib, treeLib)
+  .aggregate(geoApp, baseLib, geoLib)
   .disablePlugins(AssemblyPlugin)
   .settings(
     skip in publish := true
@@ -144,31 +144,31 @@ lazy val geoLib =
 //    skip in publish := true
 //  )
 
-lazy val treeLib =
-  (project in file("lib/scala/tree"))
-    .dependsOn(baseLib % "compile->compile;test->test", geoLib)
-    .disablePlugins(AssemblyPlugin)
-    .settings(
-      name := "twxplore-tree-lib",
-      libraryDependencies ++= Seq(
-        "com.github.tototoshi" %% "scala-csv" % "1.3.6",
-      ),
-      skip in publish := true
-    )
-
-lazy val treeApp = (project in file("app/tree"))
-  .dependsOn(treeLib % "compile->compile;test->test")
-  .disablePlugins(AssemblyPlugin)
-  .enablePlugins(PlayScala)
-  .settings(
-    libraryDependencies ++= Seq(
-    ),
-    name := "tree-app",
-    routesGenerator := InjectedRoutesGenerator,
-    // Adds additional packages into Twirl
-    //TwirlKeys.templateImports += "com.example.controllers._"
-
-    // Adds additional packages into conf/routes
-    // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
-    skip in publish := true
-  )
+//lazy val treeLib =
+//  (project in file("lib/scala/tree"))
+//    .dependsOn(baseLib % "compile->compile;test->test", geoLib)
+//    .disablePlugins(AssemblyPlugin)
+//    .settings(
+//      name := "twxplore-tree-lib",
+//      libraryDependencies ++= Seq(
+//        "com.github.tototoshi" %% "scala-csv" % "1.3.6",
+//      ),
+//      skip in publish := true
+//    )
+//
+//lazy val treeApp = (project in file("app/tree"))
+//  .dependsOn(treeLib % "compile->compile;test->test")
+//  .disablePlugins(AssemblyPlugin)
+//  .enablePlugins(PlayScala)
+//  .settings(
+//    libraryDependencies ++= Seq(
+//    ),
+//    name := "tree-app",
+//    routesGenerator := InjectedRoutesGenerator,
+//    // Adds additional packages into Twirl
+//    //TwirlKeys.templateImports += "com.example.controllers._"
+//
+//    // Adds additional packages into conf/routes
+//    // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+//    skip in publish := true
+//  )

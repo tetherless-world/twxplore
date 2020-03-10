@@ -1,66 +1,48 @@
 package models.graphql
 
-import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
-import play.api.libs.json
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
+import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, FeatureType, Geometry}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, InputField, IntType, ListType, ScalarAlias, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, ListType, Schema, fields}
 
-object GeoGraphQlSchemaDefinition {
-  // Scalar Formats
-  implicit val uriFormat = new json.Format[Uri] {
-    override def reads(json: JsValue): JsResult[Uri] = JsSuccess(Uri.parse(json.asInstanceOf[JsString].value))
+object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
+  // Enum types
+  implicit val FeatureTypeType = deriveEnumType[FeatureType]()
 
-    override def writes(o: Uri): JsValue = JsString(o.toString)
-  }
-
-  // Scalar aliases
-  implicit val UriType = ScalarAlias[Uri, String](
-    StringType, _.toString, uri => Right(Uri.parse(uri))
-  )
-
-  // Scalar argument types
-  val LimitArgument = Argument("limit", IntType, description = "Limit")
-  val OffsetArgument = Argument("offset", IntType, description = "Offset")
-  val UriArgument = Argument("uri", UriType, description= "URI")
-
-  // Domain model types, in dependence order
-  implicit val GeometryInputType = deriveInputObjectType[Geometry](
-    InputObjectTypeName("GeometryInput"),
-    ReplaceInputField("uri", InputField("uri", UriType))
-  )
-
-  implicit val GeometryType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
+  // Object types, in dependence order
+  implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-  implicit val FeatureType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
+  implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
+//    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-  implicit val manual = new FromInput[Geometry] {
+  // Input types
+  implicit val FeatureQueryInputObjectType = deriveInputObjectType[FeatureQuery](
+  )
+
+  implicit val featureQueryFromInput = new FromInput[FeatureQuery] {
     val marshaller = CoercedScalaResultMarshaller.default
+
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
-
-      Geometry(
-        label = ad.get("label").flatMap(_.asInstanceOf[Option[String]]),
-        uri = ad("uri").asInstanceOf[Uri],
-        wkt = ad("wkt").asInstanceOf[String]
+      FeatureQuery(
+        containsWkt = ad.get("containsWkt").flatMap(value => value.asInstanceOf[Option[String]]),
+        `type` = ad.get("type").flatMap(value => value.asInstanceOf[Option[FeatureType]]),
+        withinWkt = ad.get("withinWkt").flatMap(value => value.asInstanceOf[Option[String]])
       )
     }
   }
+
   // Argument types
-  val GeometryArgument = Argument("geometry", GeometryInputType, description="Geometry Input")
+  val FeatureQueryArgument = Argument("query", FeatureQueryInputObjectType, description = "feature query")
 
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GeoGraphQlSchemaContext, Unit](
-    Field("features", ListType(FeatureType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
-    Field("featureByUri", FeatureType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri"))),
-    Field("featuresContaining", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesContaining(ctx.args.arg("geometry"))),
-    Field("featuresWithin", ListType(FeatureType), arguments = GeometryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeaturesWithin(ctx.args.arg("geometry")))
+    Field("features", ListType(FeatureObjectType), arguments = LimitArgument :: OffsetArgument :: FeatureQueryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"), query = ctx.args.arg("query"))),
+    Field("feature", FeatureObjectType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri")))
   ))
 
   // Schema

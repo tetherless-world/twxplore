@@ -8,7 +8,7 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.TestGeoStore
+import stores.{TestTwks, TwksGeoStore}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,11 +17,11 @@ import scala.concurrent.duration._
 class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
-    "list features" in {
+    "list all features" in {
       val query =
         graphql"""
          query FeaturesQuery {
-           features(limit: 10, offset: 0) {
+           features(query: {}, limit: 10, offset: 0) {
                uri
            }
          }
@@ -35,40 +35,55 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
     "get feature by uri" in {
       val query =
         graphql"""
-         query FeaturesQuery($$uri: String!) {
-           featureByUri(uri: $$uri) {
+         query FeatureQuery($$uri: String!) {
+           feature(uri: $$uri) {
                uri
            }
          }
        """
       executeQuery(query, vars = Json.obj("uri" -> GeoTestData.feature.uri.toString)) must be(Json.parse(
         s"""
-           |{"data":{"featureByUri":{"uri":"${GeoTestData.feature.uri.toString()}"}}}
+           |{"data":{"feature":{"uri":"${GeoTestData.feature.uri.toString()}"}}}
            |""".stripMargin))
     }
 
-    "get features containing a geometry" in {
+    "get features by type" in {
       val query =
         graphql"""
-          query FeaturesQuery($$geometry: GeometryInput!) {
-            featuresContaining(geometry: $$geometry) {
+          query FeaturesByType($$type: FeatureType!) {
+            features(query: {type: $$type}, limit: 10, offset: 0) {
               uri
             }
           }
         """
-      val result = executeQuery(query, vars = Json.obj("geometry" -> Json.obj("wkt" -> GeoTestData.geometry.wkt, "uri" -> GeoTestData.geometry.uri.toString, "label" -> GeoTestData.geometry.label)))
+      val result = executeQuery(query, vars = Json.obj("type" -> GeoTestData.feature.`type`.get.toString))
         result must be(Json.parse(
           s"""
-             |{"data":{"featuresContaining":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
+             |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
              |""".stripMargin))
     }
   }
 
+  "get features within WKT" in {
+    val query =
+      graphql"""
+          query FeaturesByType($$wkt: String!) {
+            features(query: {withinWkt: $$wkt}, limit: 10, offset: 0) {
+              uri
+            }
+          }
+        """
+    val result = executeQuery(query, vars = Json.obj("wkt" -> GeoTestData.containingWkt))
+    result must be(Json.parse(
+      s"""
+         |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
+         |""".stripMargin))
+  }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
       variables = vars,
-      userContext = new GeoGraphQlSchemaContext(FakeRequest(), TestGeoStore)
+      userContext = new GeoGraphQlSchemaContext(FakeRequest(), new TwksGeoStore(TestTwks.twksClient))
     )
     Await.result(futureResult, 10.seconds)
 }}

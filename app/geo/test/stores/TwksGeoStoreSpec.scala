@@ -1,42 +1,48 @@
 package stores
 
 import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.FeatureType
+import models.graphql.FeatureQuery
 import org.scalatest.{Matchers, WordSpec}
 
 class TwksGeoStoreSpec extends WordSpec with Matchers {
   "Twks Store" can {
-    val currentGeometry = GeoTestData.geometry
-    val currentUri = GeoTestData.feature.uri
+    val sut = new TwksGeoStore(TestTwks.twksClient)
 
-    "a valid URI" should {
-      "return a valid feature" in {
-        val feature = TestGeoStore.getFeatureByUri(currentUri)
-        feature should equal(GeoTestData.feature)
-      }
+    "get a feature by URI" in {
+      val actual = sut.getFeatureByUri(GeoTestData.feature.uri)
+      actual should equal(GeoTestData.feature)
     }
 
-    "a valid geometry" should {
-      "return a valid feature list" in {
-        val featureList = TestGeoStore.getFeaturesContaining(currentGeometry)
-        featureList should equal(List(GeoTestData.feature))
-      }
+    "get a count of features" in {
+      val actual = sut.getFeaturesCount(FeatureQuery(containsWkt = None, `type` = None, withinWkt = None))
+      actual should equal(1)
     }
 
-    "an invalid geometry" should {
-      "return an empty feature list" in {
-        val featureList = TestGeoStore.getFeaturesContaining(null)
-        featureList should equal(List())
-      }
+    "get all features" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = None, withinWkt = None))
+      actual should equal(List(GeoTestData.feature))
     }
 
-    "an invalid URI" should {
-      "produce NoSuchElementException" in {
-        intercept[NoSuchElementException] {
-          TestGeoStore.getFeatureByUri(null)
-        }
-      }
+    "get features with a given type" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = GeoTestData.feature.`type`, withinWkt = None))
+      actual should equal(List(GeoTestData.feature))
+    }
+
+    "exclude features that don't match a type" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = Some(FeatureType.MilitaryInstallation), withinWkt = None))
+      actual should equal(List())
+    }
+
+    "get features containing a geometry" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = Some(GeoTestData.containedWkt), `type` = None, withinWkt = None))
+      actual should equal(List(GeoTestData.feature))
+    }
+
+    "get features within a geometry" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsWkt = None, `type` = None, withinWkt = Some(GeoTestData.containingWkt)))
+      actual should equal(List(GeoTestData.feature))
     }
   }
-
 }
 
