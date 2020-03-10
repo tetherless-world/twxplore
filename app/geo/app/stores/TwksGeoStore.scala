@@ -4,75 +4,53 @@ import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 import javax.inject.Inject
+import models.graphql.FeatureQuery
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
-import org.apache.jena.vocabulary.{RDF, RDFS}
+import org.apache.jena.vocabulary.RDF
 import play.api.Configuration
 
 import scala.collection.JavaConverters._
 
-class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with GeoStore {
+final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) with GeoStore {
+  private val PREFIXES =
+    s"""
+       |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
+       |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
+       |PREFIX rdf: <${RDF.getURI}>
+       |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
+       |""".stripMargin
+
   @Inject
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
-  override def getFeatures(limit: Int, offset: Int): List[Feature] =
-    getFeaturesByUris(getFeatureUris(limit = limit, offset = offset))
+  override def getFeatures(limit: Int, offset: Int, query: FeatureQuery): List[Feature] =
+    getFeaturesByUris(getFeatureUris(limit = limit, offset = offset, query = query))
 
-  override def getFeaturesCount(): Int = {
-    val query = QueryFactory.create(
+  override def getFeaturesCount(query: FeatureQuery): Int = {
+    withAssertionsQueryExecution(QueryFactory.create(
       s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
+         |${PREFIXES}
          |SELECT (COUNT(DISTINCT ?feature) AS ?count)
          |WHERE {
-         |  ?feature rdf:type geo:Feature .
-         |  ?feature geo:hasDefaultGeometry ?geometry .
-         |  ?geometry rdf:type sf:Geometry .
+         |${toWherePatterns(query).mkString("\n")}
          |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) {
+         |""".stripMargin)) {
       queryExecution =>
         queryExecution.execSelect().next().get("count").asLiteral().getInt
     }
   }
-
-  override def getFeaturesContaining(geometry: Geometry): List[Feature] = {
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX rdfs: <${RDFS.getURI}>
-         |SELECT ?feature ?featureLabel ?featureGeometry ?featureGeometryLabel ?featureGeometryWkt
-         |WHERE {
-         |  ?feature geo:hasDefaultGeometry ?featureGeometry .
-         |  ?feature rdfs:label ?featureLabel .
-         |  ?featureGeometry geo:asWKT ?featureGeometryWkt .
-         |  ?featureGeometry rdfs:label ?featureGeometryLabel .
-         |  FILTER(geof:sfContains(?featureGeometryWkt, <${geometry.uri}>)) .
-         |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) {
-      queryExecution =>
-        val model = queryExecution.execConstruct()
-        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
-    }
-  }
-
 
   def getFeatureByUri(featureUri: Uri): Feature =
     getFeaturesByUris(List(featureUri)).head
 
   private def getFeaturesByUris(featureUris: List[Uri]): List[Feature] = {
     // Should be safe to inject featureUris since they've already been parsed as URIs
-    val query = QueryFactory.create(
+    withAssertionsQueryExecution(QueryFactory.create(
       s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
+         |${PREFIXES}
          |CONSTRUCT {
          |  ?feature ?featureP ?featureO .
          |  ?feature rdf:type geo:Feature .
@@ -83,48 +61,33 @@ class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClient) wit
          |  ?feature ?featureP ?featureO .
          |  ?geometry ?geometryP ?geometryO .
          |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) { queryExecution =>
+         |""".stripMargin)) { queryExecution =>
       val model = queryExecution.execConstruct()
       model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
   }
 
-  private def getFeatureUris(limit: Int, offset: Int): List[Uri] = {
-    val query = QueryFactory.create(
+  private def getFeatureUris(limit: Int, offset: Int, query: FeatureQuery): List[Uri] = {
+    withAssertionsQueryExecution(QueryFactory.create(
       s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
+         |${PREFIXES}
          |SELECT DISTINCT ?feature WHERE {
-         |  ?feature rdf:type geo:Feature .
+         |  ${toWherePatterns(query).mkString("\n")}
          |} LIMIT $limit OFFSET $offset
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) {
+         |""".stripMargin)) {
       queryExecution =>
         queryExecution.execSelect().asScala.toList.map(querySolution => Uri.parse(querySolution.get("feature").asResource().getURI))
     }
   }
 
-  override def getFeaturesWithin(geometry: Geometry): List[Feature] = {
-    val query = QueryFactory.create(
-      s"""
-         |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
-         |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
-         |PREFIX rdf: <${RDF.getURI}>
-         |PREFIX rdfs: <${RDFS.getURI}>
-         |SELECT ?feature ?featureLabel ?featureGeometry ?featureGeometryLabel ?featureGeometryWkt
-         |WHERE {
-         |  ?feature geo:hasDefaultGeometry ?featureGeometry .
-         |  ?feature rdfs:label ?featureLabel .
-         |  ?featureGeometry geo:asWKT ?featureGeometryWkt .
-         |  ?featureGeometry rdfs:label ?featureGeometryLabel .
-         |  FILTER(geof:sfWithin(<${geometry.uri}>, ?featureGeometryWkt)) .
-         |}
-         |""".stripMargin)
-    withAssertionsQueryExecution(query) {
-      queryExecution =>
-        val model = queryExecution.execConstruct()
-        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
-    }
-  }
+  private def toWherePatterns(query: FeatureQuery): List[String] =
+    List(
+      "?feature rdf:type geo:Feature .",
+      "?feature geo:hasDefaultGeometry ?geometry .",
+      "?geometry rdf:type sf:Geometry .",
+    ) ++
+  //
+      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?featureGeometryWkt, "${wkt}"^geo:wktLiteral))""").toList ++
+      query.`type`.map(`type` => s"?feature rdf:type ${`type`.uri.toString} .").toList ++
+      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?featureGeometryWkt, "${wkt}"^geo:wktLiteral))""").toList
 }

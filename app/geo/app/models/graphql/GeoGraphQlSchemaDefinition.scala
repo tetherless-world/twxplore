@@ -1,7 +1,7 @@
 package models.graphql
 
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, Geometry}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, FeatureType, Geometry}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, ListType, Schema, fields}
@@ -29,6 +29,7 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, String]]
       FeatureQuery(
+        containsWkt = ad.get("containsWkt"),
         `type` = ad.get("type").flatMap(value => FeatureType.values.find(testValue => testValue.toString == value)),
         withinWkt = ad.get("withinWkt")
       )
@@ -40,7 +41,7 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
 
   // Query types
   val RootQueryType = sangria.schema.ObjectType("RootQuery", fields[GeoGraphQlSchemaContext, Unit](
-    Field("features", ListType(FeatureObjectType), arguments = LimitArgument :: OffsetArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"))),
+    Field("features", ListType(FeatureObjectType), arguments = LimitArgument :: OffsetArgument :: FeatureQueryArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatures(limit = ctx.args.arg("limit"), offset = ctx.args.arg("offset"), query = ctx.args.arg("query"))),
     Field("feature", FeatureObjectType, arguments = UriArgument :: Nil, resolve = (ctx) => ctx.ctx.store.getFeatureByUri(featureUri = ctx.args.arg("uri")))
   ))
 
