@@ -13,6 +13,6 @@ object TestTwks {
 
   private val nanopublicationBuilder = Nanopublication.builder()
   Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.feature)
-  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.geometry)
+  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.featureGeometry)
   twksClient.putNanopublication(nanopublicationBuilder.build())
 }

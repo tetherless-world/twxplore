@@ -84,12 +84,13 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       "?feature rdf:type geo:Feature .",
       "?feature geo:hasDefaultGeometry ?geometry .",
       "?geometry rdf:type sf:Geometry .",
+      "?geometry geo:asWKT ?wkt ."
     ) ++
       // Features that contain the given WKT
       // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
-      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?geometry, "${wkt}"^^geo:wktLiteral))""").toList ++
+      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?wkt, "${wkt}"^^geo:wktLiteral))""").toList ++
       query.`type`.map(`type` => s"?feature rdf:type <${`type`.uri.toString}> .").toList ++
       // Features within the given WKT
       // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
-      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?geometry, "${wkt}"^^geo:wktLiteral))""").toList
+      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?wkt, "${wkt}"^^geo:wktLiteral))""").toList
 }
