@@ -1,5 +1,5 @@
 from ._tiger_line_shapefile_record import _TigerLineShapefileRecord
-from ..namespace import DSA_GEO
+from ..namespace import SF
 
 
 class PointlmTigerLineShapefileRecord(_TigerLineShapefileRecord):
@@ -9,4 +9,4 @@ class PointlmTigerLineShapefileRecord(_TigerLineShapefileRecord):
 
     @property
     def type(self):
-        return DSA_GEO.Point
+        return SF.Point
