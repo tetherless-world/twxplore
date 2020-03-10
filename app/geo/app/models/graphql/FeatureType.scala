@@ -8,4 +8,5 @@ object FeatureType {
 
   case object State extends FeatureType
 
+  val values = List(MilitaryInstallation, State)
 }
