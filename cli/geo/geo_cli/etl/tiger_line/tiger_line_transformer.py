@@ -20,9 +20,9 @@ class TigerLineTransformer(_Transformer):
             ("tl_2019_us_state", StateTigerLineShapefileRecord),
         )
         for file_base_name, shapefile_record_type in tiger_line_files:
-            with TigerLineZipFile(zip_file_path=DATA_DIR_PATH / (file_base_name + ".zip"), shapefile_record_type=shapefile_record_type) as tiger_line_zip_file:
+            with TigerLineZipFile(DATA_DIR_PATH / (file_base_name + ".zip")) as tiger_line_zip_file:
                 areaids = set()
-                with self.__shapefile_reader() as shapefile_reader:
+                with tiger_line_zip_file.shapefile_reader() as shapefile_reader:
                     print("Shapefile fields:", shapefile_reader.fields)
                     field_names = tuple(field[0] for field in shapefile_reader.fields)
                     for shape_i, shape in enumerate(shapefile_reader):
@@ -31,7 +31,7 @@ class TigerLineTransformer(_Transformer):
                                 continue
                             print(field_name, shape.record[field_name])
                         print()
-                        record = self.__shapefile_record_type(shape.record)
+                        record = shapefile_record_type(shape.record)
                         label = record.label
                         label = label.strip()
                         if not label:

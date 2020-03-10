@@ -8,8 +8,7 @@ import shapefile
 
 
 class TigerLineZipFile(object):
-    def __init__(self, shapefile_record_type, zip_file_path: Path):
-        self.__shapefile_record_type = shapefile_record_type
+    def __init__(self, zip_file_path: Path):
         self.__zip_file_path = zip_file_path
 
     @property

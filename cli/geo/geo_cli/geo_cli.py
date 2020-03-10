@@ -4,5 +4,4 @@ from geo_cli.etl.tiger_line.tiger_line_transformer import TigerLineTransformer
 
 def main():
     with FileLoader() as loader:
-        with TigerLineTransformer() as transformer:
-            loader.load(transformer.transform())
+        loader.load(TigerLineTransformer().transform())

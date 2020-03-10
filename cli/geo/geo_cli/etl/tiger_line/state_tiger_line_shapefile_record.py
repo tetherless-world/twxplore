@@ -1,5 +1,5 @@
-from ._tiger_line_shapefile_record import _TigerLineShapefileRecord
-from ..namespace import SCHEMA
+from geo_cli.etl.tiger_line._tiger_line_shapefile_record import _TigerLineShapefileRecord
+from geo_cli.namespace import SCHEMA
 
 
 class StateTigerLineShapefileRecord(_TigerLineShapefileRecord):

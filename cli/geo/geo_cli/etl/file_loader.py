@@ -5,6 +5,7 @@ from rdflib import Graph
 
 from geo_cli.etl._loader import _Loader
 from geo_cli.model.feature import Feature
+from geo_cli.path import DATA_DIR_PATH
 
 
 class FileLoader(_Loader):
