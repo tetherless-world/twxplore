@@ -1,6 +1,7 @@
 package models.graphql
 
 import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
+import io.github.tetherlessworld.twxplore.lib.geo.stores.TestTwks
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -8,7 +9,7 @@ import sangria.ast.Document
 import sangria.execution.Executor
 import sangria.macros._
 import sangria.marshalling.playJson._
-import stores.TestGeoStore
+import stores.TwksGeoStore
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,7 +44,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
        """
       executeQuery(query, vars = Json.obj("uri" -> GeoTestData.feature.uri.toString)) must be(Json.parse(
         s"""
-           |{"data":{"featureByUri":{"uri":"${GeoTestData.feature.uri.toString()}"}}}
+           |{"data":{"feature":{"uri":"${GeoTestData.feature.uri.toString()}"}}}
            |""".stripMargin))
     }
 
@@ -68,7 +69,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
     val futureResult = Executor.execute(GeoGraphQlSchemaDefinition.schema, query,
       variables = vars,
-      userContext = new GeoGraphQlSchemaContext(FakeRequest(), TestGeoStore)
+      userContext = new GeoGraphQlSchemaContext(FakeRequest(), new TwksGeoStore(TestTwks.twksClient))
     )
     Await.result(futureResult, 10.seconds)
 }}
