@@ -1,6 +1,12 @@
-query FeaturesQuery($limit: Int!, $offset: Int!) {
-    features(limit: $limit, offset: $offset) {
-        label
-        uri
+query FeaturesQuery($aQuery: FeatureQuery!, $aLimit: Int!, $aOffset: Int!){
+	features(limit:$aLimit, offset:$aOffset, query:$aQuery){
+    label
+    type
+    uri
+    geometry{
+      label
+      wkt
+      uri
     }
+  }
 }
