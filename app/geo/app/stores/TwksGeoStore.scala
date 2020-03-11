@@ -4,7 +4,7 @@ import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, FeatureType}
 import javax.inject.Inject
 import models.graphql.FeatureQuery
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
@@ -86,15 +86,34 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   private def toWherePatterns(query: FeatureQuery): List[String] =
     List(
       "?feature rdf:type geo:Feature .",
-      "?feature geo:hasDefaultGeometry ?geometry .",
-      "?geometry rdf:type sf:Geometry .",
-      "?geometry geo:asWKT ?wkt ."
+      "?feature geo:hasDefaultGeometry ?featureGeometry .",
+      "?featureGeometry rdf:type sf:Geometry .",
+      "?featureGeometry geo:asWKT ?featureGeometryWkt ."
     ) ++
-      // Features that contain the given WKT
-      // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
-      query.containsWkt.map(wkt => s"""FILTER(geof:sfContains(?wkt, "${wkt}"^^geo:wktLiteral))""").toList ++
-      query.`type`.map(`type` => s"?feature rdf:type <${`type`.uri.toString}> .").toList ++
-      // Features within the given WKT
-      // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
-      query.withinWkt.map(wkt => s"""FILTER(geof:sfWithin(?wkt, "${wkt}"^^geo:wktLiteral))""").toList
+      toContainsFeatureUriWherePatterns(query.containsFeatureUri) ++
+      toTypeWherePatterns(query.`type`) ++
+      toWithinFeatureUriWherePatterns(query.withinFeatureUri)
+
+  private def toContainsFeatureUriWherePatterns(containsFeatureUri: Option[Uri]): List[String] =
+    // Features that contain the given feature
+    // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
+    if (containsFeatureUri.isDefined) {
+      List(
+        "?containsFeature rdf:type geo:Feature .",
+        "?containsFeature geo:hasDefaultGeometry ?containsFeatureGeometry .",
+        "?containsFeatureGeometry rdf:type sf:Geometry .",
+        "?containsFeatureGeometry geo:asWKT ?containsFeatureGeometryWkt .",
+        s"""FILTER(geof:sfContains(?featureGeometryWkt, ?containsFeatureGeometryWkt))"""
+      )
+    } else {
+      List()
+    }
+
+  private def toTypeWherePatterns(`type`: Option[FeatureType]): List[String] =
+    `type`.map(`type` => s"?feature rdf:type <${`type`.uri.toString}> .").toList
+
+  private def toWithinFeatureUriWherePatterns(withinFeatureUri: Option[Uri]): List[String] =
+    // Features within the given feature
+    // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
+    List()
 }
