@@ -27,4 +27,4 @@ class Geocoder:
                 json.dump(geocode_result, cache_file)
         latitude = geocode_result[0]["geometry"]["location"]["lat"]
         longitude = geocode_result[0]["geometry"]["location"]["lng"]
-        return "POINT (%(longitude).7f, %(latitude).7f)" % locals()
+        return "POINT (%(longitude).7f %(latitude).7f)" % locals()
