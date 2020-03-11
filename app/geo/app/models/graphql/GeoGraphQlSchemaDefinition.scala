@@ -1,5 +1,6 @@
 package models.graphql
 
+import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, FeatureType, Geometry}
 import sangria.macros.derive._
@@ -29,9 +30,9 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
       FeatureQuery(
-        containsWkt = ad.get("containsWkt").flatMap(value => value.asInstanceOf[Option[String]]),
+        containsFeatureUri = ad.get("containsFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]]),
         `type` = ad.get("type").flatMap(value => value.asInstanceOf[Option[FeatureType]]),
-        withinWkt = ad.get("withinWkt").flatMap(value => value.asInstanceOf[Option[String]])
+        withinFeatureUri = ad.get("withinFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]])
       )
     }
   }

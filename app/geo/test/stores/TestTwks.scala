@@ -12,6 +12,10 @@ object TestTwks {
   val twksClient = new DirectTwksClient(twks)
 
   private val nanopublicationBuilder = Nanopublication.builder()
+  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.containedFeature)
+  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.containedGeometry)
+  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.containingFeature)
+  Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.containingGeometry)
   Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.feature)
   Rdf.write(nanopublicationBuilder.getAssertionBuilder.getModel, GeoTestData.featureGeometry)
   twksClient.putNanopublication(nanopublicationBuilder.build())
