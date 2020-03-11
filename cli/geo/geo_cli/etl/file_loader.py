@@ -9,12 +9,15 @@ from geo_cli.path import DATA_DIR_PATH
 
 
 class FileLoader(_Loader):
+    def __init__(self, file_base_name: str):
+        self.__file_base_name = file_base_name
+
     def __enter__(self):
         self.__graph = Graph()
         return self
 
     def __exit__(self, *args, **kwds):
-        features_ttl_file_path = str(DATA_DIR_PATH / "features.ttl")
+        features_ttl_file_path = str(DATA_DIR_PATH / "loaded" / (self.__file_base_name + ".ttl"))
         self.__graph.serialize(destination=features_ttl_file_path, format="ttl")
         subprocess.call(["bzip2", "-9", "-k", "-f", features_ttl_file_path])
 
