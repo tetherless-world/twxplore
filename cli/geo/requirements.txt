@@ -1,7 +1,13 @@
+certifi==2019.11.28
+chardet==3.0.4
+googlemaps==4.2.0
+idna==2.9
 isodate==0.6.0
 pathvalidate==2.2.0
 pygeoif==0.7
 pyparsing==2.4.6
 pyshp==2.1.0
 rdflib==4.2.2
+requests==2.23.0
 six==1.14.0
+urllib3==1.25.8
