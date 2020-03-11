@@ -1,4 +1,5 @@
 isodate==0.6.0
+pathvalidate==2.2.0
 pygeoif==0.7
 pyparsing==2.4.6
 pyshp==2.1.0
