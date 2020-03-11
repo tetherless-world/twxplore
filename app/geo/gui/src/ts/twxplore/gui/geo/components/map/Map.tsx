@@ -25,7 +25,7 @@ const MapImpl: React.FunctionComponent = () => {
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
     featuresQueryDocument, 
-    {variables: {aLimit: 10, aOffset: 0, aQuery: {type: FeatureType.State}},
+    {variables: {limit: 10, offset: 0, query: {type: FeatureType.State}},
 }
   );
   console.log(featuresQueryResult);

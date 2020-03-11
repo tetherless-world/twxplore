@@ -28,7 +28,7 @@ export interface FeaturesQuery {
 }
 
 export interface FeaturesQueryVariables {
-  aQuery: FeatureQuery;
-  aLimit: number;
-  aOffset: number;
+  query: FeatureQuery;
+  limit: number;
+  offset: number;
 }

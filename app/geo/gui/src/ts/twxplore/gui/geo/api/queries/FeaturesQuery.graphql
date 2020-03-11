@@ -1,9 +1,9 @@
-query FeaturesQuery($aQuery: FeatureQuery!, $aLimit: Int!, $aOffset: Int!){
-	features(limit:$aLimit, offset:$aOffset, query:$aQuery){
+query FeaturesQuery($query: FeatureQuery!, $limit: Int!, $offset: Int!) {
+  features(limit: $limit, offset: $offset, query: $query) {
     label
     type
     uri
-    geometry{
+    geometry {
       label
       wkt
       uri
