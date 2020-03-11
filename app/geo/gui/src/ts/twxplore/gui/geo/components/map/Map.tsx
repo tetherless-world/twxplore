@@ -8,14 +8,15 @@ import {useQuery} from "@apollo/react-hooks";
 import { addMapFeatures } from "../../actions/map/AddMapFeaturesAction";
 import { MapFeatureState } from "../../states/map/MapFeatureState";
 import { MapFeature } from "../../states/map/MapFeature";
-//import Processors from "kepler.gl/processors";
+import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import { ActiveNavbarItem } from "../navbar/ActiveNavbarItem";
 import * as React from "react";
 import { Frame } from "../frame/Frame";
+import { FeatureType } from "../../api/graphqlGlobalTypes";
 
-//var wkt = require("terraformer-wkt-parser");
+var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const state: MapState = useSelector(
@@ -24,7 +25,7 @@ const MapImpl: React.FunctionComponent = () => {
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
     featuresQueryDocument, 
-    {variables: {limit: 10, offset: 0},
+    {variables: {aLimit: 10, aOffset: 0, aQuery: {type: FeatureType.State}},
 }
   );
   console.log(featuresQueryResult);
@@ -36,8 +37,10 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           featuresQueryResult.data.features.map(feature => ({
+            __typename: feature.__typename,
+            geometry: feature.geometry,
             label: feature.label,
-            type: feature.__typename,
+            type: feature.type,
             uri: feature.uri,
             state: MapFeatureState.LOADED,
           }))
@@ -71,22 +74,21 @@ const MapImpl: React.FunctionComponent = () => {
         to display its location and shape on the map.
         */ 
         const datasets = {
-          data: {
+          data: Processors.processGeojson({
             type: "FeatureCollection",
             features: featuresInState.map(feature => {
               return {
                 type: "Feature",
-                //geometry: wkt.parse(null),
+                geometry: wkt.parse(feature.geometry.wkt),
                 properties: feature,
               };
             }),
-          },
+          }),
           info: {
-            id: featuresInState[0].uri,
-            label: "ok"
+            id: featuresInState[0].uri
           }
         };
-        console.log(datasets)
+        //console.log(datasets)
         dispatch(
           addDataToMap({datasets, options: {centerMap: true, readOnly: true}})
         );
