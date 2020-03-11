@@ -64,8 +64,8 @@ class UlsEntitiesTransformer:
                     state = columns[17].upper().strip()
                     if not state:
                         continue
-                    elif state != "NY":
-                        continue
+                    # elif state != "NY":
+                    #     continue
                     zip_code = columns[18].strip()
                     if not zip_code:
                         continue
