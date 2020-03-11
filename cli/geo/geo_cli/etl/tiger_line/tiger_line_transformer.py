@@ -40,8 +40,7 @@ class TigerLineTransformer(_Transformer):
                             continue
                         geometry = \
                             Geometry(
-                                label=label,
-                                uri=TWXPLORE_GEO_APP_GEOMETRY[file_base_name + "-" + str(shape_i)],
+                                uri=TWXPLORE_GEO_APP_GEOMETRY[f"tiger_line-{file_base_name}-{str(shape_i)}"],
                                 wkt=pygeoif.geometry.as_shape(shape).geometry.wkt
                             )
                         feature = \
@@ -49,6 +48,6 @@ class TigerLineTransformer(_Transformer):
                                 label=label,
                                 geometry=geometry,
                                 type=record.type,
-                                uri=TWXPLORE_GEO_APP_FEATURE[file_base_name + "-" + str(shape_i)]
+                                uri=TWXPLORE_GEO_APP_FEATURE[f"tiger_line-{file_base_name}-{str(shape_i)}"]
                             )
                         yield feature
