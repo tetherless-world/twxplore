@@ -30,9 +30,9 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
     def fromResult(node: marshaller.Node) = {
       val ad = node.asInstanceOf[Map[String, Any]]
       FeatureQuery(
-        containsFeatureUri = ad.get("containsFeatureUri").flatMap(value => value.asInstanceOf[Option[String]]).map(value => Uri.parse(value)),
+        containsFeatureUri = ad.get("containsFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]]),
         `type` = ad.get("type").flatMap(value => value.asInstanceOf[Option[FeatureType]]),
-        withinFeatureUri = ad.get("withinFeatureUri").flatMap(value => value.asInstanceOf[Option[String]]).map(value => Uri.parse(value))
+        withinFeatureUri = ad.get("withinFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]])
       )
     }
   }

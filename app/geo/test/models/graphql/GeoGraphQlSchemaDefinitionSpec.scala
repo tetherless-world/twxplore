@@ -26,10 +26,11 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
            }
          }
        """
-      executeQuery(query) must be(Json.parse(
-        s"""
-           |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
-           |""".stripMargin))
+
+      val results = Json.stringify(executeQuery(query))
+      results must include(GeoTestData.feature.uri.toString)
+      results must include(GeoTestData.containingFeature.uri.toString)
+      results must include(GeoTestData.containedFeature.uri.toString)
     }
 
     "get feature by uri" in {
@@ -64,20 +65,17 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
     }
   }
 
-  "get features within WKT" in {
+  "get features within feature" in {
     val query =
       graphql"""
-          query FeaturesByType($$wkt: String!) {
-            features(query: {withinWkt: $$wkt}, limit: 10, offset: 0) {
+          query FeaturesByType($$withinFeatureUri: String!) {
+            features(query: {withinFeatureUri: $$withinFeatureUri}, limit: 10, offset: 0) {
               uri
             }
           }
         """
-    val result = executeQuery(query, vars = Json.obj("wkt" -> GeoTestData.containingWkt))
-    result must be(Json.parse(
-      s"""
-         |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
-         |""".stripMargin))
+    val result = Json.stringify(executeQuery(query, vars = Json.obj("withinFeatureUri" -> GeoTestData.feature.uri.toString)))
+    result must include(GeoTestData.containedFeature.uri.toString)
   }
 
   def executeQuery(query: Document, vars: JsObject = Json.obj()) = {
