@@ -47,9 +47,11 @@ class EnUlsTransformer(_UlsTransformer):
 # 26 Status Code char(1)
 # 27 Status Date mm/dd/yyyy
                     record_type = columns[0]
+                    if record_type != "EN":
+                        continue
                     # unique_system_identifier = columns[1]
                     callsign = columns[4]
-                    name = columns[8]
+                    name = columns[7]
                     street_address = columns[15]
                     city = columns[16]
                     state = columns[17].upper()
@@ -58,4 +60,4 @@ class EnUlsTransformer(_UlsTransformer):
                         continue
                     if not city or not street_address or not state or not zip_code:
                         continue
-                    print(record_type, callsign, name, street_address, city, state, zip_code)
+                    print(callsign, name, street_address, city, state, zip_code)
