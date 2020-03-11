@@ -1,3 +1,4 @@
+/*
 import * as React from "react";
 import {ListGroup, ListGroupItem} from "reactstrap";
 import * as query from "twxplore/gui/geo/api/queries/FeaturesQuery.graphql";
@@ -27,3 +28,4 @@ export const FeaturesList: React.FunctionComponent<{}> = () => {
         </ListGroup>
     );
 }
+*/

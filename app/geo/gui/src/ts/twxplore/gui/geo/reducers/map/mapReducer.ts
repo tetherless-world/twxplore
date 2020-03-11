@@ -18,14 +18,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
         console.log("added map feature " + feature.uri);
-      }
+      } 
       break;
     }
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
       console.log(addDataToMapAction)
-      for (const row of addDataToMapAction.payload.datasets.data.features) {
-        const addedFeature: MapFeature = row.properties;
+      for (const row of addDataToMapAction.payload.datasets.data.rows) {
+        const addedFeature: MapFeature = row[0].properties;
         for (const resultFeature of result.features) {
           if (resultFeature.uri === addedFeature.uri) {
             resultFeature.state = MapFeatureState.RENDERED;

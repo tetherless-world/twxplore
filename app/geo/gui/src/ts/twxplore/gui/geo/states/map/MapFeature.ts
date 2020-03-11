@@ -1,12 +1,9 @@
+import { FeaturesQuery_features } from "../../api/queries/types/FeaturesQuery";
 import { MapFeatureState } from "./MapFeatureState";
 
 
-export interface MapFeature {
-  geometry?: {
-    wkt: string;
-  };
-  label: string | null;
-  parentUri?: string;
-  uri: string;
+export interface MapFeature extends FeaturesQuery_features
+{
   state: MapFeatureState
 }
+
