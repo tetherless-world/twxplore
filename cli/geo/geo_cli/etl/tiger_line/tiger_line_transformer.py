@@ -22,7 +22,7 @@ class TigerLineTransformer(_Transformer):
             ("tl_2019_us_state", StateTigerLineShapefileRecord),
         )
         for file_base_name, shapefile_record_type in tiger_line_files:
-            with TigerLineZipFile(DATA_DIR_PATH / (file_base_name + ".zip")) as tiger_line_zip_file:
+            with TigerLineZipFile(DATA_DIR_PATH / "extracted" / "tiger_line" / (file_base_name + ".zip")) as tiger_line_zip_file:
                 areaids = set()
                 with tiger_line_zip_file.shapefile_reader() as shapefile_reader:
                     # print("Shapefile fields:", shapefile_reader.fields)
@@ -40,8 +40,7 @@ class TigerLineTransformer(_Transformer):
                             continue
                         geometry = \
                             Geometry(
-                                label=label,
-                                uri=TWXPLORE_GEO_APP_GEOMETRY[file_base_name + "-" + str(shape_i)],
+                                uri=TWXPLORE_GEO_APP_GEOMETRY[f"tiger_line-{file_base_name}-{str(shape_i)}"],
                                 wkt=pygeoif.geometry.as_shape(shape).geometry.wkt
                             )
                         feature = \
@@ -49,6 +48,6 @@ class TigerLineTransformer(_Transformer):
                                 label=label,
                                 geometry=geometry,
                                 type=record.type,
-                                uri=TWXPLORE_GEO_APP_FEATURE[file_base_name + "-" + str(shape_i)]
+                                uri=TWXPLORE_GEO_APP_FEATURE[f"tiger_line-{file_base_name}-{str(shape_i)}"]
                             )
                         yield feature
