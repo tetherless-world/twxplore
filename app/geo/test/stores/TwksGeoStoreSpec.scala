@@ -36,14 +36,18 @@ class TwksGeoStoreSpec extends WordSpec with Matchers {
       actual should contain(GeoTestData.containedFeature)
     }
 
-    "get features containing a geometry" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = Some(GeoTestData.containedFeature.uri), `type` = None, withinFeatureUri = None))
-      actual should equal(List(GeoTestData.feature))
+    "get features containing a feature" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = Some(GeoTestData.feature.uri), `type` = None, withinFeatureUri = None))
+      actual should contain(GeoTestData.containingFeature)
+      actual should contain(GeoTestData.feature) // Feature contains itself
+      actual should not contain(GeoTestData.containedFeature)
     }
 
-    "get features within a geometry" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = Some(GeoTestData.containingFeature.uri)))
-      actual should equal(List(GeoTestData.feature))
+    "get features within a feature" in {
+      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = Some(GeoTestData.feature.uri)))
+      actual should contain(GeoTestData.containedFeature)
+      actual should contain(GeoTestData.feature)
+      actual should not contain(GeoTestData.containingFeature)
     }
   }
 }

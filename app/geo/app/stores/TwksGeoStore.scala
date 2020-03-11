@@ -99,11 +99,10 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
     if (containsFeatureUri.isDefined) {
       List(
-        "?containsFeature rdf:type geo:Feature .",
-        "?containsFeature geo:hasDefaultGeometry ?containsFeatureGeometry .",
+        s"<${containsFeatureUri.get.toString}> geo:hasDefaultGeometry ?containsFeatureGeometry .",
         "?containsFeatureGeometry rdf:type sf:Geometry .",
         "?containsFeatureGeometry geo:asWKT ?containsFeatureGeometryWkt .",
-        s"""FILTER(geof:sfContains(?featureGeometryWkt, ?containsFeatureGeometryWkt))"""
+        "FILTER(geof:sfContains(?featureGeometryWkt, ?containsFeatureGeometryWkt))"
       )
     } else {
       List()
@@ -115,5 +114,14 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   private def toWithinFeatureUriWherePatterns(withinFeatureUri: Option[Uri]): List[String] =
     // Features within the given feature
     // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
-    List()
+    if (withinFeatureUri.isDefined) {
+      List(
+        s"<${withinFeatureUri.get.toString}> geo:hasDefaultGeometry ?withinFeatureGeometry .",
+        "?withinFeatureGeometry rdf:type sf:Geometry .",
+        "?withinFeatureGeometry geo:asWKT ?withinFeatureGeometryWkt .",
+        "FILTER(geof:sfWithin(?featureGeometryWkt, ?withinFeatureGeometryWkt))"
+      )
+    } else {
+      List()
+    }
 }
