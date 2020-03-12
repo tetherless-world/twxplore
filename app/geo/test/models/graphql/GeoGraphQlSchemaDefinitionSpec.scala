@@ -17,11 +17,27 @@ import scala.concurrent.duration._
 class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
   "GraphQL schema" must {
 
-    "list all features" in {
+    "list all features with limit and offset" in {
       val query =
         graphql"""
          query FeaturesQuery {
            features(query: {}, limit: 10, offset: 0) {
+               uri
+           }
+         }
+       """
+
+      val results = Json.stringify(executeQuery(query))
+      results must include(GeoTestData.feature.uri.toString)
+      results must include(GeoTestData.containingFeature.uri.toString)
+      results must include(GeoTestData.containedFeature.uri.toString)
+    }
+
+    "list all features without limit and offset" in {
+      val query =
+        graphql"""
+         query FeaturesQuery {
+           features(query: {}) {
                uri
            }
          }
