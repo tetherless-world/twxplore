@@ -99,6 +99,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     // sfContains: Exists if the subject SpatialObject spatially contains the object SpatialObject. DE-9IM: T*****FF*
     if (containsFeatureUri.isDefined) {
       List(
+        s"FILTER(?feature != <${containsFeatureUri.get.toString}>) .",
         s"<${containsFeatureUri.get.toString}> geo:hasDefaultGeometry ?containsFeatureGeometry .",
         "?containsFeatureGeometry rdf:type sf:Geometry .",
         "?containsFeatureGeometry geo:asWKT ?containsFeatureGeometryWkt .",
@@ -116,6 +117,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     // sfWithin: Exists if the subject SpatialObject is spatially within the object SpatialObject. DE-9IM: T*F**F***
     if (withinFeatureUri.isDefined) {
       List(
+        s"FILTER(?feature != <${withinFeatureUri.get.toString}>) .",
         s"<${withinFeatureUri.get.toString}> geo:hasDefaultGeometry ?withinFeatureGeometry .",
         "?withinFeatureGeometry rdf:type sf:Geometry .",
         "?withinFeatureGeometry geo:asWKT ?withinFeatureGeometryWkt .",
