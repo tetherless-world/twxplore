@@ -15,7 +15,7 @@ export enum FeatureType {
 
 export interface FeatureQuery {
   containsFeatureUri?: string | null;
-  type?: FeatureType | null;
+  types?: FeatureType[] | null;
   withinFeatureUri?: string | null;
 }
 
