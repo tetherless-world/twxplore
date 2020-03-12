@@ -10,7 +10,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {useSelector, useDispatch} from "react-redux";
+import {useSelector, useDispatch, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {changeTypeVisibility} from "../../actions/map/ChangeTypeVisibilityAction";
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CheckboxesGroup() {
+const SelectionPanelImpl: React.FunctionComponent = () => {
   const classes = useStyles();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
@@ -70,4 +70,5 @@ export default function CheckboxesGroup() {
       </FormControl>
     </div>
   );
-}
+};
+export const SelectionPanel = connect()(SelectionPanelImpl);
