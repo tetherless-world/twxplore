@@ -19,32 +19,39 @@ class TwksGeoStoreSpec extends WordSpec with Matchers {
       actual should equal(3)
     }
 
-    "get all features" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = None))
+    "get all features without limit and offset" in {
+      val actual = sut.getFeatures(limit = None, offset = None, query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = None))
+      actual should contain(GeoTestData.containingFeature)
+      actual should contain(GeoTestData.containedFeature)
+      actual should contain(GeoTestData.feature)
+    }
+
+    "get all features using limit and offset" in {
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = None))
       actual should contain(GeoTestData.containingFeature)
       actual should contain(GeoTestData.containedFeature)
       actual should contain(GeoTestData.feature)
     }
 
     "get features with a given type" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = GeoTestData.feature.`type`, withinFeatureUri = None))
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, `type` = GeoTestData.feature.`type`, withinFeatureUri = None))
       actual should equal(List(GeoTestData.feature))
     }
 
     "exclude features that don't match a type" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = Some(FeatureType.MilitaryInstallation), withinFeatureUri = None))
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, `type` = Some(FeatureType.MilitaryInstallation), withinFeatureUri = None))
       actual should contain(GeoTestData.containedFeature)
     }
 
     "get features containing a feature" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = Some(GeoTestData.feature.uri), `type` = None, withinFeatureUri = None))
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = Some(GeoTestData.feature.uri), `type` = None, withinFeatureUri = None))
       actual should contain(GeoTestData.containingFeature)
       actual should not contain(GeoTestData.feature) // sfContains includes the feature itself by default, but we explicitly exclude it
       actual should not contain(GeoTestData.containedFeature)
     }
 
     "get features within a feature" in {
-      val actual = sut.getFeatures(limit = 10, offset = 0, query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = Some(GeoTestData.feature.uri)))
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, `type` = None, withinFeatureUri = Some(GeoTestData.feature.uri)))
       actual should contain(GeoTestData.containedFeature)
       actual should not contain(GeoTestData.feature) // sfWithin includes the feature itself by default, but we explicitly exclude it
       actual should not contain(GeoTestData.containingFeature)

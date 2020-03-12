@@ -26,8 +26,33 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   @Inject
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
-  override def getFeatures(limit: Int, offset: Int, query: FeatureQuery): List[Feature] =
-    getFeaturesByUris(getFeatureUris(limit = limit, offset = offset, query = query))
+  override def getFeatures(limit: Option[Int], offset: Option[Int], query: FeatureQuery): List[Feature] =
+    if (limit.isDefined && offset.isDefined) {
+      getFeaturesByUris(getFeatureUris(limit = limit.get, offset = offset.get, query = query))
+    } else if (!limit.isDefined && !offset.isDefined) {
+      getFeatures(query)
+    } else {
+      throw new IllegalArgumentException("must specify both limit and offset, or neither")
+    }
+
+  private def getFeatures(query: FeatureQuery): List[Feature] =
+    withAssertionsQueryExecution(QueryFactory.create(
+      s"""
+         |${PREFIXES}
+         |CONSTRUCT {
+         |  ?feature ?featureP ?featureO .
+         |  ?featureGeometry ?featureGeometryP ?featureGeometryO .
+         |} WHERE {
+         |${toWherePatterns(query).mkString("\n")}
+         |  ?feature ?featureP ?featureO .
+         |  ?featureGeometry ?featureGeometryP ?featureGeometryO .
+         |}
+         |""".stripMargin)) {
+      queryExecution =>
+        val model = queryExecution.execConstruct()
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
+    }
+
 
   override def getFeaturesCount(query: FeatureQuery): Int = {
     withAssertionsQueryExecution(QueryFactory.create(
