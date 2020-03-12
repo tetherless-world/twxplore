@@ -20,7 +20,6 @@ import { changeMapFeatureState } from "../../actions/map/ChangeMapFeatureStateAc
 var wkt = require("terraformer-wkt-parser");
 var load_counter = 0
 const MapImpl: React.FunctionComponent = () => {
-  console.log(load_counter)
   const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
@@ -31,7 +30,7 @@ const MapImpl: React.FunctionComponent = () => {
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
     featuresQueryDocument, 
-    {variables: {limit: 25, offset: 0, query: {type: FeatureType.State}},}
+    {variables: {limit: 50, offset: 0, query: {type: FeatureType.State}},}
   );
 
   
@@ -40,8 +39,6 @@ const MapImpl: React.FunctionComponent = () => {
     FeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: FeaturesQuery) => {
-      console.log("here");
-      console.log(data);
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -90,7 +87,6 @@ const MapImpl: React.FunctionComponent = () => {
       featuresByState[feature.state] = [feature];
     }
   }
-  console.log(featuresByState)
 
   // Feature state machine
   for (const featureState in featuresByState) {
@@ -119,7 +115,6 @@ const MapImpl: React.FunctionComponent = () => {
             id: load_counter.toString()
           }
         };
-        //console.log(datasets)
         dispatch(
           addDataToMap({datasets, options: {centerMap: true, readOnly: true}})
         );
