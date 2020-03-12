@@ -4,10 +4,17 @@ import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {
   CHANGE_MAP_FEATURE_STATE,
-  ChangeMapFeatureStateAction
+  ChangeMapFeatureStateAction,
 } from "../../actions/map/ChangeMapFeatureStateAction";
-import { ADD_MAP_FEATURES, AddMapFeaturesAction } from "../../actions/map/AddMapFeaturesAction";
-import { MapState } from "../../states/map/MapState";
+import {
+  ADD_MAP_FEATURES,
+  AddMapFeaturesAction,
+} from "../../actions/map/AddMapFeaturesAction";
+import {MapState} from "../../states/map/MapState";
+import {
+  CHANGE_TYPE_VISIBILITY,
+  ChangeTypeVisibilityAction,
+} from "../../actions/map/ChangeTypeVisibilityAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -18,12 +25,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
         console.log("added map feature " + feature.uri);
-      } 
+      }
       break;
     }
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
-      console.log(addDataToMapAction)
+      console.log(addDataToMapAction);
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
         const addedFeature: MapFeature = row[0].properties;
         for (const resultFeature of result.features) {
@@ -42,8 +49,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case CHANGE_MAP_FEATURE_STATE: {
       const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction;
-      for (const actionUri of changeMapFeatureStateAction.payload.uris)
-      {
+      for (const actionUri of changeMapFeatureStateAction.payload.uris) {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === actionUri) {
             resultFeature.state = changeMapFeatureStateAction.payload.state;
@@ -56,6 +62,15 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           }
         }
       }
+      break;
+    }
+    case CHANGE_TYPE_VISIBILITY: {
+      const changeTypeVisibilityAction = action as ChangeTypeVisibilityAction;
+      const targetedType = changeTypeVisibilityAction.payload.typeName;
+      result.typesVisibility[targetedType] = !result.typesVisibility[
+        targetedType
+      ];
+      break;
     }
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
