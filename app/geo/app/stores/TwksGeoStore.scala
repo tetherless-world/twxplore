@@ -116,7 +116,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       "?featureGeometry geo:asWKT ?featureGeometryWkt ."
     ) ++
       toContainsFeatureUriWherePatterns(query.containsFeatureUri) ++
-      toTypeWherePatterns(query.`type`) ++
+      toTypeWherePatterns(query.types) ++
       toWithinFeatureUriWherePatterns(query.withinFeatureUri)
 
   private def toContainsFeatureUriWherePatterns(containsFeatureUri: Option[Uri]): List[String] =
@@ -134,8 +134,12 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       List()
     }
 
-  private def toTypeWherePatterns(`type`: Option[FeatureType]): List[String] =
-    `type`.map(`type` => s"?feature rdf:type <${`type`.uri.toString}> .").toList
+  private def toTypeWherePatterns(types: Option[List[FeatureType]]): List[String] =
+    if (types.isDefined) {
+      List(types.get.map(`type` => s"{ ?feature rdf:type <${`type`.uri.toString}> . }").mkString(" UNION "))
+    } else {
+      List()
+    }
 
   private def toWithinFeatureUriWherePatterns(withinFeatureUri: Option[Uri]): List[String] =
     // Features within the given feature
