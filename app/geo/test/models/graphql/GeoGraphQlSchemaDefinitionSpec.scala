@@ -68,7 +68,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
       val query =
         graphql"""
           query FeaturesByType($$type: FeatureType!) {
-            features(query: {type: $$type}, limit: 10, offset: 0) {
+            features(query: {types: [$$type]}, limit: 10, offset: 0) {
               uri
             }
           }
