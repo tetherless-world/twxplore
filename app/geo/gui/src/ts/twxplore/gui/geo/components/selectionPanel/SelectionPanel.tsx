@@ -9,6 +9,7 @@ import {
   FormHelperText,
   Theme,
 } from "@material-ui/core";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,59 +21,55 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+/*
+let TypeMap: {id: number; name: string}[] = [];
+
+for(var n in GoalProgressMeasurements) {
+  if (typeof GoalProgressMeasurements[n] === 'number') {
+      map.push({id: <any>GoalProgressMeasurements[n], name: n});
+  }
+}
+*/
 
 export default function CheckboxesGroup() {
   const classes = useStyles();
+  /*
   const [state, setState] = React.useState({
     gilad: true,
     jason: false,
     antoine: false,
   });
+  */
 
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState({...state, [name]: event.target.checked});
+    event.target.checked;
+    //setState({...state, [name]: event.target.checked});
   };
 
-  const {gilad, jason, antoine} = state;
-  //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
+  //const featureTypes: {[index: string]: String} = {}
 
+  //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
     <div className={classes.root}>
       <FormControl component="fieldset" className={classes.formControl}>
-        <FormLabel component="legend">Assign responsibility</FormLabel>
+        <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={gilad}
-                onChange={handleChange("gilad")}
-                value="gilad"
+          {Object.keys(FeatureType).map(key => {
+            return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={false}
+                    onChange={handleChange((FeatureType as any)[key])}
+                    value={(FeatureType as any)[key]}
+                  />
+                }
+                label={(FeatureType as any)[key]}
               />
-            }
-            label="Gilad Gray"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={jason}
-                onChange={handleChange("jason")}
-                value="jason"
-              />
-            }
-            label="Jason Killian"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={antoine}
-                onChange={handleChange("antoine")}
-                value="antoine"
-              />
-            }
-            label="Antoine Llorca"
-          />
+            );
+          })}
         </FormGroup>
         <FormHelperText>Be careful</FormHelperText>
       </FormControl>
