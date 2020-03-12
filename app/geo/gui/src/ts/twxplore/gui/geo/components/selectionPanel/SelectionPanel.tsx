@@ -1,40 +1,81 @@
-import TreeView from "@material-ui/lab/TreeView";
 import * as React from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
+import {makeStyles, createStyles} from "@material-ui/core/styles";
+import {
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormHelperText,
+  Theme,
+} from "@material-ui/core";
 
-const useStyles = makeStyles({
-  root: {
-    height: 216,
-    flexGrow: 1,
-    maxWidth: 400,
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+    },
+    formControl: {
+      margin: theme.spacing(3),
+    },
+  })
+);
 
-export const SelectionPanel: React.FunctionComponent<{}> = ({}) => {
+export default function CheckboxesGroup() {
   const classes = useStyles();
-  return (
-    <TreeView
-      className={classes.root}
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-    >
-      <TreeItem nodeId="1" label="New York City">
-        <TreeItem nodeId="2" label="Queens" />
-        <TreeItem nodeId="3" label="Manhattan" />
-      </TreeItem>
-      <TreeItem nodeId="5" label="Documents">
-        <TreeItem nodeId="6" label="Material-UI">
-          <TreeItem nodeId="7" label="src">
-            <TreeItem nodeId="8" label="index.js" />
-            <TreeItem nodeId="9" label="tree-view.js" />
-          </TreeItem>
-        </TreeItem>
-      </TreeItem>
-    </TreeView>
-  );
-};
+  const [state, setState] = React.useState({
+    gilad: true,
+    jason: false,
+    antoine: false,
+  });
 
-export default SelectionPanel;
+  const handleChange = (name: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setState({...state, [name]: event.target.checked});
+  };
+
+  const {gilad, jason, antoine} = state;
+  //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
+
+  return (
+    <div className={classes.root}>
+      <FormControl component="fieldset" className={classes.formControl}>
+        <FormLabel component="legend">Assign responsibility</FormLabel>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={gilad}
+                onChange={handleChange("gilad")}
+                value="gilad"
+              />
+            }
+            label="Gilad Gray"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={jason}
+                onChange={handleChange("jason")}
+                value="jason"
+              />
+            }
+            label="Jason Killian"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={antoine}
+                onChange={handleChange("antoine")}
+                value="antoine"
+              />
+            }
+            label="Antoine Llorca"
+          />
+        </FormGroup>
+        <FormHelperText>Be careful</FormHelperText>
+      </FormControl>
+    </div>
+  );
+}
