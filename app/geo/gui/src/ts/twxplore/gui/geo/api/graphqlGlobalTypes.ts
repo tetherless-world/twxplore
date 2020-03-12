@@ -10,12 +10,13 @@ export enum FeatureType {
   MetropolitanDivision = "MetropolitanDivision",
   MilitaryInstallation = "MilitaryInstallation",
   State = "State",
+  UlsEntity = "UlsEntity",
 }
 
 export interface FeatureQuery {
-  containsWkt?: string | null;
+  containsFeatureUri?: string | null;
   type?: FeatureType | null;
-  withinWkt?: string | null;
+  withinFeatureUri?: string | null;
 }
 
 //==============================================================
