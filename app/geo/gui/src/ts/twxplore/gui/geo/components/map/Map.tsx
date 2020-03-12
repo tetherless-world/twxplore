@@ -27,11 +27,12 @@ const MapImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  //console.log(state);
 
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
     featuresQueryDocument,
-    {variables: {query: {type: FeatureType.State}}}
+    {variables: {query: {types: [FeatureType.State]}}}
   );
 
   const [getFeaturesWithin] = useLazyQuery<
