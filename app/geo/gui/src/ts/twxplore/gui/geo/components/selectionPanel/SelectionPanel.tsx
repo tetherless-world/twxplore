@@ -45,7 +45,7 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
     <div className={classes.root}>
-      <FormControl component="fieldset" className={classes.formControl}>
+      <FormControl className={classes.formControl}>
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
           {Object.keys(FeatureType).map(key => {
