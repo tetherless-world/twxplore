@@ -10,6 +10,10 @@ import {
   Theme,
 } from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {useSelector, useDispatch} from "react-redux";
+import {MapState} from "../../states/map/MapState";
+import {RootState} from "../../states/root/RootState";
+import {changeTypeVisibility} from "../../actions/map/ChangeTypeVisibilityAction";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,31 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-/*
-let TypeMap: {id: number; name: string}[] = [];
-
-for(var n in GoalProgressMeasurements) {
-  if (typeof GoalProgressMeasurements[n] === 'number') {
-      map.push({id: <any>GoalProgressMeasurements[n], name: n});
-  }
-}
-*/
 
 export default function CheckboxesGroup() {
   const classes = useStyles();
-  /*
-  const [state, setState] = React.useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
-  });
-  */
+  const state: MapState = useSelector(
+    (rootState: RootState) => rootState.app.map
+  );
+  console.log(state.typesVisibility);
+  const dispatch = useDispatch();
 
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    event.target.checked;
-    //setState({...state, [name]: event.target.checked});
+    dispatch(changeTypeVisibility(event.target.value));
   };
 
   //const featureTypes: {[index: string]: String} = {}
@@ -57,21 +49,24 @@ export default function CheckboxesGroup() {
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
           {Object.keys(FeatureType).map(key => {
+            const typeName = (FeatureType as any)[key];
             return (
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={false}
-                    onChange={handleChange((FeatureType as any)[key])}
-                    value={(FeatureType as any)[key]}
+                    checked={state.typesVisibility[typeName]}
+                    onChange={handleChange(typeName)}
+                    value={typeName}
                   />
                 }
-                label={(FeatureType as any)[key]}
+                label={typeName}
               />
             );
           })}
         </FormGroup>
-        <FormHelperText>Be careful</FormHelperText>
+        <FormHelperText>
+          Types chosen here will be visible on the map and invisible otherwise.
+        </FormHelperText>
       </FormControl>
     </div>
   );
