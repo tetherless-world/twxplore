@@ -1,35 +1,59 @@
 import {addDataToMap} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/FeaturesQuery.graphql";
-import { RootState } from "../../states/root/RootState";
-import { MapState } from "../../states/map/MapState";
-import { FeaturesQuery, FeaturesQueryVariables } from "../../api/queries/types/FeaturesQuery";
-import {useQuery} from "@apollo/react-hooks";
-import { addMapFeatures } from "../../actions/map/AddMapFeaturesAction";
-import { MapFeatureState } from "../../states/map/MapFeatureState";
-import { MapFeature } from "../../states/map/MapFeature";
+import {RootState} from "../../states/root/RootState";
+import {MapState} from "../../states/map/MapState";
+import {
+  FeaturesQuery,
+  FeaturesQueryVariables,
+} from "../../api/queries/types/FeaturesQuery";
+import {useQuery, useLazyQuery} from "@apollo/react-hooks";
+import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
+import {MapFeatureState} from "../../states/map/MapFeatureState";
+import {MapFeature} from "../../states/map/MapFeature";
 import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
-import { ActiveNavbarItem } from "../navbar/ActiveNavbarItem";
+import {ActiveNavbarItem} from "../navbar/ActiveNavbarItem";
 import * as React from "react";
-import { Frame } from "../frame/Frame";
-import { FeatureType } from "../../api/graphqlGlobalTypes";
+import {Frame} from "../frame/Frame";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
 
 var wkt = require("terraformer-wkt-parser");
+var loadCounter = 0;
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
-    featuresQueryDocument, 
-    {variables: {limit: 10, offset: 0, query: {type: FeatureType.State}},
-}
+    featuresQueryDocument,
+    {variables: {limit: 50, offset: 0, query: {type: FeatureType.State}}}
   );
-  console.log(featuresQueryResult);
 
+  const [getFeaturesWithin] = useLazyQuery<
+    FeaturesQuery,
+    FeaturesQueryVariables
+  >(featuresQueryDocument, {
+    onCompleted: (data: FeaturesQuery) => {
+      dispatch(
+        addMapFeatures(
+          data.features.map(feature => ({
+            __typename: feature.__typename,
+            geometry: feature.geometry,
+            label: feature.label,
+            type: feature.type,
+            uri: feature.uri,
+            state: MapFeatureState.LOADED,
+          }))
+        )
+      );
+      loadCounter += 1;
+    },
+  });
 
   if (state.features.length === 0) {
     if (featuresQueryResult.data) {
@@ -47,6 +71,7 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     }
+    loadCounter += 1;
   }
 
   // Organize the features by state
@@ -59,7 +84,6 @@ const MapImpl: React.FunctionComponent = () => {
       featuresByState[feature.state] = [feature];
     }
   }
-  console.log(featuresByState)
 
   // Feature state machine
   for (const featureState in featuresByState) {
@@ -72,7 +96,8 @@ const MapImpl: React.FunctionComponent = () => {
         add the data of the features to the map using the addDataToMap action which is reduced by
         keplerGL reducer.. The geometry of the feature is used
         to display its location and shape on the map.
-        */ 
+        */
+
         const datasets = {
           data: Processors.processGeojson({
             type: "FeatureCollection",
@@ -85,14 +110,33 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: featuresInState[0].uri
-          }
+            id: loadCounter.toString(),
+          },
         };
-        //console.log(datasets)
         dispatch(
           addDataToMap({datasets, options: {centerMap: true, readOnly: true}})
         );
         break;
+      }
+
+      case MapFeatureState.CLICKED: {
+        /*
+      Features in this state have been clicked on the map. They now need to
+      LOAD in their child features.
+      */
+
+        const clickedUris: string[] = [];
+        for (const clickedFeature of featuresInState) {
+          getFeaturesWithin({
+            variables: {
+              limit: 1000,
+              offset: 0,
+              query: {withinFeatureUri: clickedFeature.uri},
+            },
+          });
+          clickedUris.push(clickedFeature.uri);
+        }
+        dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
       }
     }
   }
