@@ -29,6 +29,6 @@ export interface FeaturesQuery {
 
 export interface FeaturesQueryVariables {
   query: FeatureQuery;
-  limit: number;
-  offset: number;
+  limit?: number | null;
+  offset?: number | null;
 }

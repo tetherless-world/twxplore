@@ -1,4 +1,4 @@
-query FeaturesQuery($query: FeatureQuery!, $limit: Int!, $offset: Int!) {
+query FeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
   features(limit: $limit, offset: $offset, query: $query) {
     label
     type

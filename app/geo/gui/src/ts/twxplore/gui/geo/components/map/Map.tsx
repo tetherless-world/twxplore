@@ -31,7 +31,7 @@ const MapImpl: React.FunctionComponent = () => {
   // Load features on first render
   const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
     featuresQueryDocument,
-    {variables: {limit: 50, offset: 0, query: {type: FeatureType.State}}}
+    {variables: {query: {type: FeatureType.State}}}
   );
 
   const [getFeaturesWithin] = useLazyQuery<
@@ -129,8 +129,6 @@ const MapImpl: React.FunctionComponent = () => {
         for (const clickedFeature of featuresInState) {
           getFeaturesWithin({
             variables: {
-              limit: 1000,
-              offset: 0,
               query: {withinFeatureUri: clickedFeature.uri},
             },
           });
