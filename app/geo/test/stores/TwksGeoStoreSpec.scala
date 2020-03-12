@@ -42,6 +42,7 @@ class TwksGeoStoreSpec extends WordSpec with Matchers {
       val actual = sut.getFeatures(limit = None, offset = None, query = FeatureQuery(containsFeatureUri = None, types = Some(List(GeoTestData.containedFeature.`type`.get, GeoTestData.feature.`type`.get)), withinFeatureUri = None))
       actual should contain(GeoTestData.feature)
       actual should contain(GeoTestData.containedFeature)
+      actual should not contain(GeoTestData.containingFeature)
     }
 
     "exclude features that don't match a type" in {
