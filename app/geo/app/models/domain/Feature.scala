@@ -1,5 +1,7 @@
 package models.domain
 
+import java.util.Date
+
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Geometry
@@ -11,6 +13,7 @@ import org.apache.jena.vocabulary.RDF
 final case class Feature(
                           geometry: Geometry,
                           uri: Uri,
+                          dateTime: Option[Date] = None,
                           frequency: Option[Double] = None,
                           label: Option[String] = None,
                           `type`: Option[FeatureType] = None,
@@ -22,6 +25,9 @@ object Feature {
   implicit class FeatureResource(val resource: Resource)
     extends RdfProperties
       with RdfsProperties {
+    final def dateTime: Option[Date] = getPropertyObjectDates(LOCAL.dateTime).headOption
+    final def dateTime_=(value: Date) = setPropertyLiteral(LOCAL.dateTime, value)
+
     final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
 
     final def frequency_=(value: Double) = setPropertyLiteral(LOCAL.frequency, value.asInstanceOf[Float])
@@ -30,6 +36,7 @@ object Feature {
   implicit object FeatureRdfReader extends RdfReader[Feature] {
     override def read(resource: Resource): Feature =
       Feature(
+        dateTime = resource.dateTime,
         frequency = resource.frequency,
         geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
         label = resource.label,
@@ -43,6 +50,7 @@ object Feature {
       val resource = model.createResource(value.uri.toString)
       resource.`type` = Geo.FEATURE_RES
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
+      if (value.dateTime.isDefined) resource.dateTime = value.dateTime.get
       if (value.frequency.isDefined) resource.frequency = value.frequency.get
       if (value.label.isDefined) resource.label = value.label.get
       if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))

@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+from datetime import datetime
 from io import TextIOWrapper
 from typing import Generator, Dict
 from zipfile import ZipFile
@@ -58,6 +59,7 @@ class ReverseBeaconTransformer(_Transformer):
                             )
                         feature = \
                             Feature(
+                                datetime_=datetime.strptime(row["date"], "%Y-%m-%d %H:%M:%S"),  # 2020-02-01 00:00:00
                                 frequency=float(row["freq"]),
                                 label=uls_entity.call_sign + ": " + uls_entity.name,
                                 geometry=geometry,
