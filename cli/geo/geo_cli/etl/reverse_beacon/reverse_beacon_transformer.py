@@ -37,7 +37,7 @@ class ReverseBeaconTransformer(_Transformer):
             with ZipFile(zip_file_path) as zip_file:
                 with zip_file.open(file_base_name + ".csv") as csv_file:
                     csv_reader = csv.DictReader(TextIOWrapper(csv_file, "utf-8"))
-                    for row in csv_reader:
+                    for row_i, row in enumerate(csv_reader):
                         if row["de_cont"] != "NA":
                             continue
                         call_sign = row["callsign"]
@@ -58,10 +58,11 @@ class ReverseBeaconTransformer(_Transformer):
                             )
                         feature = \
                             Feature(
+                                frequency=float(row["freq"]),
                                 label=uls_entity.call_sign + ": " + uls_entity.name,
                                 geometry=geometry,
-                                type=TWXPLORE_GEO_APP_ONTOLOGY.UlsEntity,
-                                uri=TWXPLORE_GEO_APP_FEATURE[f"uls-{uls_entity.unique_system_identifier}"]
+                                type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
+                                uri=TWXPLORE_GEO_APP_FEATURE[f"reverse-beacon-{file_base_name}-{row_i}"]
                             )
                         yield feature
                         yielded_call_signs.add(call_sign)

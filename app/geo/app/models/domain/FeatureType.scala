@@ -11,7 +11,7 @@ object FeatureType {
   case object MetropolitanDivision extends FeatureType
   case object MilitaryInstallation extends FeatureType
   case object State extends FeatureType
-  case object UlsEntity extends FeatureType
+  case object Transmission extends FeatureType
 
-  val values = List(MetropolitanDivision, MilitaryInstallation, State, UlsEntity)
+  val values = List(MetropolitanDivision, MilitaryInstallation, Transmission, State)
 }
