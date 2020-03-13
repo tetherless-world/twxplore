@@ -1,7 +1,6 @@
 package stores
 
-import io.github.tetherlessworld.twxplore.lib.geo.GeoTestData
-import models.domain.AppFeatureType
+import models.domain.FeatureType
 import models.graphql.FeatureQuery
 import org.scalatest.{Matchers, WordSpec}
 
@@ -46,7 +45,7 @@ class TwksGeoStoreSpec extends WordSpec with Matchers {
     }
 
     "exclude features that don't match a type" in {
-      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, types = Some(List(AppFeatureType.MilitaryInstallation)), withinFeatureUri = None))
+      val actual = sut.getFeatures(limit = Some(10), offset = Some(0), query = FeatureQuery(containsFeatureUri = None, types = Some(List(FeatureType.MilitaryInstallation)), withinFeatureUri = None))
       actual should contain(GeoTestData.containedFeature)
     }
 

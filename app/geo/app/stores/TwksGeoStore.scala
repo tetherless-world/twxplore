@@ -4,9 +4,8 @@ import edu.rpi.tw.twks.api.TwksClient
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.GenericFeature
 import javax.inject.Inject
-import models.domain.AppFeatureType
+import models.domain.{Feature, FeatureType}
 import models.graphql.FeatureQuery
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
 import org.apache.jena.query.QueryFactory
@@ -27,7 +26,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   @Inject
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
-  override def getFeatures(limit: Option[Int], offset: Option[Int], query: FeatureQuery): List[GenericFeature] =
+  override def getFeatures(limit: Option[Int], offset: Option[Int], query: FeatureQuery): List[Feature] =
     if (limit.isDefined && offset.isDefined) {
       getFeaturesByUris(getFeatureUris(limit = limit.get, offset = offset.get, query = query))
     } else if (!limit.isDefined && !offset.isDefined) {
@@ -36,7 +35,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       throw new IllegalArgumentException("must specify both limit and offset, or neither")
     }
 
-  private def getFeatures(query: FeatureQuery): List[GenericFeature] =
+  private def getFeatures(query: FeatureQuery): List[Feature] =
     withAssertionsQueryExecution(QueryFactory.create(
       s"""
          |${PREFIXES}
@@ -51,7 +50,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
          |""".stripMargin)) {
       queryExecution =>
         val model = queryExecution.execConstruct()
-        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[GenericFeature](resource))
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
 
 
@@ -69,10 +68,10 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     }
   }
 
-  def getFeatureByUri(featureUri: Uri): GenericFeature =
+  def getFeatureByUri(featureUri: Uri): Feature =
     getFeaturesByUris(List(featureUri)).head
 
-  private def getFeaturesByUris(featureUris: List[Uri]): List[GenericFeature] = {
+  private def getFeaturesByUris(featureUris: List[Uri]): List[Feature] = {
     if (!featureUris.isEmpty) {
       // Should be safe to inject featureUris since they've already been parsed as URIs
       withAssertionsQueryExecution(QueryFactory.create(
@@ -89,7 +88,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
            |}
            |""".stripMargin)) { queryExecution =>
         val model = queryExecution.execConstruct()
-        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[GenericFeature](resource))
+        model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
       }
     } else {
       List()
@@ -135,7 +134,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       List()
     }
 
-  private def toTypeWherePatterns(types: Option[List[AppFeatureType]]): List[String] =
+  private def toTypeWherePatterns(types: Option[List[FeatureType]]): List[String] =
     if (types.isDefined) {
       List(types.get.map(`type` => s"{ ?feature rdf:type <${`type`.uri.toString}> . }").mkString(" UNION "))
     } else {
