@@ -61,7 +61,7 @@ class ReverseBeaconTransformer(_Transformer):
                             Feature(
                                 datetime_=datetime.strptime(row["date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc),  # 2020-02-01 00:00:00
                                 frequency=float(row["freq"]),
-                                label=uls_entity.call_sign + ": " + uls_entity.name,
+                                label="Transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
                                 geometry=geometry,
                                 type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                 uri=TWXPLORE_GEO_APP_FEATURE[f"reverse-beacon-{file_base_name}-{row_i}"]
