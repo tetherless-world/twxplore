@@ -34,10 +34,10 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   console.log(state.typesVisibility);
   const dispatch = useDispatch();
 
-  const handleChange = (name: string) => (
+  const handleChange = (typeEnum: FeatureType) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(changeTypeVisibility(event.target.value));
+    dispatch(changeTypeVisibility(typeEnum));
   };
 
   //const featureTypes: {[index: string]: String} = {}
@@ -48,18 +48,20 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
       <FormControl className={classes.formControl}>
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
-          {Object.keys(FeatureType).map(key => {
-            const typeName = (FeatureType as any)[key];
+          {Object.values(FeatureType).map(typeString => {
+            //const typeName = (FeatureType as any)[key];
+            const typeEnum: FeatureType =
+              FeatureType[typeString as keyof typeof FeatureType];
             return (
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.typesVisibility[typeName]}
-                    onChange={handleChange(typeName)}
-                    value={typeName}
+                    checked={state.typesVisibility[typeEnum]}
+                    onChange={handleChange(typeEnum)}
+                    value={typeString}
                   />
                 }
-                label={typeName}
+                label={typeString}
               />
             );
           })}
