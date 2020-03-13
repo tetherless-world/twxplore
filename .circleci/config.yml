@@ -39,7 +39,7 @@ jobs:
           command: |
             sbt clean update package assembly test
             cp app/geo/target/test-reports/*.xml ~/project/test-results/scala
-            cp lib/scala/geo/target/test-reports/*.xml ~/project/test-results/scala
+#            cp lib/scala/geo/target/test-reports/*.xml ~/project/test-results/scala
       - store_test_results:
           path: test-results
       - run:
