@@ -1,5 +1,5 @@
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-
+//unused at the moment but perhaps still helpful to reference later
 export const savedConfigV0 = {
   version: "v0",
   config: {
