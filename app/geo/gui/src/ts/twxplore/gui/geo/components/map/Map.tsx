@@ -21,13 +21,14 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
 
 var wkt = require("terraformer-wkt-parser");
-var loadCounter = 0;
+//var loadCounter = 0;
+
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  //console.log(state);
+  // dispatch(receiveMapConfig(savedConfigV0));
 
   // Load features on first render
   const initialFeaturesQueryResult = useQuery<
@@ -52,7 +53,7 @@ const MapImpl: React.FunctionComponent = () => {
           }))
         )
       );
-      loadCounter += 1;
+      //loadCounter += 1;
     },
   });
 
@@ -72,7 +73,7 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     }
-    loadCounter += 1;
+    //loadCounter += 1;
   }
 
   // Organize the features by state
@@ -111,11 +112,14 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: loadCounter.toString(),
+            id: featuresInState[0].type, //loadCounter.toString(),
           },
         };
         dispatch(
-          addDataToMap({datasets, options: {centerMap: true, readOnly: true}})
+          addDataToMap({
+            datasets,
+            options: {centerMap: true, readOnly: true},
+          })
         );
         break;
       }
