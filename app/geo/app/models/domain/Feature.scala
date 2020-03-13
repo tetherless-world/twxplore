@@ -22,9 +22,9 @@ object Feature {
   implicit class FeatureResource(val resource: Resource)
     extends RdfProperties
       with RdfsProperties {
-    final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getDouble)
+    final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
 
-    final def frequency_=(value: Double) = setPropertyLiteral(LOCAL.frequency, value)
+    final def frequency_=(value: Double) = setPropertyLiteral(LOCAL.frequency, value.asInstanceOf[Float])
   }
 
   implicit object FeatureRdfReader extends RdfReader[Feature] {

@@ -7,5 +7,5 @@ object LOCAL {
   val ONTOLOGY_URI = URI_PREFIX + "ontology#"
 
   // Properties
-  val frequency = ResourceFactory.createProperty("frequency")
+  val frequency = ResourceFactory.createProperty(ONTOLOGY_URI + "frequency")
 }
