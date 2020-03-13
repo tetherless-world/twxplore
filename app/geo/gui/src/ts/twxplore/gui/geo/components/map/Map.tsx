@@ -1,12 +1,12 @@
 import {addDataToMap} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
-import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/FeaturesQuery.graphql";
+import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
 import {MapState} from "../../states/map/MapState";
 import {
-  FeaturesQuery,
-  FeaturesQueryVariables,
-} from "../../api/queries/types/FeaturesQuery";
+  MapFeaturesQuery,
+  MapFeaturesQueryVariables,
+} from "../../api/queries/types/MapFeaturesQuery";
 import {useQuery, useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
@@ -27,18 +27,19 @@ const MapImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  //console.log(state);
 
   // Load features on first render
-  const featuresQueryResult = useQuery<FeaturesQuery, FeaturesQueryVariables>(
-    featuresQueryDocument,
-    {variables: {limit: 50, offset: 0, query: {type: FeatureType.State}}}
-  );
+  const initialFeaturesQueryResult = useQuery<
+    MapFeaturesQuery,
+    MapFeaturesQueryVariables
+  >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
   const [getFeaturesWithin] = useLazyQuery<
-    FeaturesQuery,
-    FeaturesQueryVariables
+    MapFeaturesQuery,
+    MapFeaturesQueryVariables
   >(featuresQueryDocument, {
-    onCompleted: (data: FeaturesQuery) => {
+    onCompleted: (data: MapFeaturesQuery) => {
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -56,11 +57,11 @@ const MapImpl: React.FunctionComponent = () => {
   });
 
   if (state.features.length === 0) {
-    if (featuresQueryResult.data) {
+    if (initialFeaturesQueryResult.data) {
       // Not tracking any features yet, add the boroughs we loaded
       dispatch(
         addMapFeatures(
-          featuresQueryResult.data.features.map(feature => ({
+          initialFeaturesQueryResult.data.features.map(feature => ({
             __typename: feature.__typename,
             geometry: feature.geometry,
             label: feature.label,
@@ -129,8 +130,6 @@ const MapImpl: React.FunctionComponent = () => {
         for (const clickedFeature of featuresInState) {
           getFeaturesWithin({
             variables: {
-              limit: 1000,
-              offset: 0,
               query: {withinFeatureUri: clickedFeature.uri},
             },
           });
