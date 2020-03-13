@@ -20,6 +20,7 @@ export interface MapFeaturesQuery_features {
   label: string | null;
   type: FeatureType | null;
   uri: string;
+  frequency: number | null;
   geometry: MapFeaturesQuery_features_geometry;
 }
 

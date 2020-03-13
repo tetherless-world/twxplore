@@ -3,6 +3,7 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
     label
     type
     uri
+    frequency
     geometry {
       label
       wkt
