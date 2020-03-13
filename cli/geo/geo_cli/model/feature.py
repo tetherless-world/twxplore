@@ -19,6 +19,8 @@ class Feature:
             frequency_range: Optional[FrequencyRange] = None,
             type: Optional[URIRef] = None
     ):
+        if datetime_ is not None:
+            assert datetime_.tzinfo is not None
         self.__datetime = datetime_
         self.__frequency = frequency
         self.__frequency_range = frequency_range

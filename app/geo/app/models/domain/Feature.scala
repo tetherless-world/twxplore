@@ -1,13 +1,14 @@
 package models.domain
 
-import java.util.Date
+import java.util.{Calendar, Date}
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Geometry
 import models.domain.vocabulary.LOCAL
+import org.apache.jena.datatypes.xsd.XSDDateTime
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
-import org.apache.jena.rdf.model.{Model, Resource}
+import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 import org.apache.jena.vocabulary.RDF
 
 final case class Feature(
@@ -25,8 +26,8 @@ object Feature {
   implicit class FeatureResource(val resource: Resource)
     extends RdfProperties
       with RdfsProperties {
-    final def dateTime: Option[Date] = getPropertyObjectDates(LOCAL.dateTime).headOption
-    final def dateTime_=(value: Date) = setPropertyLiteral(LOCAL.dateTime, value)
+    final def dateTime: Option[Date] = getPropertyObjectLiterals(LOCAL.dateTime).headOption.map(literal => literal.getValue.asInstanceOf[XSDDateTime].asCalendar().getTime)
+    final def dateTime_=(value: Date) = { val calendar = Calendar.getInstance(); calendar.setTime(value); resource.addProperty(LOCAL.dateTime, ResourceFactory.createTypedLiteral(new XSDDateTime(calendar))); }
 
     final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
 
