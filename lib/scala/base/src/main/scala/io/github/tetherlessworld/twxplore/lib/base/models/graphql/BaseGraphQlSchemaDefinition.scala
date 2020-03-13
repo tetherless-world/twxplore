@@ -7,11 +7,8 @@ import sangria.schema.{Argument, FloatType, IntType, ScalarAlias, StringType}
 
 abstract class BaseGraphQlSchemaDefinition {
   // Scalar aliases
-  implicit val DateType = ScalarAlias[Date, String](
-    StringType, _.toString, date => {
-      val dateFormatter = new java.text.SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy")
-      Right(dateFormatter.parse(date))
-    }
+  implicit val DateType = ScalarAlias[Date, Int](
+    IntType, (date: Date) => (date.getTime / 1000l).intValue(), (dateInt: Int) => Right(new Date(dateInt * 1000))
   )
 
   implicit val FloatScalarAlias = ScalarAlias[Float, Double](
