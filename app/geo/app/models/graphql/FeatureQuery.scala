@@ -1,10 +1,10 @@
 package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.FeatureType
+import models.domain.AppFeatureType
 
 case class FeatureQuery(
                          containsFeatureUri: Option[Uri],
-                         types: Option[List[FeatureType]],
+                         types: Option[List[AppFeatureType]],
                          withinFeatureUri: Option[Uri]
                        )

@@ -2,21 +2,22 @@ package models.graphql
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{Feature, FeatureType, Geometry}
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{GenericFeature, Geometry}
+import models.domain.AppFeatureType
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, fields}
 
 object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   // Enum types
-  implicit val FeatureTypeType = deriveEnumType[FeatureType]()
+  implicit val FeatureTypeType = deriveEnumType[AppFeatureType]()
 
   // Object types, in dependence order
   implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
-  implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
+  implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, GenericFeature](
 //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
 
@@ -31,7 +32,7 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
       val ad = node.asInstanceOf[Map[String, Any]]
       FeatureQuery(
         containsFeatureUri = ad.get("containsFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]]),
-        types = ad.get("types").flatMap(value => value.asInstanceOf[Option[Vector[FeatureType]]].map(vec => vec.toList)),
+        types = ad.get("types").flatMap(value => value.asInstanceOf[Option[Vector[AppFeatureType]]].map(vec => vec.toList)),
         withinFeatureUri = ad.get("withinFeatureUri").flatMap(value => value.asInstanceOf[Option[Uri]])
       )
     }
