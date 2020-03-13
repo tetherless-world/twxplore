@@ -23,10 +23,10 @@ object GeoTestData {
         wkt = "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
         uri = Uri.parse("http://example.com/geometry"))
     val feature = Feature(
-        dateTime = Some(new Date(2020 - 1900, 2, 13, 16, 32, 0)), // Use an exact date rather than the current date, because serialization loses sub-seconds.
         frequency = Some(1.0),
         geometry = featureGeometry,
         label = Some("Test feature"),
+        timestamp = Some(new Date(2020 - 1900, 2, 13, 16, 32, 0)), // Use an exact date rather than the current date, because serialization loses sub-seconds.
         `type` = Some(FeatureType.MetropolitanDivision),
         uri = Uri.parse("http://example.com/feature")
     )

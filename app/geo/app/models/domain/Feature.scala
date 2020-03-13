@@ -14,9 +14,9 @@ import org.apache.jena.vocabulary.RDF
 final case class Feature(
                           geometry: Geometry,
                           uri: Uri,
-                          dateTime: Option[Date] = None,
                           frequency: Option[Double] = None,
                           label: Option[String] = None,
+                          timestamp: Option[Date] = None,
                           `type`: Option[FeatureType] = None,
                         ) extends io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 
@@ -26,8 +26,8 @@ object Feature {
   implicit class FeatureResource(val resource: Resource)
     extends RdfProperties
       with RdfsProperties {
-    final def dateTime: Option[Date] = getPropertyObjectLiterals(LOCAL.dateTime).headOption.map(literal => literal.getValue.asInstanceOf[XSDDateTime].asCalendar().getTime)
-    final def dateTime_=(value: Date) = { val calendar = Calendar.getInstance(); calendar.setTime(value); resource.addProperty(LOCAL.dateTime, ResourceFactory.createTypedLiteral(new XSDDateTime(calendar))); }
+    final def timestamp: Option[Date] = getPropertyObjectLiterals(LOCAL.timestamp).headOption.map(literal => literal.getValue.asInstanceOf[XSDDateTime].asCalendar().getTime)
+    final def timestamp_=(value: Date) = { val calendar = Calendar.getInstance(); calendar.setTime(value); resource.addProperty(LOCAL.timestamp, ResourceFactory.createTypedLiteral(new XSDDateTime(calendar))); }
 
     final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
 
@@ -37,10 +37,10 @@ object Feature {
   implicit object FeatureRdfReader extends RdfReader[Feature] {
     override def read(resource: Resource): Feature =
       Feature(
-        dateTime = resource.dateTime,
         frequency = resource.frequency,
         geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
         label = resource.label,
+        timestamp = resource.timestamp,
         `type` = resource.types.flatMap(typeResource => FeatureType.values.find(value => typeResource.getURI == value.uri.toString)).headOption,
         uri = Uri.parse(resource.getURI)
       )
@@ -51,9 +51,9 @@ object Feature {
       val resource = model.createResource(value.uri.toString)
       resource.`type` = Geo.FEATURE_RES
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
-      if (value.dateTime.isDefined) resource.dateTime = value.dateTime.get
       if (value.frequency.isDefined) resource.frequency = value.frequency.get
       if (value.label.isDefined) resource.label = value.label.get
+      if (value.timestamp.isDefined) resource.timestamp = value.timestamp.get
       if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))
       resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](model, value.geometry))
     }
