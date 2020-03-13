@@ -5,6 +5,7 @@ import edu.rpi.tw.twks.configuration.TwksGeoSPARQLConfiguration
 import edu.rpi.tw.twks.mem.{MemTwks, MemTwksConfiguration}
 import edu.rpi.tw.twks.nanopub.Nanopublication
 import io.github.tetherlessworld.scena.Rdf
+import models.GeoTestData
 
 object TestTwks {
   val twks = new MemTwks(MemTwksConfiguration.builder().setGeoSparqlConfiguration(TwksGeoSPARQLConfiguration.builder().setEnable(true).build()).build())

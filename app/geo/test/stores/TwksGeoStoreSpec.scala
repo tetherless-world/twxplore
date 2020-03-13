@@ -1,5 +1,6 @@
 package stores
 
+import models.GeoTestData
 import models.domain.FeatureType
 import models.graphql.FeatureQuery
 import org.scalatest.{Matchers, WordSpec}

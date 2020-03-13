@@ -1,5 +1,6 @@
 package models.graphql
 
+import models.GeoTestData
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
