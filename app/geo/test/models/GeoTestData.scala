@@ -17,6 +17,6 @@ object GeoTestData {
     val containingFeature = Feature(geometry = containingGeometry, label = Some("Containing feature"), `type` = Some(FeatureType.State), uri = Uri.parse("http://example.com/containingFeature"))
 
     val featureGeometry = Geometry(label = Some("Test feature geometry"), wkt = "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", uri = Uri.parse("http://example.com/geometry"))
-    val feature = Feature(geometry = featureGeometry, label = Some("Test feature"), `type` = Some(FeatureType.MetropolitanDivision), uri = Uri.parse("http://example.com/feature"))
+    val feature = Feature(frequency = Some(1.0), geometry = featureGeometry, label = Some("Test feature"), `type` = Some(FeatureType.MetropolitanDivision), uri = Uri.parse("http://example.com/feature"))
 
 }
