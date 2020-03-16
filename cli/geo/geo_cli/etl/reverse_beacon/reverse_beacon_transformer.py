@@ -24,7 +24,9 @@ class ReverseBeaconTransformer(_Transformer):
     def transform(self, **kwds) -> Generator[Feature, None, None]:
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_call_sign_count = 0
+        geocode_failure_count = 0
         missing_uls_entity_count = 0
+        skipped_uls_entity_count = 0
         yielded_feature_count = 0
         for file_name in sorted(os.listdir(extracted_data_dir_path)):
             if not file_name.endswith(".zip"):
@@ -39,19 +41,31 @@ class ReverseBeaconTransformer(_Transformer):
                 with zip_file.open(file_base_name + ".csv") as csv_file:
                     csv_reader = csv.DictReader(TextIOWrapper(csv_file, "utf-8"))
                     for row_i, row in enumerate(csv_reader):
-                        if row["de_cont"] != "NA":
+                        if row_i > 0 and row_i % 10000 == 0:
+                            self.__logger.info("processed %d rows from %s", row_i, zip_file_path)
+                        # DX is the spotted station
+                        # DE is the spotting station
+                        if row["dx_cont"] != "NA":
+                            # Exclude everything outside North America
                             continue
-                        call_sign = row["callsign"]
-                        if call_sign in yielded_call_signs:
+                        dx_call_sign = row["dx"]
+                        if dx_call_sign in yielded_call_signs:
                             duplicate_call_sign_count += 1
                             continue
                         try:
-                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[call_sign])
+                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[dx_call_sign])
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
+                        if uls_entity.state != "NY":
+                            skipped_uls_entity_count += 1
+                            continue
                         address = f"{uls_entity.street_address}, {uls_entity.city}, {uls_entity.state} {uls_entity.zip_code}"
-                        wkt = self.__geocoder.geocode(address)
+                        try:
+                            wkt = self.__geocoder.geocode(address)
+                        except LookupError:
+                            geocode_failure_count += 1
+                            continue
                         geometry = \
                             Geometry(
                                 uri=TWXPLORE_GEO_APP_GEOMETRY[f"uls-{uls_entity.unique_system_identifier}"],
@@ -67,7 +81,8 @@ class ReverseBeaconTransformer(_Transformer):
                                 uri=TWXPLORE_GEO_APP_FEATURE[f"reverse-beacon-{file_base_name}-{row_i}"]
                             )
                         yield feature
-                        yielded_call_signs.add(call_sign)
+                        yielded_call_signs.add(dx_call_sign)
                         yielded_feature_count += 1
+
             self.__logger.info("transformed file %s", zip_file_path)
-            self.__logger.info("duplicate call signs: %d, missing ULS entities: %d, yielded features: %d", duplicate_call_sign_count, missing_uls_entity_count, yielded_feature_count)
+            self.__logger.info("duplicate call signs: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_call_sign_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
