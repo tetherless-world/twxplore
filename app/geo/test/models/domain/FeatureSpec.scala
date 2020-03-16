@@ -7,6 +7,8 @@ class FeatureSpec extends DomainModelSpec {
   "The Feature companion object" should {
     "serialize and deserialize Features" in {
       testSerialization(GeoTestData.feature)
+      testSerialization(GeoTestData.containedFeature)
+      testSerialization(GeoTestData.containingFeature)
     }
   }
 }
