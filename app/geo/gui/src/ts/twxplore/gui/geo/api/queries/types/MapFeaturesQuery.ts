@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { FeatureQuery, FeatureType } from "./../../graphqlGlobalTypes";
+import {FeatureQuery, FeatureType} from "./../../graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: MapFeaturesQuery
@@ -20,6 +20,8 @@ export interface MapFeaturesQuery_features {
   label: string | null;
   type: FeatureType | null;
   uri: string;
+  frequency: number | null;
+  timestamp: number | null;
   geometry: MapFeaturesQuery_features_geometry;
 }
 

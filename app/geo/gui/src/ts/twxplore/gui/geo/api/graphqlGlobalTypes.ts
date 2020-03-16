@@ -10,7 +10,7 @@ export enum FeatureType {
   MetropolitanDivision = "MetropolitanDivision",
   MilitaryInstallation = "MilitaryInstallation",
   State = "State",
-  UlsEntity = "UlsEntity",
+  Transmission = "Transmission",
 }
 
 export interface FeatureQuery {
