@@ -144,7 +144,7 @@ export const savedConfigV0 = {
 
         {
           id: "UlsEntity",
-          dataId: FeatureType.UlsEntity,
+          dataId: FeatureType.Transmission,
           label: "UlsEntity",
           color: [40, 40, 44, 60],
           isVisible: true,
