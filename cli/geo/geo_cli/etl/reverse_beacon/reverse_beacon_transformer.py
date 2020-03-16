@@ -97,6 +97,7 @@ class ReverseBeaconTransformer(_Transformer):
                         label="Transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
                         geometry=geometry,
                         timestamp=row["timestamp"],
+                        transmission_power=int(row["db"]),
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                         uri=TWXPLORE_GEO_APP_FEATURE[f"reverse-beacon-{file_base_name}-{row_i}"]
                     )

@@ -17,6 +17,7 @@ class Feature:
             frequency: Optional[float] = None,
             frequency_range: Optional[FrequencyRange] = None,
             timestamp: Optional[datetime],
+            transmission_power: Optional[int] = None,
             type: Optional[URIRef] = None
     ):
         if timestamp is not None:
@@ -26,6 +27,7 @@ class Feature:
         self.__frequency_range = frequency_range
         self.__geometry = geometry
         self.__label = label
+        self.__transmission_power = transmission_power
         self.__type = type
         self.__uri = uri
 
@@ -45,6 +47,9 @@ class Feature:
 
         if self.__timestamp is not None:
             graph.add((self.__uri, TWXPLORE_GEO_APP_ONTOLOGY.timestamp, Literal(self.__timestamp, datatype=XSD.dateTime)))
+
+        if self.__transmission_power is not None:
+            graph.add((self.__uri, TWXPLORE_GEO_APP_ONTOLOGY.transmissionPower, Literal(self.__transmission_power, datatype=XSD.int)))
 
         if self.__type is not None:
             graph.add((self.__uri, RDF.type, self.__type))
