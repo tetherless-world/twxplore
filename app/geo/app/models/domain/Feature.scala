@@ -17,6 +17,7 @@ final case class Feature(
                           frequency: Option[Double] = None,
                           label: Option[String] = None,
                           timestamp: Option[Date] = None,
+                          transmissionPower: Option[Int] = None,
                           `type`: Option[FeatureType] = None,
                         ) extends io.github.tetherlessworld.twxplore.lib.geo.models.domain.Feature
 
@@ -32,6 +33,10 @@ object Feature {
     final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
 
     final def frequency_=(value: Double) = setPropertyLiteral(LOCAL.frequency, value.asInstanceOf[Float])
+
+    final def transmissionPower: Option[Int] = getPropertyObjectLiterals(LOCAL.transmissionPower).headOption.map(literal => literal.getInt)
+
+    final def transmissionPower_=(value: Int) = setPropertyLiteral(LOCAL.transmissionPower, value.asInstanceOf[Int])
   }
 
   implicit object FeatureRdfReader extends RdfReader[Feature] {
@@ -41,6 +46,7 @@ object Feature {
         geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
         label = resource.label,
         timestamp = resource.timestamp,
+        transmissionPower = resource.transmissionPower,
         `type` = resource.types.flatMap(typeResource => FeatureType.values.find(value => typeResource.getURI == value.uri.toString)).headOption,
         uri = Uri.parse(resource.getURI)
       )
@@ -54,6 +60,7 @@ object Feature {
       if (value.frequency.isDefined) resource.frequency = value.frequency.get
       if (value.label.isDefined) resource.label = value.label.get
       if (value.timestamp.isDefined) resource.timestamp = value.timestamp.get
+      if (value.transmissionPower.isDefined) resource.transmissionPower = value.transmissionPower.get
       if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))
       resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[Geometry](model, value.geometry))
     }
