@@ -106,4 +106,4 @@ class ReverseBeaconTransformer(_Transformer):
 
             self.__logger.info("transformed file %s", zip_file_path)
             self.__logger.info("duplicate transmissions: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
-            break
+            # break

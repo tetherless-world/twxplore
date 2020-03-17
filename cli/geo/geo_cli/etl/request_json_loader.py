@@ -3,11 +3,12 @@ import os.path
 from pathlib import Path
 
 from geo_cli.etl._loader import _Loader
-from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY
+from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, TWXPLORE_GEO_APP_FEATURE
 
 
 class RequestJsonLoader(_Loader):
     __TRANSMISSION_FEATURE_TYPE = TWXPLORE_GEO_APP_ONTOLOGY.Transmission
+    __REQUESTOR = "http://purl.org/twc/dsa/ns/AmateurStation"
 
     def __init__(self, json_file_path: Path):
         self.__json_file_path = json_file_path
@@ -25,6 +26,8 @@ class RequestJsonLoader(_Loader):
 
     def load(self, features):
         for feature in features:
+            # if self.__json_objects:
+            #     return
             if feature.frequency is None:
                 continue
             if feature.timestamp is None:
@@ -42,6 +45,10 @@ class RequestJsonLoader(_Loader):
             else:
                 raise NotImplementedError(feature.geometry.wkt)
 
+
+            assert str(feature.uri).startswith(str(TWXPLORE_GEO_APP_FEATURE))
+            id_ = str(feature.uri)[len(str(TWXPLORE_GEO_APP_FEATURE)):]
+
             self.__json_objects.append({
                 "dateRange": {
                     "from": feature.timestamp.isoformat(),
@@ -52,5 +59,8 @@ class RequestJsonLoader(_Loader):
                     "maximum": feature.frequency,
                     "minimum": feature.frequency
                 },
-                "id": str(feature.uri)
+                "id": id_,
+                "requestor": {
+                    "id": str(self.__REQUESTOR)
+                }
             })
