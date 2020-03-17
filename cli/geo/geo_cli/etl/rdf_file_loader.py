@@ -5,10 +5,11 @@ from typing import Generator
 
 from rdflib import Graph
 
+from geo_cli.etl._loader import _Loader
 from geo_cli.model.feature import Feature
 
 
-class FeaturesRdfFileLoader:
+class RdfFileLoader(_Loader):
     def __init__(self, ttl_file_path: Path):
         self.__ttl_file_path = ttl_file_path
 
