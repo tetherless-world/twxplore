@@ -22,16 +22,18 @@ class TigerLineTransformer(_Transformer):
             ("tl_2019_us_state", StateTigerLineShapefileRecord),
         )
         for file_base_name, shapefile_record_type in tiger_line_files:
-            with TigerLineZipFile(DATA_DIR_PATH / "extracted" / "tiger_line" / (file_base_name + ".zip")) as tiger_line_zip_file:
-                areaids = set()
+            zip_file_path = DATA_DIR_PATH / "extracted" / "tiger_line" / (file_base_name + ".zip")
+            self._logger.info("transforming %s", zip_file_path)
+            yielded_feature_count = 0
+            with TigerLineZipFile(zip_file_path) as tiger_line_zip_file:
                 with tiger_line_zip_file.shapefile_reader() as shapefile_reader:
-                    # print("Shapefile fields:", shapefile_reader.fields)
                     field_names = tuple(field[0] for field in shapefile_reader.fields)
+                    # print("Shapefile fields:", shapefile_reader.fields)
                     for shape_i, shape in enumerate(shapefile_reader):
                         for field_name in field_names:
                             if field_name == "DeletionFlag":
                                 continue
-                            # print(field_name, shape.record[field_name])
+                        #     print(field_name, shape.record[field_name])
                         # print()
                         record = shapefile_record_type(shape.record)
                         label = record.label
@@ -51,3 +53,5 @@ class TigerLineTransformer(_Transformer):
                                 uri=TWXPLORE_GEO_APP_FEATURE[f"tiger_line-{file_base_name}-{str(shape_i)}"]
                             )
                         yield feature
+                        yielded_feature_count += 1
+            self._logger.info("transformed %s, yielded %d features", zip_file_path, yielded_feature_count)

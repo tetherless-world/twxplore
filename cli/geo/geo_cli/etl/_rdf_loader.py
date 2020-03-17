@@ -1,12 +1,19 @@
 from rdflib import Graph, RDF, Literal, XSD, RDFS
 
 from geo_cli.etl._loader import _Loader
-from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, GEO, SF
+from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, GEO, SF, SCHEMA, TWXPLORE_GEO_APP_FEATURE, \
+    TWXPLORE_GEO_APP_GEOMETRY
 
 
 class _RdfLoader(_Loader):
     def __enter__(self):
         self._graph = Graph()
+        self._graph.bind("geo", GEO)
+        self._graph.bind("schema", SCHEMA)
+        self._graph.bind("sf", SF)
+        self._graph.bind("twxplore-geo-app-feature", TWXPLORE_GEO_APP_FEATURE)
+        self._graph.bind("twxplore-geo-app-geometry", TWXPLORE_GEO_APP_GEOMETRY)
+        self._graph.bind("twxplore-geo-app-ontology", TWXPLORE_GEO_APP_ONTOLOGY)
         return self
 
     def _add_feature_to_graph(self, feature):
@@ -22,6 +29,15 @@ class _RdfLoader(_Loader):
 
         if feature.label is not None:
             self._graph.add((feature.uri, RDFS.label, Literal(feature.label)))
+
+        if feature.locality is not None:
+            self._graph.add((feature.uri, SCHEMA.addressLocality, Literal(feature.locality)))
+
+        if feature.postal_code is not None:
+            self._graph.add((feature.uri, TWXPLORE_GEO_APP_ONTOLOGY.postalCode, Literal(feature.postal_code)))
+
+        if feature.region is not None:
+            self._graph.add((feature.uri, SCHEMA.addressRegion, Literal(feature.region)))
 
         if feature.timestamp is not None:
             self._graph.add((feature.uri, TWXPLORE_GEO_APP_ONTOLOGY.timestamp, Literal(feature.timestamp, datatype=XSD.dateTime)))
