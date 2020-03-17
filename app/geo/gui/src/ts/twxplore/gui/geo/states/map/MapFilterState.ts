@@ -1,4 +1,4 @@
-export interface MapFilterVariables {
+export interface MapFilterState {
   frequency: {
     min: number | null;
     max: number | null;

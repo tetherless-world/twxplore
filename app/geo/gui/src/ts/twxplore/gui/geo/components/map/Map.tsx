@@ -19,7 +19,7 @@ import * as React from "react";
 import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
-import {replaceTypeRanges} from "../../actions/map/ReplaceTypeRangesAction";
+import {replaceTypeRanges} from "../../actions/map/UpdateFiltersAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 
 var wkt = require("terraformer-wkt-parser");
@@ -132,7 +132,7 @@ const MapImpl: React.FunctionComponent = () => {
         /*
         A lot of hardcodeding here. I could probably iterate through the properties later on.
         */
-        const typeRanges = Object.assign({}, state.typesRanges);
+        const typeRanges = Object.assign({}, state.featureTypesFilters);
         for (const feature of featuresInState) {
           const typeRange = typeRanges[String(feature.type)];
           if (typeRange) {

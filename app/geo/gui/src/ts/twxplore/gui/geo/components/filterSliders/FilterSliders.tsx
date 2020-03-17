@@ -22,18 +22,20 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-const FilterSlidersImpl: React.FunctionComponent<{type: string}> = ({type}) => {
+const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
+  featureType,
+}) => {
   const classes = useStyles();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
 
-  const typeRange = state.typesRanges[type];
+  const typeRange = state.featureTypesRanges[featureType];
 
   const handleChange = (event: any, newValue: number | number[]) => {
-    console.log(type);
+    console.log(featureType);
     console.log(newValue);
-    setFilter(0, type, newValue);
+    setFilter(0, featureType, newValue);
   };
 
   return (
@@ -44,7 +46,7 @@ const FilterSlidersImpl: React.FunctionComponent<{type: string}> = ({type}) => {
         const attributeProperties = (typeRange as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
         if (attributeProperties) {
           return (
-            <div>
+            <div key={attribute}>
               <Typography id="type" gutterBottom>
                 {attribute}
               </Typography>
@@ -65,7 +67,7 @@ const FilterSlidersImpl: React.FunctionComponent<{type: string}> = ({type}) => {
             </div>
           );
         } else {
-          return <div> </div>;
+          return <React.Fragment />;
         }
       })}
     </div>

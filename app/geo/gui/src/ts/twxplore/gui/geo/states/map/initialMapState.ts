@@ -1,17 +1,17 @@
 import {MapState} from "./MapState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {MapFilterVariables} from "./MapFilterVariables";
+import {MapFilterState} from "./MapFilterState";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
   typesVisibility[type] = true;
 });
 
-const typesRanges: {[index: string]: MapFilterVariables} = {};
+const featureTypesFilters: {[featureType: string]: MapFilterState} = {};
 
 export const initialMapState: MapState = {
   keplerGlInstanceRegistered: false,
   features: [],
   typesVisibility: typesVisibility,
-  typesRanges: typesRanges,
+  featureTypesFilters: featureTypesFilters,
 };

@@ -35,24 +35,24 @@ const FilterPanelImpl: React.FunctionComponent = () => {
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <div>
-      {Object.keys(state.typesRanges).map(type => {
+    <React.Fragment>
+      {Object.keys(state.featureTypesFilters).map(featureType => {
         return (
-          <ExpansionPanel>
+          <ExpansionPanel key={featureType}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography className={classes.heading}>{type}</Typography>
+              <Typography className={classes.heading}>{featureType}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <FilterSliders type={type} />
+              <FilterSliders featureType={featureType} />
             </ExpansionPanelDetails>
           </ExpansionPanel>
         );
       })}
-    </div>
+    </React.Fragment>
   );
 };
 export const FilterPanel = connect()(FilterPanelImpl);
