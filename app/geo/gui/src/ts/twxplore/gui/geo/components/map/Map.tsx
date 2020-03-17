@@ -1,4 +1,4 @@
-import {addDataToMap} from "kepler.gl/actions";
+import {addDataToMap, addFilter} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -19,9 +19,11 @@ import * as React from "react";
 import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
+import {replaceTypeRanges} from "../../actions/map/ReplaceTypeRangesAction";
+import {FilterPanel} from "../filterPanel/FilterPanel";
 
 var wkt = require("terraformer-wkt-parser");
-var loadCounter = 0;
+//var loadCounter = 0;
 
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -56,7 +58,7 @@ const MapImpl: React.FunctionComponent = () => {
           }))
         )
       );
-      loadCounter += 1;
+      //loadCounter += 1;
     },
   });
 
@@ -78,7 +80,7 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     }
-    loadCounter += 1;
+    //loadCounter += 1;
   }
 
   // Organize the features by state
@@ -117,7 +119,7 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: loadCounter.toString(),
+            id: featuresInState[0].type,
           },
         };
         dispatch(
@@ -126,6 +128,37 @@ const MapImpl: React.FunctionComponent = () => {
             options: {centerMap: true, readOnly: true},
           })
         );
+        //addFilter(featuresInState[0].type);
+        const typeRanges = Object.assign({}, state.typesRanges);
+        for (const feature of featuresInState) {
+          const typeRange = typeRanges[String(feature.type)];
+          if (typeRange) {
+            if (feature.timestamp) {
+              if (feature.timestamp < typeRange.minTimestamp!)
+                typeRange.minTimestamp = feature.timestamp;
+              else if (feature.timestamp > typeRange.maxTimestamp!)
+                typeRange.maxTimestamp = feature.timestamp;
+            }
+
+            if (feature.frequency) {
+              if (feature.frequency < typeRange.minFrequency!)
+                typeRange.minFrequency = feature.frequency;
+              else if (feature.frequency > typeRange.maxTimestamp!)
+                typeRange.maxFrequency = feature.frequency;
+            }
+          } else {
+            //this is first time coming across type. Add a filter for it
+            addFilter(feature.type);
+            typeRanges[String(feature.type)] = {
+              maxFrequency: feature.frequency,
+              minFrequency: feature.frequency,
+              minTimestamp: feature.timestamp,
+              maxTimestamp: feature.timestamp,
+            };
+          }
+        }
+
+        dispatch(replaceTypeRanges(typeRanges));
         break;
       }
 
@@ -156,7 +189,7 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <Frame
-        activeNavItem={ActiveNavbarItem.Home}
+        activeNavItem={ActiveNavbarItem.Map}
         documentTitle="Map"
         cardTitle="Features"
       >
@@ -175,6 +208,9 @@ const MapImpl: React.FunctionComponent = () => {
               </div>
             )}
           />
+        </div>
+        <div>
+          <FilterPanel />
         </div>
       </Frame>
     </div>
