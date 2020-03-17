@@ -18,7 +18,7 @@ import {
 import {
   REPLACE_TYPE_RANGES,
   ReplaceTypeRangesAction,
-} from "../../actions/map/ReplaceTypeRangesAction";
+} from "../../actions/map/UpdateFiltersAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -78,7 +78,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case REPLACE_TYPE_RANGES: {
       const replaceTypeRangesAction = action as ReplaceTypeRangesAction;
-      result.typesRanges = replaceTypeRangesAction.payload.typeRanges;
+      result.featureTypesFilters = replaceTypeRangesAction.payload.typeRanges;
       break;
     }
     case "@@kepler.gl/REGISTER_ENTRY":
