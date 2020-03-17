@@ -92,12 +92,12 @@ class ReverseBeaconTransformer(_Transformer):
                     )
                 feature = \
                     Feature(
-                        city=uls_entity.city,
                         frequency=float(row["freq"]),
                         label="Transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
+                        locality=uls_entity.city,
                         geometry=geometry,
                         postal_code=uls_entity.zip_code,
-                        state=uls_entity.state,  # Don't attempt to code it
+                        region=uls_entity.state,  # Don't attempt to code it
                         timestamp=row["timestamp"],
                         transmission_power=int(row["db"]),
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,

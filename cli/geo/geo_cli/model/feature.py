@@ -13,22 +13,22 @@ class Feature:
             geometry: Geometry,
             label: str,
             uri: URIRef,
-            city: Optional[str] = None,
+            locality: Optional[str] = None,
             frequency: Optional[float] = None,
             frequency_range: Optional[FrequencyRange] = None,
             postal_code: Optional[str] = None,
-            state: Optional[str] = None,
+            region: Optional[str] = None,
             timestamp: Optional[datetime] = None,
             transmission_power: Optional[int] = None,
             type: Optional[URIRef] = None
     ):
-        self.__city = city
+        self.__locality = locality
         self.__frequency = frequency
         self.__frequency_range = frequency_range
         self.__geometry = geometry
         self.__label = label
         self.__postal_code = postal_code
-        self.__state = state
+        self.__region = region
         if timestamp is not None:
             assert timestamp.tzinfo is not None
         self.__timestamp = timestamp
@@ -37,8 +37,8 @@ class Feature:
         self.__uri = uri
 
     @property
-    def city(self) -> Optional[str]:
-        return self.__city
+    def locality(self) -> Optional[str]:
+        return self.__locality
 
     @property
     def frequency(self) -> Optional[float]:
@@ -69,8 +69,8 @@ class Feature:
         return self.__transmission_power
 
     @property
-    def state(self) -> Optional[str]:
-        pass
+    def region(self) -> Optional[str]:
+        return self.__region
 
     @property
     def type(self) -> Optional[URIRef]:

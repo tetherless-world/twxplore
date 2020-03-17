@@ -30,6 +30,15 @@ class _RdfLoader(_Loader):
         if feature.label is not None:
             self._graph.add((feature.uri, RDFS.label, Literal(feature.label)))
 
+        if feature.locality is not None:
+            self._graph.add((feature.uri, SCHEMA.addressLocality, Literal(feature.locality)))
+
+        if feature.postal_code is not None:
+            self._graph.add((feature.uri, TWXPLORE_GEO_APP_ONTOLOGY.postalCode, Literal(feature.postal_code)))
+
+        if feature.region is not None:
+            self._graph.add((feature.uri, SCHEMA.addressRegion, Literal(feature.region)))
+
         if feature.timestamp is not None:
             self._graph.add((feature.uri, TWXPLORE_GEO_APP_ONTOLOGY.timestamp, Literal(feature.timestamp, datatype=XSD.dateTime)))
 
