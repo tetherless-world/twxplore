@@ -13,22 +13,30 @@ class Feature:
             geometry: Geometry,
             label: str,
             uri: URIRef,
+            city: Optional[str] = None,
             frequency: Optional[float] = None,
             frequency_range: Optional[FrequencyRange] = None,
-            timestamp: Optional[datetime],
+            state: Optional[str] = None,
+            timestamp: Optional[datetime] = None,
             transmission_power: Optional[int] = None,
             type: Optional[URIRef] = None
     ):
-        if timestamp is not None:
-            assert timestamp.tzinfo is not None
+        self.__city = city
         self.__frequency = frequency
         self.__frequency_range = frequency_range
         self.__geometry = geometry
         self.__label = label
+        self.__state = state
+        if timestamp is not None:
+            assert timestamp.tzinfo is not None
         self.__timestamp = timestamp
         self.__transmission_power = transmission_power
         self.__type = type
         self.__uri = uri
+
+    @property
+    def city(self) -> Optional[str]:
+        return self.__city
 
     @property
     def frequency(self) -> Optional[float]:
@@ -53,6 +61,10 @@ class Feature:
     @property
     def transmission_power(self) -> Optional[int]:
         return self.__transmission_power
+
+    @property
+    def state(self) -> Optional[str]:
+        pass
 
     @property
     def type(self) -> Optional[URIRef]:

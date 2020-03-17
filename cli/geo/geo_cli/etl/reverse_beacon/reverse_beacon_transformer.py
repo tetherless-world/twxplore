@@ -1,5 +1,4 @@
 import csv
-import logging
 import os
 from datetime import datetime, timezone
 from io import TextIOWrapper
@@ -17,8 +16,8 @@ from geo_cli.path import DATA_DIR_PATH
 
 class ReverseBeaconTransformer(_Transformer):
     def __init__(self, uls_entities_by_call_sign: Dict[str, Dict[str, object]]):
+        _Transformer.__init__(self)
         self.__geocoder = Geocoder()
-        self.__logger = logging.getLogger(self.__class__.__name__)
         self.__uls_entities_by_call_sign = uls_entities_by_call_sign
 
     def transform(self, **kwds) -> Generator[Feature, None, None]:
@@ -36,14 +35,14 @@ class ReverseBeaconTransformer(_Transformer):
             if not os.path.isfile(zip_file_path):
                 continue
             file_base_name = os.path.splitext(file_name)[0]
-            self.__logger.info("transforming file %s", zip_file_path)
+            self._logger.info("transforming file %s", zip_file_path)
             unique_rows = {}
             with ZipFile(zip_file_path) as zip_file:
                 with zip_file.open(file_base_name + ".csv") as csv_file:
                     csv_reader = csv.DictReader(TextIOWrapper(csv_file, "utf-8"))
                     for row in csv_reader:
                         # if row_i > 0 and row_i % 10000 == 0:
-                        #     self.__logger.info("processed %d rows from %s", row_i, zip_file_path)
+                        #     self._logger.info("processed %d rows from %s", row_i, zip_file_path)
                         # DX is the spotted station
                         # DE is the spotting station
                         if row["dx_cont"] != "NA":
@@ -104,6 +103,6 @@ class ReverseBeaconTransformer(_Transformer):
                 yield feature
                 yielded_feature_count += 1
 
-            self.__logger.info("transformed file %s", zip_file_path)
-            self.__logger.info("duplicate transmissions: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
+            self._logger.info("transformed file %s", zip_file_path)
+            self._logger.info("duplicate transmissions: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
             # break
