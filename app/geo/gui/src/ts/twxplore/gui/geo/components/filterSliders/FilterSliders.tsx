@@ -30,7 +30,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const typeRange = state.featureTypesRanges[featureType];
+  const featureTypeFilter = state.featureTypesFilters[featureType];
 
   const handleChange = (event: any, newValue: number | number[]) => {
     console.log(featureType);
@@ -41,9 +41,9 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
-      {Object.keys(typeRange).map(attribute => {
+      {Object.keys(featureTypeFilter).map(attribute => {
         //attribute being an attribute of a feature e.g. timestamp, frequency
-        const attributeProperties = (typeRange as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
+        const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
         if (attributeProperties) {
           return (
             <div key={attribute}>

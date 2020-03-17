@@ -16,8 +16,8 @@ import {
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {
-  REPLACE_TYPE_RANGES,
-  ReplaceTypeRangesAction,
+  UPDATE_FILTERS,
+  UpdateFiltersAction,
 } from "../../actions/map/UpdateFiltersAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -76,9 +76,52 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       ];
       break;
     }
-    case REPLACE_TYPE_RANGES: {
-      const replaceTypeRangesAction = action as ReplaceTypeRangesAction;
-      result.featureTypesFilters = replaceTypeRangesAction.payload.typeRanges;
+    case UPDATE_FILTERS: {
+      const updateFiltersAction = action as UpdateFiltersAction;
+      const feature = updateFiltersAction.payload.feature;
+      if (result.featureTypesFilters[feature.type!]) {
+        if (feature.timestamp) {
+          if (
+            feature.timestamp <
+            result.featureTypesFilters[feature.type!].timestamp.min!
+          )
+            result.featureTypesFilters[feature.type!].timestamp.min =
+              feature.timestamp;
+          else if (
+            feature.timestamp >
+            result.featureTypesFilters[feature.type!].timestamp.max!
+          )
+            result.featureTypesFilters[feature.type!].timestamp.max =
+              feature.timestamp;
+        }
+
+        if (feature.frequency) {
+          if (
+            feature.frequency <
+            result.featureTypesFilters[feature.type!].frequency.min!
+          )
+            result.featureTypesFilters[feature.type!].frequency.min =
+              feature.frequency;
+          else if (
+            feature.frequency >
+            result.featureTypesFilters[feature.type!].frequency.max!
+          )
+            result.featureTypesFilters[feature.type!].frequency.max =
+              feature.frequency;
+        }
+      } else {
+        result.featureTypesFilters[feature.type!] = {
+          frequency: {
+            max: feature.frequency,
+            min: feature.frequency,
+          },
+          timestamp: {
+            min: feature.timestamp,
+            max: feature.timestamp,
+          },
+        };
+      }
+
       break;
     }
     case "@@kepler.gl/REGISTER_ENTRY":

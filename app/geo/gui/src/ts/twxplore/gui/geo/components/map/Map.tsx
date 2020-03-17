@@ -19,7 +19,7 @@ import * as React from "react";
 import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
-import {replaceTypeRanges} from "../../actions/map/UpdateFiltersAction";
+import {updateFilters} from "../../actions/map/UpdateFiltersAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 
 var wkt = require("terraformer-wkt-parser");
@@ -129,43 +129,16 @@ const MapImpl: React.FunctionComponent = () => {
           })
         );
 
-        /*
-        A lot of hardcodeding here. I could probably iterate through the properties later on.
-        */
-        const typeRanges = Object.assign({}, state.featureTypesFilters);
         for (const feature of featuresInState) {
-          const typeRange = typeRanges[String(feature.type)];
-          if (typeRange) {
-            if (feature.timestamp) {
-              if (feature.timestamp < typeRange.timestamp.min!)
-                typeRange.timestamp.min = feature.timestamp;
-              else if (feature.timestamp > typeRange.timestamp.max!)
-                typeRange.timestamp.max = feature.timestamp;
-            }
-
-            if (feature.frequency) {
-              if (feature.frequency < typeRange.frequency.min!)
-                typeRange.frequency.min = feature.frequency;
-              else if (feature.frequency > typeRange.frequency.max!)
-                typeRange.frequency.max = feature.frequency;
-            }
-          } else {
+          const featureTypeFilter =
+            state.featureTypesFilters[String(feature.type)];
+          if (!featureTypeFilter) {
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
             addFilter(feature.type);
-            typeRanges[String(feature.type)] = {
-              frequency: {
-                max: feature.frequency,
-                min: feature.frequency,
-              },
-              timestamp: {
-                min: feature.timestamp,
-                max: feature.timestamp,
-              },
-            };
           }
+          dispatch(updateFilters(feature));
         }
 
-        dispatch(replaceTypeRanges(typeRanges));
         break;
       }
 

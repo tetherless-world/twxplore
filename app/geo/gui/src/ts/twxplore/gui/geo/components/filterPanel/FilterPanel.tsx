@@ -12,6 +12,7 @@ import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {FilterSliders} from "../filterSliders/FilterSliders";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +48,11 @@ const FilterPanelImpl: React.FunctionComponent = () => {
               <Typography className={classes.heading}>{featureType}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <FilterSliders featureType={featureType} />
+              <FilterSliders
+                featureType={
+                  FeatureType[featureType as keyof typeof FeatureType]
+                }
+              />
             </ExpansionPanelDetails>
           </ExpansionPanel>
         );
