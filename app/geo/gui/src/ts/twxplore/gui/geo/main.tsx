@@ -18,6 +18,7 @@ import {
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
+import {FilterPanel} from "./components/filterPanel/FilterPanel";
 
 // Logger
 const logger = new ConsoleLogger();
@@ -35,6 +36,7 @@ ReactDOM.render(
               <Route exact path={Hrefs.home} component={Home} />
               <Route exact path={Hrefs.map} component={Map} />
               <Route exact path={Hrefs.selection} component={SelectionHome} />
+              <Route exact path={Hrefs.filter} component={FilterPanel} />
               <Route component={NoRoute} />
             </Switch>
           </Router>
