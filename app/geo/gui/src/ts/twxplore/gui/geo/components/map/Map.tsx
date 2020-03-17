@@ -128,7 +128,10 @@ const MapImpl: React.FunctionComponent = () => {
             options: {centerMap: true, readOnly: true},
           })
         );
-        //addFilter(featuresInState[0].type);
+
+        /*
+        A lot of hardcodeding here. I could probably iterate through the properties later on.
+        */
         const typeRanges = Object.assign({}, state.typesRanges);
         for (const feature of featuresInState) {
           const typeRange = typeRanges[String(feature.type)];
@@ -147,7 +150,7 @@ const MapImpl: React.FunctionComponent = () => {
                 typeRange.frequency.max = feature.frequency;
             }
           } else {
-            //this is first time coming across type. Add a filter for it
+            //this is first time coming across type. Add a filter for it and create a typeRange object for it.
             addFilter(feature.type);
             typeRanges[String(feature.type)] = {
               frequency: {
