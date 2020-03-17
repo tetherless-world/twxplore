@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from rdflib import Graph, URIRef, RDF, RDFS, Literal, XSD
+from rdflib import URIRef
 
 from geo_cli.model.frequency_range import FrequencyRange
 from geo_cli.model.geometry import Geometry
-from geo_cli.namespace import GEO, TWXPLORE_GEO_APP_ONTOLOGY
 
 
 class Feature:
@@ -22,34 +21,43 @@ class Feature:
     ):
         if timestamp is not None:
             assert timestamp.tzinfo is not None
-        self.__timestamp = timestamp
         self.__frequency = frequency
         self.__frequency_range = frequency_range
         self.__geometry = geometry
         self.__label = label
+        self.__timestamp = timestamp
         self.__transmission_power = transmission_power
         self.__type = type
         self.__uri = uri
 
-    def to_rdf(self, graph: Graph):
-        graph.add((self.__uri, RDF.type, GEO.Feature))
+    @property
+    def frequency(self) -> Optional[float]:
+        return self.__frequency
 
-        if self.__frequency is not None:
-            graph.add((self.__uri, TWXPLORE_GEO_APP_ONTOLOGY.frequency, Literal(self.__frequency, datatype=XSD.float)))
-        elif self.__frequency_range is not None:
-            raise NotImplementedError
+    @property
+    def frequency_range(self) -> Optional[FrequencyRange]:
+        return self.__frequency_range
 
-        graph.add((self.__uri, GEO.hasDefaultGeometry, self.__geometry.uri))
-        self.__geometry.to_rdf(graph)
+    @property
+    def geometry(self) -> Geometry:
+        return self.__geometry
 
-        if self.__label is not None:
-            graph.add((self.__uri, RDFS.label, Literal(self.__label)))
+    @property
+    def label(self) -> str:
+        return self.__label
 
-        if self.__timestamp is not None:
-            graph.add((self.__uri, TWXPLORE_GEO_APP_ONTOLOGY.timestamp, Literal(self.__timestamp, datatype=XSD.dateTime)))
+    @property
+    def timestamp(self) -> Optional[datetime]:
+        return self.__timestamp
 
-        if self.__transmission_power is not None:
-            graph.add((self.__uri, TWXPLORE_GEO_APP_ONTOLOGY.transmissionPower, Literal(self.__transmission_power, datatype=XSD.int)))
+    @property
+    def transmission_power(self) -> Optional[int]:
+        return self.__transmission_power
 
-        if self.__type is not None:
-            graph.add((self.__uri, RDF.type, self.__type))
+    @property
+    def type(self) -> Optional[URIRef]:
+        return self.__type
+
+    @property
+    def uri(self) -> URIRef:
+        return self.__uri
