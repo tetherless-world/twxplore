@@ -9,8 +9,4 @@ export class Hrefs {
   static get selection() {
     return "/selection";
   }
-
-  static get filter() {
-    return "/filter";
-  }
 }

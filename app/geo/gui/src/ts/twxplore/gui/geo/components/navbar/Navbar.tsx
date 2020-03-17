@@ -47,15 +47,6 @@ const Navbar: React.FunctionComponent<Props> = ({activeNavItem}) => {
               Selection
             </NavLink>
           </NavItem>
-          <NavItem active={activeNavItem === ActiveNavbarItem.Filter}>
-            <NavLink
-              active={activeNavItem === ActiveNavbarItem.Filter}
-              tag={Link}
-              to={Hrefs.filter}
-            >
-              Filter
-            </NavLink>
-          </NavItem>
         </Nav>
       </BootstrapNavbar>
     </div>
