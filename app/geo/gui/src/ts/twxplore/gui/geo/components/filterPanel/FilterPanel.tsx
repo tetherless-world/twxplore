@@ -10,7 +10,6 @@ import {
 import {useSelector, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
-import {ListGroup} from "reactstrap";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {FilterSliders} from "../filterSliders/FilterSliders";
 
