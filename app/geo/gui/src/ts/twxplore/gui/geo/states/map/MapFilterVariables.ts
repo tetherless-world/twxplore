@@ -1,6 +1,11 @@
 export interface MapFilterVariables {
-  minFrequency: number | null;
-  maxFrequency: number | null;
-  minTimestamp: number | null;
-  maxTimestamp: number | null;
+  frequency: {
+    min: number | null;
+    max: number | null;
+  };
+
+  timestamp: {
+    min: number | null;
+    max: number | null;
+  };
 }

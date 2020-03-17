@@ -134,26 +134,30 @@ const MapImpl: React.FunctionComponent = () => {
           const typeRange = typeRanges[String(feature.type)];
           if (typeRange) {
             if (feature.timestamp) {
-              if (feature.timestamp < typeRange.minTimestamp!)
-                typeRange.minTimestamp = feature.timestamp;
-              else if (feature.timestamp > typeRange.maxTimestamp!)
-                typeRange.maxTimestamp = feature.timestamp;
+              if (feature.timestamp < typeRange.timestamp.min!)
+                typeRange.timestamp.min = feature.timestamp;
+              else if (feature.timestamp > typeRange.timestamp.max!)
+                typeRange.timestamp.max = feature.timestamp;
             }
 
             if (feature.frequency) {
-              if (feature.frequency < typeRange.minFrequency!)
-                typeRange.minFrequency = feature.frequency;
-              else if (feature.frequency > typeRange.maxTimestamp!)
-                typeRange.maxFrequency = feature.frequency;
+              if (feature.frequency < typeRange.frequency.min!)
+                typeRange.frequency.min = feature.frequency;
+              else if (feature.frequency > typeRange.frequency.max!)
+                typeRange.frequency.max = feature.frequency;
             }
           } else {
             //this is first time coming across type. Add a filter for it
             addFilter(feature.type);
             typeRanges[String(feature.type)] = {
-              maxFrequency: feature.frequency,
-              minFrequency: feature.frequency,
-              minTimestamp: feature.timestamp,
-              maxTimestamp: feature.timestamp,
+              frequency: {
+                max: feature.frequency,
+                min: feature.frequency,
+              },
+              timestamp: {
+                min: feature.timestamp,
+                max: feature.timestamp,
+              },
             };
           }
         }
