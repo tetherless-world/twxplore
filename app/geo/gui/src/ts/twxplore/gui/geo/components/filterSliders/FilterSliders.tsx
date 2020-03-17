@@ -5,6 +5,7 @@ import Slider from "@material-ui/core/Slider";
 import {connect, useSelector} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
+import {setFilter} from "kepler.gl/actions";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +30,12 @@ const FilterSlidersImpl: React.FunctionComponent<{type: string}> = ({type}) => {
 
   const typeRange = state.typesRanges[type];
 
+  const handleChange = (event: any, newValue: number | number[]) => {
+    console.log(type);
+    console.log(newValue);
+    setFilter(0, type, newValue);
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
@@ -42,14 +49,18 @@ const FilterSlidersImpl: React.FunctionComponent<{type: string}> = ({type}) => {
                 {attribute}
               </Typography>
               <Slider
-                defaultValue={attributeProperties.max}
+                defaultValue={[
+                  attributeProperties.min,
+                  attributeProperties.max,
+                ]}
                 getAriaValueText={valuetext}
-                aria-labelledby="discrete-slider-small-steps"
+                aria-labelledby="range-slider"
                 step={1}
                 min={attributeProperties.min}
                 max={attributeProperties.max}
                 valueLabelDisplay="auto"
                 disabled={!attributeProperties.max}
+                onChange={handleChange}
               />
             </div>
           );
