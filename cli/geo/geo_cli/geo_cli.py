@@ -2,7 +2,8 @@ import json
 import logging
 import os.path
 
-from geo_cli.etl.features_rdf_file_loader import FeaturesRdfFileLoader
+from geo_cli.etl.rdf_file_loader import RdfFileLoader
+from geo_cli.etl.request_json_loader import RequestJsonLoader
 from geo_cli.etl.reverse_beacon.reverse_beacon_transformer import ReverseBeaconTransformer
 from geo_cli.etl.uls.uls_entities_json_file_loader import UlsEntitiesJsonFileLoader
 from geo_cli.etl.uls.uls_entities_transformer import UlsEntitiesTransformer
@@ -27,12 +28,12 @@ def main():
     logger.info("loaded ULS entities from disk")
 
     logger.info("transforming and loading Reverse Beacon data")
-    with FeaturesRdfFileLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as loader:
-        loader.load(ReverseBeaconTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign).transform())
+    with RdfFileLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
+        with RequestJsonLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "requests.json") as request_json_loader:
+            features = tuple(ReverseBeaconTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign).transform())
+            rdf_file_loader.load(features)
+            request_json_loader.load(features)
     logger.info("transformed and loaded Reverse Beacon data")
-
-    # with FileLoader(DATA_DIR_PATH / "loaded" / "tiger_line" / "features.ttl") as loader:
-    #     loader.load(TigerLineTransformer().transform())
 
 if __name__ == '__main__':
     main()
