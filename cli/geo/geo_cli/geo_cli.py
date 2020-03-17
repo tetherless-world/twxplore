@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import os.path
+from typing import Optional, Generator, Tuple
 
 from geo_cli.etl.rdf_file_loader import RdfFileLoader
 from geo_cli.etl.request_json_loader import RequestJsonLoader
@@ -9,6 +10,7 @@ from geo_cli.etl.reverse_beacon.reverse_beacon_transformer import ReverseBeaconT
 from geo_cli.etl.tiger_line.tiger_line_transformer import TigerLineTransformer
 from geo_cli.etl.uls.uls_entities_json_file_loader import UlsEntitiesJsonFileLoader
 from geo_cli.etl.uls.uls_entities_transformer import UlsEntitiesTransformer
+from geo_cli.model.feature import Feature
 from geo_cli.path import DATA_DIR_PATH
 
 
@@ -20,8 +22,9 @@ class GeoCli:
         self.__argument_parser.add_argument("--debug", action="store_true")
         self.__argument_parser.add_argument("--include", action="append", dest="include_data_source_names", help="include a data source in ETL")
         self.__argument_parser.add_argument("--exclude", action="append", dest="exclude_data_source_names", help="exclude a data source from ETL")
+        self.__argument_parser.add_argument("--features-per-data-source", type=int)
 
-    def _etl_reverse_beacon(self):
+    def _etl_reverse_beacon(self, features_per_data_source: Optional[int]):
         if not os.path.isfile(UlsEntitiesJsonFileLoader.ULS_ENTITIES_BY_CALL_SIGN_JSON_FILE_PATH):
             self.__logger.info("transforming ULS entities")
             with UlsEntitiesJsonFileLoader() as loader:
@@ -38,16 +41,33 @@ class GeoCli:
         self.__logger.info("transforming and loading Reverse Beacon data")
         with RdfFileLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
             with RequestJsonLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "requests.json") as request_json_loader:
-                features = tuple(ReverseBeaconTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign).transform())
+                transformer = ReverseBeaconTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign)
+                if features_per_data_source is not None and features_per_data_source > 0:
+                    features = self.__limit_features_per_data_source(features_per_data_source=features_per_data_source, features=transformer.transform())
+                else:
+                    features = tuple(transformer.transform())
                 rdf_file_loader.load(features)
                 request_json_loader.load(features)
         self.__logger.info("transformed and loaded Reverse Beacon data")
 
-    def _etl_tiger_line(self):
+    def _etl_tiger_line(self, features_per_data_source: Optional[int]):
         self.__logger.info("transforming and loading TIGER/Line data")
         with RdfFileLoader(DATA_DIR_PATH / "loaded" / "tiger_line" / "features.ttl") as loader:
-            loader.load(TigerLineTransformer().transform())
+            transformer = TigerLineTransformer()
+            if features_per_data_source is not None and features_per_data_source > 0:
+                features = self.__limit_features_per_data_source(features_per_data_source=features_per_data_source, features=transformer.transform())
+            else:
+                features = transformer.transform()
+            loader.load(features)
         self.__logger.info("transformed and loaded TIGER/Line data")
+
+    def __limit_features_per_data_source(self, features: Generator[Feature, None, None], features_per_data_source: int) -> Tuple[Feature, ...]:
+        limited_features = []
+        for feature in features:
+            limited_features.append(feature)
+            if len(limited_features) >= features_per_data_source:
+                break
+        return tuple(limited_features)
 
     def main(self):
         args = self.__argument_parser.parse_args()
@@ -73,7 +93,7 @@ class GeoCli:
                 pass
 
         for data_source_name in data_source_names:
-            getattr(self, "_etl_" + data_source_name)()
+            getattr(self, "_etl_" + data_source_name)(features_per_data_source=args.features_per_data_source)
 
 if __name__ == '__main__':
     GeoCli().main()
