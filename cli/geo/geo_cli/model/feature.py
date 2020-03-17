@@ -16,6 +16,7 @@ class Feature:
             city: Optional[str] = None,
             frequency: Optional[float] = None,
             frequency_range: Optional[FrequencyRange] = None,
+            postal_code: Optional[str] = None,
             state: Optional[str] = None,
             timestamp: Optional[datetime] = None,
             transmission_power: Optional[int] = None,
@@ -26,6 +27,7 @@ class Feature:
         self.__frequency_range = frequency_range
         self.__geometry = geometry
         self.__label = label
+        self.__postal_code = postal_code
         self.__state = state
         if timestamp is not None:
             assert timestamp.tzinfo is not None
@@ -53,6 +55,10 @@ class Feature:
     @property
     def label(self) -> str:
         return self.__label
+
+    @property
+    def postal_code(self) -> Optional[str]:
+        return self.__postal_code
 
     @property
     def timestamp(self) -> Optional[datetime]:
