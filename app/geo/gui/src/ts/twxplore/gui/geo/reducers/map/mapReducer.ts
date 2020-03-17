@@ -15,6 +15,10 @@ import {
   CHANGE_TYPE_VISIBILITY,
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
+import {
+  REPLACE_TYPE_RANGES,
+  ReplaceTypeRangesAction,
+} from "../../actions/map/ReplaceTypeRangesAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -70,6 +74,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       result.typesVisibility[targetedType] = !result.typesVisibility[
         targetedType
       ];
+      break;
+    }
+    case REPLACE_TYPE_RANGES: {
+      const replaceTypeRangesAction = action as ReplaceTypeRangesAction;
+      result.typesRanges = replaceTypeRangesAction.payload.typeRanges;
       break;
     }
     case "@@kepler.gl/REGISTER_ENTRY":
