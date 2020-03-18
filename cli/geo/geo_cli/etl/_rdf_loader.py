@@ -34,7 +34,7 @@ class _RdfLoader(_Loader):
             self._graph.add((feature.uri, SCHEMA.addressLocality, Literal(feature.locality)))
 
         if feature.postal_code is not None:
-            self._graph.add((feature.uri, TWXPLORE_GEO_APP_ONTOLOGY.postalCode, Literal(feature.postal_code)))
+            self._graph.add((feature.uri, SCHEMA.postalCode, Literal(feature.postal_code)))
 
         if feature.region is not None:
             self._graph.add((feature.uri, SCHEMA.addressRegion, Literal(feature.region)))
