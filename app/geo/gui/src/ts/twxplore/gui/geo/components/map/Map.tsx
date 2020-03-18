@@ -21,6 +21,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
 //import {updateFilters} from "../../actions/map/UpdateFiltersAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
+import {createSelector} from "reselect";
 
 var wkt = require("terraformer-wkt-parser");
 //var loadCounter = 0;
@@ -83,8 +84,30 @@ const MapImpl: React.FunctionComponent = () => {
     //loadCounter += 1;
   }
 
+  const getFeatures = (state: MapState) => {
+    return state.features;
+  };
+
+  const getFeaturesByState = createSelector(
+    getFeatures,
+    (features: MapFeature[]) => {
+      const featuresByState: {[index: string]: MapFeature[]} = {};
+      for (const feature of features) {
+        const features = featuresByState[feature.state];
+        if (features) {
+          features.push(feature);
+        } else {
+          featuresByState[feature.state] = [feature];
+        }
+      }
+      return featuresByState;
+    }
+  );
+
   // Organize the features by state
-  const featuresByState: {[index: string]: MapFeature[]} = {};
+  const featuresByState = getFeaturesByState(
+    state
+  ); /*: {[index: string]: MapFeature[]} = {};
   for (const feature of state.features) {
     const features = featuresByState[feature.state];
     if (features) {
@@ -93,6 +116,8 @@ const MapImpl: React.FunctionComponent = () => {
       featuresByState[feature.state] = [feature];
     }
   }
+  */
+  console.log(featuresByState);
 
   // Feature state machine
   for (const featureState in featuresByState) {
