@@ -7,7 +7,5 @@
   "scripts": {
     "lerna:bootstrap": "lerna bootstrap --hoist"
   },
-  "dependencies": {
-    "reselect": "^4.0.0"
-  }
+  "dependencies": {}
 }
