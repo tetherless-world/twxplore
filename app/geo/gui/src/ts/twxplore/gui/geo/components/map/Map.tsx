@@ -20,9 +20,9 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
+import {MapFeature} from "../../states/map/MapFeature";
 
 var wkt = require("terraformer-wkt-parser");
-const getFeaturesByState_ = getFeaturesByState;
 
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -81,9 +81,9 @@ const MapImpl: React.FunctionComponent = () => {
   }
 
   // Organize the features by state
-  const featuresByState = useSelector((rootState: RootState) =>
-    getFeaturesByState_(rootState.app.map)
-  );
+  const featuresByState: {
+    [index: string]: MapFeature[];
+  } = useSelector(getFeaturesByState);
   console.log(featuresByState);
 
   // Feature state machine

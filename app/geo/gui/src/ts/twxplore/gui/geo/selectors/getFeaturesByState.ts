@@ -1,9 +1,9 @@
 import {createSelector} from "reselect";
 import {MapFeature} from "../states/map/MapFeature";
-import {getFeatures} from "./getFeatures";
+import {RootState} from "../states/root/RootState";
 
 export const getFeaturesByState = createSelector(
-  getFeatures,
+  (state: RootState) => state.app.map.features,
   (features: MapFeature[]) => {
     const featuresByState: {[index: string]: MapFeature[]} = {};
     for (const feature of features) {
