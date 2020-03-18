@@ -22,7 +22,6 @@ import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 
 var wkt = require("terraformer-wkt-parser");
-//var loadCounter = 0;
 
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -57,7 +56,6 @@ const MapImpl: React.FunctionComponent = () => {
           }))
         )
       );
-      //loadCounter += 1;
     },
   });
 
@@ -79,7 +77,6 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     }
-    //loadCounter += 1;
   }
 
   // Organize the features by state
