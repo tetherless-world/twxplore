@@ -19,7 +19,7 @@ import * as React from "react";
 import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
-import {updateFilters} from "../../actions/map/UpdateFiltersAction";
+//import {updateFilters} from "../../actions/map/UpdateFiltersAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 
 var wkt = require("terraformer-wkt-parser");
@@ -107,6 +107,15 @@ const MapImpl: React.FunctionComponent = () => {
         to display its location and shape on the map.
         */
 
+        for (const feature of featuresInState) {
+          const featureTypeFilter =
+            state.featureTypesFilters[String(feature.type)];
+          if (!featureTypeFilter) {
+            //this is first time coming across type. Add a filter for it and create a typeRange object for it.
+            addFilter(feature.type);
+          }
+        }
+
         const datasets = {
           data: Processors.processGeojson({
             type: "FeatureCollection",
@@ -128,16 +137,6 @@ const MapImpl: React.FunctionComponent = () => {
             options: {centerMap: true, readOnly: true},
           })
         );
-
-        for (const feature of featuresInState) {
-          const featureTypeFilter =
-            state.featureTypesFilters[String(feature.type)];
-          if (!featureTypeFilter) {
-            //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            addFilter(feature.type);
-          }
-          dispatch(updateFilters(feature));
-        }
 
         break;
       }

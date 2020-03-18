@@ -15,10 +15,6 @@ import {
   CHANGE_TYPE_VISIBILITY,
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
-import {
-  UPDATE_FILTERS,
-  UpdateFiltersAction,
-} from "../../actions/map/UpdateFiltersAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -48,6 +44,49 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             );
           }
         }
+        /*Need to implement how to do this more dynamically. For now this works*/
+        if (result.featureTypesFilters[addedFeature.type!]) {
+          if (addedFeature.timestamp) {
+            if (
+              addedFeature.timestamp <
+              result.featureTypesFilters[addedFeature.type!].timestamp.min!
+            )
+              result.featureTypesFilters[addedFeature.type!].timestamp.min =
+                addedFeature.timestamp;
+            else if (
+              addedFeature.timestamp >
+              result.featureTypesFilters[addedFeature.type!].timestamp.max!
+            )
+              result.featureTypesFilters[addedFeature.type!].timestamp.max =
+                addedFeature.timestamp;
+          }
+
+          if (addedFeature.frequency) {
+            if (
+              addedFeature.frequency <
+              result.featureTypesFilters[addedFeature.type!].frequency.min!
+            )
+              result.featureTypesFilters[addedFeature.type!].frequency.min =
+                addedFeature.frequency;
+            else if (
+              addedFeature.frequency >
+              result.featureTypesFilters[addedFeature.type!].frequency.max!
+            )
+              result.featureTypesFilters[addedFeature.type!].frequency.max =
+                addedFeature.frequency;
+          }
+        } else {
+          result.featureTypesFilters[addedFeature.type!] = {
+            frequency: {
+              max: addedFeature.frequency,
+              min: addedFeature.frequency,
+            },
+            timestamp: {
+              min: addedFeature.timestamp,
+              max: addedFeature.timestamp,
+            },
+          };
+        }
       }
       break;
     }
@@ -76,54 +115,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       ];
       break;
     }
-    case UPDATE_FILTERS: {
-      const updateFiltersAction = action as UpdateFiltersAction;
-      const feature = updateFiltersAction.payload.feature;
-      if (result.featureTypesFilters[feature.type!]) {
-        if (feature.timestamp) {
-          if (
-            feature.timestamp <
-            result.featureTypesFilters[feature.type!].timestamp.min!
-          )
-            result.featureTypesFilters[feature.type!].timestamp.min =
-              feature.timestamp;
-          else if (
-            feature.timestamp >
-            result.featureTypesFilters[feature.type!].timestamp.max!
-          )
-            result.featureTypesFilters[feature.type!].timestamp.max =
-              feature.timestamp;
-        }
 
-        if (feature.frequency) {
-          if (
-            feature.frequency <
-            result.featureTypesFilters[feature.type!].frequency.min!
-          )
-            result.featureTypesFilters[feature.type!].frequency.min =
-              feature.frequency;
-          else if (
-            feature.frequency >
-            result.featureTypesFilters[feature.type!].frequency.max!
-          )
-            result.featureTypesFilters[feature.type!].frequency.max =
-              feature.frequency;
-        }
-      } else {
-        result.featureTypesFilters[feature.type!] = {
-          frequency: {
-            max: feature.frequency,
-            min: feature.frequency,
-          },
-          timestamp: {
-            min: feature.timestamp,
-            max: feature.timestamp,
-          },
-        };
-      }
-
-      break;
-    }
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
       break;
