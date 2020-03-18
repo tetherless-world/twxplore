@@ -22,6 +22,7 @@ import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 
 var wkt = require("terraformer-wkt-parser");
+const getFeaturesByState_ = getFeaturesByState;
 
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -80,7 +81,9 @@ const MapImpl: React.FunctionComponent = () => {
   }
 
   // Organize the features by state
-  const featuresByState = getFeaturesByState(state);
+  const featuresByState = useSelector((rootState: RootState) =>
+    getFeaturesByState_(rootState.app.map)
+  );
   console.log(featuresByState);
 
   // Feature state machine
