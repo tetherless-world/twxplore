@@ -1,3 +1,5 @@
 export enum ActiveNavbarItem {
-    Home
+  Home,
+  Selection,
+  Map,
 }

@@ -44,6 +44,49 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             );
           }
         }
+        /*Need to implement how to do this more dynamically. For now this works*/
+        if (result.featureTypesFilters[addedFeature.type!]) {
+          if (addedFeature.timestamp) {
+            if (
+              addedFeature.timestamp <
+              result.featureTypesFilters[addedFeature.type!].timestamp.min!
+            )
+              result.featureTypesFilters[addedFeature.type!].timestamp.min =
+                addedFeature.timestamp;
+            else if (
+              addedFeature.timestamp >
+              result.featureTypesFilters[addedFeature.type!].timestamp.max!
+            )
+              result.featureTypesFilters[addedFeature.type!].timestamp.max =
+                addedFeature.timestamp;
+          }
+
+          if (addedFeature.frequency) {
+            if (
+              addedFeature.frequency <
+              result.featureTypesFilters[addedFeature.type!].frequency.min!
+            )
+              result.featureTypesFilters[addedFeature.type!].frequency.min =
+                addedFeature.frequency;
+            else if (
+              addedFeature.frequency >
+              result.featureTypesFilters[addedFeature.type!].frequency.max!
+            )
+              result.featureTypesFilters[addedFeature.type!].frequency.max =
+                addedFeature.frequency;
+          }
+        } else {
+          result.featureTypesFilters[addedFeature.type!] = {
+            frequency: {
+              max: addedFeature.frequency,
+              min: addedFeature.frequency,
+            },
+            timestamp: {
+              min: addedFeature.timestamp,
+              max: addedFeature.timestamp,
+            },
+          };
+        }
       }
       break;
     }
@@ -72,6 +115,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       ];
       break;
     }
+
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
       break;

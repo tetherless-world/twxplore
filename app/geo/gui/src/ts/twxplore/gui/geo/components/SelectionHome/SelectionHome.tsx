@@ -5,7 +5,7 @@ import {SelectionPanel} from "../selectionPanel/SelectionPanel";
 
 export const SelectionHome: React.FunctionComponent<{}> = () => (
   <Frame
-    activeNavItem={ActiveNavbarItem.Home}
+    activeNavItem={ActiveNavbarItem.Selection}
     documentTitle="Selection"
     cardTitle="Selection Panel"
   >

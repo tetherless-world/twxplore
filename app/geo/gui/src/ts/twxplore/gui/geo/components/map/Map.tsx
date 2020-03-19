@@ -1,4 +1,4 @@
-import {addDataToMap} from "kepler.gl/actions";
+import {addDataToMap, addFilter} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -10,7 +10,6 @@ import {
 import {useQuery, useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
-import {MapFeature} from "../../states/map/MapFeature";
 import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
@@ -19,9 +18,11 @@ import * as React from "react";
 import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
+import {FilterPanel} from "../filterPanel/FilterPanel";
+import {getFeaturesByState} from "../../selectors/getFeaturesByState";
+import {MapFeature} from "../../states/map/MapFeature";
 
 var wkt = require("terraformer-wkt-parser");
-var loadCounter = 0;
 
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -56,7 +57,6 @@ const MapImpl: React.FunctionComponent = () => {
           }))
         )
       );
-      loadCounter += 1;
     },
   });
 
@@ -78,19 +78,13 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     }
-    loadCounter += 1;
   }
 
   // Organize the features by state
-  const featuresByState: {[index: string]: MapFeature[]} = {};
-  for (const feature of state.features) {
-    const features = featuresByState[feature.state];
-    if (features) {
-      features.push(feature);
-    } else {
-      featuresByState[feature.state] = [feature];
-    }
-  }
+  const featuresByState: {
+    [index: string]: MapFeature[];
+  } = useSelector(getFeaturesByState);
+  console.log(featuresByState);
 
   // Feature state machine
   for (const featureState in featuresByState) {
@@ -105,6 +99,15 @@ const MapImpl: React.FunctionComponent = () => {
         to display its location and shape on the map.
         */
 
+        for (const feature of featuresInState) {
+          const featureTypeFilter =
+            state.featureTypesFilters[String(feature.type)];
+          if (!featureTypeFilter) {
+            //this is first time coming across type. Add a filter for it and create a typeRange object for it.
+            addFilter(feature.type);
+          }
+        }
+
         const datasets = {
           data: Processors.processGeojson({
             type: "FeatureCollection",
@@ -117,7 +120,7 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: loadCounter.toString(),
+            id: featuresInState[0].type,
           },
         };
         dispatch(
@@ -126,6 +129,7 @@ const MapImpl: React.FunctionComponent = () => {
             options: {centerMap: true, readOnly: true},
           })
         );
+
         break;
       }
 
@@ -156,7 +160,7 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <Frame
-        activeNavItem={ActiveNavbarItem.Home}
+        activeNavItem={ActiveNavbarItem.Map}
         documentTitle="Map"
         cardTitle="Features"
       >
@@ -175,6 +179,9 @@ const MapImpl: React.FunctionComponent = () => {
               </div>
             )}
           />
+        </div>
+        <div>
+          <FilterPanel />
         </div>
       </Frame>
     </div>
