@@ -1,11 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "twxplore/*": [
-        "src/ts/twxplore/*"
-      ]
-    }
+    "baseUrl": "src/ts"
   },
   "extends": "../../../lib/ts/base/tsconfig.base.json"
 }
