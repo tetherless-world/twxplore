@@ -1,5 +1,5 @@
 {
-  "name": "@tetherless-world/twxplore-base-lib",
+  "name": "@tetherless-world/twxplore-base",
   "version": "1.0.3",
   "description": "twxplore GUI library",
   "devDependencies": {
