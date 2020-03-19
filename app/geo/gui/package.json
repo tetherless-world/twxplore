@@ -30,14 +30,11 @@
     "start-win32": "..\\..\\..\\node_modules\\.bin\\webpack-dev-server --mode development --hot --info-verbosity verbose --inline"
   },
   "devDependencies": {
-    "@types/react-dom": "^16.9.5",
-    "@types/react-loader": "^2.4.3",
     "@types/react-redux": "^7.1.6",
     "@types/react-resize-detector": "^4.2.0",
     "@types/react-router-redux": "^5.0.18",
     "@types/react-sidebar": "^3.0.0",
     "@types/react-virtualized": "^9.21.7",
-    "@types/reactstrap": "^8.4.2",
     "@types/redux-actions": "^2.6.1",
     "@types/styled-components": "^4.4.2",
     "fs": "0.0.1-security"
