@@ -1,6 +1,6 @@
 {
-  "name": "@tetherless-world/twxplore-base-lib",
-  "version": "1.0.3",
+  "name": "@tetherless-world/twxplore-base",
+  "version": "1.0.4",
   "description": "twxplore GUI library",
   "devDependencies": {
     "@graphql-codegen/cli": "1.2.0",
