@@ -36,14 +36,18 @@ class Geocoder:
         else:
             client = googlemaps.Client(key=self.__google_maps_api_key)
             geocode_result = client.geocode(address)
-            if not geocode_result:
-                self.__logger.warning("geocode of %s failed", address)
-                raise LookupError
-            self.__logger.info("geocoded %s", address)
+            if geocode_result:
+                self.__logger.info("geocoded %s", address)
+            else:
+                # Empty list
+                self.__logger.info("geocode of %s failed", address)
             if not os.path.isdir(self.__cache_dir_path):
                 os.makedirs(self.__cache_dir_path)
+            # Write successful and failed results to a file, so we cache both.
             with open(cache_file_path, "w+") as cache_file:
                 json.dump(geocode_result, cache_file)
+        if not geocode_result:
+            raise LookupError
         latitude = geocode_result[0]["geometry"]["location"]["lat"]
         longitude = geocode_result[0]["geometry"]["location"]["lng"]
         return "POINT (%(longitude).7f %(latitude).7f)" % locals()

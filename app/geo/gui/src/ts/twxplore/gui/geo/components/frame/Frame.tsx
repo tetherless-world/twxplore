@@ -1,11 +1,9 @@
-import './Frame.scss';
-
-import * as classnames from 'classnames';
-import {ActiveNavbarItem} from 'twxplore/gui/geo/components/navbar/ActiveNavbarItem';
-import Navbar from 'twxplore/gui/geo/components/navbar/Navbar';
-import * as React from 'react';
-import {useEffect} from 'react';
-import { Card, CardBody, CardHeader, CardTitle, Col, Container, Row} from "reactstrap";
+import * as classnames from "classnames";
+import {ActiveNavbarItem} from "twxplore/gui/geo/components/navbar/ActiveNavbarItem";
+import Navbar from "twxplore/gui/geo/components/navbar/Navbar";
+import * as React from "react";
+import {useEffect} from "react";
+import {Card, CardBody, CardHeader, CardTitle, Col, Container, Row} from "reactstrap";
 
 export const Frame: React.FunctionComponent<{
     activeNavItem?: ActiveNavbarItem;

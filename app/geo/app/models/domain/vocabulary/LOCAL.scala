@@ -9,4 +9,5 @@ object LOCAL {
   // Properties
   val frequency = ResourceFactory.createProperty(ONTOLOGY_URI + "frequency")
   val timestamp = ResourceFactory.createProperty(ONTOLOGY_URI + "timestamp")
+  val transmissionPower = ResourceFactory.createProperty(ONTOLOGY_URI + "transmissionPower")
 }
