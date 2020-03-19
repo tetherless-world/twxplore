@@ -1,8 +1,7 @@
 {
   "packages": [
     "app/geo/gui",
-    "lib/ts/*",
-    "app/tree/gui"
+    "lib/ts/*"
   ],
   "version": "1.0.0"
 }
