@@ -6,7 +6,7 @@
     "@material-ui/core": "^4.9.4",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.44",
-    "@tetherless-world/twxplore-base": "1.0.4",
+    "@tetherless-world/twxplore-base": "1.0.5",
     "dotenv": "^8.2.0",
     "kepler.gl": "^1.1.13",
     "react-palm": "^3.1.2",
