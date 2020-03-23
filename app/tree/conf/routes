@@ -1,9 +1,0 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# https://www.playframework.com/documentation/latest/ScalaRouting
-# ~~~~
-
-# GraphQL
-GET         /api/graphql               controllers.graphql.TreeGraphQlController.graphql(query: String, variables: Option[String], operation: Option[String])
-POST        /api/graphql               controllers.graphql.TreeGraphQlController.graphqlBody
-GET         /api/graphql-schema        controllers.graphql.TreeGraphQlController.renderSchema
