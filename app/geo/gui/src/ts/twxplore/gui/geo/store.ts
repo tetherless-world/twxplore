@@ -7,25 +7,45 @@ import createHistory from "history/createBrowserHistory";
 import {rootReducer} from "./reducers/root/rootReducer";
 import {initialRootState} from "./states/root/initialRootState";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {
-  ADD_MAP_FEATURES,
-  AddMapFeaturesAction,
-} from "./actions/map/AddMapFeaturesAction";
+//import {ADD_MAP_FEATURES} from "./actions/map/AddMapFeaturesAction";
 import {BaseAction} from "redux-actions";
 import {RootState} from "./states/root/RootState";
 
 //import {ADD_MAP_FEATURES} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 
-const actionSanitizer = (action: BaseAction) =>
-  action.type === ADD_MAP_FEATURES && (action as AddMapFeaturesAction).payload
-    ? {...action, payload: {}}
-    : action;
+const actionSanitizer = (action: BaseAction) => {
+  return {...action, payload: {}};
+};
 
 const composeEnhancers = (composeWithDevTools as any)({
   // Specify name here, actionsBlacklist, actionsCreators and other options if needed
-  actionsBlacklist: ["@@kepler", ADD_MAP_FEATURES, ADD_MAP_FEATURES],
+  actionsBlacklist: ["@@kepler.gl/LAYER_HOVER", "@@kepler.gl/MOUSE_MOVE"],
   actionSanitizer,
-  stateSanitizer: (state: RootState) => (state.app ? {...state} : state),
+  stateSanitizer: (state: RootState) =>
+    state.app
+      ? {
+          ...state,
+          routing: {},
+          app: {
+            map: {
+              KeplerGlInstanceRegistered:
+                state.app.map.keplerGlInstanceRegistered,
+              features: {},
+              typesVisibility: state.app.map.typesVisibility,
+              featureTypesFilters: state.app.map.featureTypesFilters,
+            },
+          },
+          keplerGl: {
+            map: {
+              visState: {
+                filters: state.keplerGl.map.visState.filters,
+                filtersToBeMerged:
+                  state.keplerGl.map.visState.filtersToBeMerged,
+              },
+            },
+          },
+        }
+      : state,
 });
 
 const history = createHistory();
