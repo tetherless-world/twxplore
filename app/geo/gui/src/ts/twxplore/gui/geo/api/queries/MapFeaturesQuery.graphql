@@ -5,6 +5,10 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
     uri
     frequency
     timestamp
+    locality
+    postalCode
+    regions
+    transmissionPower
     geometry {
       label
       wkt
