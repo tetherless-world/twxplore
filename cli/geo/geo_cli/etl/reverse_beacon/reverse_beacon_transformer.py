@@ -24,9 +24,11 @@ class ReverseBeaconTransformer(_Transformer):
     def transform(self, **kwds) -> Generator[Feature, None, None]:
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_transmission_count = 0
+        duplicate_transmitter_count = 0
         geocode_failure_count = 0
         missing_uls_entity_count = 0
         skipped_uls_entity_count = 0
+        yielded_transmitter_call_signs = set()
         yielded_feature_count = 0
         # Accumulate rows by call sign to get the one with the highest "db" / signal-to-noise ratio
         for file_name in sorted(os.listdir(extracted_data_dir_path)):
@@ -49,9 +51,8 @@ class ReverseBeaconTransformer(_Transformer):
                         if row["dx_cont"] != "NA":
                             # Exclude everything outside North America
                             continue
-                        dx_call_sign = row["dx"]
                         try:
-                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[dx_call_sign])
+                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[row["dx"]])
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
@@ -93,10 +94,11 @@ class ReverseBeaconTransformer(_Transformer):
                     )
                 state_abbreviation = uls_entity.state.upper() #STATE_ABBREVIATIONS_BY_LOWER_STATE_NAME[uls_entity.state.lower()]
                 state_name = STATE_NAMES_BY_ABBREVIATION[state_abbreviation]
-                feature = \
+
+                transmission_feature = \
                     Feature(
                         frequency=float(row["freq"]),
-                        label="Transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
+                        label="Amateur radio transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
                         locality=uls_entity.city,
                         geometry=geometry,
                         postal_code=uls_entity.zip_code,
@@ -106,9 +108,27 @@ class ReverseBeaconTransformer(_Transformer):
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                         uri=TWXPLORE_GEO_APP_FEATURE[f"reverse-beacon-{file_base_name}-{row_i}"]
                     )
-                yield feature
+                yield transmission_feature
                 yielded_feature_count += 1
 
+                if uls_entity.call_sign in yielded_transmitter_call_signs:
+                    duplicate_transmitter_count += 1
+                    continue
+
+                transmitter_feature = \
+                    Feature(
+                        label="Amateur radio transmitter: %s (%s)" % (uls_entity.call_sign, uls_entity.name),
+                        locality=uls_entity.city,
+                        geometry=geometry,
+                        postal_code=uls_entity.zip_code,
+                        regions=(state_name,),
+                        type=TWXPLORE_GEO_APP_ONTOLOGY.Transmitter,
+                        uri=TWXPLORE_GEO_APP_FEATURE[f"uls-entity-{uls_entity.call_sign}"]
+                    )
+                yield transmitter_feature
+                yielded_feature_count += 1
+                yielded_transmitter_call_signs.add(uls_entity.call_sign)
+
             self._logger.info("transformed file %s", zip_file_path)
-            self._logger.info("duplicate transmissions: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
+            self._logger.info("duplicate transmissions: %d, duplicate transmitters: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, duplicate_transmitter_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)
             # break
