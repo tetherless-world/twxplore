@@ -13,9 +13,7 @@ import {MapFeatureState} from "../../states/map/MapFeatureState";
 import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
-import {ActiveNavbarItem} from "../navbar/ActiveNavbarItem";
 import * as React from "react";
-import {Frame} from "../frame/Frame";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
@@ -23,13 +21,19 @@ import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 
 var wkt = require("terraformer-wkt-parser");
-
+var filterCounter = 0;
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
   console.log(state);
+  /*
+  if (state.filterChange) {
+    console.log("toggled animation change");
+    dispatch(toggleFilterAnimation(1));
+  }
+  */
   // dispatch(receiveMapConfig(savedConfigV0));
 
   // Load features on first render
@@ -43,6 +47,8 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
+      console.log("data is here")
+      console.log(data)
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -50,9 +56,13 @@ const MapImpl: React.FunctionComponent = () => {
             geometry: feature.geometry,
             label: feature.label,
             frequency: feature.frequency,
-            timestamp: feature.timestamp,
+            timestamp: feature.timestamp? feature.timestamp * 1000 : null,
             type: feature.type,
             uri: feature.uri,
+            locality: feature.locality,
+            regions: feature.regions,
+            postalCode: feature.postalCode,
+            transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
           }))
         )
@@ -73,6 +83,10 @@ const MapImpl: React.FunctionComponent = () => {
             timestamp: feature.timestamp,
             type: feature.type,
             uri: feature.uri,
+            locality: feature.locality,
+            regions: feature.regions,
+            postalCode: feature.postalCode,
+            transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
           }))
         )
@@ -98,13 +112,19 @@ const MapImpl: React.FunctionComponent = () => {
         keplerGL reducer.. The geometry of the feature is used
         to display its location and shape on the map.
         */
-
+        //!Object.keys(state.featureTypesFilters).includes(feature.type!))
         for (const feature of featuresInState) {
-          const featureTypeFilter =
-            state.featureTypesFilters[String(feature.type)];
-          if (!featureTypeFilter) {
+          if (feature.type! === FeatureType.Transmission && filterCounter < 3) {
+            console.log("Adding filter");
+            filterCounter += 1;
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            addFilter(feature.type);
+            dispatch({ //should probably create an action creator for this
+              type: "@@kepler.gl/ADD_FILTER",
+              dataId: feature.type,
+              feature: feature,
+              idx: filterCounter - 1,
+            });
+            console.log(addFilter(feature.type));
           }
         }
 
@@ -141,11 +161,12 @@ const MapImpl: React.FunctionComponent = () => {
 
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
-          getFeaturesWithin({
+          if(clickedFeature.type !== FeatureType.Transmission)
+         { getFeaturesWithin({
             variables: {
               query: {withinFeatureUri: clickedFeature.uri},
             },
-          });
+          });}
           clickedUris.push(clickedFeature.uri);
         }
         dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
@@ -159,11 +180,6 @@ const MapImpl: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Frame
-        activeNavItem={ActiveNavbarItem.Map}
-        documentTitle="Map"
-        cardTitle="Features"
-      >
         <div style={{width: "100%"}}>
           <ReactResizeDetector
             handleWidth
@@ -183,7 +199,6 @@ const MapImpl: React.FunctionComponent = () => {
         <div>
           <FilterPanel />
         </div>
-      </Frame>
     </div>
   );
 };
