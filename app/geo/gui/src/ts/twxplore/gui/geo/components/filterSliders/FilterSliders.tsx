@@ -44,10 +44,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     var number;
     if (attribute === "frequency") {
       number = 0;
-    } else {
+    } else { //attribute == "timestamp"
       number = 1;
     }
-    if (number == 1)
+    if (number == 1) //again only giving timeStamp a value
       dispatch(setFilter(number, "value", newValue));
   };
 
@@ -58,7 +58,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
         filterCount += 1;
-        if (filterCount < 3 && attribute != 'frequency') {
+        if (filterCount < 3 && attribute != 'frequency') { //only concerned with timeStamp as frequency breaks things at the moment
           dispatch(setFilter(filterCount - 1, "name", attribute));
         }
         if (attributeProperties) {
