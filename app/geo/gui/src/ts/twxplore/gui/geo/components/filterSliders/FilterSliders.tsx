@@ -2,7 +2,7 @@ import * as React from "react";
 import {makeStyles, Theme, createStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
@@ -22,6 +22,7 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
+var filterCount = 0;
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
 }) => {
@@ -31,11 +32,23 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   );
 
   const featureTypeFilter = state.featureTypesFilters[featureType];
-
-  const handleChange = (event: any, newValue: number | number[]) => {
+  const dispatch = useDispatch();
+  const handleChange = (
+    event: any,
+    newValue: number | number[],
+    attribute: string
+  ) => {
     console.log(featureType);
     console.log(newValue);
-    setFilter(0, featureType, newValue);
+    console.log(attribute);
+    var number;
+    if (attribute === "frequency") {
+      number = 0;
+    } else {
+      number = 1;
+    }
+    if (number == 1)
+      dispatch(setFilter(number, "value", newValue));
   };
 
   return (
@@ -44,6 +57,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       {Object.keys(featureTypeFilter).map(attribute => {
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
+        filterCount += 1;
+        if (filterCount < 3 && attribute != 'frequency') {
+          dispatch(setFilter(filterCount - 1, "name", attribute));
+        }
         if (attributeProperties) {
           return (
             <div key={attribute}>
@@ -62,7 +79,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                 max={attributeProperties.max}
                 valueLabelDisplay="auto"
                 disabled={!attributeProperties.max}
-                onChange={handleChange}
+                onChangeCommitted={(event: any, newValue: number | number[]) =>
+                  handleChange(event, newValue, attribute)
+                }
+                name={attribute}
               />
             </div>
           );
