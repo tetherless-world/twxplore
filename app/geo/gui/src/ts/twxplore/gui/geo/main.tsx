@@ -1,9 +1,4 @@
-import {apolloClient} from "twxplore/gui/geo/api/apolloClient";
 import {createBrowserHistory} from "history";
-import {NoRoute} from "twxplore/gui/geo/components/error/NoRoute";
-import {Home} from "twxplore/gui/geo/components/home/Home";
-import {Map} from "twxplore/gui/geo/components/map/Map";
-import {Hrefs} from "twxplore/gui/geo/Hrefs";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {ApolloProvider} from "react-apollo";
@@ -13,6 +8,11 @@ import {ConsoleLogger, LoggerContext} from "@tetherless-world/twxplore-base";
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
+import {Map} from "./components/map/Map"
+import { Hrefs } from "./Hrefs";
+import { apolloClient } from "./api/apolloClient";
+import { NoRoute } from "./components/error/NoRoute";
+
 
 // Logger
 const logger = new ConsoleLogger();
@@ -27,7 +27,6 @@ ReactDOM.render(
         <LoggerContext.Provider value={logger}>
           <Router history={browserHistory}>
             <Switch>
-              <Route exact path={Hrefs.home} component={Home} />
               <Route exact path={Hrefs.map} component={Map} />
               <Route exact path={Hrefs.selection} component={SelectionHome} />
               <Route component={NoRoute} />
