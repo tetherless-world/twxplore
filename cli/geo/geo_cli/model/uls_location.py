@@ -1,12 +1,9 @@
-class UlsLocation:
-    def __init__(self, *, call_sign: str):
-        self.call_sign = call_sign
+from geo_cli.model._uls_record import _UlsRecord
+
+
+class UlsLocation(_UlsRecord):
+    def __init__(self, *, city: str, state: str, street_address: str, **kwds):
+        _UlsRecord.__init__(self, **kwds)
         self.city = city
-        self.name = name
         self.state = state
         self.street_address = street_address
-        self.unique_system_identifier = unique_system_identifier
-        self.zip_code = zip_code
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(call_sign={self.call_sign}, name={self.name}, unique_system_identifier={self.unique_system_identifier})"
