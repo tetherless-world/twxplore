@@ -8,5 +8,13 @@ class MilTigerLineShapefileRecord(_TigerLineShapefileRecord):
         return self._record["FULLNAME"]
 
     @property
+    def locality(self):
+        return None
+
+    @property
+    def region(self):
+        return None
+
+    @property
     def type(self):
         return TWXPLORE_GEO_APP_ONTOLOGY.MilitaryInstallation
