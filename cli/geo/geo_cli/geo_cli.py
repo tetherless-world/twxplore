@@ -25,18 +25,19 @@ class GeoCli:
         self.__argument_parser.add_argument("--features-per-data-source", type=int)
 
     def _etl_reverse_beacon(self, features_per_data_source: Optional[int]):
-        if not os.path.isfile(UlsEntitiesJsonFileLoader.ULS_ENTITIES_BY_CALL_SIGN_JSON_FILE_PATH):
+        uls_entities_json_file_path = UlsEntitiesJsonFileLoader.loaded_file_path("l_amat")
+        if not os.path.isfile(uls_entities_json_file_path):
             self.__logger.info("transforming ULS entities")
-            with UlsEntitiesJsonFileLoader() as loader:
+            with UlsEntitiesJsonFileLoader("l_amat") as loader:
                 for transformer in (
                         UlsEntitiesTransformer("l_amat"),
                 ):
                     loader.load(transformer.transform())
             self.__logger.info("transformed ULS entities and wrote to disk")
-        self.__logger.info("loading ULS entities from disk")
-        with open(UlsEntitiesJsonFileLoader.ULS_ENTITIES_BY_CALL_SIGN_JSON_FILE_PATH) as json_file:
+        self.__logger.info("loading ULS entities from %s", uls_entities_json_file_path)
+        with open(uls_entities_json_file_path) as json_file:
             uls_entities_by_call_sign = json.load(json_file)
-        self.__logger.info("loaded ULS entities from disk")
+        self.__logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
 
         self.__logger.info("transforming and loading Reverse Beacon data")
         with RdfFileLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
