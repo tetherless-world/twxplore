@@ -27,10 +27,10 @@ class GeoCli:
         self.__argument_parser.add_argument("--features-per-data-source", type=int)
 
     def _etl_reverse_beacon(self, features_per_data_source: Optional[int]):
-        uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat")
+        uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
         if not os.path.isfile(uls_entities_json_file_path):
             self.__logger.info("transforming ULS entities")
-            with UlsRecordsJsonFileLoader("l_amat") as loader:
+            with UlsRecordsJsonFileLoader("l_amat_entities") as loader:
                 for transformer in (
                     UlsRecordTransformer(record_format=UlsRecordFormat.EN, zip_file_base_name="l_amat"),
                 ):
