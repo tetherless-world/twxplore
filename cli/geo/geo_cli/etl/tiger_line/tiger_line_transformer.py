@@ -49,7 +49,7 @@ class TigerLineTransformer(_Transformer):
                                 label=label,
                                 geometry=geometry,
                                 locality=record.locality,
-                                region=record.region,
+                                regions=record.regions,
                                 type=record.type,
                                 uri=TWXPLORE_GEO_APP_FEATURE[f"tiger_line-{file_base_name}-{str(shape_i)}"]
                             )

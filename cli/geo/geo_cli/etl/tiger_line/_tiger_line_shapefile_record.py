@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Tuple
 
 from rdflib import URIRef
 
@@ -20,7 +20,7 @@ class _TigerLineShapefileRecord(ABC):
 
     @property
     @abstractmethod
-    def region(self) -> Optional[str]:
+    def regions(self) -> Optional[Tuple[str, ...]]:
         pass
 
     @property

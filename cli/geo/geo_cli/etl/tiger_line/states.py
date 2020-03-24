@@ -10,6 +10,7 @@ California	CA	06
 Colorado	CO	08
 Connecticut	CT	09
 Delaware	DE	10
+District of Columbia    DC  11
 Florida	FL	12
 Georgia	GA	13
 Hawaii	HI	15
@@ -67,7 +68,10 @@ for line in StringIO(__STATE_FIPS_CODES_STR).readlines():
     assert len(line) == 3, line
     __STATE_FIPS_CODES_PARSED.append((line[0], line[1], int(line[2])))
 
-STATE_FIPS_CODES_BY_STATE_NAME = {entry[0]: entry[2] for entry in __STATE_FIPS_CODES_PARSED}
-STATE_FIPS_CODES_BY_STATE_ABBREVIATION = {entry[1]: entry[2] for entry in __STATE_FIPS_CODES_PARSED}
+STATE_FIPS_CODES_BY_NAME = {entry[0]: entry[2] for entry in __STATE_FIPS_CODES_PARSED}
+STATE_FIPS_CODES_BY_ABBREVIATION = {entry[1]: entry[2] for entry in __STATE_FIPS_CODES_PARSED}
 STATE_NAMES_BY_FIPS_CODE = {entry[2]: entry[0] for entry in __STATE_FIPS_CODES_PARSED}
+
 STATE_NAMES_BY_ABBREVIATION = {entry[1]: entry[0] for entry in __STATE_FIPS_CODES_PARSED}
+STATE_ABBREVIATIONS_BY_LOWER_STATE_NAME = {entry[0].lower(): entry[1] for entry in __STATE_FIPS_CODES_PARSED}
+STATE_NAMES = {entry[0] for entry in __STATE_FIPS_CODES_PARSED}

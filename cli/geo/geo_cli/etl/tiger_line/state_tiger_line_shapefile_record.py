@@ -12,8 +12,8 @@ class StateTigerLineShapefileRecord(_TigerLineShapefileRecord):
         return None
 
     @property
-    def region(self):
-        return self._record["NAME"]
+    def regions(self):
+        return (self._record["NAME"],)
 
     @property
     def type(self):

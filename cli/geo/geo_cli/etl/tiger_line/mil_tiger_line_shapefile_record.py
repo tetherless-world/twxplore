@@ -12,7 +12,7 @@ class MilTigerLineShapefileRecord(_TigerLineShapefileRecord):
         return None
 
     @property
-    def region(self):
+    def regions(self):
         return None
 
     @property
