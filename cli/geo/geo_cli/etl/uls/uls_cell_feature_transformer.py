@@ -1,5 +1,13 @@
+from zipfile import ZipFile
+
 from geo_cli.etl._feature_transformer import _FeatureTransformer
+from geo_cli.path import DATA_DIR_PATH
 
 
 class UlsCellFeatureTransformer(_FeatureTransformer):
-    pass
+    def transform(self):
+        with ZipFile(DATA_DIR_PATH / "extracted" / "uls" / "l_cell.zip") as zip_file:
+
+    def __transform_locations(self):
+
+
