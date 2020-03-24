@@ -27,6 +27,7 @@ ReactDOM.render(
         <LoggerContext.Provider value={logger}>
           <Router history={browserHistory}>
             <Switch>
+              <Route exact path={Hrefs.home} component={Map} />
               <Route exact path={Hrefs.map} component={Map} />
               <Route exact path={Hrefs.selection} component={SelectionHome} />
               <Route component={NoRoute} />
