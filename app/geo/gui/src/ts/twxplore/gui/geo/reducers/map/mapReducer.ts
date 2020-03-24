@@ -15,6 +15,7 @@ import {
   CHANGE_TYPE_VISIBILITY,
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
+import { ADD_FILTER, AddFilterAction } from "../../actions/map/AddFilterAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -45,33 +46,34 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           }
         }
         /*Need to implement how to do this more dynamically. For now this works*/
+        const filterStateOfType = result.featureTypesFilters[addedFeature.type!]
         if (addedFeature.timestamp) {
           if (
             addedFeature.timestamp <
-            result.featureTypesFilters[addedFeature.type!].timestamp.min!
+            filterStateOfType.timestamp.min!
           )
-            result.featureTypesFilters[addedFeature.type!].timestamp.min =
+            filterStateOfType.timestamp.min =
               addedFeature.timestamp;
           else if (
             addedFeature.timestamp >
-            result.featureTypesFilters[addedFeature.type!].timestamp.max!
+            filterStateOfType.timestamp.max!
           )
-            result.featureTypesFilters[addedFeature.type!].timestamp.max =
+            filterStateOfType.timestamp.max =
               addedFeature.timestamp;
         }
 
         if (addedFeature.frequency) {
           if (
             addedFeature.frequency <
-            result.featureTypesFilters[addedFeature.type!].frequency.min!
+            filterStateOfType.frequency.min!
           )
-            result.featureTypesFilters[addedFeature.type!].frequency.min =
+            filterStateOfType.frequency.min =
               addedFeature.frequency;
           else if (
             addedFeature.frequency >
-            result.featureTypesFilters[addedFeature.type!].frequency.max!
+            filterStateOfType.frequency.max!
           )
-            result.featureTypesFilters[addedFeature.type!].frequency.max =
+            filterStateOfType.frequency.max =
               addedFeature.frequency;
         }
       }
@@ -103,8 +105,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
-    case "@@kepler.gl/ADD_FILTER": {
-      const addFilterAction: any = action;
+    case ADD_FILTER: {
+      const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
       const addedFeature = addFilterAction.feature;
       result.featureTypesFilters[addedFeature.type!] = {
         frequency: {
