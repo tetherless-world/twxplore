@@ -3,11 +3,11 @@ import subprocess
 from pathlib import Path
 from typing import Generator
 
-from geo_cli.etl._rdf_loader import _RdfLoader
+from geo_cli.etl._rdf_feature_loader import _RdfFeatureLoader
 from geo_cli.model.feature import Feature
 
 
-class RdfFileLoader(_RdfLoader):
+class FileRdfFeatureLoader(_RdfFeatureLoader):
     def __init__(self, ttl_file_path: Path):
         self.__ttl_file_path = ttl_file_path
 

@@ -2,11 +2,11 @@ import json
 import os.path
 from pathlib import Path
 
-from geo_cli.etl._loader import _Loader
+from geo_cli.etl._feature_loader import _FeatureLoader
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, TWXPLORE_GEO_APP_FEATURE
 
 
-class RequestJsonLoader(_Loader):
+class RequestJsonFeatureLoader(_FeatureLoader):
     __TRANSMISSION_FEATURE_TYPE = TWXPLORE_GEO_APP_ONTOLOGY.Transmission
     __REQUESTOR = "http://purl.org/twc/dsa/ns/AmateurStation"
 

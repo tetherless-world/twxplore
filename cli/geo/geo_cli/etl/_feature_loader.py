@@ -4,7 +4,7 @@ from typing import Generator
 from geo_cli.model.feature import Feature
 
 
-class _Loader(ABC):
+class _FeatureLoader(ABC):
     @abstractmethod
     def __enter__(self):
         pass

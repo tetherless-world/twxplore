@@ -1,11 +1,11 @@
 from rdflib import Graph, RDF, Literal, XSD, RDFS
 
-from geo_cli.etl._loader import _Loader
+from geo_cli.etl._feature_loader import _FeatureLoader
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, GEO, SF, SCHEMA, TWXPLORE_GEO_APP_FEATURE, \
     TWXPLORE_GEO_APP_GEOMETRY
 
 
-class _RdfLoader(_Loader):
+class _RdfFeatureLoader(_FeatureLoader):
     def __enter__(self):
         self._graph = Graph()
         self._graph.bind("geo", GEO)

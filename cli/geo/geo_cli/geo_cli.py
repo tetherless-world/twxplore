@@ -4,12 +4,12 @@ import logging
 import os.path
 from typing import Optional, Generator, Tuple
 
-from geo_cli.etl.rdf_file_loader import RdfFileLoader
-from geo_cli.etl.request_json_loader import RequestJsonLoader
-from geo_cli.etl.reverse_beacon.reverse_beacon_transformer import ReverseBeaconTransformer
-from geo_cli.etl.tiger_line.tiger_line_transformer import TigerLineTransformer
+from geo_cli.etl.file_rdf_feature_loader import FileRdfFeatureLoader
+from geo_cli.etl.request_json_feature_loader import RequestJsonFeatureLoader
+from geo_cli.etl.reverse_beacon.reverse_beacon_feature_transformer import ReverseBeaconFeatureTransformer
+from geo_cli.etl.tiger_line.tiger_line_feature_transformer import TigerLineFeatureTransformer
 from geo_cli.etl.uls.uls_entities_json_file_loader import UlsEntitiesJsonFileLoader
-from geo_cli.etl.uls.uls_entities_transformer import UlsEntitiesTransformer
+from geo_cli.etl.uls.uls_entity_transformer import UlsEntityTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.path import DATA_DIR_PATH
 
@@ -30,7 +30,7 @@ class GeoCli:
             self.__logger.info("transforming ULS entities")
             with UlsEntitiesJsonFileLoader("l_amat") as loader:
                 for transformer in (
-                        UlsEntitiesTransformer("l_amat"),
+                        UlsEntityTransformer("l_amat"),
                 ):
                     loader.load(transformer.transform())
             self.__logger.info("transformed ULS entities and wrote to disk")
@@ -40,9 +40,9 @@ class GeoCli:
         self.__logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
 
         self.__logger.info("transforming and loading Reverse Beacon data")
-        with RdfFileLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
-            with RequestJsonLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "requests.json") as request_json_loader:
-                transformer = ReverseBeaconTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign)
+        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
+            with RequestJsonFeatureLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "requests.json") as request_json_loader:
+                transformer = ReverseBeaconFeatureTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign)
                 if features_per_data_source is not None and features_per_data_source > 0:
                     features = self.__limit_features_per_data_source(features_per_data_source=features_per_data_source, features=transformer.transform())
                 else:
@@ -53,8 +53,8 @@ class GeoCli:
 
     def _etl_tiger_line(self, features_per_data_source: Optional[int]):
         self.__logger.info("transforming and loading TIGER/Line data")
-        with RdfFileLoader(DATA_DIR_PATH / "loaded" / "tiger_line" / "features.ttl") as loader:
-            transformer = TigerLineTransformer()
+        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "tiger_line" / "features.ttl") as loader:
+            transformer = TigerLineFeatureTransformer()
             if features_per_data_source is not None and features_per_data_source > 0:
                 features = self.__limit_features_per_data_source(features_per_data_source=features_per_data_source, features=transformer.transform())
             else:

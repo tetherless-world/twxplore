@@ -6,7 +6,7 @@ from geo_cli.model.uls_entity import UlsEntity
 from geo_cli.path import DATA_DIR_PATH
 
 
-class UlsEntitiesTransformer:
+class UlsEntityTransformer:
     def __init__(self, zip_file_base_name: str):
         self.__zip_file_base_name = zip_file_base_name
 

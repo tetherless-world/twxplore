@@ -5,7 +5,7 @@ from io import TextIOWrapper
 from typing import Generator, Dict
 from zipfile import ZipFile
 
-from geo_cli.etl._transformer import _Transformer
+from geo_cli.etl._feature_transformer import _FeatureTransformer
 from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
 from geo_cli.geocoder import Geocoder
 from geo_cli.model.feature import Feature
@@ -15,9 +15,9 @@ from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATUR
 from geo_cli.path import DATA_DIR_PATH
 
 
-class ReverseBeaconTransformer(_Transformer):
+class ReverseBeaconFeatureTransformer(_FeatureTransformer):
     def __init__(self, uls_entities_by_call_sign: Dict[str, Dict[str, object]]):
-        _Transformer.__init__(self)
+        _FeatureTransformer.__init__(self)
         self.__geocoder = Geocoder()
         self.__uls_entities_by_call_sign = uls_entities_by_call_sign
 
