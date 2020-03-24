@@ -4,6 +4,7 @@ import io.github.tetherlessworld.scena.{PropertyGetters, PropertySetters}
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.vocabulary.SCHEMA
 
 trait SchemaProperties extends PropertyGetters with PropertySetters {
+  final def addAddressRegion(value: String) = addPropertyLiteral(SCHEMA.addressRegion, value)
   final def addressLocality = addressLocalities.headOption
   final def addressLocality_=(value: String) = setPropertyLiteral(SCHEMA.addressLocality, value)
   final def addressLocalities = getPropertyObjectStrings(SCHEMA.addressLocality)

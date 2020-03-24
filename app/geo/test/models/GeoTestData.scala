@@ -27,7 +27,7 @@ object GeoTestData {
         geometry = featureGeometry,
         label = Some("Test feature"),
         locality = Some("Troy"),
-        region = Some("NY"),
+        regions = List("New York"),
         postalCode = Some("12180"),
         timestamp = Some(new Date(2020 - 1900, 2, 13, 16, 32, 0)), // Use an exact date rather than the current date, because serialization loses sub-seconds.
         transmissionPower = Some(30),

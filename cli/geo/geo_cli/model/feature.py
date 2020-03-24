@@ -1,8 +1,10 @@
+import logging
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Tuple
 
 from rdflib import URIRef
 
+from geo_cli.etl.tiger_line.states import STATE_NAMES
 from geo_cli.model.frequency_range import FrequencyRange
 from geo_cli.model.geometry import Geometry
 
@@ -17,7 +19,7 @@ class Feature:
             frequency: Optional[float] = None,
             frequency_range: Optional[FrequencyRange] = None,
             postal_code: Optional[str] = None,
-            region: Optional[str] = None,
+            regions: Optional[Tuple[str, ...]] = None,
             timestamp: Optional[datetime] = None,
             transmission_power: Optional[int] = None,
             type: Optional[URIRef] = None
@@ -28,7 +30,11 @@ class Feature:
         self.__geometry = geometry
         self.__label = label
         self.__postal_code = postal_code
-        self.__region = region
+        if regions is not None:
+            for region in regions:
+                if region not in STATE_NAMES:
+                    logging.warning("region not a state name: %s", region)
+        self.__regions = regions
         if timestamp is not None:
             assert timestamp.tzinfo is not None
         self.__timestamp = timestamp
@@ -69,8 +75,8 @@ class Feature:
         return self.__transmission_power
 
     @property
-    def region(self) -> Optional[str]:
-        return self.__region
+    def regions(self) -> Optional[Tuple[str, ...]]:
+        return self.__regions
 
     @property
     def type(self) -> Optional[URIRef]:

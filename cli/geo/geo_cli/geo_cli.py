@@ -72,7 +72,7 @@ class GeoCli:
     def main(self):
         args = self.__argument_parser.parse_args()
 
-        logging.basicConfig(format="%(asctime)-15s %(message)s", level=logging.DEBUG if args.debug else logging.INFO)
+        logging.basicConfig(format="%(asctime)-15s %(levelname)s %(message)s", level=logging.DEBUG if args.debug else logging.INFO)
         self.__logger = logging.getLogger(__name__)
 
         data_source_names = set()

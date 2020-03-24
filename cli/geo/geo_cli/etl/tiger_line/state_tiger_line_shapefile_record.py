@@ -8,5 +8,13 @@ class StateTigerLineShapefileRecord(_TigerLineShapefileRecord):
         return self._record["NAME"]
 
     @property
+    def locality(self):
+        return None
+
+    @property
+    def regions(self):
+        return (self._record["NAME"],)
+
+    @property
     def type(self):
         return TWXPLORE_GEO_APP_ONTOLOGY.State

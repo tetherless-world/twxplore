@@ -33,8 +33,7 @@ class TigerLineTransformer(_Transformer):
                         for field_name in field_names:
                             if field_name == "DeletionFlag":
                                 continue
-                        #     print(field_name, shape.record[field_name])
-                        # print()
+                            self._logger.debug("%d %s: %s", shape_i, field_name, shape.record[field_name])
                         record = shapefile_record_type(shape.record)
                         label = record.label
                         label = label.strip()
@@ -49,6 +48,8 @@ class TigerLineTransformer(_Transformer):
                             Feature(
                                 label=label,
                                 geometry=geometry,
+                                locality=record.locality,
+                                regions=record.regions,
                                 type=record.type,
                                 uri=TWXPLORE_GEO_APP_FEATURE[f"tiger_line-{file_base_name}-{str(shape_i)}"]
                             )

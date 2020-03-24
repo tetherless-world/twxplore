@@ -19,7 +19,7 @@ final case class Feature(
                           label: Option[String] = None,
                           locality: Option[String] = None,
                           postalCode: Option[String] = None,
-                          region: Option[String] = None,
+                          regions: List[String] = List(),
                           timestamp: Option[Date] = None,
                           transmissionPower: Option[Int] = None,
                           `type`: Option[FeatureType] = None,
@@ -50,7 +50,7 @@ object Feature {
         label = resource.label,
         locality = resource.addressLocality,
         postalCode = resource.postalCode,
-        region = resource.addressRegion,
+        regions = resource.addressRegions,
         timestamp = resource.timestamp,
         transmissionPower = resource.transmissionPower,
         `type` = resource.types.flatMap(typeResource => FeatureType.values.find(value => typeResource.getURI == value.uri.toString)).headOption,
@@ -67,7 +67,7 @@ object Feature {
       if (value.label.isDefined) resource.label = value.label.get
       if (value.locality.isDefined) resource.addressLocality = value.locality.get
       if (value.postalCode.isDefined) resource.postalCode = value.postalCode.get
-      if (value.region.isDefined) resource.addressRegion = value.region.get
+      value.regions.foreach(region => resource.addAddressRegion(region))
       if (value.timestamp.isDefined) resource.timestamp = value.timestamp.get
       if (value.transmissionPower.isDefined) resource.transmissionPower = value.transmissionPower.get
       if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))

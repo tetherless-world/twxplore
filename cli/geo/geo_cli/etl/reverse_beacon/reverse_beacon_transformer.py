@@ -6,6 +6,7 @@ from typing import Generator, Dict
 from zipfile import ZipFile
 
 from geo_cli.etl._transformer import _Transformer
+from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
 from geo_cli.geocoder import Geocoder
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
@@ -90,6 +91,8 @@ class ReverseBeaconTransformer(_Transformer):
                         uri=TWXPLORE_GEO_APP_GEOMETRY[f"uls-{uls_entity.unique_system_identifier}"],
                         wkt=wkt
                     )
+                state_abbreviation = uls_entity.state.upper() #STATE_ABBREVIATIONS_BY_LOWER_STATE_NAME[uls_entity.state.lower()]
+                state_name = STATE_NAMES_BY_ABBREVIATION[state_abbreviation]
                 feature = \
                     Feature(
                         frequency=float(row["freq"]),
@@ -97,7 +100,7 @@ class ReverseBeaconTransformer(_Transformer):
                         locality=uls_entity.city,
                         geometry=geometry,
                         postal_code=uls_entity.zip_code,
-                        region=uls_entity.state,  # Don't attempt to code it
+                        regions=(state_name,),
                         timestamp=row["timestamp"],
                         transmission_power=int(row["db"]),
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
