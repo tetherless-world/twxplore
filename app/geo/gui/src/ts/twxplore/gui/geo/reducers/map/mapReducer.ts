@@ -15,7 +15,7 @@ import {
   CHANGE_TYPE_VISIBILITY,
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
-import { ADD_FILTER, AddFilterAction } from "../../actions/map/AddFilterAction";
+import { ADD_FILTER} from "../../actions/map/AddFilterAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);

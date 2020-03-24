@@ -1,4 +1,3 @@
-import {Action} from "redux-actions";
 import {MapFeature} from "../../states/map/MapFeature";
 import { FeatureType } from "../../api/graphqlGlobalTypes";
 
