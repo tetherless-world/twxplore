@@ -41,14 +41,11 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     console.log(featureType);
     console.log(newValue);
     console.log(attribute);
-    var number;
-    if (attribute === "frequency") {
-      number = 0;
-    } else { //attribute == "timestamp"
-      number = 1;
+   
+    if (attribute === "timestamp"){
+      dispatch(setFilter(1, "value", newValue))
     }
-    if (number == 1) //again only giving timeStamp a value
-      dispatch(setFilter(number, "value", newValue));
+      
   };
 
   return (
