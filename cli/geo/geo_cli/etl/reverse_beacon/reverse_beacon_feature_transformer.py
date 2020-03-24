@@ -10,7 +10,7 @@ from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
 from geo_cli.geocoder import Geocoder
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
-from geo_cli.model.uls_entity import UlsEntity
+from geo_cli.model.uls_record import UlsRecord
 from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE, TWXPLORE_GEO_APP_ONTOLOGY
 from geo_cli.path import DATA_DIR_PATH
 
@@ -52,7 +52,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                             # Exclude everything outside North America
                             continue
                         try:
-                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[row["dx"]])
+                            uls_entity = UlsRecord(**self.__uls_entities_by_call_sign[row["dx"]])
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue

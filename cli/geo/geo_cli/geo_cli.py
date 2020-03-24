@@ -8,14 +8,16 @@ from geo_cli.etl.file_rdf_feature_loader import FileRdfFeatureLoader
 from geo_cli.etl.request_json_feature_loader import RequestJsonFeatureLoader
 from geo_cli.etl.reverse_beacon.reverse_beacon_feature_transformer import ReverseBeaconFeatureTransformer
 from geo_cli.etl.tiger_line.tiger_line_feature_transformer import TigerLineFeatureTransformer
-from geo_cli.etl.uls.uls_entities_json_file_loader import UlsEntitiesJsonFileLoader
-from geo_cli.etl.uls.uls_entity_transformer import UlsEntityTransformer
+from geo_cli.etl.uls.uls_cell_feature_transformer import UlsCellFeatureTransformer
+from geo_cli.etl.uls.uls_record_transformer import UlsRecordTransformer
+from geo_cli.etl.uls.uls_records_json_file_loader import UlsRecordsJsonFileLoader
 from geo_cli.model.feature import Feature
+from geo_cli.model.uls_record_format import UlsRecordFormat
 from geo_cli.path import DATA_DIR_PATH
 
 
 class GeoCli:
-    __DATA_SOURCE_NAMES = {"reverse_beacon", "tiger_line"}
+    __DATA_SOURCE_NAMES = {"reverse_beacon", "tiger_line", "uls"}
 
     def __init__(self):
         self.__argument_parser = argparse.ArgumentParser()
@@ -25,12 +27,12 @@ class GeoCli:
         self.__argument_parser.add_argument("--features-per-data-source", type=int)
 
     def _etl_reverse_beacon(self, features_per_data_source: Optional[int]):
-        uls_entities_json_file_path = UlsEntitiesJsonFileLoader.loaded_file_path("l_amat")
+        uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat")
         if not os.path.isfile(uls_entities_json_file_path):
             self.__logger.info("transforming ULS entities")
-            with UlsEntitiesJsonFileLoader("l_amat") as loader:
+            with UlsRecordsJsonFileLoader("l_amat") as loader:
                 for transformer in (
-                        UlsEntityTransformer("l_amat"),
+                    UlsRecordTransformer(record_format=UlsRecordFormat.EN, zip_file_base_name="l_amat"),
                 ):
                     loader.load(transformer.transform())
             self.__logger.info("transformed ULS entities and wrote to disk")
@@ -61,6 +63,17 @@ class GeoCli:
                 features = transformer.transform()
             loader.load(features)
         self.__logger.info("transformed and loaded TIGER/Line data")
+
+    def _etl_uls(self, features_per_data_source: Optional[int]):
+        self.__logger.info("transforming and loading ULS data")
+        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "uls" / "features.ttl") as loader:
+            transformer = UlsCellFeatureTransformer()
+            if features_per_data_source is not None and features_per_data_source > 0:
+                features = self.__limit_features_per_data_source(features_per_data_source=features_per_data_source, features=transformer.transform())
+            else:
+                features = transformer.transform()
+            loader.load(features)
+        self.__logger.info("transformed and loaded ULS data")
 
     def __limit_features_per_data_source(self, features: Generator[Feature, None, None], features_per_data_source: int) -> Tuple[Feature, ...]:
         limited_features = []
