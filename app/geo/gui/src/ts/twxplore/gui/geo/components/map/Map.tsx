@@ -1,4 +1,4 @@
-import {addDataToMap, addFilter} from "kepler.gl/actions";
+import {addDataToMap} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -19,6 +19,7 @@ import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateActi
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
+import { addFilter } from "../../actions/map/AddFilterAction";
 
 var wkt = require("terraformer-wkt-parser");
 var filterCounter = 0;
@@ -118,13 +119,7 @@ const MapImpl: React.FunctionComponent = () => {
             console.log("Adding filter");
             filterCounter += 1;
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            dispatch({ //should probably create an action creator for this
-              type: "@@kepler.gl/ADD_FILTER",
-              dataId: feature.type,
-              feature: feature,
-              idx: filterCounter - 1,
-            });
-            console.log(addFilter(feature.type));
+            dispatch(addFilter(feature.type, feature, filterCounter-1))
           }
         }
 
