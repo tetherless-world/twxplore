@@ -5,19 +5,18 @@ from io import TextIOWrapper
 from typing import Generator, Dict
 from zipfile import ZipFile
 
-from geo_cli.etl._transformer import _Transformer
+from geo_cli.etl._feature_transformer import _FeatureTransformer
 from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
 from geo_cli.geocoder import Geocoder
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
-from geo_cli.model.uls_entity import UlsEntity
 from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE, TWXPLORE_GEO_APP_ONTOLOGY
 from geo_cli.path import DATA_DIR_PATH
 
 
-class ReverseBeaconTransformer(_Transformer):
+class ReverseBeaconFeatureTransformer(_FeatureTransformer):
     def __init__(self, uls_entities_by_call_sign: Dict[str, Dict[str, object]]):
-        _Transformer.__init__(self)
+        _FeatureTransformer.__init__(self)
         self.__geocoder = Geocoder()
         self.__uls_entities_by_call_sign = uls_entities_by_call_sign
 
@@ -52,11 +51,11 @@ class ReverseBeaconTransformer(_Transformer):
                             # Exclude everything outside North America
                             continue
                         try:
-                            uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[row["dx"]])
+                            uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
-                        if uls_entity.state != "NY":
+                        if uls_entity["State"] != "NY":
                             skipped_uls_entity_count += 1
                             continue
                         # Observed attributes that don't change between spotters, unlike speed and snr/db
@@ -80,8 +79,8 @@ class ReverseBeaconTransformer(_Transformer):
                 # Use the row with the highest signal-to-noise ratio
                 row = max(rows, key=lambda row: row["db"])
 
-                uls_entity = UlsEntity(**self.__uls_entities_by_call_sign[row["dx"]])
-                address = f"{uls_entity.street_address}, {uls_entity.city}, {uls_entity.state} {uls_entity.zip_code}"
+                uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
+                address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
                 try:
                     wkt = self.__geocoder.geocode(address)
                 except LookupError:
@@ -89,19 +88,19 @@ class ReverseBeaconTransformer(_Transformer):
                     continue
                 geometry = \
                     Geometry(
-                        uri=TWXPLORE_GEO_APP_GEOMETRY[f"uls-{uls_entity.unique_system_identifier}"],
+                        uri=TWXPLORE_GEO_APP_GEOMETRY[f"uls-{uls_entity['Unique System Identifier']}"],
                         wkt=wkt
                     )
-                state_abbreviation = uls_entity.state.upper() #STATE_ABBREVIATIONS_BY_LOWER_STATE_NAME[uls_entity.state.lower()]
+                state_abbreviation = uls_entity['State'].upper() #STATE_ABBREVIATIONS_BY_LOWER_STATE_NAME[uls_entity.state.lower()]
                 state_name = STATE_NAMES_BY_ABBREVIATION[state_abbreviation]
 
                 transmission_feature = \
                     Feature(
                         frequency=float(row["freq"]),
-                        label="Amateur radio transmission: %s (%s) @ %s on frequency %s" % (uls_entity.call_sign, uls_entity.name, row["date"], row["freq"]),
-                        locality=uls_entity.city,
+                        label="Amateur radio transmission: %s (%s) @ %s on frequency %s" % (uls_entity['Call Sign'], uls_entity['Entity Name'], row["date"], row["freq"]),
+                        locality=uls_entity['City'],
                         geometry=geometry,
-                        postal_code=uls_entity.zip_code,
+                        postal_code=uls_entity['Zip Code'],
                         regions=(state_name,),
                         timestamp=row["timestamp"],
                         transmission_power=int(row["db"]),
@@ -111,23 +110,23 @@ class ReverseBeaconTransformer(_Transformer):
                 yield transmission_feature
                 yielded_feature_count += 1
 
-                if uls_entity.call_sign in yielded_transmitter_call_signs:
+                if uls_entity['Call Sign'] in yielded_transmitter_call_signs:
                     duplicate_transmitter_count += 1
                     continue
 
                 transmitter_feature = \
                     Feature(
-                        label="Amateur radio transmitter: %s (%s)" % (uls_entity.call_sign, uls_entity.name),
-                        locality=uls_entity.city,
+                        label="Amateur radio transmitter: %s (%s)" % (uls_entity['Call Sign'], uls_entity['Entity Name']),
+                        locality=uls_entity['City'],
                         geometry=geometry,
-                        postal_code=uls_entity.zip_code,
+                        postal_code=uls_entity['Zip Code'],
                         regions=(state_name,),
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmitter,
-                        uri=TWXPLORE_GEO_APP_FEATURE[f"uls-entity-{uls_entity.call_sign}"]
+                        uri=TWXPLORE_GEO_APP_FEATURE[f"uls-entity-{uls_entity['Call Sign']}"]
                     )
                 yield transmitter_feature
                 yielded_feature_count += 1
-                yielded_transmitter_call_signs.add(uls_entity.call_sign)
+                yielded_transmitter_call_signs.add(uls_entity['Call Sign'])
 
             self._logger.info("transformed file %s", zip_file_path)
             self._logger.info("duplicate transmissions: %d, duplicate transmitters: %d, missing ULS entities: %d, skipped ULS entities: %d, geocode failures: %d, yielded features: %d", duplicate_transmission_count, duplicate_transmitter_count, missing_uls_entity_count, skipped_uls_entity_count, geocode_failure_count, yielded_feature_count)

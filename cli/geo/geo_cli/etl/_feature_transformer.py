@@ -5,7 +5,7 @@ from typing import Generator
 from geo_cli.model.feature import Feature
 
 
-class _Transformer(ABC):
+class _FeatureTransformer(ABC):
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
 

@@ -2,7 +2,7 @@ from typing import Generator
 
 import pygeoif
 
-from geo_cli.etl._transformer import _Transformer
+from geo_cli.etl._feature_transformer import _FeatureTransformer
 from geo_cli.etl.tiger_line.metdiv_tiger_line_shapefile_record import MetdivTigerLineShapefileRecord
 from geo_cli.etl.tiger_line.mil_tiger_line_shapefile_record import MilTigerLineShapefileRecord
 from geo_cli.etl.tiger_line.state_tiger_line_shapefile_record import StateTigerLineShapefileRecord
@@ -13,7 +13,7 @@ from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATUR
 from geo_cli.path import DATA_DIR_PATH
 
 
-class TigerLineTransformer(_Transformer):
+class TigerLineFeatureTransformer(_FeatureTransformer):
     def transform(self, **kwds) -> Generator[Feature, None, None]:
         tiger_line_files = (
             ("tl_2019_us_metdiv", MetdivTigerLineShapefileRecord),
