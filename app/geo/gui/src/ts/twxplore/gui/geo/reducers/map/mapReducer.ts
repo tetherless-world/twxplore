@@ -62,19 +62,19 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
               addedFeature.timestamp;
         }
 
-        if (addedFeature.frequency) {
+        if (addedFeature.transmissionPower) {
           if (
-            addedFeature.frequency <
-            filterStateOfType.frequency.min!
+            addedFeature.transmissionPower <
+            filterStateOfType.transmissionPower.min!
           )
-            filterStateOfType.frequency.min =
-              addedFeature.frequency;
+            filterStateOfType.transmissionPower.min =
+              addedFeature.transmissionPower;
           else if (
-            addedFeature.frequency >
-            filterStateOfType.frequency.max!
+            addedFeature.transmissionPower >
+            filterStateOfType.transmissionPower.max!
           )
-            filterStateOfType.frequency.max =
-              addedFeature.frequency;
+            filterStateOfType.transmissionPower.max =
+              addedFeature.transmissionPower;
         }
       }
       break;
@@ -109,9 +109,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
       const addedFeature = addFilterAction.feature;
       result.featureTypesFilters[addedFeature.type!] = {
-        frequency: {
-          max: addedFeature.frequency,
-          min: addedFeature.frequency,
+        transmissionPower: {
+          max: addedFeature.transmissionPower,
+          min: addedFeature.transmissionPower,
         },
         timestamp: {
           min: addedFeature.timestamp,
