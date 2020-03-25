@@ -1,5 +1,5 @@
 export interface MapFilterState {
-  frequency: {
+  transmissionPower: {
     min: number | null;
     max: number | null;
   };
