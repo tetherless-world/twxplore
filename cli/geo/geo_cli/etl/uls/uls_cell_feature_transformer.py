@@ -28,6 +28,7 @@ class UlsCellFeatureTransformer(_FeatureTransformer):
         missing_location_uls_record_count = 0
         missing_geometry_count = 0
         location_geometries = {}
+        feature_keys = set()
         yielded_feature_count = 0
         with ZipFile(DATA_DIR_PATH / "extracted" / "uls" / "l_cell.zip") as zip_file:
             antenna_uls_records = self.__map_antenna_uls_records(zip_file)
@@ -90,7 +91,12 @@ class UlsCellFeatureTransformer(_FeatureTransformer):
                         )
                     location_geometries[location_key] = location_geometry
 
-                frequency = float(frequency_uls_record["Frequency Assigned"])
+                frequency_str = frequency_uls_record["Frequency Assigned"]
+                frequency = float(frequency_str)
+
+                feature_key = f"{call_sign}-{location_key}-{frequency}"
+                if feature_key in feature_keys:
+                    continue
 
                 state = location_uls_record["Location State"]
                 try:
@@ -104,23 +110,23 @@ class UlsCellFeatureTransformer(_FeatureTransformer):
                         state_name = None
                         self._logger.warning("unknown state: %s", state)
 
-                antenna_key = f"{call_sign}-{location_number}-{antenna_number}"
-
-                antenna_feature = \
+                feature = \
                     Feature(
-                        label="Cellular antenna: %s" % (antenna_key,),
+                        label=f"Cellular transmitter: {call_sign} on {frequency}",
                         frequency=frequency,
                         geometry=location_geometry,
                         locality=location_uls_record.get('Location City'),
                         regions=(state_name,) if state_name else None,
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmitter,
-                        uri=TWXPLORE_GEO_APP_FEATURE[f"uls-cell-antenna-{antenna_key}"]
+                        uri=TWXPLORE_GEO_APP_FEATURE[f"uls-cell-{feature_key}"]
                     )
-                yield antenna_feature
+                yield feature
+                feature_keys.add(feature_key)
                 yielded_feature_count += 1
                 if yielded_feature_count % 1000 == 0:
                     self._logger.info("yielded %d features from cellular data, with %d missing antenna records, %d missing location records, and %d missing geometries", yielded_feature_count, missing_antenna_uls_record_count, missing_location_uls_record_count, missing_geometry_count)
-                    return
+                    if yielded_feature_count % 10000 == 0:
+                        return
         self._logger.info("yielded %d features from cellular data, with %d missing antenna records, %d missing location records, and %d missing geometries", yielded_feature_count, missing_antenna_uls_record_count, missing_location_uls_record_count, missing_geometry_count)
 
     def __map_antenna_uls_records(self, zip_file: ZipFile) -> Dict[str, Dict[int, Dict[int, UlsRecord]]]: # Call sign -> location number -> antenna number -> record
