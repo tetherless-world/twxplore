@@ -110,6 +110,9 @@ class UlsCellFeatureTransformer(_FeatureTransformer):
                         state_name = None
                         self._logger.warning("unknown state: %s", state)
 
+                if state_name != "New York":
+                    continue
+
                 feature = \
                     Feature(
                         label=f"Cellular transmitter: {call_sign} on {frequency}",
