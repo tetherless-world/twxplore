@@ -7,6 +7,8 @@ from geo_cli.model.uls_data_element_definition import UlsDataElementDefinition
 class UlsRecordFormat:
     AN = None
     EN = None
+    FR = None
+    HD = None
     LO = None
 
     def __init__(self, data_element_definitions: Tuple[UlsDataElementDefinition, ...]):
@@ -103,6 +105,84 @@ UlsRecordFormat.EN = UlsRecordFormat.parse("""\
 25 Applicant Type Code Other char(40)
 26 Status Code char(1)
 27 Status Date mm/dd/yyyy""")
+
+UlsRecordFormat.FR = UlsRecordFormat.parse("""\
+1 Record Type [FR] char(2)
+2 Unique System Identifier numeric(9,0)
+3 ULS File Number char(14)
+4 EBF Number varchar(30)
+5 Call Sign char(10)
+6 Frequency Action Performed char(1)
+7 Location Number integer
+8 Antenna Number integer
+9 Class Station Code char(4)
+10 Op Altitude Code char(2)
+11 Frequency Assigned numeric(16,8)
+12 Frequency Upper Band numeric(16,8)
+13 Frequency Carrier numeric(16,8)
+14 Time Begin Operations integer
+15 Time End Operations integer
+16 Power Output numeric(15,3)
+17 Power ERP numeric(15,3)
+18 Tolerance numeric(6,5)
+19 Frequency Indicator char(1)
+20 Status char(1)
+21 EIRP numeric(7,1)
+22 Transmitter Make varchar(25)
+23 Transmitter Model varchar(25)
+24 Auto Transmitter Power Control char(1)
+25 Number of Units integer
+26 Number of Paging Receivers integer
+27 Frequency Number integer
+28 Status Code char(1)
+29 Status Date mm/dd/yyyy
+30 Date First Used mm/dd/yyyy""")
+
+UlsRecordFormat.HD = UlsRecordFormat.parse("""\
+1 Record Type [HD] char(2)
+2 Unique System Identifier numeric(9,0)
+3 ULS File Number char(14)
+4 EBF Number varchar(30)
+5 Call Sign char(10)
+6 License Status char(1)
+7 Radio Service Code char(2)
+8 Grant Date mm/dd/yyyy
+9 Expired Date mm/dd/yyyy
+10 Cancellation Date mm/dd/yyyy
+11 Eligibility Rule Num char(10)
+12 Reserved char(1)
+13 Alien char(1)
+14 Alien Government char(1)
+15 Alien Corporation char(1)
+16 Alien Officer char(1)
+17 Alien Control char(1)
+18 Revoked char(1)
+19 Convicted char(1)
+20 Adjudged char(1)
+21 Reserved char(1)
+22 Common Carrier char(1)
+23 Non Common Carrier char(1)
+24 Private Comm char(1)
+25 Fixed char(1)
+26 Mobile char(1)
+27 Radiolocation char(1)
+28 Satellite char(1)
+29 Developmental or STA or Demonstration char(1)
+30 InterconnectedService char(1)
+31 Certifier First Name varchar(20)
+32 Certifier MI char(1)
+33 Certifier Last Name varchar(20)
+34 Certifier Suffix char(3)
+35 Certifier Title char(40)
+36 Female char(1)
+37 Black or African-American char(1)
+38 Native American char(1)
+39 Hawaiian char(1)
+40 Asian char(1)
+41 White char(1)
+42 Hispanic char(1)
+43 Effective Date mm/dd/yyyy
+44 Last Action Date mm/dd/yyyy""")
 
 UlsRecordFormat.LO = UlsRecordFormat.parse("""\
 1 Record Type [LO] char(2)
