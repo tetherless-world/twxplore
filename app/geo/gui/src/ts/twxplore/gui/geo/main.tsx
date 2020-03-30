@@ -4,18 +4,18 @@ import * as ReactDOM from "react-dom";
 import {ApolloProvider} from "react-apollo";
 import {ApolloProvider as ApolloHooksProvider} from "@apollo/react-hooks";
 import {Route, Router, Switch} from "react-router";
-import {ConsoleLogger, LoggerContext} from "@tetherless-world/twxplore-base";
+import {ConsoleLogger, LoggerContext, Environment, NopLogger} from "@tetherless-world/twxplore-base";
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
-import {Map} from "./components/map/Map"
-import { Hrefs } from "./Hrefs";
-import { apolloClient } from "./api/apolloClient";
-import { NoRoute } from "./components/error/NoRoute";
+import {Map} from "./components/map/Map";
+import {Hrefs} from "./Hrefs";
+import {apolloClient} from "./api/apolloClient";
+import {NoRoute} from "./components/error/NoRoute";
 
 
 // Logger
-const logger = new ConsoleLogger();
+const logger =  Environment.development ? new ConsoleLogger() : new NopLogger()
 
 // Stores
 const browserHistory = createBrowserHistory();
@@ -23,8 +23,8 @@ const browserHistory = createBrowserHistory();
 ReactDOM.render(
   <ApolloProvider client={apolloClient}>
     <ApolloHooksProvider client={apolloClient}>
+    <LoggerContext.Provider value={logger}>
       <Provider store={store}>
-        <LoggerContext.Provider value={logger}>
           <Router history={browserHistory}>
             <Switch>
               <Route exact path={Hrefs.home} component={Map} />
@@ -33,8 +33,8 @@ ReactDOM.render(
               <Route component={NoRoute} />
             </Switch>
           </Router>
-        </LoggerContext.Provider>
-      </Provider>
+        </Provider>
+      </LoggerContext.Provider>
     </ApolloHooksProvider>
   </ApolloProvider>,
   document.getElementById("root")

@@ -1,4 +1,3 @@
-import * as React from 'react';
+import * as React from "react";
 
-export const Home: React.FunctionComponent<{}> = () => (
-    <React.Fragment/>);
+export const Home: React.FunctionComponent<{}> = () => <React.Fragment />;

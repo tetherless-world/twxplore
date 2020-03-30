@@ -19,23 +19,15 @@ import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateActi
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
-import { addFilter } from "../../actions/map/AddFilterAction";
+import {addFilter} from "../../actions/map/AddFilterAction";
 
 var wkt = require("terraformer-wkt-parser");
-var filterCounter = 0;
 const MapImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
+
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  console.log(state);
-  /*
-  if (state.filterChange) {
-    console.log("toggled animation change");
-    dispatch(toggleFilterAnimation(1));
-  }
-  */
-  // dispatch(receiveMapConfig(savedConfigV0));
 
   // Load features on first render
   const initialFeaturesQueryResult = useQuery<
@@ -48,8 +40,6 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      console.log("data is here")
-      console.log(data)
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -57,7 +47,7 @@ const MapImpl: React.FunctionComponent = () => {
             geometry: feature.geometry,
             label: feature.label,
             frequency: feature.frequency,
-            timestamp: feature.timestamp? feature.timestamp * 1000 : null,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             type: feature.type,
             uri: feature.uri,
             locality: feature.locality,
@@ -99,7 +89,6 @@ const MapImpl: React.FunctionComponent = () => {
   const featuresByState: {
     [index: string]: MapFeature[];
   } = useSelector(getFeaturesByState);
-  console.log(featuresByState);
 
   // Feature state machine
   for (const featureState in featuresByState) {
@@ -107,7 +96,7 @@ const MapImpl: React.FunctionComponent = () => {
     switch (featureState) {
       case MapFeatureState.LOADED: {
         /*
-        Features in this state have been queried, created and pushed into the 
+        Features in this state have been queried, created and pushed into the
         features state list that is located on the store. The next step is to
         add the data of the features to the map using the addDataToMap action which is reduced by
         keplerGL reducer.. The geometry of the feature is used
@@ -115,11 +104,15 @@ const MapImpl: React.FunctionComponent = () => {
         */
         //!Object.keys(state.featureTypesFilters).includes(feature.type!))
         for (const feature of featuresInState) {
-          if (feature.type! === FeatureType.Transmission && filterCounter < 3) {
-            console.log("Adding filter");
-            filterCounter += 1;
+          const filterCounter = state.filterCounter;
+          if (
+            feature.type! === FeatureType.Transmission &&
+            filterCounter < 20
+          ) {
+            //hardcoded number of filters to add for now
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            dispatch(addFilter(feature.type, feature, filterCounter-1))
+            dispatch(addFilter(feature.type, feature, filterCounter));
+            return null;
           }
         }
 
@@ -156,12 +149,13 @@ const MapImpl: React.FunctionComponent = () => {
 
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
-          if(clickedFeature.type !== FeatureType.Transmission)
-         { getFeaturesWithin({
-            variables: {
-              query: {withinFeatureUri: clickedFeature.uri},
-            },
-          });}
+          if (clickedFeature.type !== FeatureType.Transmission) {
+            getFeaturesWithin({
+              variables: {
+                query: {withinFeatureUri: clickedFeature.uri},
+              },
+            });
+          }
           clickedUris.push(clickedFeature.uri);
         }
         dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
@@ -175,25 +169,25 @@ const MapImpl: React.FunctionComponent = () => {
 
   return (
     <div>
-        <div style={{width: "100%"}}>
-          <ReactResizeDetector
-            handleWidth
-            handleHeight
-            render={({width, height}) => (
-              <div>
-                <KeplerGl
-                  id="map"
-                  width={width}
-                  mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
-                  height={height}
-                />
-              </div>
-            )}
-          />
-        </div>
-        <div>
-          <FilterPanel />
-        </div>
+      <div style={{width: "100%"}}>
+        <ReactResizeDetector
+          handleWidth
+          handleHeight
+          render={({width, height}) => (
+            <div>
+              <KeplerGl
+                id="map"
+                width={width}
+                mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
+                height={height}
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div>
+        <FilterPanel />
+      </div>
     </div>
   );
 };

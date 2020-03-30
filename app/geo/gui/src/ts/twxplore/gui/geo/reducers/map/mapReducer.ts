@@ -15,7 +15,8 @@ import {
   CHANGE_TYPE_VISIBILITY,
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
-import { ADD_FILTER} from "../../actions/map/AddFilterAction";
+import {ADD_FILTER} from "../../actions/map/AddFilterAction";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -25,13 +26,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
-        console.log("added map feature " + feature.uri);
       }
       break;
     }
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
-      console.log(addDataToMapAction);
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
         const addedFeature: MapFeature = row[0].properties;
         for (const resultFeature of result.features) {
@@ -45,36 +44,39 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             );
           }
         }
-        /*Need to implement how to do this more dynamically. For now this works*/
-        const filterStateOfType = result.featureTypesFilters[addedFeature.type!]
-        if (addedFeature.timestamp) {
-          if (
-            addedFeature.timestamp <
-            filterStateOfType.timestamp.min!
-          )
-            filterStateOfType.timestamp.min =
-              addedFeature.timestamp;
-          else if (
-            addedFeature.timestamp >
-            filterStateOfType.timestamp.max!
-          )
-            filterStateOfType.timestamp.max =
-              addedFeature.timestamp;
-        }
-
-        if (addedFeature.transmissionPower) {
-          if (
-            addedFeature.transmissionPower <
-            filterStateOfType.transmissionPower.min!
-          )
-            filterStateOfType.transmissionPower.min =
-              addedFeature.transmissionPower;
-          else if (
-            addedFeature.transmissionPower >
-            filterStateOfType.transmissionPower.max!
-          )
-            filterStateOfType.transmissionPower.max =
-              addedFeature.transmissionPower;
+        /*
+        Checks the filterState of the type of feature being added to the map.
+        Loops throrugh the attributes of the feature, checks to see which are of type number
+        and updates the min and maxes of the attribute in the filterState if neccessary
+        */
+        const filterStateOfType =
+          result.featureTypesFilters[addedFeature.type!];
+        if (addedFeature.type === FeatureType.Transmission) {
+          for (const attribute of Object.keys(addedFeature)) {
+            //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
+            if (
+              typeof (addedFeature as any)[attribute] == "number" &&
+              attribute != "postalCode"
+            ) {
+              //ignoring postalCode for now because typeof is inconsistent with giving the correct type
+              {
+                if (
+                  (addedFeature as any)[attribute] <
+                  filterStateOfType[attribute].min!
+                )
+                  filterStateOfType[attribute].min = (addedFeature as any)[
+                    attribute
+                  ];
+                else if (
+                  (addedFeature as any)[attribute] >
+                  filterStateOfType[attribute].max!
+                )
+                  filterStateOfType[attribute].max = (addedFeature as any)[
+                    attribute
+                  ];
+              }
+            }
+          }
         }
       }
       break;
@@ -106,19 +108,38 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
 
     case ADD_FILTER: {
+      /*
+      This reducer focuses on initialzing the filterState of a type when it dooes not
+      exist in filterStateOfType yet.
+      result.attributeIds ensures each attribute receives a unique id.
+      result.filterCounter simply keeps track of how many times the ADD_FILTER action
+      has been dispatched (which also implies the number of filters).
+      These filters will be attached to attributes in FilterSliders.tsx
+      */
       const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
-      const addedFeature = addFilterAction.feature;
-      result.featureTypesFilters[addedFeature.type!] = {
-        transmissionPower: {
-          max: addedFeature.transmissionPower,
-          min: addedFeature.transmissionPower,
-        },
-        timestamp: {
-          min: addedFeature.timestamp,
-          max: addedFeature.timestamp,
-        },
-      };
+      const addedFeature: any = addFilterAction.feature;
+      if (!result.featureTypesFilters[addedFeature.type!]) {
+        result.featureTypesFilters[addedFeature.type!] = {};
+        const filterStateOfType =
+          result.featureTypesFilters[addedFeature.type!];
+        for (const attribute of Object.keys(addedFeature)) {
+          if (
+            typeof addedFeature[attribute] == "number" &&
+            attribute != "postalCode"
+          ) {
+            filterStateOfType[attribute] = {min: null, max: null, idx: null};
+            filterStateOfType[attribute].max = addedFeature[attribute];
+            filterStateOfType[attribute].min = addedFeature[attribute];
+            filterStateOfType[attribute].idx = result.attributeCounter;
+
+            result.attributeCounter += 1;
+          }
+        }
+      }
+      result.filterCounter += 1;
+      break;
     }
+
     case "@@kepler.gl/REGISTER_ENTRY":
       result.keplerGlInstanceRegistered = true;
       break;

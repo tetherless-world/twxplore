@@ -1,9 +1,13 @@
 import {MapFeature} from "./MapFeature";
-import {MapFilterState} from "./MapFilterState";
+import {FilterStateTypes} from "./MapFilterStateTypes";
 
 export interface MapState {
   keplerGlInstanceRegistered: boolean;
   features: MapFeature[];
   typesVisibility: {[index: string]: boolean};
-  featureTypesFilters: {[featureType: string]: MapFilterState};
+  featureTypesFilters: {
+    [featureType: string]: {[attribute: string]: FilterStateTypes};
+  };
+  filterCounter: number;
+  attributeCounter: number;
 }
