@@ -1,6 +1,5 @@
-import { initialAppState } from "../app/initialAppState";
-import { RootState } from "./RootState";
-
+import {initialAppState} from "../app/initialAppState";
+import {RootState} from "./RootState";
 
 export const initialRootState: RootState = {
   keplerGl: {},

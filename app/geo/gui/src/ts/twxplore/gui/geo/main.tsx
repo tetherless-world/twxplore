@@ -8,11 +8,10 @@ import {ConsoleLogger, LoggerContext} from "@tetherless-world/twxplore-base";
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
-import {Map} from "./components/map/Map"
-import { Hrefs } from "./Hrefs";
-import { apolloClient } from "./api/apolloClient";
-import { NoRoute } from "./components/error/NoRoute";
-
+import {Map} from "./components/map/Map";
+import {Hrefs} from "./Hrefs";
+import {apolloClient} from "./api/apolloClient";
+import {NoRoute} from "./components/error/NoRoute";
 
 // Logger
 const logger = new ConsoleLogger();

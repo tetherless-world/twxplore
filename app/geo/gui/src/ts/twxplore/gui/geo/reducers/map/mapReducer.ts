@@ -2,25 +2,15 @@ import {BaseAction} from "redux-actions";
 
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
-import {
-  CHANGE_MAP_FEATURE_STATE,
-  ChangeMapFeatureStateAction,
-} from "../../actions/map/ChangeMapFeatureStateAction";
-import {
-  ADD_MAP_FEATURES,
-  AddMapFeaturesAction,
-} from "../../actions/map/AddMapFeaturesAction";
+import {CHANGE_MAP_FEATURE_STATE, ChangeMapFeatureStateAction} from "../../actions/map/ChangeMapFeatureStateAction";
+import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "../../actions/map/AddMapFeaturesAction";
 import {MapState} from "../../states/map/MapState";
-import {
-  CHANGE_TYPE_VISIBILITY,
-  ChangeTypeVisibilityAction,
-} from "../../actions/map/ChangeTypeVisibilityAction";
-import { ADD_FILTER} from "../../actions/map/AddFilterAction";
-import { FeatureType } from "../../api/graphqlGlobalTypes";
+import {CHANGE_TYPE_VISIBILITY, ChangeTypeVisibilityAction} from "../../actions/map/ChangeTypeVisibilityAction";
+import {ADD_FILTER} from "../../actions/map/AddFilterAction";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
- 
 
   switch (action.type) {
     case ADD_MAP_FEATURES: {
@@ -50,30 +40,35 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         Loops throrugh the attributes of the feature, checks to see which are of type number
         and updates the min and maxes of the attribute in the filterState if neccessary
         */
-        const filterStateOfType = result.featureTypesFilters[addedFeature.type!]
-        if (addedFeature.type === FeatureType.Transmission){
-        for (const attribute of Object.keys(addedFeature)){
-               //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
-          if (typeof ((addedFeature as any)[attribute]) == 'number'&& attribute!= 'postalCode'){ //ignoring postalCode for now because typeof is inconsistent with giving the correct type
-            {
-              if (
-                (addedFeature as any)[attribute] <
-                filterStateOfType[attribute].min!
-              )
-                filterStateOfType[attribute].min =
-                  (addedFeature as any)[attribute]
-              else if (
-                (addedFeature as any)[attribute] >
-                filterStateOfType[attribute].max!
-              )
-                filterStateOfType[attribute].max =
-                  (addedFeature as any)[attribute]
+        const filterStateOfType =
+          result.featureTypesFilters[addedFeature.type!];
+        if (addedFeature.type === FeatureType.Transmission) {
+          for (const attribute of Object.keys(addedFeature)) {
+            //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
+            if (
+              typeof (addedFeature as any)[attribute] == "number" &&
+              attribute != "postalCode"
+            ) {
+              //ignoring postalCode for now because typeof is inconsistent with giving the correct type
+              {
+                if (
+                  (addedFeature as any)[attribute] <
+                  filterStateOfType[attribute].min!
+                )
+                  filterStateOfType[attribute].min = (addedFeature as any)[
+                    attribute
+                  ];
+                else if (
+                  (addedFeature as any)[attribute] >
+                  filterStateOfType[attribute].max!
+                )
+                  filterStateOfType[attribute].max = (addedFeature as any)[
+                    attribute
+                  ];
+              }
             }
           }
-        
-
         }
-      }
       }
       break;
     }
@@ -105,7 +100,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
     case ADD_FILTER: {
       /*
-      This reducer focuses on initialzing the filterState of a type when it dooes not 
+      This reducer focuses on initialzing the filterState of a type when it dooes not
       exist in filterStateOfType yet.
       result.attributeIds ensures each attribute receives a unique id.
       result.filterCounter simply keeps track of how many times the ADD_FILTER action
@@ -113,24 +108,27 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       These filters will be attached to attributes in FilterSliders.tsx
       */
       const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
-      const addedFeature : any = addFilterAction.feature;
-      if (!result.featureTypesFilters[addedFeature.type!]){
-        result.featureTypesFilters[addedFeature.type!] = {}
-        const filterStateOfType = result.featureTypesFilters[addedFeature.type!]
-        for (const attribute of Object.keys(addedFeature)){
-          if (typeof addedFeature[attribute] == 'number' && attribute!= 'postalCode'){
-            
-            filterStateOfType[attribute] = {min: null, max: null, idx: null}
-            filterStateOfType[attribute].max = addedFeature[attribute]
-            filterStateOfType[attribute].min = addedFeature[attribute]
-            filterStateOfType[attribute].idx = result.attributeIds
-            
-            result.attributeIds += 1
+      const addedFeature: any = addFilterAction.feature;
+      if (!result.featureTypesFilters[addedFeature.type!]) {
+        result.featureTypesFilters[addedFeature.type!] = {};
+        const filterStateOfType =
+          result.featureTypesFilters[addedFeature.type!];
+        for (const attribute of Object.keys(addedFeature)) {
+          if (
+            typeof addedFeature[attribute] == "number" &&
+            attribute != "postalCode"
+          ) {
+            filterStateOfType[attribute] = {min: null, max: null, idx: null};
+            filterStateOfType[attribute].max = addedFeature[attribute];
+            filterStateOfType[attribute].min = addedFeature[attribute];
+            filterStateOfType[attribute].idx = result.attributeIds;
+
+            result.attributeIds += 1;
           }
         }
       }
-      result.filterCounter += 1
-      break
+      result.filterCounter += 1;
+      break;
     }
 
     case "@@kepler.gl/REGISTER_ENTRY":

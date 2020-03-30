@@ -22,7 +22,7 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-var filtersSet = false
+var filtersSet = false;
 
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
@@ -40,10 +40,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     attribute: string,
     idx: number
   ) => {
-    
-  
     dispatch(setFilter(idx, "value", newValue));
-      
   };
 
   return (
@@ -52,17 +49,22 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       {Object.keys(featureTypeFilter).map(attribute => {
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        const idx = attributeProperties.idx
-        if (!filtersSet){ //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
+        const idx = attributeProperties.idx;
+        if (!filtersSet) {
+          //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
           dispatch(setFilter(idx, "name", attribute));
-          if(attribute == "frequency"){
+          if (attribute == "frequency") {
             dispatch(setFilter(idx, "type", "range"));
-            dispatch(setFilter(idx,"value", [attributeProperties.min, attributeProperties.max]))
-            }
-
+            dispatch(
+              setFilter(idx, "value", [
+                attributeProperties.min,
+                attributeProperties.max,
+              ])
+            );
+          }
         }
-        
-       /* if(attribute == "frequency"){
+
+        /* if(attribute == "frequency"){
           dispatch(setFilter(idx, "type", "range"));
         }*/
         if (attributeProperties) {
@@ -88,15 +90,15 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                 }
                 name={attribute}
               />
-              
             </div>
           );
         } else {
           return <React.Fragment />;
         }
       })}
-      {filtersSet = true //first render done. Filter have beem set}
-}
+      {
+        (filtersSet = true) //first render done. Filter have beem set}
+      }
     </div>
   );
 };

@@ -7,7 +7,9 @@ Object.values(FeatureType).map(type => {
   typesVisibility[type] = true;
 });
 
-const featureTypesFilters: {[featureType: string]: {[attribute: string]: filterStateTypes}} = {}
+const featureTypesFilters: {
+  [featureType: string]: {[attribute: string]: filterStateTypes};
+} = {};
 
 //const featureTypesFilters: {[featureType: string]: MapFilterState} = {};
 
@@ -17,5 +19,5 @@ export const initialMapState: MapState = {
   typesVisibility: typesVisibility,
   featureTypesFilters: featureTypesFilters,
   filterCounter: 0,
-  attributeIds: 0
+  attributeIds: 0,
 };

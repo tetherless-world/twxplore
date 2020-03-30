@@ -19,18 +19,17 @@ import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateActi
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
-import { addFilter } from "../../actions/map/AddFilterAction";
+import {addFilter} from "../../actions/map/AddFilterAction";
 
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
-const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
 
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  
-  // Load features on first render 
+
+  // Load features on first render
   const initialFeaturesQueryResult = useQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
@@ -41,7 +40,6 @@ const dispatch = useDispatch();
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -49,7 +47,7 @@ const dispatch = useDispatch();
             geometry: feature.geometry,
             label: feature.label,
             frequency: feature.frequency,
-            timestamp: feature.timestamp? feature.timestamp * 1000 : null,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             type: feature.type,
             uri: feature.uri,
             locality: feature.locality,
@@ -92,14 +90,13 @@ const dispatch = useDispatch();
     [index: string]: MapFeature[];
   } = useSelector(getFeaturesByState);
 
-
   // Feature state machine
   for (const featureState in featuresByState) {
     const featuresInState = featuresByState[featureState];
     switch (featureState) {
       case MapFeatureState.LOADED: {
         /*
-        Features in this state have been queried, created and pushed into the 
+        Features in this state have been queried, created and pushed into the
         features state list that is located on the store. The next step is to
         add the data of the features to the map using the addDataToMap action which is reduced by
         keplerGL reducer.. The geometry of the feature is used
@@ -107,8 +104,12 @@ const dispatch = useDispatch();
         */
         //!Object.keys(state.featureTypesFilters).includes(feature.type!))
         for (const feature of featuresInState) {
-          const filterCounter = state.filterCounter
-          if (feature.type! === FeatureType.Transmission && filterCounter < 20) { //hardcoded number of filters to add for now
+          const filterCounter = state.filterCounter;
+          if (
+            feature.type! === FeatureType.Transmission &&
+            filterCounter < 20
+          ) {
+            //hardcoded number of filters to add for now
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
             dispatch(addFilter(feature.type, feature, filterCounter));
             return null;
@@ -148,12 +149,13 @@ const dispatch = useDispatch();
 
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
-          if(clickedFeature.type !== FeatureType.Transmission)
-         { getFeaturesWithin({
-            variables: {
-              query: {withinFeatureUri: clickedFeature.uri},
-            },
-          });}
+          if (clickedFeature.type !== FeatureType.Transmission) {
+            getFeaturesWithin({
+              variables: {
+                query: {withinFeatureUri: clickedFeature.uri},
+              },
+            });
+          }
           clickedUris.push(clickedFeature.uri);
         }
         dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
@@ -167,25 +169,25 @@ const dispatch = useDispatch();
 
   return (
     <div>
-        <div style={{width: "100%"}}>
-          <ReactResizeDetector
-            handleWidth
-            handleHeight
-            render={({width, height}) => (
-              <div>
-                <KeplerGl
-                  id="map"
-                  width={width}
-                  mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
-                  height={height}
-                />
-              </div>
-            )}
-          />
-        </div>
-        <div>
-          <FilterPanel />
-        </div>
+      <div style={{width: "100%"}}>
+        <ReactResizeDetector
+          handleWidth
+          handleHeight
+          render={({width, height}) => (
+            <div>
+              <KeplerGl
+                id="map"
+                width={width}
+                mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
+                height={height}
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div>
+        <FilterPanel />
+      </div>
     </div>
   );
 };
