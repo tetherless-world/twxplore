@@ -7,6 +7,7 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 // Constants
 val playVersion = "2.8.0"
+val jenaVersion = "3.14.0"
 val scenaVersion = "1.0.1-SNAPSHOT"
 val slf4jVersion = "1.7.25"
 val twksVersion = "1.0.4-SNAPSHOT"
@@ -70,7 +71,7 @@ lazy val baseLib =
         "edu.rpi.tw.twks" % "twks-rest-client" % twksVersion,
         organization.value %% "scena" % scenaVersion,
         "nl.grons" %% "metrics4-scala" % "4.1.1",
-        "org.apache.jena" % "jena-geosparql" % "3.13.1",
+        "org.apache.jena" % "jena-geosparql" % jenaVersion,
         "org.sangria-graphql" %% "sangria" % "1.4.2",
         "org.sangria-graphql" %% "sangria-slowlog" % "0.1.8",
         "org.sangria-graphql" %% "sangria-play-json" % "1.0.4",
