@@ -22,7 +22,7 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-var filtersAdded = false
+var filtersSet = false
 
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
@@ -55,10 +55,11 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
         const idx = attributeProperties.idx
-        if (!filtersAdded){
+        if (!filtersSet){ //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
           dispatch(setFilter(idx, "name", attribute));
           if(attribute == "frequency"){
             dispatch(setFilter(idx, "type", "range"));
+            dispatch(setFilter(idx,"value", [attributeProperties.min, attributeProperties.max]))
             }
 
         }
@@ -96,7 +97,8 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
           return <React.Fragment />;
         }
       })}
-      {filtersAdded = true}
+      {filtersSet = true //first render done. Filter have beem set}
+}
     </div>
   );
 };
