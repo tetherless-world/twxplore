@@ -1,6 +1,6 @@
 import {MapState} from "./MapState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {filterStateTypes} from "./MapFilterStateTypes";
+import {FilterStateTypes} from "./MapFilterStateTypes";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -8,7 +8,7 @@ Object.values(FeatureType).map(type => {
 });
 
 const featureTypesFilters: {
-  [featureType: string]: {[attribute: string]: filterStateTypes};
+  [featureType: string]: {[attribute: string]: FilterStateTypes};
 } = {};
 
 //const featureTypesFilters: {[featureType: string]: MapFilterState} = {};
@@ -19,5 +19,5 @@ export const initialMapState: MapState = {
   typesVisibility: typesVisibility,
   featureTypesFilters: featureTypesFilters,
   filterCounter: 0,
-  attributeIds: 0,
+  attributeCounter: 0,
 };
