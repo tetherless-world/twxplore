@@ -4,7 +4,7 @@ import * as ReactDOM from "react-dom";
 import {ApolloProvider} from "react-apollo";
 import {ApolloProvider as ApolloHooksProvider} from "@apollo/react-hooks";
 import {Route, Router, Switch} from "react-router";
-import {ConsoleLogger, LoggerContext, Environment} from "@tetherless-world/twxplore-base";
+import {ConsoleLogger, LoggerContext, Environment, NopLogger} from "@tetherless-world/twxplore-base";
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
