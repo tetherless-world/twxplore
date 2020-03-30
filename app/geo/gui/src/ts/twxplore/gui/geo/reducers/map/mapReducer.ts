@@ -2,10 +2,19 @@ import {BaseAction} from "redux-actions";
 
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {MapFeature} from "../../states/map/MapFeature";
-import {CHANGE_MAP_FEATURE_STATE, ChangeMapFeatureStateAction} from "../../actions/map/ChangeMapFeatureStateAction";
-import {ADD_MAP_FEATURES, AddMapFeaturesAction} from "../../actions/map/AddMapFeaturesAction";
+import {
+  CHANGE_MAP_FEATURE_STATE,
+  ChangeMapFeatureStateAction,
+} from "../../actions/map/ChangeMapFeatureStateAction";
+import {
+  ADD_MAP_FEATURES,
+  AddMapFeaturesAction,
+} from "../../actions/map/AddMapFeaturesAction";
 import {MapState} from "../../states/map/MapState";
-import {CHANGE_TYPE_VISIBILITY, ChangeTypeVisibilityAction} from "../../actions/map/ChangeTypeVisibilityAction";
+import {
+  CHANGE_TYPE_VISIBILITY,
+  ChangeTypeVisibilityAction,
+} from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
@@ -121,9 +130,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
             filterStateOfType[attribute].max = addedFeature[attribute];
             filterStateOfType[attribute].min = addedFeature[attribute];
-            filterStateOfType[attribute].idx = result.attributeIds;
+            filterStateOfType[attribute].idx = result.attributeCounter;
 
-            result.attributeIds += 1;
+            result.attributeCounter += 1;
           }
         }
       }
