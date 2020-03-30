@@ -84,7 +84,7 @@ jobs:
             cd lib/ts/base
             npm run build
             cd ../../../app/geo/gui
-            npm run build
+            npm run build-development
 workflows:
   version: 2
   build:
