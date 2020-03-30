@@ -14,7 +14,7 @@ import {useSelector, useDispatch, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {changeTypeVisibility} from "../../actions/map/ChangeTypeVisibilityAction";
-import {LoggerContext, ConsoleLogger} from "@tetherless-world/twxplore-base";
+import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,7 +41,7 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
     dispatch(changeTypeVisibility(typeEnum));
   };
 
-  const logger : ConsoleLogger = React.useContext(LoggerContext)
+  const logger : Logger = React.useContext(LoggerContext)
   logger.info("test")
   //const featureTypes: {[index: string]: String} = {}
 
