@@ -1,6 +1,9 @@
-.circleci
-.git
-.gitignore
-node_modules
+/.circleci/
+/cli/geo/venv/
+/data/
+/.git/
+/.gitignore
+**/node_modules/
+*.pyc
 *.md
-target
+**/target/

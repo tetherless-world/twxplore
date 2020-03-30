@@ -3,6 +3,13 @@
 set -e
 
 # Assumes TWKS is checked out as a sibling
-cd "$(dirname "$0")/../../../../twks/java"
+cd "$(dirname "$0")/../../.."
 
-MAVEN_OPTS="-Dtwks.enableGeoSPARQL" mvn package -DskipTests jetty:run
+export MAVEN_OPTS="-Dtwks.enableGeoSPARQL"
+if [ -f "data/geo/loaded/reverse_beacon/features.ttl.bz2" ]; then
+  export MAVEN_OPTS="$MAVEN_OPTS -Dtwks.initialNanopublicationFilePath=$PWD/data/geo/loaded/reverse_beacon/features.ttl.bz2,$PWD/data/geo/loaded/tiger_line/features.ttl.bz2,$PWD/data/geo/loaded/uls/features.ttl.bz2"
+fi
+echo $MAVEN_OPTS
+
+cd ../twks/java
+mvn package -DskipTests jetty:run
