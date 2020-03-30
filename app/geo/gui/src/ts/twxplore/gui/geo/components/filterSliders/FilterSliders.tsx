@@ -40,9 +40,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     attribute: string,
     idx: number
   ) => {
-    console.log(featureType);
-    console.log(newValue);
-    console.log(attribute);
+    
   
     dispatch(setFilter(idx, "value", newValue));
       
