@@ -22,9 +22,10 @@ import {MapFeature} from "../../states/map/MapFeature";
 import { addFilter } from "../../actions/map/AddFilterAction";
 
 var wkt = require("terraformer-wkt-parser");
-var filterCounter = 0;
 const MapImpl: React.FunctionComponent = () => {
-  const dispatch = useDispatch();
+const dispatch = useDispatch();
+
+
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
@@ -37,7 +38,7 @@ const MapImpl: React.FunctionComponent = () => {
   */
   // dispatch(receiveMapConfig(savedConfigV0));
 
-  // Load features on first render
+  // Load features on first render 
   const initialFeaturesQueryResult = useQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
@@ -115,11 +116,15 @@ const MapImpl: React.FunctionComponent = () => {
         */
         //!Object.keys(state.featureTypesFilters).includes(feature.type!))
         for (const feature of featuresInState) {
-          if (feature.type! === FeatureType.Transmission && filterCounter < 3) {
-            console.log("Adding filter");
-            filterCounter += 1;
+          console.log("here")
+          const filterCounter = state.filterCounter
+          console.log(state)
+          if (feature.type! === FeatureType.Transmission && filterCounter < 20) {
+            //console.log(filterCounter)
+            //console.log(filterCounter < 20)
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            dispatch(addFilter(feature.type, feature, filterCounter-1))
+            dispatch(addFilter(feature.type, feature, filterCounter));
+            return null;
           }
         }
 
