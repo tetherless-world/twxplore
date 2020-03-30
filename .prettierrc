@@ -1,1 +1,4 @@
-lib/ts/base/.prettierrc
+{
+  "bracketSpacing": false,
+  "trailingComma": "es5"
+}

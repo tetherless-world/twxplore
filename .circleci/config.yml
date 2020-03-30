@@ -68,6 +68,9 @@ jobs:
       - restore_cache:
           key: gui-dependency-cache-v1-{{ checksum "package.json" }}-{{ checksum "app/geo/gui/package.json" }}-{{ checksum "lib/ts/base/package.json" }}
       - run:
+          name: Compare contents of root .prettierrc to one in base lib, instead of using symlinks
+          command: cmp .prettierrc lib/ts/base/.prettierrc
+      - run:
           command: |
             npm install
             npm run lerna:bootstrap
