@@ -22,7 +22,8 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-var filterCount = 0;
+var filtersAdded = false
+
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
 }) => {
@@ -36,18 +37,14 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const handleChange = (
     event: any,
     newValue: number | number[],
-    attribute: string
+    attribute: string,
+    idx: number
   ) => {
     console.log(featureType);
     console.log(newValue);
     console.log(attribute);
-   
-    if (attribute === "timestamp"){
-      dispatch(setFilter(1, "value", newValue))
-    }
-    if(attribute === "transmissionPower"){
-      dispatch(setFilter(0,"value",newValue))
-    }
+  
+    dispatch(setFilter(idx, "value", newValue));
       
   };
 
@@ -57,10 +54,18 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       {Object.keys(featureTypeFilter).map(attribute => {
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        filterCount += 1;
-        if (filterCount < 3) { //only concerned with timeStamp as frequency breaks things at the moment
-          dispatch(setFilter(filterCount - 1, "name", attribute));
+        const idx = attributeProperties.idx
+        if (!filtersAdded){
+          dispatch(setFilter(idx, "name", attribute));
+          if(attribute == "frequency"){
+            dispatch(setFilter(idx, "type", "range"));
+            }
+
         }
+        
+       /* if(attribute == "frequency"){
+          dispatch(setFilter(idx, "type", "range"));
+        }*/
         if (attributeProperties) {
           return (
             <div key={attribute}>
@@ -80,16 +85,18 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                 valueLabelDisplay="auto"
                 disabled={!attributeProperties.max}
                 onChangeCommitted={(event: any, newValue: number | number[]) =>
-                  handleChange(event, newValue, attribute)
+                  handleChange(event, newValue, attribute, idx)
                 }
                 name={attribute}
               />
+              
             </div>
           );
         } else {
           return <React.Fragment />;
         }
       })}
+      {filtersAdded = true}
     </div>
   );
 };
