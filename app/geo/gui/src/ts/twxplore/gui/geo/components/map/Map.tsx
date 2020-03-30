@@ -29,15 +29,7 @@ const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  console.log(state);
-  /*
-  if (state.filterChange) {
-    console.log("toggled animation change");
-    dispatch(toggleFilterAnimation(1));
-  }
-  */
-  // dispatch(receiveMapConfig(savedConfigV0));
-
+  
   // Load features on first render 
   const initialFeaturesQueryResult = useQuery<
     MapFeaturesQuery,
@@ -49,8 +41,7 @@ const dispatch = useDispatch();
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      console.log("data is here")
-      console.log(data)
+      
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -100,7 +91,7 @@ const dispatch = useDispatch();
   const featuresByState: {
     [index: string]: MapFeature[];
   } = useSelector(getFeaturesByState);
-  console.log(featuresByState);
+
 
   // Feature state machine
   for (const featureState in featuresByState) {
@@ -116,12 +107,8 @@ const dispatch = useDispatch();
         */
         //!Object.keys(state.featureTypesFilters).includes(feature.type!))
         for (const feature of featuresInState) {
-          console.log("here")
           const filterCounter = state.filterCounter
-          console.log(state)
-          if (feature.type! === FeatureType.Transmission && filterCounter < 20) {
-            //console.log(filterCounter)
-            //console.log(filterCounter < 20)
+          if (feature.type! === FeatureType.Transmission && filterCounter < 20) { //hardcoded number of filters to add for now
             //this is first time coming across type. Add a filter for it and create a typeRange object for it.
             dispatch(addFilter(feature.type, feature, filterCounter));
             return null;

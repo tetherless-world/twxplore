@@ -27,13 +27,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
-        console.log("added map feature " + feature.uri);
+        //console.log("added map feature " + feature.uri);
       }
       break;
     }
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
-      console.log(addDataToMapAction);
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
         const addedFeature: MapFeature = row[0].properties;
         for (const resultFeature of result.features) {
@@ -55,8 +54,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         const filterStateOfType = result.featureTypesFilters[addedFeature.type!]
         if (addedFeature.type === FeatureType.Transmission){
         for (const attribute of Object.keys(addedFeature)){
-          console.log(Object.keys(addedFeature))
-          console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
+               //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
           if (typeof ((addedFeature as any)[attribute]) == 'number'&& attribute!= 'postalCode'){ //ignoring postalCode for now because typeof is inconsistent with giving the correct type
             {
               if (
@@ -133,7 +131,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         }
       }
       result.filterCounter += 1
-      //console.log(result.filterCounter)
       break
     }
 
@@ -164,6 +161,5 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
   }
 
-  //console.log(result)
   return result;
 };

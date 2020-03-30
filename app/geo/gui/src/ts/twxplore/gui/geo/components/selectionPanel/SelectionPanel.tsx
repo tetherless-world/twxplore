@@ -31,7 +31,6 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  console.log(state.typesVisibility);
   const dispatch = useDispatch();
 
   const handleChange = (typeEnum: FeatureType) => (
