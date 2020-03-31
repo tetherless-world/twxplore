@@ -17,6 +17,7 @@ import {
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {FeatureAttribute} from "../../attributeStrategies/attributeStrategies"
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -55,7 +56,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           for (const attribute of Object.keys(addedFeature)) {
             //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
             if (
-              typeof (addedFeature as any)[attribute] == "number" &&
+              new FeatureAttribute(attribute).isNumeric() &&
               attribute != "postalCode"
             ) {
               //ignoring postalCode for now because typeof is inconsistent with giving the correct type
@@ -124,7 +125,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
           if (
-            typeof addedFeature[attribute] == "number" &&
+            new FeatureAttribute(attribute).isNumeric() &&
             attribute != "postalCode"
           ) {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
