@@ -11,4 +11,4 @@ export enum FeatureAttributeName {
     geometry = "geometry",
 }
 
-export type AttributeKey = keyof typeof FeatureAttributeName
+export type FeatureAttributeKey = keyof typeof FeatureAttributeName
