@@ -1,70 +1,67 @@
 // In an OOP Language -
+
+import { FeatureAttributeName } from "../states/map/FeatureAttributeName";
+
 // TypeScript
-interface FeatureAttributeFunctions {
+interface FeatureAttributeTypes {
     isNumeric() : boolean
     isString(): boolean
+    getFilterType(): string
+    ignore(): boolean
+    attributeName: FeatureAttributeName
 }
 
-enum Attributes {
-    LABEL = "label",
-    TYPE = "type",
-    URI = "uri",
-    FREQUENCY = "frequency",
-    TIMESTAMP = "timestamp",
-    LOCALITY = "locality",
-    POSTALCODE = "postalcode",
-    REGIONS =  "regions",
-    TRANSMISSIONPOWER = "transmissionPower",
-    GEOMETRY = "geometry",
-}
 
-export class FeatureAttribute implements FeatureAttributeFunctions{
-    private attributeName: string 
-    private subclass: any
-    constructor(attributeName: string) {
+ export abstract class FeatureAttribute implements FeatureAttributeTypes{
+    public attributeName: FeatureAttributeName 
+    constructor(attributeName: FeatureAttributeName) {
         this.attributeName = attributeName
-        this.subclass = null
-        switch (this.attributeName) {
-            case (Attributes.TIMESTAMP): {
-                this.subclass = FeatureAttributeTimestamp.getInstance()
+    }
+    static AttributeTypeOf(attributeName: FeatureAttributeName): FeatureAttribute {
+        switch(attributeName) {
+            case FeatureAttributeName.timestamp: {
+               return TimestampFeatureAttribute.getInstance(attributeName)
             }
-        }
+            case FeatureAttributeName.frequency: {
+                return FrequencyFeatureAttribute.getInstance(attributeName)
+            }
+            case FeatureAttributeName.transmissionPower: {
+                return TransmissionPowerFeatureAttribute.getInstance(attributeName)
+            }
+            
+            default : {
+                return IgnoreFeatureAttribute.getInstance(attributeName)
+                
+            }
+         }
     }
 
-    isNumeric() : boolean {
-        return (this.subclass? this.subclass.isNumeric() : false)
+    ignore(): boolean {
+        return false
+    }
+    getFilterType(){
+        return 'none'
     }
 
-    isString() : boolean {
-        return (this.subclass? this.subclass.isString() : false)
+    abstract isNumeric() : boolean 
 
-    }
+    abstract isString() : boolean 
     
-    
-
 }
 
-class FeatureAttributeTimestamp implements FeatureAttributeFunctions {
-    private static instance: FeatureAttributeTimestamp;
+class TimestampFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+    private static instance: TimestampFeatureAttribute;
 
-    /**
-     * The Singleton's constructor should always be private to prevent direct
-     * construction calls with the `new` operator.
-     */
-    private constructor() {}
+    private constructor(attributeName: FeatureAttributeName) {
+        super(attributeName)
+    }
 
-    /**
-     * The static method that controls the access to the singleton instance.
-     *
-     * This implementation let you subclass the Singleton class while keeping
-     * just one instance of each subclass around.
-     */
-    public static getInstance(): FeatureAttributeTimestamp {
-        if (!FeatureAttributeTimestamp.instance) {
-            FeatureAttributeTimestamp.instance = new FeatureAttributeTimestamp();
+    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+        if (!TimestampFeatureAttribute.instance) {
+            TimestampFeatureAttribute.instance = new TimestampFeatureAttribute(attributeName);
         }
 
-        return FeatureAttributeTimestamp.instance;
+        return TimestampFeatureAttribute.instance;
     }
     isNumeric() : boolean {
         return true
@@ -72,11 +69,88 @@ class FeatureAttributeTimestamp implements FeatureAttributeFunctions {
     isString() : boolean{
         return false
     }
-    setValue() : void {
 
+    getFilterType(){
+        return 'timeRange'
+    }
+    
+}
+
+class FrequencyFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+    private static instance: FrequencyFeatureAttribute;
+
+    private constructor(attributeName: FeatureAttributeName) {
+        super(attributeName)
+    }
+
+    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+        if (!FrequencyFeatureAttribute.instance) {
+            FrequencyFeatureAttribute.instance = new FrequencyFeatureAttribute(attributeName);
+        }
+
+        return FrequencyFeatureAttribute.instance;
+    }
+    isNumeric() : boolean {
+        return true
+    }
+    isString() : boolean{
+        return false
+    }
+
+    getFilterType(){
+        return 'range'
     }
 }
 
+class TransmissionPowerFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+    private static instance: TransmissionPowerFeatureAttribute;
 
+    private constructor(attributeName: FeatureAttributeName) {
+        super(attributeName)
+    }
+
+    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+        if (!TransmissionPowerFeatureAttribute.instance) {
+            TransmissionPowerFeatureAttribute.instance = new TransmissionPowerFeatureAttribute(attributeName);
+        }
+
+        return TransmissionPowerFeatureAttribute.instance;
+    }
+    isNumeric() : boolean {
+        return true
+    }
+    isString() : boolean{
+        return false
+    }
+    getFilterType(){
+        return 'range'
+    }
+}
+
+class IgnoreFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+    private static instance: IgnoreFeatureAttribute;
+
+    private constructor(attributeName: FeatureAttributeName) {
+        super(attributeName)
+    }
+
+    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+        if (!IgnoreFeatureAttribute.instance) {
+            IgnoreFeatureAttribute.instance = new IgnoreFeatureAttribute(attributeName);
+        }
+
+        return IgnoreFeatureAttribute.instance;
+    }
+    isNumeric() : boolean {
+        return false
+    }
+    isString() : boolean{
+        return false
+    }
+    
+    ignore() : boolean {
+        return true
+    }
+} 
 
 
