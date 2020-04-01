@@ -6,6 +6,8 @@ import {connect, useSelector, useDispatch} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
+import { FeatureAttribute } from "../../attributeStrategies/attributeStrategies";
+import { FeatureAttributeName, AttributeKey } from "../../states/map/FeatureAttributeName";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,7 +55,9 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
         if (!filtersSet) {
           //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
           dispatch(setFilter(idx, "name", attribute));
-          if (attribute == "frequency") {
+          dispatch(setFilter(idx, "type",FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as AttributeKey]).getFilterType()))
+          dispatch(setFilter(idx, 'value',[attributeProperties.min, attributeProperties.max]))
+          /*if (attribute == "frequency") {
             dispatch(setFilter(idx, "type", "range"));
             dispatch(
               setFilter(idx, "value", [
@@ -61,7 +65,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                 attributeProperties.max,
               ])
             );
-          }
+            }*/
         }
 
         /* if(attribute == "frequency"){
