@@ -18,6 +18,7 @@ import {
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttribute} from "../../attributeStrategies/attributeStrategies"
+import { FeatureAttributeName } from "../../states/map/FeatureAttributeName";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -53,13 +54,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         const filterStateOfType =
           result.featureTypesFilters[addedFeature.type!];
         if (addedFeature.type === FeatureType.Transmission) {
-          for (const attribute of Object.keys(addedFeature)) {
-            //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
-            if (
-              new FeatureAttribute(attribute).isNumeric() &&
-              attribute != "postalCode"
-            ) {
-              //ignoring postalCode for now because typeof is inconsistent with giving the correct type
+          for (const attribute  of Object.keys(addedFeature)) {
+             //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
+             console.log(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName])
+             if (
+              FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]).isNumeric()) {
               {
                 if (
                   (addedFeature as any)[attribute] <
@@ -124,9 +123,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         const filterStateOfType =
           result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
+          console.log(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName])
+          console.log(FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]))
           if (
-            new FeatureAttribute(attribute).isNumeric() &&
-            attribute != "postalCode"
+            FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]).isNumeric()
           ) {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
             filterStateOfType[attribute].max = addedFeature[attribute];
