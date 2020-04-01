@@ -1,40 +1,33 @@
 // In an OOP Language -
 
-import { FeatureAttributeName } from "../states/map/FeatureAttributeName";
+import { FeatureAttributeName, FeatureAttributeKey } from "../states/map/FeatureAttributeName";
 
 // TypeScript
-interface FeatureAttributeTypes {
-    isNumeric() : boolean
-    isString(): boolean
-    getFilterType(): string
-    ignore(): boolean
-    attributeName: FeatureAttributeName
-}
 
 
- export abstract class FeatureAttribute implements FeatureAttributeTypes{
-    public attributeName: FeatureAttributeName 
-    constructor(attributeName: FeatureAttributeName) {
-        this.attributeName = attributeName
+
+ export abstract class FeatureAttribute{
+    constructor() {
     }
-    static AttributeTypeOf(attributeName: FeatureAttributeName): FeatureAttribute {
-        switch(attributeName) {
+    static valueOf(name: string): FeatureAttribute {
+        switch(FeatureAttributeName[name as FeatureAttributeKey]) {
             case FeatureAttributeName.timestamp: {
-               return TimestampFeatureAttribute.getInstance(attributeName)
+               return TimestampFeatureAttribute.getInstance()
             }
             case FeatureAttributeName.frequency: {
-                return FrequencyFeatureAttribute.getInstance(attributeName)
+                return FrequencyFeatureAttribute.getInstance()
             }
             case FeatureAttributeName.transmissionPower: {
-                return TransmissionPowerFeatureAttribute.getInstance(attributeName)
+                return TransmissionPowerFeatureAttribute.getInstance()
             }
             
             default : {
-                return IgnoreFeatureAttribute.getInstance(attributeName)
+                return IgnoreFeatureAttribute.getInstance()
                 
             }
          }
     }
+    abstract get name(): string
 
     ignore(): boolean {
         return false
@@ -49,20 +42,24 @@ interface FeatureAttributeTypes {
     
 }
 
-class TimestampFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+class TimestampFeatureAttribute extends FeatureAttribute {
     private static instance: TimestampFeatureAttribute;
 
-    private constructor(attributeName: FeatureAttributeName) {
-        super(attributeName)
+    private constructor() {
+        super()
     }
 
-    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+    public static getInstance(): TimestampFeatureAttribute {
         if (!TimestampFeatureAttribute.instance) {
-            TimestampFeatureAttribute.instance = new TimestampFeatureAttribute(attributeName);
+            TimestampFeatureAttribute.instance = new TimestampFeatureAttribute();
         }
 
         return TimestampFeatureAttribute.instance;
     }
+    get name(): string{
+        return FeatureAttributeName.timestamp
+    }
+
     isNumeric() : boolean {
         return true
     }
@@ -76,20 +73,23 @@ class TimestampFeatureAttribute extends FeatureAttribute implements FeatureAttri
     
 }
 
-class FrequencyFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+class FrequencyFeatureAttribute extends FeatureAttribute {
     private static instance: FrequencyFeatureAttribute;
 
-    private constructor(attributeName: FeatureAttributeName) {
-        super(attributeName)
+    private constructor() {
+        super()
     }
 
-    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+    public static getInstance(): TimestampFeatureAttribute {
         if (!FrequencyFeatureAttribute.instance) {
-            FrequencyFeatureAttribute.instance = new FrequencyFeatureAttribute(attributeName);
+            FrequencyFeatureAttribute.instance = new FrequencyFeatureAttribute();
         }
 
         return FrequencyFeatureAttribute.instance;
     }
+    get name(): string{
+        return FeatureAttributeName.frequency
+    }
     isNumeric() : boolean {
         return true
     }
@@ -102,20 +102,24 @@ class FrequencyFeatureAttribute extends FeatureAttribute implements FeatureAttri
     }
 }
 
-class TransmissionPowerFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+class TransmissionPowerFeatureAttribute extends FeatureAttribute {
     private static instance: TransmissionPowerFeatureAttribute;
 
-    private constructor(attributeName: FeatureAttributeName) {
-        super(attributeName)
+    private constructor() {
+        super()
     }
 
-    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+    public static getInstance(): TimestampFeatureAttribute {
         if (!TransmissionPowerFeatureAttribute.instance) {
-            TransmissionPowerFeatureAttribute.instance = new TransmissionPowerFeatureAttribute(attributeName);
+            TransmissionPowerFeatureAttribute.instance = new TransmissionPowerFeatureAttribute();
         }
 
         return TransmissionPowerFeatureAttribute.instance;
     }
+
+    get name(): string{
+        return FeatureAttributeName.transmissionPower
+    } 
     isNumeric() : boolean {
         return true
     }
@@ -127,19 +131,22 @@ class TransmissionPowerFeatureAttribute extends FeatureAttribute implements Feat
     }
 }
 
-class IgnoreFeatureAttribute extends FeatureAttribute implements FeatureAttributeTypes {
+class IgnoreFeatureAttribute extends FeatureAttribute {
     private static instance: IgnoreFeatureAttribute;
 
-    private constructor(attributeName: FeatureAttributeName) {
-        super(attributeName)
+    private constructor() {
+        super()
     }
 
-    public static getInstance(attributeName: FeatureAttributeName): TimestampFeatureAttribute {
+    public static getInstance(): TimestampFeatureAttribute {
         if (!IgnoreFeatureAttribute.instance) {
-            IgnoreFeatureAttribute.instance = new IgnoreFeatureAttribute(attributeName);
+            IgnoreFeatureAttribute.instance = new IgnoreFeatureAttribute();
         }
 
         return IgnoreFeatureAttribute.instance;
+    }
+    get name(): string{
+        return "ignore"
     }
     isNumeric() : boolean {
         return false
