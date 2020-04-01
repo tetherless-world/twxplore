@@ -58,7 +58,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
              //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
              console.log(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName])
              if (
-              FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]).isNumeric()) {
+              FeatureAttribute.valueOf(attribute).isNumeric()) {
               {
                 if (
                   (addedFeature as any)[attribute] <
@@ -124,9 +124,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
           console.log(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName])
-          console.log(FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]))
+          console.log(FeatureAttribute.valueOf(attribute))
           if (
-            FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]).isNumeric()
+            FeatureAttribute.valueOf(attribute).isNumeric()
           ) {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
             filterStateOfType[attribute].max = addedFeature[attribute];

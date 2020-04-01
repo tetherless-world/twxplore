@@ -7,7 +7,7 @@ import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
 import { FeatureAttribute } from "../../attributeStrategies/attributeStrategies";
-import { FeatureAttributeName, AttributeKey } from "../../states/map/FeatureAttributeName";
+import { FeatureAttributeName, FeatureAttributeKey } from "../../states/map/FeatureAttributeName";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,7 +55,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
         if (!filtersSet) {
           //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
           dispatch(setFilter(idx, "name", attribute));
-          dispatch(setFilter(idx, "type",FeatureAttribute.AttributeTypeOf(FeatureAttributeName[attribute as AttributeKey]).getFilterType()))
+          dispatch(setFilter(idx, "type",FeatureAttribute.valueOf(attribute).getFilterType()))
           dispatch(setFilter(idx, 'value',[attributeProperties.min, attributeProperties.max]))
           /*if (attribute == "frequency") {
             dispatch(setFilter(idx, "type", "range"));
