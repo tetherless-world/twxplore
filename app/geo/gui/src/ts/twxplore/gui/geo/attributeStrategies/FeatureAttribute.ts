@@ -5,9 +5,9 @@ import {FilterType} from "../states/map/FilterType";
 // TypeScript
 
 export interface FeatureAttribute {
-  name: string;
-  isNumeric: boolean;
-  isString: boolean;
-  filterType: FilterType;
-  ignore: boolean;
+  readonly name: string;
+  readonly isNumeric: boolean;
+  readonly isString: boolean;
+  readonly filterType: FilterType;
+  readonly ignore: boolean;
 }
