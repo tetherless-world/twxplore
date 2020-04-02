@@ -17,6 +17,8 @@ import {
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -54,11 +56,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         if (addedFeature.type === FeatureType.Transmission) {
           for (const attribute of Object.keys(addedFeature)) {
             //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
-            if (
-              typeof (addedFeature as any)[attribute] == "number" &&
-              attribute != "postalCode"
-            ) {
-              //ignoring postalCode for now because typeof is inconsistent with giving the correct type
+            console.log(
+              FeatureAttributeName[
+                attribute as keyof typeof FeatureAttributeName
+              ]
+            );
+            if (getFeatureAttributeByName(attribute).isNumeric) {
               {
                 if (
                   (addedFeature as any)[attribute] <
@@ -123,10 +126,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         const filterStateOfType =
           result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
-          if (
-            typeof addedFeature[attribute] == "number" &&
-            attribute != "postalCode"
-          ) {
+          if (getFeatureAttributeByName(attribute).isNumeric) {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
             filterStateOfType[attribute].max = addedFeature[attribute];
             filterStateOfType[attribute].min = addedFeature[attribute];
