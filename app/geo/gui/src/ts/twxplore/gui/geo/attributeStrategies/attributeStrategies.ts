@@ -1,163 +1,142 @@
 // In an OOP Language -
 
-import { FeatureAttributeName, FeatureAttributeKey } from "../states/map/FeatureAttributeName";
+import {
+  FeatureAttributeName,
+  FeatureAttributeKey,
+} from "../states/map/FeatureAttributeName";
+import {FilterNames} from "../states/map/FilterNames";
 
 // TypeScript
 
+export abstract class FeatureAttribute {
+  constructor() {}
 
+  static valueOf(name: string): FeatureAttribute {
+    console.log(FeatureAttributeName[name as FeatureAttributeKey]);
+    switch (FeatureAttributeName[name as FeatureAttributeKey]) {
+      case FeatureAttributeName.timestamp: {
+        return TimestampFeatureAttribute.getInstance();
+      }
+      case FeatureAttributeName.frequency: {
+        return FrequencyFeatureAttribute.getInstance();
+      }
+      case FeatureAttributeName.transmissionPower: {
+        return TransmissionPowerFeatureAttribute.getInstance();
+      }
 
- export abstract class FeatureAttribute{
-    constructor() {
+      default: {
+        return IgnoreFeatureAttribute.getInstance();
+      }
     }
-    static valueOf(name: string): FeatureAttribute {
-        switch(FeatureAttributeName[name as FeatureAttributeKey]) {
-            case FeatureAttributeName.timestamp: {
-               return TimestampFeatureAttribute.getInstance()
-            }
-            case FeatureAttributeName.frequency: {
-                return FrequencyFeatureAttribute.getInstance()
-            }
-            case FeatureAttributeName.transmissionPower: {
-                return TransmissionPowerFeatureAttribute.getInstance()
-            }
-            
-            default : {
-                return IgnoreFeatureAttribute.getInstance()
-                
-            }
-         }
-    }
-    abstract get name(): string
-
-    ignore(): boolean {
-        return false
-    }
-    getFilterType(){
-        return 'none'
-    }
-
-    abstract isNumeric() : boolean 
-
-    abstract isString() : boolean 
-    
+  }
+  abstract get name(): string;
+  abstract get isNumeric(): boolean;
+  abstract get isString(): boolean;
+  abstract get filterType(): FilterNames;
+  get ignore(): boolean {
+    return false;
+  }
 }
 
 class TimestampFeatureAttribute extends FeatureAttribute {
-    private static instance: TimestampFeatureAttribute;
+  static readonly instance: TimestampFeatureAttribute = new TimestampFeatureAttribute();
+  private constructor() {
+    super();
+  }
 
-    private constructor() {
-        super()
-    }
+  public static getInstance(): TimestampFeatureAttribute {
+    return TimestampFeatureAttribute.instance;
+  }
 
-    public static getInstance(): TimestampFeatureAttribute {
-        if (!TimestampFeatureAttribute.instance) {
-            TimestampFeatureAttribute.instance = new TimestampFeatureAttribute();
-        }
-
-        return TimestampFeatureAttribute.instance;
-    }
-    get name(): string{
-        return FeatureAttributeName.timestamp
-    }
-
-    isNumeric() : boolean {
-        return true
-    }
-    isString() : boolean{
-        return false
-    }
-
-    getFilterType(){
-        return 'timeRange'
-    }
-    
+  get name(): string {
+    return FeatureAttributeName.timestamp;
+  }
+  get isNumeric() {
+    return true;
+  }
+  get isString() {
+    return false;
+  }
+  get filterType() {
+    return FilterNames.TIMERANGE;
+  }
 }
 
 class FrequencyFeatureAttribute extends FeatureAttribute {
-    private static instance: FrequencyFeatureAttribute;
+  static readonly instance: FrequencyFeatureAttribute = new FrequencyFeatureAttribute();
 
-    private constructor() {
-        super()
-    }
+  private constructor() {
+    super();
+  }
 
-    public static getInstance(): TimestampFeatureAttribute {
-        if (!FrequencyFeatureAttribute.instance) {
-            FrequencyFeatureAttribute.instance = new FrequencyFeatureAttribute();
-        }
+  public static getInstance(): TimestampFeatureAttribute {
+    return FrequencyFeatureAttribute.instance;
+  }
+  get name() {
+    return FeatureAttributeName.frequency;
+  }
+  get isNumeric() {
+    return true;
+  }
+  get isString() {
+    return false;
+  }
 
-        return FrequencyFeatureAttribute.instance;
-    }
-    get name(): string{
-        return FeatureAttributeName.frequency
-    }
-    isNumeric() : boolean {
-        return true
-    }
-    isString() : boolean{
-        return false
-    }
-
-    getFilterType(){
-        return 'range'
-    }
+  get filterType() {
+    return FilterNames.RANGE;
+  }
 }
 
 class TransmissionPowerFeatureAttribute extends FeatureAttribute {
-    private static instance: TransmissionPowerFeatureAttribute;
+  public static readonly instance: TransmissionPowerFeatureAttribute = new TransmissionPowerFeatureAttribute();
 
-    private constructor() {
-        super()
-    }
+  private constructor() {
+    super();
+  }
 
-    public static getInstance(): TimestampFeatureAttribute {
-        if (!TransmissionPowerFeatureAttribute.instance) {
-            TransmissionPowerFeatureAttribute.instance = new TransmissionPowerFeatureAttribute();
-        }
+  public static getInstance(): TimestampFeatureAttribute {
+    return TransmissionPowerFeatureAttribute.instance;
+  }
 
-        return TransmissionPowerFeatureAttribute.instance;
-    }
-
-    get name(): string{
-        return FeatureAttributeName.transmissionPower
-    } 
-    isNumeric() : boolean {
-        return true
-    }
-    isString() : boolean{
-        return false
-    }
-    getFilterType(){
-        return 'range'
-    }
+  get name() {
+    return FeatureAttributeName.transmissionPower;
+  }
+  get isNumeric() {
+    return true;
+  }
+  get isString() {
+    return false;
+  }
+  get filterType() {
+    return FilterNames.RANGE;
+  }
 }
 
 class IgnoreFeatureAttribute extends FeatureAttribute {
-    private static instance: IgnoreFeatureAttribute;
+  public static readonly instance: IgnoreFeatureAttribute = new IgnoreFeatureAttribute();
 
-    private constructor() {
-        super()
-    }
+  private constructor() {
+    super();
+  }
 
-    public static getInstance(): TimestampFeatureAttribute {
-        if (!IgnoreFeatureAttribute.instance) {
-            IgnoreFeatureAttribute.instance = new IgnoreFeatureAttribute();
-        }
+  public static getInstance(): TimestampFeatureAttribute {
+    return IgnoreFeatureAttribute.instance;
+  }
+  get name() {
+    return "ignore";
+  }
+  get isNumeric() {
+    return false;
+  }
+  get isString() {
+    return false;
+  }
 
-        return IgnoreFeatureAttribute.instance;
-    }
-    get name(): string{
-        return "ignore"
-    }
-    isNumeric() : boolean {
-        return false
-    }
-    isString() : boolean{
-        return false
-    }
-    
-    ignore() : boolean {
-        return true
-    }
-} 
+  get filterType() {
+    return FilterNames.RANGE;
+  }
 
-
+  get ignore() {
+    return true;
+  }
+}
