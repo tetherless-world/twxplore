@@ -1,13 +1,13 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {FilterName} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterName";
 
-export class FrequencyFeatureAttribute extends FeatureAttribute {
-  static readonly instance: FrequencyFeatureAttribute = new FrequencyFeatureAttribute();
+export class FrequencyFeatureAttribute implements FeatureAttribute {
+  static readonly instance = new FrequencyFeatureAttribute();
 
   readonly isNumeric = true;
   readonly name = FeatureAttributeName.transmissionPower;
   readonly isString = false;
-  readonly filterType = FilterName.RANGE;
+  readonly filterType = FilterType.RANGE;
   readonly ignore = false;
 }
