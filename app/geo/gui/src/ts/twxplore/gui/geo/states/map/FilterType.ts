@@ -1,4 +1,4 @@
-export enum FilterName {
+export enum FilterType {
   RANGE = "range",
   SELECT = "select",
   TIMERANGE = "timeRange",
