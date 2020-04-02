@@ -1,13 +1,13 @@
 // In an OOP Language -
 
-import {FilterName} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterType";
 
 // TypeScript
 
-export abstract class FeatureAttribute {
-  abstract get name(): string;
-  abstract get isNumeric(): boolean;
-  abstract get isString(): boolean;
-  abstract get filterType(): FilterName;
-  abstract get ignore(): boolean;
+export interface FeatureAttribute {
+  name: string;
+  isNumeric: boolean;
+  isString: boolean;
+  filterType: FilterType;
+  ignore: boolean;
 }
