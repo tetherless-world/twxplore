@@ -17,8 +17,8 @@ import {
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {FeatureAttribute} from "../../attributeStrategies/attributeStrategies";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -61,7 +61,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
                 attribute as keyof typeof FeatureAttributeName
               ]
             );
-            if (FeatureAttribute.valueOf(attribute).isNumeric) {
+            if (getFeatureAttributeByName(attribute).isNumeric) {
               {
                 if (
                   (addedFeature as any)[attribute] <
@@ -126,11 +126,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         const filterStateOfType =
           result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
-          console.log(
-            FeatureAttributeName[attribute as keyof typeof FeatureAttributeName]
-          );
-          console.log(FeatureAttribute.valueOf(attribute));
-          if (FeatureAttribute.valueOf(attribute).isNumeric) {
+          if (getFeatureAttributeByName(attribute).isNumeric) {
             filterStateOfType[attribute] = {min: null, max: null, idx: null};
             filterStateOfType[attribute].max = addedFeature[attribute];
             filterStateOfType[attribute].min = addedFeature[attribute];

@@ -6,7 +6,7 @@ import {connect, useSelector, useDispatch} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
-import {FeatureAttribute} from "../../attributeStrategies/attributeStrategies";
+import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,7 +58,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
             setFilter(
               idx,
               "type",
-              FeatureAttribute.valueOf(attribute).filterType
+              getFeatureAttributeByName(attribute).filterType
             )
           );
           dispatch(
