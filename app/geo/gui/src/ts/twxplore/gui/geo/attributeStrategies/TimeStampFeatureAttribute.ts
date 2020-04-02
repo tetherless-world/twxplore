@@ -1,5 +1,5 @@
 import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {FilterType} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterType";
 import {FeatureAttribute} from "./FeatureAttribute";
 
 export class TimestampFeatureAttribute implements FeatureAttribute {

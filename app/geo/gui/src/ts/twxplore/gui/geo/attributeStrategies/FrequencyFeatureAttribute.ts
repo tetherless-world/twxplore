@@ -1,6 +1,6 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {FilterType} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterType";
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
   static readonly instance = new FrequencyFeatureAttribute();

@@ -1,5 +1,5 @@
 import {FeatureAttribute} from "./FeatureAttribute";
-import {FilterType} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterType";
 
 export class IgnoreFeatureAttribute implements FeatureAttribute {
   static readonly instance = new IgnoreFeatureAttribute();

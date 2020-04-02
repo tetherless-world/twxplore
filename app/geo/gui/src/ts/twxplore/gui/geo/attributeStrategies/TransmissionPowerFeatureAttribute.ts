@@ -1,4 +1,4 @@
-import {FilterType} from "../states/map/FilterName";
+import {FilterType} from "../states/map/FilterType";
 import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
 import {FeatureAttribute} from "./FeatureAttribute";
 
