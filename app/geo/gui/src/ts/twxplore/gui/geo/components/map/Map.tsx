@@ -20,9 +20,11 @@ import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
+//import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
 
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
+  //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
 
   const state: MapState = useSelector(
@@ -35,7 +37,7 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
-  const [getFeaturesWithin] = useLazyQuery<
+  const [getFeaturesWithin, {loading}] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
@@ -59,8 +61,10 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     },
+    fetchPolicy: "network-only",
+    //partialRefetch: true,
   });
-
+  console.log(loading);
   if (state.features.length === 0) {
     if (initialFeaturesQueryResult.data) {
       // Not tracking any features yet, add the boroughs we loaded
@@ -150,12 +154,26 @@ const MapImpl: React.FunctionComponent = () => {
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
           if (clickedFeature.type !== FeatureType.Transmission) {
-            getFeaturesWithin({
-              variables: {
-                query: {withinFeatureUri: clickedFeature.uri},
-              },
+            Object.values(FeatureType).map(type => {
+              getFeaturesWithin({
+                variables: {
+                  query: {
+                    withinFeatureUri: clickedFeature.uri,
+                    types: [type],
+                  },
+                },
+              });
+              while (!loading) {
+                console.log("waiting for loading to start");
+                continue;
+              }
+              while (loading) {
+                console.log("waiting for loading to end");
+                continue;
+              }
             });
           }
+
           clickedUris.push(clickedFeature.uri);
         }
         dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
