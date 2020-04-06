@@ -22,6 +22,8 @@ import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
 //import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
 
+//var typesQueryCounter = 0;
+const limit = 5;
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
@@ -37,32 +39,32 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
-  const [getFeaturesWithin, {loading}] = useLazyQuery<
+  const [getFeaturesWithin, {loading, fetchMore, data}] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      dispatch(
-        addMapFeatures(
-          data.features.map(feature => ({
-            __typename: feature.__typename,
-            geometry: feature.geometry,
-            label: feature.label,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-            type: feature.type,
-            uri: feature.uri,
-            locality: feature.locality,
-            regions: feature.regions,
-            postalCode: feature.postalCode,
-            transmissionPower: feature.transmissionPower,
-            state: MapFeatureState.LOADED,
-          }))
-        )
-      );
+      if (data.features.length === limit)
+        dispatch(
+          addMapFeatures(
+            data.features.map((feature) => ({
+              __typename: feature.__typename,
+              geometry: feature.geometry,
+              label: feature.label,
+              frequency: feature.frequency,
+              timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
+              type: feature.type,
+              uri: feature.uri,
+              locality: feature.locality,
+              regions: feature.regions,
+              postalCode: feature.postalCode,
+              transmissionPower: feature.transmissionPower,
+              state: MapFeatureState.LOADED,
+            }))
+          )
+        );
     },
-    fetchPolicy: "network-only",
-    //partialRefetch: true,
+    notifyOnNetworkStatusChange: true,
   });
   console.log(loading);
   if (state.features.length === 0) {
@@ -70,7 +72,7 @@ const MapImpl: React.FunctionComponent = () => {
       // Not tracking any features yet, add the boroughs we loaded
       dispatch(
         addMapFeatures(
-          initialFeaturesQueryResult.data.features.map(feature => ({
+          initialFeaturesQueryResult.data.features.map((feature) => ({
             __typename: feature.__typename,
             geometry: feature.geometry,
             label: feature.label,
@@ -123,7 +125,7 @@ const MapImpl: React.FunctionComponent = () => {
         const datasets = {
           data: Processors.processGeojson({
             type: "FeatureCollection",
-            features: featuresInState.map(feature => {
+            features: featuresInState.map((feature) => {
               return {
                 type: "Feature",
                 geometry: wkt.parse(feature.geometry.wkt),
@@ -132,7 +134,7 @@ const MapImpl: React.FunctionComponent = () => {
             }),
           }),
           info: {
-            id: featuresInState[0].type,
+            id: featuresInState[0].type + featuresInState[0].uri,
           },
         };
         dispatch(
@@ -154,33 +156,70 @@ const MapImpl: React.FunctionComponent = () => {
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
           if (clickedFeature.type !== FeatureType.Transmission) {
-            Object.values(FeatureType).map(type => {
-              getFeaturesWithin({
-                variables: {
-                  query: {
-                    withinFeatureUri: clickedFeature.uri,
-                    types: [type],
-                  },
+            getFeaturesWithin({
+              variables: {
+                query: {
+                  withinFeatureUri: clickedFeature.uri,
                 },
-              });
-              while (!loading) {
-                console.log("waiting for loading to start");
-                continue;
-              }
-              while (loading) {
-                console.log("waiting for loading to end");
-                continue;
-              }
+                limit: limit,
+                offset: 0,
+              },
             });
-          }
 
+            //needLoad = true;
+          }
+          //needLoad = false;
+          //typesQueryCounter += 1;
+          /*if (typesQueryCounter < 4) {
+            return null;
+          }*/
+          //typesQueryCounter = 0;
           clickedUris.push(clickedFeature.uri);
         }
-        dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
+        dispatch(
+          changeMapFeatureState(
+            clickedUris,
+            MapFeatureState.CLICKED_AND_LOADING
+          )
+        );
+      }
+      case MapFeatureState.CLICKED_AND_LOADING: {
+        const clickedUris: string[] = [];
+        if (loading) {
+          console.log("was loading");
+          return null;
+        }
+        for (const clickedFeature of featuresInState) {
+          var done_loading = false;
+          fetchMore({
+            variables: {
+              query: {
+                withinFeatureUri: clickedFeature.uri,
+              },
+              limit: limit,
+              offset: data?.features.length,
+            },
+            updateQuery: (prev: MapFeaturesQuery, {fetchMoreResult}) => {
+              if (!fetchMoreResult || fetchMoreResult.features.length < limit)
+                done_loading = true;
+              if (!fetchMoreResult) return prev;
+              return Object.assign({}, prev, {
+                features: [...prev.features, ...fetchMoreResult.features],
+              });
+            },
+          });
+          if (done_loading) {
+            dispatch(
+              changeMapFeatureState(
+                clickedUris,
+                MapFeatureState.CLICKED_AND_LOADING
+              )
+            );
+          } else return null;
+        }
       }
     }
   }
-
   // Kepler.gl documentation:
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
