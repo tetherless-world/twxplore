@@ -1,7 +1,6 @@
 import {BaseAction} from "redux-actions";
 
 import {MapFeatureState} from "../../states/map/MapFeatureState";
-import {MapFeature} from "../../states/map/MapFeature";
 import {
   CHANGE_MAP_FEATURE_STATE,
   ChangeMapFeatureStateAction,
@@ -16,8 +15,6 @@ import {
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
-import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -28,13 +25,16 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
         result.features.push(feature);
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].push(feature);
       }
       break;
     }
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
-        const addedFeature: MapFeature = row[0].properties;
+        const addedFeature: any = row[0].properties;
         for (const resultFeature of result.features) {
           if (resultFeature.uri === addedFeature.uri) {
             resultFeature.state = MapFeatureState.RENDERED;
@@ -51,33 +51,38 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         Loops throrugh the attributes of the feature, checks to see which are of type number
         and updates the min and maxes of the attribute in the filterState if neccessary
         */
-        const filterStateOfType =
-          result.featureTypesFilters[addedFeature.type!];
-        if (addedFeature.type === FeatureType.Transmission) {
-          for (const attribute of Object.keys(addedFeature)) {
-            //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
-            console.log(
-              FeatureAttributeName[
-                attribute as keyof typeof FeatureAttributeName
-              ]
-            );
-            if (getFeatureAttributeByName(attribute).isNumeric) {
-              {
-                if (
-                  (addedFeature as any)[attribute] <
-                  filterStateOfType[attribute].min!
-                )
-                  filterStateOfType[attribute].min = (addedFeature as any)[
-                    attribute
-                  ];
-                else if (
-                  (addedFeature as any)[attribute] >
-                  filterStateOfType[attribute].max!
-                )
-                  filterStateOfType[attribute].max = (addedFeature as any)[
-                    attribute
-                  ];
-              }
+        if (!result.featureTypesFilters[addedFeature.type!]) {
+          result.featureTypesFilters[addedFeature.type!] = {};
+        }
+        let filterStateOfType = result.featureTypesFilters[addedFeature.type!];
+        for (const attribute of Object.keys(addedFeature)) {
+          if (getFeatureAttributeByName(attribute).isNumeric) {
+            if (!filterStateOfType[attribute]) {
+              filterStateOfType[attribute] = {
+                min: null,
+                max: null,
+                idx: null,
+              };
+              filterStateOfType[attribute].max = addedFeature[attribute];
+              filterStateOfType[attribute].min = addedFeature[attribute];
+              filterStateOfType[attribute].idx = result.attributeCounter;
+
+              result.attributeCounter += 1;
+            } else {
+              if (
+                (addedFeature as any)[attribute] <
+                filterStateOfType[attribute].min!
+              )
+                filterStateOfType[attribute].min = (addedFeature as any)[
+                  attribute
+                ];
+              else if (
+                (addedFeature as any)[attribute] >
+                filterStateOfType[attribute].max!
+              )
+                filterStateOfType[attribute].max = (addedFeature as any)[
+                  attribute
+                ];
             }
           }
         }
@@ -119,23 +124,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       has been dispatched (which also implies the number of filters).
       These filters will be attached to attributes in FilterSliders.tsx
       */
-      const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
-      const addedFeature: any = addFilterAction.feature;
-      if (!result.featureTypesFilters[addedFeature.type!]) {
-        result.featureTypesFilters[addedFeature.type!] = {};
-        const filterStateOfType =
-          result.featureTypesFilters[addedFeature.type!];
-        for (const attribute of Object.keys(addedFeature)) {
-          if (getFeatureAttributeByName(attribute).isNumeric) {
-            filterStateOfType[attribute] = {min: null, max: null, idx: null};
-            filterStateOfType[attribute].max = addedFeature[attribute];
-            filterStateOfType[attribute].min = addedFeature[attribute];
-            filterStateOfType[attribute].idx = result.attributeCounter;
-
-            result.attributeCounter += 1;
-          }
-        }
-      }
       result.filterCounter += 1;
       break;
     }
@@ -156,7 +144,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             "changed map feature " +
               resultFeature.uri +
               " to state " +
-              MapFeatureState.RENDERED
+              MapFeatureState.CLICKED
           );
         }
       }
