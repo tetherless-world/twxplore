@@ -21,6 +21,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
 
   switch (action.type) {
+    /*
+    In this step, features are added to the features list and featuresByType map in state.
+    When a list in featuresByType is changed, then dirty is set to true.
+    */
     case ADD_MAP_FEATURES: {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       for (const feature of addMapFeaturesAction.payload.features) {
@@ -34,6 +38,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       break;
     }
+
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       const addDataToMapAction: any = action;
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
@@ -58,7 +63,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         and updates the min and maxes of the attribute in the filterState if neccessary
         */
         if (!result.featureTypesFilters[addedFeature.type!]) {
-          result.featureTypesFilters[addedFeature.type!] = {}; //if (result.featuresByType[feature.type!].features.length == 0) {
+          //if this is the first time we are coming across this type
+          result.featureTypesFilters[addedFeature.type!] = {};
+          //needsFilter set to true. addFilter will be called to this type in the RENDERED case.
           result.featuresByType[addedFeature.type!].needsFilters = true;
         }
         let filterStateOfType = result.featureTypesFilters[addedFeature.type!];
@@ -132,6 +139,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       These filters will be attached to attributes in FilterSliders.tsx
       */
       const addFilterAction = action as any;
+      //addFilter has been called on the type. Set needsFilters to false.
       result.featuresByType[addFilterAction.dataId].needsFilters = false;
       result.featuresByType[addFilterAction.dataId].filtersAdded = true;
 
