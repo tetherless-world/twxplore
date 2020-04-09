@@ -8,9 +8,9 @@ trait GeoProperties extends PropertyGetters with PropertySetters {
 
   final def spatialDimensionProp = getPropertyObjectResourceUris(Geo.SPATIAL_DIMENSION_PROP).map(uri => Uri.parse(uri)).headOption
 
-  final def spatialDimensionProp_=(value: Uri) = setPropertyUri(Geo.SPATIAL_DIMENSION_PROP, value.toString)
+  final def spatialDimensionProp_=(value: Uri) = setPropertyUris(Geo.SPATIAL_DIMENSION_PROP, List(value.toString))
 
   final def hasDefaultGeometry = getPropertyObjectResourceUris(Geo.HAS_DEFAULT_GEOMETRY_PROP).map(uri => Uri.parse(uri)).headOption
 
-  final def hasDefaultGeometry_=(value: Uri) = setPropertyUri(Geo.HAS_DEFAULT_GEOMETRY_PROP, value.toString)
+  final def hasDefaultGeometry_=(value: Uri) = setPropertyUris(Geo.HAS_DEFAULT_GEOMETRY_PROP, List(value.toString))
 }

@@ -19,7 +19,7 @@ object Geometry {
   implicit object GeometryRdfReader extends RdfReader[Geometry] {
     override def read(resource: Resource): Geometry =
       Geometry(
-        label = resource.label,
+        label = resource.labels.headOption,
         uri = Uri.parse(resource.getURI),
         wkt = resource.getProperty(Geo.AS_WKT_PROP).getObject.asLiteral().getString
       )
@@ -28,8 +28,8 @@ object Geometry {
   implicit object GeometryRdfWriter extends RdfWriter[Geometry] {
     override def write(model: Model, value: Geometry): Resource = {
       val resource = model.createResource(value.uri.toString)
-      resource.`type` = resource.getModel.createResource("http://www.opengis.net/ont/sf#Geometry")
-      value.label.foreach(label => resource.label = label)
+      resource.types = List(resource.getModel.createResource("http://www.opengis.net/ont/sf#Geometry"))
+      if (value.label.isDefined)  resource.labels = List(value.label.get)
       resource.addProperty(Geo.AS_WKT_PROP, ResourceFactory.createTypedLiteral(value.wkt, WKTDatatype.INSTANCE))
     }
   }
