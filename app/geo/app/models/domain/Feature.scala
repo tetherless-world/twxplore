@@ -33,13 +33,13 @@ object Feature {
       with RdfsProperties
       with SchemaProperties {
     final def frequency: Option[Double] = getPropertyObjectLiterals(LOCAL.frequency).headOption.map(literal => literal.getFloat.asInstanceOf[Double])
-    final def frequency_=(value: Double) = setPropertyLiteral(LOCAL.frequency, value.asInstanceOf[Float])
+    final def frequency_=(value: Double) = setPropertyLiterals(LOCAL.frequency, List(value.asInstanceOf[Float]))
 
     final def timestamp: Option[Date] = getPropertyObjectLiterals(LOCAL.timestamp).headOption.map(literal => literal.getValue.asInstanceOf[XSDDateTime].asCalendar().getTime)
     final def timestamp_=(value: Date) = { val calendar = Calendar.getInstance(); calendar.setTime(value); resource.addProperty(LOCAL.timestamp, ResourceFactory.createTypedLiteral(new XSDDateTime(calendar))); }
 
     final def transmissionPower: Option[Int] = getPropertyObjectLiterals(LOCAL.transmissionPower).headOption.map(literal => literal.getInt)
-    final def transmissionPower_=(value: Int) = setPropertyLiteral(LOCAL.transmissionPower, value.asInstanceOf[Int])
+    final def transmissionPower_=(value: Int) = setPropertyLiterals(LOCAL.transmissionPower, List(value.asInstanceOf[Int]))
   }
 
   implicit object FeatureRdfReader extends RdfReader[Feature] {
@@ -47,7 +47,7 @@ object Feature {
       Feature(
         frequency = resource.frequency,
         geometry = Rdf.read[Geometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
-        label = resource.label,
+        label = resource.labels.headOption,
         locality = resource.addressLocality,
         postalCode = resource.postalCode,
         regions = resource.addressRegions,
@@ -61,10 +61,10 @@ object Feature {
   implicit object FeatureRdfWriter extends RdfWriter[Feature] {
     override def write(model: Model, value: Feature): Resource = {
       val resource = model.createResource(value.uri.toString)
-      resource.`type` = Geo.FEATURE_RES
+      resource.types = List(Geo.FEATURE_RES)
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
       if (value.frequency.isDefined) resource.frequency = value.frequency.get
-      if (value.label.isDefined) resource.label = value.label.get
+      if (value.label.isDefined) resource.labels = List(value.label.get)
       if (value.locality.isDefined) resource.addressLocality = value.locality.get
       if (value.postalCode.isDefined) resource.postalCode = value.postalCode.get
       value.regions.foreach(region => resource.addAddressRegion(region))
