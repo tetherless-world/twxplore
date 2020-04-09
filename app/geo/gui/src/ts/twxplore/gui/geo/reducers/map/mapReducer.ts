@@ -27,7 +27,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         result.features.push(feature);
         result.featuresByType[
           feature.type! as keyof typeof result.featuresByType
-        ].push(feature);
+        ].features.push(feature);
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].dirty = true;
       }
       break;
     }
@@ -38,6 +41,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === addedFeature.uri) {
             resultFeature.state = MapFeatureState.RENDERED;
+            result.featuresByType[
+              resultFeature.type! as keyof typeof result.featuresByType
+            ].dirty = false;
             console.debug(
               "changed map feature " +
                 resultFeature.uri +
@@ -52,7 +58,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         and updates the min and maxes of the attribute in the filterState if neccessary
         */
         if (!result.featureTypesFilters[addedFeature.type!]) {
-          result.featureTypesFilters[addedFeature.type!] = {};
+          result.featureTypesFilters[addedFeature.type!] = {}; //if (result.featuresByType[feature.type!].features.length == 0) {
+          result.featuresByType[addedFeature.type!].needsFilters = true;
         }
         let filterStateOfType = result.featureTypesFilters[addedFeature.type!];
         for (const attribute of Object.keys(addedFeature)) {
@@ -95,7 +102,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === actionUri) {
             resultFeature.state = changeMapFeatureStateAction.payload.state;
-            console.debug(
+            console.log(
               "changed map feature " +
                 resultFeature.uri +
                 " to state " +
@@ -124,6 +131,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       has been dispatched (which also implies the number of filters).
       These filters will be attached to attributes in FilterSliders.tsx
       */
+      const addFilterAction = action as any;
+      result.featuresByType[addFilterAction.dataId].needsFilters = false;
+      result.featuresByType[addFilterAction.dataId].filtersAdded = true;
+
       result.filterCounter += 1;
       break;
     }
