@@ -33,6 +33,8 @@ const composeEnhancers = (composeWithDevTools as any)({
               features: {},
               typesVisibility: state.app.map.typesVisibility,
               featureTypesFilters: state.app.map.featureTypesFilters,
+              attributeCounter: state.app.map.attributeCounter,
+              filterCounter: state.app.map.filterCounter,
             },
           },
           keplerGl: {
