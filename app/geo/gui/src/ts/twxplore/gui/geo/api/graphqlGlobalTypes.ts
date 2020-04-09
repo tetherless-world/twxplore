@@ -11,6 +11,7 @@ export enum FeatureType {
   MilitaryInstallation = "MilitaryInstallation",
   State = "State",
   Transmission = "Transmission",
+  Transmitter = "Transmitter",
 }
 
 export interface FeatureQuery {
