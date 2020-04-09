@@ -20,15 +20,11 @@ import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
-//import KeplerGlSchema from "kepler.gl/schemas";
 
-//import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
-
-//var typesQueryCounter = 0;
 const limit = 500;
 var wkt = require("terraformer-wkt-parser");
-var result_data: MapFeaturesQuery = {features: []};
-var prev_result: MapFeaturesQuery = {features: []};
+var totalDataCounter = 0; //counter of number of features queried so far during pagination. Used for offset
+var latestDataCounter = 0; //counter of number of features from the most recent query. Used to check if there are still more features to query
 var finishedQuery = false;
 
 const MapImpl: React.FunctionComponent = () => {
@@ -62,9 +58,9 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      result_data.features.push(...data.features);
-      prev_result.features = data.features;
-      finishedQuery = true;
+      totalDataCounter += data.features.length;
+      latestDataCounter = data.features.length;
+      finishedQuery = true; //this query has been completed
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -124,10 +120,11 @@ const MapImpl: React.FunctionComponent = () => {
       case MapFeatureState.LOADED: {
         /*
         Features in this state have been queried, created and pushed into the
-        features state list that is located on the store. The next step is to
-        add the data of the features to the map using the addDataToMap action which is reduced by
-        keplerGL reducer.. The geometry of the feature is used
-        to display its location and shape on the map.
+        features state list that is located on the store. They have also been pushed into the appropriate place of the 
+        featuresByType map located on the store. During this process, the 'dirty' variable of the lists in which they were pushed have
+        been set to true. The next step is to loop through each list of featuresByType and re-add the features to the map
+        if their dirty variable is true.
+
         */
         //!Object.keys(state.featureTypesFilters).includes(feature.type!))
 
@@ -166,6 +163,12 @@ const MapImpl: React.FunctionComponent = () => {
         break;
       }
 
+      /*
+      Features in this state have been rendered. In the process of them being added to the map,
+      the variable 'needsFilter' of the appropriate type has been set to true if this was the first time a 
+      feature of that type was added to the map.
+      The step here is to check what filters need to be added and call addFilter if neccessary.
+      */
       case MapFeatureState.RENDERED: {
         for (const featureType of Object.values(FeatureType)) {
           if (state.featuresByType[featureType].needsFilters) {
@@ -181,11 +184,11 @@ const MapImpl: React.FunctionComponent = () => {
 
       case MapFeatureState.CLICKED: {
         /*
-      Features in this state have been clicked on the map. They now need to
-      LOAD in their child features.
+      Features in this state have been clicked on the map. A query for calling features within this feature is called with a limit.
+      This feature may contain even more features than the limit and thus is put into the 'CLICKED AND LOADING' state.
       */
-        result_data = {features: []};
-        prev_result = {features: []};
+        totalDataCounter = 0;
+        latestDataCounter = 0;
 
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
@@ -211,6 +214,15 @@ const MapImpl: React.FunctionComponent = () => {
         );
         break;
       }
+
+      /*
+      Features in this state have been clicked and querying to find features within them has already been completed once.
+      The loading and finishedQuery variables are used to check if a query is still in progress. Once the query is done,
+      we compare the number of features gotten from the query (latestDataCounter) to the limit we gave it. If they are equal,
+      then more querying needs to be done as we need to query until we are not capped by the limit.
+      The totalDataCounter tracks how many features have been received and is used to offset for the next query.
+
+      */
       case MapFeatureState.CLICKED_AND_LOADING: {
         const clickedUris: string[] = [];
         if (!loading && !finishedQuery) {
@@ -222,7 +234,7 @@ const MapImpl: React.FunctionComponent = () => {
           break;
         }
         for (const clickedFeature of featuresInState) {
-          if (prev_result.features.length === limit) {
+          if (latestDataCounter === limit) {
             console.log("Made it here");
             getFeaturesWithin({
               variables: {
@@ -230,7 +242,7 @@ const MapImpl: React.FunctionComponent = () => {
                   withinFeatureUri: clickedFeature.uri,
                 },
                 limit: limit,
-                offset: result_data.features.length,
+                offset: totalDataCounter,
               },
             });
             finishedQuery = false;
