@@ -51,7 +51,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
         //attribute being an attribute of a feature e.g. timestamp, frequency
         const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
         const idx = attributeProperties.idx;
-        if (!filtersSet) {
+        if (state.featuresByType.filtersAdded && !filtersSet) {
           //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
           dispatch(setFilter(idx, "name", attribute));
           dispatch(
@@ -67,20 +67,8 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
               attributeProperties.max,
             ])
           );
-          /*if (attribute == "frequency") {
-            dispatch(setFilter(idx, "type", "range"));
-            dispatch(
-              setFilter(idx, "value", [
-                attributeProperties.min,
-                attributeProperties.max,
-              ])
-            );
-            }*/
         }
 
-        /* if(attribute == "frequency"){
-          dispatch(setFilter(idx, "type", "range"));
-        }*/
         if (attributeProperties) {
           return (
             <div key={attribute}>
