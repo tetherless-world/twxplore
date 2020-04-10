@@ -34,6 +34,7 @@ export const initialMapState: MapState = {
   featureTypesFilters: featureTypesFilters,
   filterCounter: 0,
   attributeCounter: 0,
+  loadingState: {},
   //prevResultCount: 0,
   //totalResultCount: 0,
 };
