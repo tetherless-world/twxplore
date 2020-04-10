@@ -1,6 +1,7 @@
 import {MapFeature} from "./MapFeature";
 import {FilterStateTypes} from "./MapFilterStateTypes";
 import {FeaturesByType} from "./FeaturesByType";
+import {LoadingState} from "./LoadingState";
 
 export interface MapState {
   keplerGlInstanceRegistered: boolean;
@@ -14,4 +15,5 @@ export interface MapState {
   };
   filterCounter: number;
   attributeCounter: number;
+  loadingState: {[featureUri: string]: LoadingState};
 }
