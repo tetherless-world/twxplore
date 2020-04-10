@@ -20,13 +20,11 @@ import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
+import {completedQuery} from "../../actions/map/CompletedQueryAction";
+import {startQuerying} from "../../actions/map/StartQueryingAction";
 
-const limit = 500;
+const limit = 50;
 var wkt = require("terraformer-wkt-parser");
-var totalDataCounter = 0; //counter of number of features queried so far during pagination. Used for offset
-var latestDataCounter = 0; //counter of number of features from the most recent query. Used to check if there are still more features to query
-var finishedQuery = false;
-
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -53,14 +51,17 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
-  const [getFeaturesWithin, {loading}] = useLazyQuery<
+  const [getFeaturesWithin, {loading, variables}] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      totalDataCounter += data.features.length;
-      latestDataCounter = data.features.length;
-      finishedQuery = true; //this query has been completed
+      //totalDataCounter += data.features.length;
+      //latestDataCounter = data.features.length;
+      //finishedQuery = true; //this query has been completed
+      dispatch(
+        completedQuery(variables.query.withinFeatureUri!, data.features.length)
+      );
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -187,8 +188,6 @@ const MapImpl: React.FunctionComponent = () => {
       Features in this state have been clicked on the map. A query for calling features within this feature is called with a limit.
       This feature may contain even more features than the limit and thus is put into the 'CLICKED AND LOADING' state.
       */
-        totalDataCounter = 0;
-        latestDataCounter = 0;
 
         const clickedUris: string[] = [];
         for (const clickedFeature of featuresInState) {
@@ -202,6 +201,7 @@ const MapImpl: React.FunctionComponent = () => {
                 offset: 0,
               },
             });
+            dispatch(startQuerying(clickedFeature.uri));
           }
 
           clickedUris.push(clickedFeature.uri);
@@ -225,16 +225,15 @@ const MapImpl: React.FunctionComponent = () => {
       */
       case MapFeatureState.CLICKED_AND_LOADING: {
         const clickedUris: string[] = [];
-        if (!loading && !finishedQuery) {
-          console.log("should be loading");
-          break;
-        }
-        if (loading) {
-          console.log("is loading");
-          break;
-        }
+
         for (const clickedFeature of featuresInState) {
-          if (latestDataCounter === limit) {
+          const clickedFeatureLoadingState =
+            state.loadingState[clickedFeature.uri];
+          if (clickedFeatureLoadingState.queryInProgress) {
+            break;
+          }
+
+          if (clickedFeatureLoadingState.latestQuerylength === limit) {
             console.log("Made it here");
             getFeaturesWithin({
               variables: {
@@ -242,10 +241,9 @@ const MapImpl: React.FunctionComponent = () => {
                   withinFeatureUri: clickedFeature.uri,
                 },
                 limit: limit,
-                offset: totalDataCounter,
+                offset: clickedFeatureLoadingState.offset,
               },
             });
-            finishedQuery = false;
           } else {
             clickedUris.push(clickedFeature.uri);
           }
