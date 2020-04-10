@@ -16,6 +16,14 @@ import {
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
 import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {
+  START_QUERYING,
+  StartQueryingAction,
+} from "../../actions/map/StartQueryingAction";
+import {
+  COMPLETED_QUERY,
+  CompletedQueryAction,
+} from "../../actions/map/CompletedQueryAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -126,6 +134,33 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       result.typesVisibility[targetedType] = !result.typesVisibility[
         targetedType
       ];
+      break;
+    }
+
+    case START_QUERYING: {
+      const startQueryingAction = action as StartQueryingAction;
+      const featureUri = startQueryingAction.payload.uri;
+      result.loadingState[featureUri] = {
+        offset: 0,
+        latestQuerylength: 0,
+        queryInProgress: true,
+      };
+      break;
+    }
+
+    case COMPLETED_QUERY: {
+      const completedQueryAction = action as CompletedQueryAction;
+      const featureUri = completedQueryAction.payload.uri;
+      const latestQuerylength = completedQueryAction.payload.latestQuerylength;
+      if (!result.loadingState[featureUri]) {
+        throw Error(
+          "There should be a loading state for the feature at this point."
+        );
+      } else {
+        result.loadingState[featureUri].queryInProgress = false;
+        result.loadingState[featureUri].offset += latestQuerylength;
+        result.loadingState[featureUri].latestQuerylength = latestQuerylength;
+      }
       break;
     }
 
