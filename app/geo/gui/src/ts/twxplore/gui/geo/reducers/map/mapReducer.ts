@@ -2,10 +2,6 @@ import {BaseAction} from "redux-actions";
 
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {
-  CHANGE_MAP_FEATURE_STATE,
-  ChangeMapFeatureStateAction,
-} from "../../actions/map/ChangeMapFeatureStateAction";
-import {
   ADD_MAP_FEATURES,
   AddMapFeaturesAction,
 } from "../../actions/map/AddMapFeaturesAction";
@@ -24,6 +20,10 @@ import {
   COMPLETED_QUERY,
   CompletedQueryAction,
 } from "../../actions/map/CompletedQueryAction";
+import {
+  FINISH_LOAD_ACTION,
+  FinishLoadAction,
+} from "../../actions/map/FinishLoadAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -111,20 +111,15 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       break;
     }
-    case CHANGE_MAP_FEATURE_STATE: {
-      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction;
-      for (const actionUri of changeMapFeatureStateAction.payload.uris) {
+    case FINISH_LOAD_ACTION: {
+      const finishLoadAction = action as FinishLoadAction;
+      for (const actionUri of finishLoadAction.payload.uris) {
         for (const resultFeature of result.features) {
           if (resultFeature.uri === actionUri) {
-            resultFeature.state = changeMapFeatureStateAction.payload.state;
-            console.log(
-              "changed map feature " +
-                resultFeature.uri +
-                " to state " +
-                changeMapFeatureStateAction.payload.state
-            );
+            resultFeature.state = MapFeatureState.RENDERED;
           }
         }
+        delete result.loadingState[actionUri];
       }
       break;
     }
@@ -142,24 +137,29 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const featureUri = startQueryingAction.payload.uri;
       result.loadingState[featureUri] = {
         offset: 0,
-        latestQuerylength: 0,
+        latestQueryLength: 0,
         queryInProgress: true,
       };
+      for (const resultFeature of result.features) {
+        if (resultFeature.uri === featureUri) {
+          resultFeature.state = MapFeatureState.CLICKED_AND_LOADING;
+        }
+      }
       break;
     }
 
     case COMPLETED_QUERY: {
       const completedQueryAction = action as CompletedQueryAction;
       const featureUri = completedQueryAction.payload.uri;
-      const latestQuerylength = completedQueryAction.payload.latestQuerylength;
+      const latestQueryLength = completedQueryAction.payload.latestQueryLength;
       if (!result.loadingState[featureUri]) {
         throw Error(
           "There should be a loading state for the feature at this point."
         );
       } else {
         result.loadingState[featureUri].queryInProgress = false;
-        result.loadingState[featureUri].offset += latestQuerylength;
-        result.loadingState[featureUri].latestQuerylength = latestQuerylength;
+        result.loadingState[featureUri].offset += latestQueryLength;
+        result.loadingState[featureUri].latestQueryLength = latestQueryLength;
       }
       break;
     }
