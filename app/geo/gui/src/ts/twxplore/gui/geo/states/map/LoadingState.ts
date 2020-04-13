@@ -1,5 +1,5 @@
 export interface LoadingState {
   offset: number;
-  latestQuerylength: number;
+  latestQueryLength: number;
   queryInProgress: boolean;
 }
