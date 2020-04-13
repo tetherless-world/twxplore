@@ -15,7 +15,7 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import * as React from "react";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
+import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
@@ -51,17 +51,17 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
+  // LazyQuery to get features within a feature.
   const [getFeaturesWithin, {loading, variables}] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
-      //totalDataCounter += data.features.length;
-      //latestDataCounter = data.features.length;
-      //finishedQuery = true; //this query has been completed
+      //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
       dispatch(
         completedQuery(variables.query.withinFeatureUri!, data.features.length)
       );
+      // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -85,7 +85,9 @@ const MapImpl: React.FunctionComponent = () => {
     fetchPolicy: "network-only",
   });
   console.log(loading);
+  //if there are no states loaded
   if (state.features.length === 0) {
+    //if the data variable has been loaded
     if (initialFeaturesQueryResult.data) {
       // Not tracking any features yet, add the boroughs we loaded
       dispatch(
@@ -127,13 +129,15 @@ const MapImpl: React.FunctionComponent = () => {
         if their dirty variable is true.
 
         */
-        //!Object.keys(state.featureTypesFilters).includes(feature.type!))
 
+        //looping through every featureType available.
         for (const featureType of Object.values(FeatureType)) {
+          //if the dirty variable indicates that the list of features of that type has been modified since last add
           if (state.featuresByType[featureType].dirty) {
             const dirtyLoaded = state.featuresByType[featureType].features;
             //const newLoaded = [...oldLoaded, ...featuresInState];
 
+            //create new dataset with
             const datasets = {
               data: Processors.processGeojson({
                 type: "FeatureCollection",
@@ -150,8 +154,9 @@ const MapImpl: React.FunctionComponent = () => {
               },
             };
 
-            //dispatch(removeDataset(featuresInState[0].type));
+            //might remove this, but will leave it for now
             dispatch(removeDataset(featureType));
+            //dispatch addDataToMap action with new dataset
             dispatch(
               addDataToMap({
                 datasets,
@@ -171,9 +176,18 @@ const MapImpl: React.FunctionComponent = () => {
       The step here is to check what filters need to be added and call addFilter if neccessary.
       */
       case MapFeatureState.RENDERED: {
+        //loop through each feature type
         for (const featureType of Object.values(FeatureType)) {
+          //Check the needsFilters variable that indicates a featureType is being
+          //added to the map for the first time and therefore needs filters added.
           if (state.featuresByType[featureType].needsFilters) {
+            //Dispatch the addFilter action 3 times because there are 3 attributes for each type to consider
             for (var x = 0; x < 3; ++x) {
+              /*
+              Dispatch addFilter with the type of the feature,
+              which is also, more importantly, the name of the dataset
+              we are attaching the filter too.
+              */
               dispatch(
                 addFilter(FeatureType[featureType as keyof typeof FeatureType])
               );
@@ -188,30 +202,24 @@ const MapImpl: React.FunctionComponent = () => {
       Features in this state have been clicked on the map. A query for calling features within this feature is called with a limit.
       This feature may contain even more features than the limit and thus is put into the 'CLICKED AND LOADING' state.
       */
-
-        const clickedUris: string[] = [];
+        //For clicked feature
         for (const clickedFeature of featuresInState) {
+          //if the feature is expandable. Should be changed later with something like if isExpandable()
           if (clickedFeature.type !== FeatureType.Transmission) {
+            //call the lazyQuery to get feautres with the clickedFeaturee
             getFeaturesWithin({
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
                 },
-                limit: limit,
+                limit,
                 offset: 0,
               },
             });
+            //dispatch action that indicates that the query has been started.
             dispatch(startQuerying(clickedFeature.uri));
           }
-
-          clickedUris.push(clickedFeature.uri);
         }
-        dispatch(
-          changeMapFeatureState(
-            clickedUris,
-            MapFeatureState.CLICKED_AND_LOADING
-          )
-        );
         break;
       }
 
@@ -224,31 +232,40 @@ const MapImpl: React.FunctionComponent = () => {
 
       */
       case MapFeatureState.CLICKED_AND_LOADING: {
-        const clickedUris: string[] = [];
+        const finishedLoadingUris: string[] = [];
 
+        //for each clicked-and-loading feature
         for (const clickedFeature of featuresInState) {
-          const clickedFeatureLoadingState =
-            state.loadingState[clickedFeature.uri];
-          if (clickedFeatureLoadingState.queryInProgress) {
+          //Get the loadingState of the feature
+          const featureLoadingState = state.loadingState[clickedFeature.uri];
+          //if the queryInProgress loadingState of the loadingState indicates that a query is still ongoing
+          if (featureLoadingState.queryInProgress) {
+            //Stop doing stuff. We shouldn't start another query while one is still ongoing!
             break;
           }
 
-          if (clickedFeatureLoadingState.latestQuerylength === limit) {
+          //A query is not in progress. If the length of the previous query was capped by the limit variable that was passed...
+          if (featureLoadingState.latestQueryLength === limit) {
             console.log("Made it here");
+            //Same lazyQuery as in the CLICKED state, we are simply going further
             getFeaturesWithin({
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
                 },
-                limit: limit,
-                offset: clickedFeatureLoadingState.offset,
+
+                limit,
+                offset: featureLoadingState.offset,
               },
             });
+            //If the length of the results of the query were not capped by the limited. That indicates that there are no more feautures to query.
           } else {
-            clickedUris.push(clickedFeature.uri);
+            //push the feature into a list of features that have finished loading.
+            finishedLoadingUris.push(clickedFeature.uri);
           }
         }
-        dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
+        //dispatch action to loadingState of all features that have finished loading from the redux state.
+        dispatch(finishLoad(finishedLoadingUris));
         break;
       }
     }
