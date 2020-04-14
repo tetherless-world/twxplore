@@ -2,7 +2,7 @@ import argparse
 import json
 import logging
 import os.path
-from typing import Optional, Generator, Tuple
+from typing import Optional, Generator, Tuple, List
 
 from geo_cli.etl.file_rdf_feature_loader import FileRdfFeatureLoader
 from geo_cli.etl.request_json_feature_loader import RequestJsonFeatureLoader
@@ -17,14 +17,24 @@ from geo_cli.path import DATA_DIR_PATH
 
 
 class GeoCli:
-    __DATA_SOURCE_NAMES = {"reverse_beacon", "tiger_line", "uls"}
+    __DATA_SOURCE_NAMES = {"dsa", "reverse_beacon", "tiger_line", "uls"}
 
-    def __init__(self):
-        self.__argument_parser = argparse.ArgumentParser()
-        self.__argument_parser.add_argument("--debug", action="store_true")
-        self.__argument_parser.add_argument("--include", action="append", dest="include_data_source_names", help="include a data source in ETL")
-        self.__argument_parser.add_argument("--exclude", action="append", dest="exclude_data_source_names", help="exclude a data source from ETL")
-        self.__argument_parser.add_argument("--features-per-data-source", type=int)
+    def __init__(
+            self, *,
+            debug: Optional[bool],
+            exclude_data_source_names: Optional[List[str]],
+            features_per_data_source: Optional[int],
+            include_data_source_names: Optional[List[str]]
+     ):
+        self.__exclude_data_source_names = exclude_data_source_names
+        self.__debug = debug
+        self.__features_per_data_source = features_per_data_source
+        self.__include_data_source_names: include_data_source_names
+        self.__logger = logging.getLogger(__name__)
+
+    def _etl_dsa(self, features_per_data_source: Optional[int]):
+        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "dsa" / "features.ttl") as rdf_file_loader:
+            pass
 
     def _etl_reverse_beacon(self, features_per_data_source: Optional[int]):
         uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
@@ -83,22 +93,31 @@ class GeoCli:
                 break
         return tuple(limited_features)
 
-    def main(self):
-        args = self.__argument_parser.parse_args()
+    @classmethod
+    def main(cls):
+        argument_parser = argparse.ArgumentParser()
+        argument_parser.add_argument("--debug", action="store_true")
+        argument_parser.add_argument("--include", action="append", dest="include_data_source_names", help="include a data source in ETL")
+        argument_parser.add_argument("--exclude", action="append", dest="exclude_data_source_names", help="exclude a data source from ETL")
+        argument_parser.add_argument("--features-per-data-source", type=int)
 
-        logging.basicConfig(format="%(asctime)-15s %(levelname)s %(message)s", level=logging.DEBUG if args.debug else logging.INFO)
-        self.__logger = logging.getLogger(__name__)
+        args = argument_parser.parse_args()
+
+        cls(**args.__dict__).__main()
+
+    def __main(self):
+        logging.basicConfig(format="%(asctime)-15s %(levelname)s %(message)s", level=logging.DEBUG if self.__debug else logging.INFO)
 
         data_source_names = set()
-        if args.include_data_source_names is not None:
-            for include_data_source_name in args.include_data_source_names:
+        if self.__include_data_source_names is not None:
+            for include_data_source_name in self.__include_data_source_names:
                 if include_data_source_name not in self.__DATA_SOURCE_NAMES:
                     raise ValueError("unknown data source: " + include_data_source_name)
                 data_source_names.add(include_data_source_name)
         if not data_source_names:
             data_source_names = self.__DATA_SOURCE_NAMES.copy()
-        if args.exclude_data_source_names is not None:
-            for exclude_data_source_name in args.exclude_data_source_names:
+        if self.__exclude_data_source_names is not None:
+            for exclude_data_source_name in self.__exclude_data_source_names:
                 if exclude_data_source_name not in self.__DATA_SOURCE_NAMES:
                     raise ValueError("unknown data source: " + exclude_data_source_name)
             try:
@@ -107,7 +126,7 @@ class GeoCli:
                 pass
 
         for data_source_name in data_source_names:
-            getattr(self, "_etl_" + data_source_name)(features_per_data_source=args.features_per_data_source)
+            getattr(self, "_etl_" + data_source_name)()
 
 if __name__ == '__main__':
-    GeoCli().main()
+    GeoCli.main()
