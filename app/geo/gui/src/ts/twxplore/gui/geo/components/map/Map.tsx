@@ -15,15 +15,18 @@ import KeplerGl from "kepler.gl";
 import ReactResizeDetector from "react-resize-detector";
 import * as React from "react";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {finishLoad} from "../../actions/map/FinishLoadAction";
+//import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {completedQuery} from "../../actions/map/CompletedQueryAction";
 import {startQuerying} from "../../actions/map/StartQueryingAction";
+import {finishLoad} from "../../actions/map/FinishLoadAction";
+import {repeatQuery} from "../../actions/map/RepeatQueryAction";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 
-const limit = 50;
+const limit = 500;
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
@@ -52,14 +55,17 @@ const MapImpl: React.FunctionComponent = () => {
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
   // LazyQuery to get features within a feature.
-  const [getFeaturesWithin, {loading, variables}] = useLazyQuery<
+  const [getFeaturesWithin, getFeaturesWithinResults] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
       //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
       dispatch(
-        completedQuery(variables.query.withinFeatureUri!, data.features.length)
+        completedQuery(
+          getFeaturesWithinResults.variables.query.withinFeatureUri!,
+          data.features.length
+        )
       );
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
@@ -84,7 +90,7 @@ const MapImpl: React.FunctionComponent = () => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
   });
-  console.log(loading);
+  console.log(getFeaturesWithinResults.loading);
   //if there are no states loaded
   if (state.features.length === 0) {
     //if the data variable has been loaded
@@ -180,7 +186,10 @@ const MapImpl: React.FunctionComponent = () => {
         for (const featureType of Object.values(FeatureType)) {
           //Check the needsFilters variable that indicates a featureType is being
           //added to the map for the first time and therefore needs filters added.
-          if (state.featuresByType[featureType].needsFilters) {
+          if (
+            state.featuresByType[featureType].featureTypeState ===
+            MapFeatureTypeState.NEEDS_FILTERS
+          ) {
             //Dispatch the addFilter action 3 times because there are 3 attributes for each type to consider
             for (var x = 0; x < 3; ++x) {
               /*
@@ -241,6 +250,8 @@ const MapImpl: React.FunctionComponent = () => {
           //if the queryInProgress loadingState of the loadingState indicates that a query is still ongoing
           if (featureLoadingState.queryInProgress) {
             //Stop doing stuff. We shouldn't start another query while one is still ongoing!
+            console.log(getFeaturesWithinResults.data);
+            console.log(getFeaturesWithinResults.variables);
             break;
           }
 
@@ -258,6 +269,8 @@ const MapImpl: React.FunctionComponent = () => {
                 offset: featureLoadingState.offset,
               },
             });
+            //This will set the queryInprogress in loadingState of the feature to 'true' again.
+            dispatch(repeatQuery(clickedFeature.uri));
             //If the length of the results of the query were not capped by the limited. That indicates that there are no more feautures to query.
           } else {
             //push the feature into a list of features that have finished loading.
@@ -265,7 +278,10 @@ const MapImpl: React.FunctionComponent = () => {
           }
         }
         //dispatch action to loadingState of all features that have finished loading from the redux state.
-        dispatch(finishLoad(finishedLoadingUris));
+        //This dispatch was the bane of my existence for the whole day.
+        //To prevent re-renders, it will only be called when the finishedLoadingUris list is populated
+        if (finishedLoadingUris.length > 0)
+          dispatch(finishLoad(finishedLoadingUris));
         break;
       }
     }
