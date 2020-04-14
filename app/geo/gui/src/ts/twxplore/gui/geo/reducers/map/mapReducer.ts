@@ -90,15 +90,16 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         Loop throrugh the attributes of the feature and check to see which are of type number.
         Updates the min and maxes of the attributes in the filterState if necessary.
         */
-        if (!result.featureTypesFilters[addedFeature.type!]) {
+        if (!result.featuresByType[addedFeature.type!]) {
           //if this is the first time we are coming across this type
-          result.featureTypesFilters[addedFeature.type!] = {};
+          result.featuresByType[addedFeature.type!].filterState = {};
           //Set featureTypeState to NEEDS_FILTERS. addFilter will be called to this type in the RENDERED case.
           result.featuresByType[addedFeature.type!].featureTypeState =
             MapFeatureTypeState.NEEDS_FILTERS;
         }
         //filterStateOfType is now the an object with properties containing relevant info needed to filter attributes of the feature type.
-        let filterStateOfType = result.featureTypesFilters[addedFeature.type!];
+        let filterStateOfType =
+          result.featuresByType[addedFeature.type!].filterState;
         //Loop through the feature's attribute
         for (const attribute of Object.keys(addedFeature)) {
           //If the arttribute is numeric

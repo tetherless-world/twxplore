@@ -33,7 +33,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const featureTypeFilter = state.featureTypesFilters[featureType];
+  const featureTypeFilter = state.featuresByType[featureType].filterState;
   const dispatch = useDispatch();
   const handleChange = (
     event: any,
