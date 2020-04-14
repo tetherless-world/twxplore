@@ -2,6 +2,7 @@ import {MapState} from "./MapState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FilterStateTypes} from "./MapFilterStateTypes";
 import {FeaturesByType} from "./FeaturesByType";
+import {MapFeatureTypeState} from "./MapFeatureTypeState";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -19,8 +20,7 @@ Object.values(FeatureType).map(type => {
   featuresByType[type] = {
     features: [],
     dirty: false,
-    needsFilters: false,
-    filtersAdded: false,
+    featureTypeState: MapFeatureTypeState.NEEDS_FILTERS,
   };
 });
 
