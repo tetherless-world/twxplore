@@ -4,6 +4,7 @@ import logging
 import os.path
 from typing import Optional, Generator, Tuple, List, Union
 
+from geo_cli.etl.dsa.dsa_request_feature_transformer import DsaRequestFeatureTransformer
 from geo_cli.etl.file_rdf_feature_loader import FileRdfFeatureLoader
 from geo_cli.etl.request_json_feature_loader import RequestJsonFeatureLoader
 from geo_cli.etl.reverse_beacon.reverse_beacon_feature_transformer import ReverseBeaconFeatureTransformer
@@ -33,8 +34,8 @@ class GeoCli:
         self.__logger = logging.getLogger(__name__)
 
     def _etl_dsa(self):
-        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "dsa" / "features.ttl") as rdf_file_loader:
-            pass
+        with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "dsa" / "features.ttl") as loader:
+            loader.load(DsaRequestFeatureTransformer().transform())
 
     def _etl_reverse_beacon(self):
         uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
