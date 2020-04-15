@@ -4,7 +4,7 @@ import java.util.Date
 
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Geometry
-import models.domain.{Feature, FeatureType}
+import models.domain.{Feature, FeatureType, FrequencyRange, TimestampRange}
 
 object GeoTestData {
 
@@ -33,6 +33,18 @@ object GeoTestData {
         transmissionPower = Some(30),
         `type` = Some(FeatureType.MetropolitanDivision),
         uri = Uri.parse("http://example.com/feature")
+    )
+    val featureWithRanges = Feature(
+        frequencyRange = Some(FrequencyRange(1.0, 2.0)),
+        geometry = featureGeometry,
+        label = Some("Test feature"),
+        locality = Some("Troy"),
+        regions = List("New York"),
+        postalCode = Some("12180"),
+        timestampRange = Some(TimestampRange(new Date(2020 - 1900, 2, 13, 16, 32, 0), new Date(2020 - 1900, 2, 14, 16, 32, 0))),
+        transmissionPower = Some(30),
+        `type` = Some(FeatureType.MetropolitanDivision),
+        uri = Uri.parse("http://example.com/featureWithRanges")
     )
 
 }
