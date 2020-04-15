@@ -66,25 +66,32 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
         //Retrieving the feature in the row
         const addedFeature: MapFeature = row[0].properties;
-        //Looping through all features stored in the redux state currently
-        for (const resultFeature of result.features) {
-          //if the uri of the addedFeature and a feature in the redux state match
-          if (resultFeature.uri === addedFeature.uri) {
-            //Change the state of the feature to RENDERED, because we are putting it on the map
-            resultFeature.state = MapFeatureState.RENDERED;
-            //Change the dirty variable for that feature type to false, as it is obvious we are now adding
-            //features of that type to the map.
-            result.featuresByType[
-              resultFeature.type! as keyof typeof result.featuresByType
-            ].dirty = false;
-            console.debug(
-              "changed map feature " +
-                resultFeature.uri +
-                " to state " +
-                MapFeatureState.RENDERED
-            );
-          }
+        //if the uri of the addedFeature and a feature in the redux state match
+        const resultFeature = result.features.find(
+          ({uri}) => uri === addedFeature.uri
+        );
+        if (!resultFeature) {
+          throw Error(
+            "Features are not added to the map until after they are loaded,\
+              and therefore it should exist in the features list on the state.\
+              (Look at code ADD_MAP_FEATURES reducer case)"
+          );
         }
+
+        //Change the state of the feature to RENDERED, because we are putting it on the map
+        resultFeature.state = MapFeatureState.RENDERED;
+        //Change the dirty variable for that feature type to false, as it is obvious we are now adding
+        //features of that type to the map.
+        result.featuresByType[
+          resultFeature.type! as keyof typeof result.featuresByType
+        ].dirty = false;
+        console.debug(
+          "changed map feature " +
+            resultFeature.uri +
+            " to state " +
+            MapFeatureState.RENDERED
+        );
+
         /*
         Check the filterState of the type of feature being added to the map.
         Loop throrugh the attributes of the feature and check to see which are of type number.
@@ -158,14 +165,21 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const finishLoadAction = action as FinishLoadAction;
       //for all features that have finished loading
       for (const actionUri of finishLoadAction.payload.uris) {
-        //for all features in the redux state
-        for (const resultFeature of result.features) {
-          //If (when) we have found the feature in the redux state
-          if (resultFeature.uri === actionUri) {
-            //Set the state of the feature from CLICKED_AND_LOADING to RENDERED
-            resultFeature.state = MapFeatureState.RENDERED;
-          }
+        //if the uri provided by the action payload and a feature in the redux state match
+        //then get the feature from the redux state
+        const resultFeature = result.features.find(
+          ({uri}) => uri === actionUri
+        );
+        if (!resultFeature) {
+          throw Error(
+            "Attempt to change state of feature from CLICKED_AND_LOADING to RENDERED failed.\
+            Feature does not exist in features list in the redux state"
+          );
         }
+
+        //Set the state of the feature from CLICKED_AND_LOADING to RENDERED
+        resultFeature.state = MapFeatureState.RENDERED;
+
         //Remove the loading state of the feature from loadingState
         delete result.loadingState[actionUri];
       }
@@ -197,18 +211,24 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         latestQueryLength: 0,
         queryInProgress: true,
       };
-      for (const resultFeature of result.features) {
-        if (resultFeature.uri === featureUri) {
-          //Change the state of the feature to CLICKED_AND_LOADING where it may queried further.
-          resultFeature.state = MapFeatureState.CLICKED_AND_LOADING;
-        }
+
+      const resultFeature = result.features.find(({uri}) => uri === featureUri);
+      if (!resultFeature) {
+        throw Error(
+          "Attempt to change state of feature from CLICKED to CLICKED_AND_LOADING failed.\
+          Feature does not exist in features list in the redux state"
+        );
       }
+
+      //Change the state of the feature to CLICKED_AND_LOADING where it may queried further.
+      resultFeature.state = MapFeatureState.CLICKED_AND_LOADING;
+
       break;
     }
 
     case REPEAT_QUERY: {
       const repeatQueryAction = action as RepeatQueryAction;
-      const featureUri = repeatQueryAction.payload.uri;
+      const featureUri = repeatQueryAction.payload.featureUri;
       if (!result.loadingState[featureUri]) {
         throw Error(
           "There should be a loading state for the feature at this point."
@@ -273,22 +293,25 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     */
     case "@@kepler.gl/LAYER_CLICK": {
       const layerClickAction: any = action;
-      for (const resultFeature of result.features) {
-        //If the clicked feature has been found in the redux state
-        if (
-          resultFeature.uri ===
-          layerClickAction.payload.info.object.properties.uri
-        ) {
-          //Change the state of the feature to CLICKED
-          resultFeature.state = MapFeatureState.CLICKED;
-          console.debug(
-            "changed map feature " +
-              resultFeature.uri +
-              " to state " +
-              MapFeatureState.CLICKED
-          );
-        }
+
+      const resultFeature = result.features.find(
+        ({uri}) => uri === layerClickAction.payload.info.object.properties.uri
+      );
+      if (!resultFeature) {
+        throw Error(
+          "Attempt to change state of feature from RENDERED to CLICKED failed.\
+          Feature does not exist in features list in the redux state"
+        );
       }
+
+      //Change the state of the feature to CLICKED
+      resultFeature.state = MapFeatureState.CLICKED;
+      console.debug(
+        "changed map feature " +
+          resultFeature.uri +
+          " to state " +
+          MapFeatureState.CLICKED
+      );
       break;
     }
     default: {
