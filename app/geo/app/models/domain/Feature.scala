@@ -54,36 +54,40 @@ object Feature {
     final def frequency_=(value: Double) = setProperty(LOCAL.frequency, List(frequencyToLiteral(value)))
 
     final def frequencyRange: Option[FrequencyRange] = {
-      Option(resource.getProperty(LOCAL.frequencyRange)).map(blankNode =>
-        FrequencyRange(
-          minimum = frequencyFromLiteral(blankNode.getProperty(LOCAL.frequencyMinimum).getObject.asLiteral()),
-          maximum = frequencyFromLiteral(blankNode.getProperty(LOCAL.frequencyMaximum).getObject.asLiteral())
-        )
-      )
+      val frequencyMinimum = Option(resource.getProperty(LOCAL.frequencyMinimum)).map(statement => frequencyFromLiteral(statement.getObject.asLiteral()))
+      val frequencyMaximum = Option(resource.getProperty(LOCAL.frequencyMaximum)).map(statement => frequencyFromLiteral(statement.getObject.asLiteral()))
+      if (frequencyMinimum.isDefined && frequencyMaximum.isDefined) {
+        Some(FrequencyRange(
+          minimum = frequencyMinimum.get,
+          maximum = frequencyMaximum.get
+        ))
+      } else {
+        None
+      }
     }
     final def frequencyRange_=(value: FrequencyRange) = {
-      val blankNode = resource.getModel.createResource()
-      blankNode.addProperty(LOCAL.frequencyMinimum, frequencyToLiteral(value.minimum))
-      blankNode.addProperty(LOCAL.frequencyMaximum, frequencyToLiteral(value.maximum))
-      resource.addProperty(LOCAL.frequencyRange, blankNode)
+      resource.addProperty(LOCAL.frequencyMinimum, frequencyToLiteral(value.minimum))
+      resource.addProperty(LOCAL.frequencyMaximum, frequencyToLiteral(value.maximum))
     }
 
     final def timestamp: Option[Date] = getPropertyObjectLiterals(LOCAL.timestamp).headOption.map(literal => timestampFromLiteral(literal))
     final def timestamp_=(value: Date) = resource.setProperty(LOCAL.timestamp, List(timestampToLiteral(value)))
 
     final def timestampRange: Option[TimestampRange] = {
-      Option(resource.getProperty(LOCAL.timestampRange)).map(blankNode =>
-        TimestampRange(
-          minimum = timestampFromLiteral(blankNode.getProperty(LOCAL.timestampMinimum).getObject.asLiteral()),
-          maximum = timestampFromLiteral(blankNode.getProperty(LOCAL.timestampMaximum).getObject.asLiteral())
-        )
-      )
+      val timestampMinimum = Option(resource.getProperty(LOCAL.timestampMinimum)).map(statement => timestampFromLiteral(statement.getObject.asLiteral()))
+      val timestampMaximum = Option(resource.getProperty(LOCAL.timestampMaximum)).map(statement => timestampFromLiteral(statement.getObject.asLiteral()))
+      if (timestampMinimum.isDefined && timestampMaximum.isDefined) {
+        Some(TimestampRange(
+          minimum = timestampMinimum.get,
+          maximum = timestampMaximum.get
+        ))
+      } else {
+        None
+      }
     }
     final def timestampRange_=(value: TimestampRange) = {
-      val blankNode = resource.getModel.createResource()
-      blankNode.addProperty(LOCAL.timestampMinimum, timestampToLiteral(value.minimum))
-      blankNode.addProperty(LOCAL.timestampMaximum, timestampToLiteral(value.maximum))
-      resource.addProperty(LOCAL.timestampRange, blankNode)
+      resource.addProperty(LOCAL.timestampMinimum, timestampToLiteral(value.minimum))
+      resource.addProperty(LOCAL.timestampMaximum, timestampToLiteral(value.maximum))
     }
 
     final def transmissionPower: Option[Int] = getPropertyObjectLiterals(LOCAL.transmissionPower).headOption.map(literal => literal.getInt)

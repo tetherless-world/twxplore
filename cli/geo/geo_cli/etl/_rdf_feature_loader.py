@@ -1,4 +1,4 @@
-from rdflib import Graph, RDF, Literal, XSD, RDFS, BNode
+from rdflib import Graph, RDF, Literal, XSD, RDFS
 
 from geo_cli.etl._feature_loader import _FeatureLoader
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY, GEO, SF, SCHEMA, TWXPLORE_GEO_APP_FEATURE, \
@@ -24,10 +24,8 @@ class _RdfFeatureLoader(_FeatureLoader):
         if feature.frequency is not None:
             feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequency, Literal(feature.frequency, datatype=XSD.float))
         elif feature.frequency_range is not None:
-            frequency_range_resource = self._graph.resource(BNode())
-            frequency_range_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMaximum, Literal(feature.frequency_range[1], datatype=XSD.float))
-            frequency_range_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMinimum, Literal(feature.frequency_range[0], datatype=XSD.float))
-            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyRange, frequency_range_resource)
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMaximum, Literal(feature.frequency_range[1], datatype=XSD.float))
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMinimum, Literal(feature.frequency_range[0], datatype=XSD.float))
 
         feature_resource.add(GEO.hasDefaultGeometry, self.__add_geometry_to_graph(feature.geometry))
 
@@ -47,10 +45,8 @@ class _RdfFeatureLoader(_FeatureLoader):
         if feature.timestamp is not None:
             feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestamp, Literal(feature.timestamp, datatype=XSD.dateTime))
         elif feature.timestamp_range is not None:
-            timestamp_range_resource = self._graph.resource(BNode())
-            timestamp_range_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestampMaximum, Literal(feature.timestamp_range[1], datatype=XSD.dateTime))
-            timestamp_range_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestampMinimum, Literal(feature.timestamp_range[0], datatype=XSD.dateTime))
-            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestampRange, timestamp_range_resource)
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestampMaximum, Literal(feature.timestamp_range[1], datatype=XSD.dateTime))
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.timestampMinimum, Literal(feature.timestamp_range[0], datatype=XSD.dateTime))
 
         if feature.transmission_power is not None:
             feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.transmissionPower, Literal(feature.transmission_power, datatype=XSD.int))
