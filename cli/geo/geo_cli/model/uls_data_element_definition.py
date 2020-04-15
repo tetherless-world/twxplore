@@ -1,5 +1,7 @@
-class UlsDataElementDefinition:
-    def __init__(self, *, name: str, position: int, type_: str):
-        self.name = name
-        self.position = position
-        self.type = type_
+from typing import NamedTuple
+
+
+class UlsDataElementDefinition(NamedTuple):
+    name: str
+    position: int
+    type_: str

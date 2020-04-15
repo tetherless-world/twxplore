@@ -1,12 +1,6 @@
-class FrequencyRange:
-    def __init__(self, *, maxInclusive: float, minInclusive: float):
-        self.__maxInclusive = maxInclusive
-        self.__minInclusive = minInclusive
+from typing import NamedTuple
 
-    @property
-    def maxInclusive(self):
-        return self.__maxInclusive
 
-    @property
-    def minInclusive(self):
-        return self.__minInclusive
+class FrequencyRange(NamedTuple):
+    maximum: float
+    minimum: float
