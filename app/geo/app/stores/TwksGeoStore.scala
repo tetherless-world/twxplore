@@ -5,6 +5,7 @@ import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.Rdf
 import io.github.tetherlessworld.twxplore.lib.base.stores.BaseTwksStore
 import javax.inject.Inject
+import models.domain.vocabulary.LOCAL
 import models.domain.{Feature, FeatureType}
 import models.graphql.FeatureQuery
 import org.apache.jena.geosparql.implementation.vocabulary.{Geo, GeoSPARQL_URI}
@@ -19,6 +20,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
     s"""
        |PREFIX geo: <${GeoSPARQL_URI.GEO_URI}>
        |PREFIX geof: <${GeoSPARQL_URI.GEOF_URI}>
+       |PREFIX local-ontology: <${LOCAL.ONTOLOGY_URI}>
        |PREFIX rdf: <${RDF.getURI}>
        |PREFIX sf: <${GeoSPARQL_URI.SF_URI}>
        |""".stripMargin

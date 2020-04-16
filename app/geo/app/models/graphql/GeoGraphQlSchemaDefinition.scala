@@ -3,7 +3,7 @@ package models.graphql
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
 import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Geometry
-import models.domain.{Feature, FeatureType}
+import models.domain.{Feature, FeatureType, FrequencyRange, TimestampRange}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, fields}
@@ -16,6 +16,10 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
     ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
   )
+
+  implicit val FrequencyRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, FrequencyRange]()
+
+  implicit val TimestampRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, TimestampRange]()
 
   implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
     //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))

@@ -9,6 +9,7 @@ class FeatureSpec extends DomainModelSpec {
       testSerialization(GeoTestData.feature)
       testSerialization(GeoTestData.containedFeature)
       testSerialization(GeoTestData.containingFeature)
+      testSerialization(GeoTestData.featureWithRanges)
     }
   }
 }
