@@ -30,6 +30,7 @@ import {
   RepeatQueryAction,
 } from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -53,6 +54,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         result.featuresByType[
           feature.type! as keyof typeof result.featuresByType
         ].dirty = true;
+        //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD to ensure that filters
+        //for this feature type will not be added until all queries are completed
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
       }
       break;
     }
@@ -97,59 +103,43 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         Loop throrugh the attributes of the feature and check to see which are of type number.
         Updates the min and maxes of the attributes in the filterState if necessary.
         */
-        if (!result.featuresByType[addedFeature.type!]) {
-          //if this is the first time we are coming across this type
-          result.featuresByType[addedFeature.type!].filterState = {};
-          //Set featureTypeState to NEEDS_FILTERS. addFilter will be called to this type in the RENDERED case.
-          result.featuresByType[addedFeature.type!].featureTypeState =
-            MapFeatureTypeState.NEEDS_FILTERS;
-        }
-        //filterStateOfType is now the an object with properties containing relevant info needed to filter attributes of the feature type.
-        let filterStateOfType =
-          result.featuresByType[addedFeature.type!].filterState;
+
+        //filterStateOfFeatureType is now an object with properties containing relevant info needed to filter attributes of the feature type.
+        let attributesStateOfFeatureType =
+          result.featuresByType[addedFeature.type!].attributesState;
         //Loop through the feature's attribute
         for (const attribute of Object.keys(addedFeature)) {
           //If the arttribute is numeric
           if (getFeatureAttributeByName(attribute).isNumeric) {
             //If this is the first time coming across this attribute for this feature type
-            if (!filterStateOfType[attribute]) {
-              //Create a state for the attribute, with all properties set to null initially.
-              filterStateOfType[attribute] = {
-                min: null,
-                max: null,
-                idx: null,
-              };
+            if (!attributesStateOfFeatureType[attribute].min) {
               //New max of the attribute wil be the feature's value for the attribute
-              filterStateOfType[attribute].max = (addedFeature as any)[
+              attributesStateOfFeatureType[
                 attribute
-              ];
+              ].max = (addedFeature as any)[attribute];
               //New min of the attribute wil be the feature's value for the attribute
-              filterStateOfType[attribute].min = (addedFeature as any)[
+              attributesStateOfFeatureType[
                 attribute
-              ];
-              //Set the idx (index) for the attribute state from the attributeCounter.
-              filterStateOfType[attribute].idx = result.attributeCounter;
-              //Since we've handled a new attribute, increment the attributeCounter
-              result.attributeCounter += 1;
+              ].min = (addedFeature as any)[attribute];
             }
             //If this is NOT the first time coming across this attribute for this feature tpye
             else {
               //Compare attribute value to the min found in the attribute state. Set new min if necessary.
               if (
                 (addedFeature as any)[attribute] <
-                filterStateOfType[attribute].min!
+                attributesStateOfFeatureType[attribute].min!
               )
-                filterStateOfType[attribute].min = (addedFeature as any)[
+                attributesStateOfFeatureType[
                   attribute
-                ];
+                ].min = (addedFeature as any)[attribute];
               //Compare attribute value to the max found in the attribute state. Set new max if necessary.
               else if (
                 (addedFeature as any)[attribute] >
-                filterStateOfType[attribute].max!
+                attributesStateOfFeatureType[attribute].max!
               )
-                filterStateOfType[attribute].max = (addedFeature as any)[
+                attributesStateOfFeatureType[
                   attribute
-                ];
+                ].max = (addedFeature as any)[attribute];
             }
           }
         }
@@ -182,6 +172,30 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
         //Remove the loading state of the feature from loadingState
         delete result.loadingState[actionUri];
+
+        //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
+        for (const featureType of Object.values(FeatureType)) {
+          let featuresByTypeOfType =
+            result.featuresByType[featureType as keyof typeof FeatureType];
+          let filterTypeStateOfFeatureType =
+            result.featuresByType[featureType as keyof typeof FeatureType]
+              .attributesState;
+
+          if (
+            featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.WAITING_FOR_LOAD
+          ) {
+            featuresByTypeOfType.featureTypeState =
+              //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
+              MapFeatureTypeState.NEEDS_FILTERS;
+            //Give each attribute with the FeatureType that is filterable a filter idx (index)
+            Object.keys(filterTypeStateOfFeatureType).map(attributeName => {
+              filterTypeStateOfFeatureType[attributeName].filterIndex =
+                result.filterableAttributesCounter;
+              result.filterableAttributesCounter += 1;
+            });
+          }
+        }
       }
       break;
     }
@@ -223,6 +237,36 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       //Change the state of the feature to CLICKED_AND_LOADING where it may queried further.
       resultFeature.state = MapFeatureState.CLICKED_AND_LOADING;
 
+      //Change state of all feature types that have had their filters added to WAITING FOR LOAD because a query has just started
+      //for each FeatureType
+      for (const featureType of Object.values(FeatureType)) {
+        let featuresByTypeOfType =
+          result.featuresByType[featureType as keyof typeof FeatureType];
+        let filterTypeStateOfFeatureType =
+          result.featuresByType[featureType as keyof typeof FeatureType]
+            .attributesState;
+
+        if (
+          //If the filters of the attributes of a FeatureType have been added/set
+          featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.FILTERS_ADDED ||
+          featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.FILTERS_SET
+        ) {
+          //Set the state of the featureTypeState to WAITING_FOR_LOAD
+          //because a query has started. Filters are going to be removed
+          //and we need to wait for the queries to end before re-adding the filters.
+          featuresByTypeOfType.featureTypeState =
+            MapFeatureTypeState.WAITING_FOR_LOAD;
+          Object.keys(filterTypeStateOfFeatureType).map(attributeName => {
+            //Set the filter index for all attributes within the filter to null because filter are being removed
+            filterTypeStateOfFeatureType[attributeName].filterIndex = null;
+          });
+        }
+      }
+      //Reset the attribute counter as no attributes are filterable at the time.
+      result.filterableAttributesCounter = 0;
+
       break;
     }
 
@@ -234,6 +278,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           "There should be a loading state for the feature at this point."
         );
       }
+      //the queryInProgress variable for this state becomes true as we are going to repeat the query but with a different offset
       result.loadingState[featureUri].queryInProgress = true;
       break;
     }
@@ -275,11 +320,18 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       These filters will be attached to attributes in FilterSliders.tsx
       */
       const addFilterAction = action as any;
-      //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED
+      //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED to indicate the process
+      //for adding a filter for each filterable attribute of this feature type has begun
       result.featuresByType[addFilterAction.dataId].featureTypeState =
         MapFeatureTypeState.FILTERS_ADDED;
       //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
+      break;
+    }
+
+    case "@@kepler.gl/REMOVE_FILTER": {
+      //Decrement filterCounter on the redux state, because a filter has just been removed.
+      result.filterCounter -= 1;
       break;
     }
 
