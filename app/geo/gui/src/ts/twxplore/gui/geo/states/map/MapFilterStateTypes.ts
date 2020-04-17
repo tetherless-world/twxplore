@@ -5,5 +5,5 @@ properties on filterStateOfType
 export interface FilterStateTypes {
   min: number | null;
   max: number | null;
-  idx: number | null;
+  filterIndex: number | null;
 }
