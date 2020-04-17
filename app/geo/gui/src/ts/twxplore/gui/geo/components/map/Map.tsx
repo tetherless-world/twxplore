@@ -1,4 +1,4 @@
-import {addDataToMap, removeDataset} from "kepler.gl/actions";
+import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -12,11 +12,10 @@ import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
-import ReactResizeDetector from "react-resize-detector";
+//import ReactResizeDetector from "react-resize-detector";
 import * as React from "react";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 //import {finishLoad} from "../../actions/map/FinishLoadAction";
-import {FilterPanel} from "../filterPanel/FilterPanel";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
@@ -25,6 +24,7 @@ import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+//import KeplerGlSchema from "kepler.gl/schemas";
 
 const limit = 500;
 var wkt = require("terraformer-wkt-parser");
@@ -35,6 +35,10 @@ const MapImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  const fake_state: any = useSelector(
+    (rootState: RootState) => rootState.keplerGl
+  );
+  console.debug(fake_state);
   /*
   const getMapConfig = () => {
     // retrieve kepler.gl store
@@ -121,7 +125,18 @@ const MapImpl: React.FunctionComponent = () => {
   const featuresByState: {
     [index: string]: MapFeature[];
   } = useSelector(getFeaturesByState);
+  /*
+  const getMapConfig = () => {
+    // retrieve kepler.gl store
+    // retrieve current kepler.gl instance store
+    const {map} = fake_state;
 
+    // create the config object
+    return KeplerGlSchema.getConfigToSave(map);
+  };
+
+  var config: any = {};
+*/
   // Feature state machine
   for (const featureState in featuresByState) {
     const featuresInState = featuresByState[featureState];
@@ -159,10 +174,15 @@ const MapImpl: React.FunctionComponent = () => {
                 id: featureType,
               },
             };
-
+            /*
+            if (fake_state.map) {
+              config = getMapConfig();
+            }
+            */
             //might remove this, but will leave it for now
             dispatch(removeDataset(featureType));
             //dispatch addDataToMap action with new dataset
+
             dispatch(
               addDataToMap({
                 datasets,
@@ -215,7 +235,10 @@ const MapImpl: React.FunctionComponent = () => {
         for (const clickedFeature of featuresInState) {
           //if the feature is expandable. Should be changed later with something like if isExpandable()
           if (clickedFeature.type !== FeatureType.Transmission) {
-            //call the lazyQuery to get feautres with the clickedFeaturee
+            for (var x = state.filterCounter - 1; x >= 0; x--) {
+              dispatch(removeFilter(x));
+            }
+            //call the lazyQuery to get features within the clickedFeaturee
             getFeaturesWithin({
               variables: {
                 query: {
@@ -294,24 +317,15 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <div style={{width: "100%"}}>
-        <ReactResizeDetector
-          handleWidth
-          handleHeight
-          render={({width, height}) => (
-            <div>
-              <KeplerGl
-                id="map"
-                width={width}
-                mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
-                height={height}
-              />
-            </div>
-          )}
+        <div>
+          <KeplerGl
+            id="map"
+            mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
+          />
+        </div>
         />
       </div>
-      <div>
-        <FilterPanel />
-      </div>
+      <div></div>
     </div>
   );
 };
