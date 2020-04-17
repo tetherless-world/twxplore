@@ -32,7 +32,7 @@ const composeEnhancers = (composeWithDevTools as any)({
                 state.app.map.keplerGlInstanceRegistered,
               features: {},
               typesVisibility: state.app.map.typesVisibility,
-              attributeCounter: state.app.map.attributeCounter,
+              attributeCounter: state.app.map.filterableAttributesCounter,
               filterCounter: state.app.map.filterCounter,
             },
           },
