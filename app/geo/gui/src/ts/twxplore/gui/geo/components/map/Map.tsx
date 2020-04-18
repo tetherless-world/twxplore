@@ -24,9 +24,11 @@ import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {FilterPanel} from "../filterPanel/FilterPanel";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const limit = 500;
+const DEBUG = true;
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
@@ -279,7 +281,10 @@ const MapImpl: React.FunctionComponent = () => {
           }
 
           //A query is not in progress. If the length of the previous query was capped by the limit variable that was passed...
-          if (featureLoadingState.latestQueryLength === limit) {
+          if (
+            featureLoadingState.latestQueryLength === limit &&
+            (featureLoadingState.offset < 2000 || !DEBUG)
+          ) {
             console.log("Made it here");
             //Same lazyQuery as in the CLICKED state, we are simply going further
             getFeaturesWithin({
@@ -325,7 +330,9 @@ const MapImpl: React.FunctionComponent = () => {
         </div>
         />
       </div>
-      <div></div>
+      <div>
+        <FilterPanel />
+      </div>
     </div>
   );
 };
