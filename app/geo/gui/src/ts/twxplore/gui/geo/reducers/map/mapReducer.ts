@@ -31,6 +31,10 @@ import {
 } from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {
+  ALL_FILTERS_SET,
+  AllFiltersSetAction,
+} from "../../actions/map/AllFiltersSetAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -326,6 +330,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         MapFeatureTypeState.FILTERS_ADDED;
       //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
+      break;
+    }
+
+    case ALL_FILTERS_SET: {
+      const allFiltersSetAction = action as AllFiltersSetAction;
+      result.featuresByType[
+        allFiltersSetAction.payload.featureType
+      ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
       break;
     }
 
