@@ -7,6 +7,9 @@ import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
 import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {allFiltersSet} from "../../actions/map/AllFiltersSetAction";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,8 +26,6 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-var filtersSet = false;
-
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
 }) => {
@@ -33,7 +34,9 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const featureTypeFilter = state.featuresByType[featureType].attributesState;
+  const featureTypeState = state.featuresByType[featureType].featureTypeState;
+  const featureTypeAttributeState =
+    state.featuresByType[featureType].attributesState;
   const dispatch = useDispatch();
   const handleChange = (
     event: any,
@@ -47,60 +50,66 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
-      {Object.keys(featureTypeFilter).map(attribute => {
+      {Object.keys(featureTypeAttributeState).map(attribute => {
         //attribute being an attribute of a feature e.g. timestamp, frequency
-        const attributeProperties = (featureTypeFilter as any)[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        const idx = attributeProperties.idx;
-        if (state.featuresByType.filtersAdded && !filtersSet) {
-          //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-          dispatch(setFilter(idx, "name", attribute));
-          dispatch(
-            setFilter(
-              idx,
-              "type",
-              getFeatureAttributeByName(attribute).filterType
-            )
-          );
-          dispatch(
-            setFilter(idx, "value", [
-              attributeProperties.min,
-              attributeProperties.max,
-            ])
-          );
-        }
-
-        if (attributeProperties) {
-          return (
-            <div key={attribute}>
-              <Typography id="type" gutterBottom>
-                {attribute}
-              </Typography>
-              <Slider
-                defaultValue={[
-                  attributeProperties.min,
-                  attributeProperties.max,
-                ]}
-                getAriaValueText={valuetext}
-                aria-labelledby="range-slider"
-                step={1}
-                min={attributeProperties.min}
-                max={attributeProperties.max}
-                valueLabelDisplay="auto"
-                disabled={!attributeProperties.max}
-                onChangeCommitted={(event: any, newValue: number | number[]) =>
-                  handleChange(event, newValue, attribute, idx)
-                }
-                name={attribute}
-              />
-            </div>
-          );
-        } else {
-          return <React.Fragment />;
+        const attributeProperties = featureTypeAttributeState[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
+        const idx = attributeProperties.filterIndex;
+        switch (featureTypeState) {
+          case MapFeatureTypeState.FILTERS_ADDED: {
+            //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
+            dispatch(setFilter(idx, "name", attribute));
+            dispatch(
+              setFilter(
+                idx,
+                "type",
+                getFeatureAttributeByName(attribute).filterType
+              )
+            );
+            dispatch(
+              setFilter(idx, "value", [
+                attributeProperties.min,
+                attributeProperties.max,
+              ])
+            );
+            dispatch(
+              allFiltersSet(
+                FeatureType[featureType as keyof typeof FeatureType]
+              )
+            );
+            return <React.Fragment />;
+          }
+          case MapFeatureTypeState.FILTERS_SET: {
+            return (
+              <div key={attribute}>
+                <Typography id="type" gutterBottom>
+                  {attribute}
+                </Typography>
+                <Slider
+                  defaultValue={[
+                    attributeProperties.min!,
+                    attributeProperties.max!,
+                  ]}
+                  getAriaValueText={valuetext}
+                  aria-labelledby="range-slider"
+                  step={1}
+                  min={attributeProperties.min!}
+                  max={attributeProperties.max!}
+                  valueLabelDisplay="auto"
+                  disabled={!attributeProperties.max!}
+                  onChangeCommitted={(
+                    event: any,
+                    newValue: number | number[]
+                  ) => handleChange(event, newValue, attribute, idx!)}
+                  name={attribute}
+                />
+              </div>
+            );
+          }
+          default: {
+            return <React.Fragment />;
+          }
         }
       })}
-      {
-        (filtersSet = true) //first render done. Filter have beem set}
-      }
     </div>
   );
 };
