@@ -18,7 +18,7 @@ Object.values(FeatureType).map(type => {
     features: [],
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
-    attributesState: {},
+    attributeStates: {},
   };
 });
 
@@ -28,13 +28,13 @@ Object.values(FeatureType).map(type => {
     features: [],
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
-    attributesState: {},
+    attributeStates: {},
   };
   //Populate the attribute state with null values for all properties.
   Object.keys(FeatureAttributeName).map(attributeName => {
     const FeatureAttribute = getFeatureAttributeByName(attributeName);
     if (FeatureAttribute.isNumeric) {
-      featuresByType[type].attributesState[attributeName] = {
+      featuresByType[type].attributeStates[attributeName] = {
         min: null,
         max: null,
         filterIndex: null,

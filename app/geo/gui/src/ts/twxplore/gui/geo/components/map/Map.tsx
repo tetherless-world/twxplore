@@ -38,23 +38,12 @@ const MapImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  /*
   const fake_state: any = useSelector(
     (rootState: RootState) => rootState.keplerGl
   );
   console.debug(fake_state);
-  /*
-  const getMapConfig = () => {
-    // retrieve kepler.gl store
-    const keplerGl: any = useSelector(
-      (rootState: RootState) => rootState.keplerGl
-    );
-
-    const {map} = keplerGl;
-
-    // create the config object
-    return KeplerGlSchema.getConfigToSave(map);
-  };
-*/
+  */
   // Load features on first render
   const initialFeaturesQueryResult = useQuery<
     MapFeaturesQuery,
@@ -309,27 +298,6 @@ const MapImpl: React.FunctionComponent = () => {
   // Kepler.gl documentation:
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
-
-  /*
-  <AutoSizer>
-              {({height, width}) => (
-                <KeplerGl
-                  mapboxApiAccessToken={AUTH_TOKENS.MAPBOX_TOKEN}
-                  id="map"
-                  
-                   * Specify path to keplerGl state, because it is not mount at the root
-                   
-                  getState={keplerGlGetState}
-                  width={width}
-                  height={height - (showBanner ? BannerHeight : 0)}
-                  cloudProviders={CLOUD_PROVIDERS}
-                  onExportToCloudSuccess={onExportFileSuccess}
-                  onLoadCloudMapSuccess={onLoadCloudMapSuccess}
-                  onLoadCloudMapError={onLoadCloudMapError}
-                />
-              )}
-            </AutoSizer>
-  */
   return (
     <div>
       <div style={{width: "100%"}}>
