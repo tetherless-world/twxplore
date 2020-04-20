@@ -25,6 +25,7 @@ import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {FilterPanel} from "../filterPanel/FilterPanel";
+import ReactResizeDetector from "react-resize-detector";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const limit = 500;
@@ -127,18 +128,7 @@ const MapImpl: React.FunctionComponent = () => {
   const featuresByState: {
     [index: string]: MapFeature[];
   } = useSelector(getFeaturesByState);
-  /*
-  const getMapConfig = () => {
-    // retrieve kepler.gl store
-    // retrieve current kepler.gl instance store
-    const {map} = fake_state;
 
-    // create the config object
-    return KeplerGlSchema.getConfigToSave(map);
-  };
-
-  var config: any = {};
-*/
   // Feature state machine
   for (const featureState in featuresByState) {
     const featuresInState = featuresByState[featureState];
@@ -198,26 +188,27 @@ const MapImpl: React.FunctionComponent = () => {
       }
 
       /*
-      Features in this state have been rendered. In the process of them being added to the map,
-      the variable 'needsFilter' of the appropriate type has been set to true if this was the first time a 
-      feature of that type was added to the map.
-      The step here is to check what filters need to be added and call addFilter if neccessary.
+      Features in this state have been rendered. Checks the state of all FeatureTypes to see if they NEED_FILTERS.
+      If so, then adds 3 filters for that FeatureType (1 for each of frequency, timeStamp, transmissionPower).
+
       */
       case MapFeatureState.RENDERED: {
         //loop through each feature type
         for (const featureType of Object.values(FeatureType)) {
-          //Check the needsFilters variable that indicates a featureType is being
-          //added to the map for the first time and therefore needs filters added.
+          //Check if filters need to be added for this FeatureType
           if (
             state.featuresByType[featureType].featureTypeState ===
             MapFeatureTypeState.NEEDS_FILTERS
           ) {
-            //Dispatch the addFilter action 3 times because there are 3 attributes for each type to consider
+            //Dispatch the addFilter action 3 times (1 for each of frequency, timeStamp, transmissionPower)
             for (var x = 0; x < 3; ++x) {
               /*
-              Dispatch addFilter with the type of the feature,
-              which is also, more importantly, the name of the dataset
+              Dispatch addFilter with the FeatureType,
+              which is also the name of the dataset
               we are attaching the filter too.
+              Note that the attribute we intend to use with the filter isn't passed with addFilter.
+              Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType, and 
+              worry about assigning them an attribute in FilterSliders.tsx (setFilter(idx,"name","timeStamp"))
               */
               dispatch(
                 addFilter(FeatureType[featureType as keyof typeof FeatureType])
@@ -319,15 +310,41 @@ const MapImpl: React.FunctionComponent = () => {
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
 
+  /*
+  <AutoSizer>
+              {({height, width}) => (
+                <KeplerGl
+                  mapboxApiAccessToken={AUTH_TOKENS.MAPBOX_TOKEN}
+                  id="map"
+                  
+                   * Specify path to keplerGl state, because it is not mount at the root
+                   
+                  getState={keplerGlGetState}
+                  width={width}
+                  height={height - (showBanner ? BannerHeight : 0)}
+                  cloudProviders={CLOUD_PROVIDERS}
+                  onExportToCloudSuccess={onExportFileSuccess}
+                  onLoadCloudMapSuccess={onLoadCloudMapSuccess}
+                  onLoadCloudMapError={onLoadCloudMapError}
+                />
+              )}
+            </AutoSizer>
+  */
   return (
     <div>
       <div style={{width: "100%"}}>
-        <div>
-          <KeplerGl
-            id="map"
-            mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
-          />
-        </div>
+        <ReactResizeDetector
+          handleWidth
+          handleHeight
+          render={({width, height}) => (
+            <div>
+              <KeplerGl
+                id="map"
+                mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
+                width={width}
+              />
+            </div>
+          )}
         />
       </div>
       <div>
