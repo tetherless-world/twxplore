@@ -35,6 +35,7 @@ import {
   ALL_FILTERS_SET,
   AllFiltersSetAction,
 } from "../../actions/map/AllFiltersSetAction";
+import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -108,45 +109,17 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         Updates the min and maxes of the attributes in the filterState if necessary.
         */
 
-        //filterStateOfFeatureType is now an object with properties containing relevant info needed to filter attributes of the feature type.
-        const attributesStateOfFeatureType =
-          result.featuresByType[addedFeature.type!].attributesState;
-        //Loop through the feature's attribute
-        for (const attribute of Object.keys(addedFeature)) {
-          //If the arttribute is numeric
-          if (getFeatureAttributeByName(attribute).isNumeric) {
-            //If this is the first time coming across this attribute for this feature type
-            if (!attributesStateOfFeatureType[attribute].min) {
-              //New max of the attribute wil be the feature's value for the attribute
-              attributesStateOfFeatureType[
-                attribute
-              ].max = (addedFeature as any)[attribute];
-              //New min of the attribute wil be the feature's value for the attribute
-              attributesStateOfFeatureType[
-                attribute
-              ].min = (addedFeature as any)[attribute];
-            }
-            //If this is NOT the first time coming across this attribute for this feature type
-            else {
-              //Compare attribute value to the min found in the attribute state. Set new min if necessary.
-              if (
-                (addedFeature as any)[attribute] <
-                attributesStateOfFeatureType[attribute].min!
-              )
-                attributesStateOfFeatureType[
-                  attribute
-                ].min = (addedFeature as any)[attribute];
-              //Compare attribute value to the max found in the attribute state. Set new max if necessary.
-              else if (
-                (addedFeature as any)[attribute] >
-                attributesStateOfFeatureType[attribute].max!
-              )
-                attributesStateOfFeatureType[
-                  attribute
-                ].max = (addedFeature as any)[attribute];
-            }
-          }
-        }
+        //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
+        //an attribute of that FeatureType.
+        //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
+        const attributeStatesOfFeatureType =
+          result.featuresByType[addedFeature.type!].attributeStates;
+
+        //Compare the attributes of the addedFeature to what is stored on the state. Update if neccessary.
+        updateAttributeStatesOfFeatureType(
+          attributeStatesOfFeatureType,
+          addedFeature
+        );
       }
       break;
     }
