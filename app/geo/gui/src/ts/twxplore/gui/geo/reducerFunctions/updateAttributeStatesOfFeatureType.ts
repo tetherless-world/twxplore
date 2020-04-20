@@ -10,6 +10,7 @@ export const updateAttributeStatesOfFeatureType = (
 ) => {
   //Loop through the feature's attribute
   for (const attributeName of Object.keys(addedFeature)) {
+    const attributeKey = attributeName as keyof MapFeature;
     //If the arttribute is numeric
     if (getFeatureAttributeByName(attributeName).isNumeric) {
       //If this is the first time coming across this attribute for this feature type
@@ -18,32 +19,32 @@ export const updateAttributeStatesOfFeatureType = (
         !attributeStatesOfFeatureType[attributeName].max
       ) {
         //New max of the attribute wil be the feature's value for the attribute
-        attributeStatesOfFeatureType[attributeName].max = (addedFeature as any)[
-          attributeName
-        ];
+        attributeStatesOfFeatureType[attributeName].max = addedFeature[
+          attributeKey
+        ] as number;
         //New min of the attribute wil be the feature's value for the attribute
-        attributeStatesOfFeatureType[attributeName].min = (addedFeature as any)[
-          attributeName
-        ];
+        attributeStatesOfFeatureType[attributeName].min = addedFeature[
+          attributeKey
+        ] as number;
       }
       //If this is NOT the first time coming across this attribute for this feature type
       else {
         //Compare attribute value to the min found in the attribute state. Set new min if necessary.
         if (
-          (addedFeature as any)[attribute] <
-          attributeStatesOfFeatureType[attribute].min!
+          (addedFeature[attributeKey] as number) <
+          attributeStatesOfFeatureType[attributeKey].min!
         )
-          attributeStatesOfFeatureType[attribute].min = (addedFeature as any)[
-            attribute
-          ];
+          attributeStatesOfFeatureType[attributeKey].min = addedFeature[
+            attributeKey
+          ] as number;
         //Compare attribute value to the max found in the attribute state. Set new max if necessary.
         else if (
-          (addedFeature as any)[attribute] >
-          attributeStatesOfFeatureType[attribute].max!
+          (addedFeature[attributeKey] as number) >
+          attributeStatesOfFeatureType[attributeKey].max!
         )
-          attributeStatesOfFeatureType[attribute].max = (addedFeature as any)[
-            attribute
-          ];
+          attributeStatesOfFeatureType[attributeKey].max = addedFeature[
+            attributeKey
+          ] as number;
       }
     }
   }
