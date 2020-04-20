@@ -15,7 +15,7 @@ export const updateAttributeStatesOfFeatureType = (
       //If this is the first time coming across this attribute for this feature type
       if (
         !attributeStatesOfFeatureType[attribute].min &&
-        !attributeStatesOfFeatureType[attribute].min
+        !attributeStatesOfFeatureType[attribute].max
       ) {
         //New max of the attribute wil be the feature's value for the attribute
         attributeStatesOfFeatureType[attribute].max = (addedFeature as any)[
