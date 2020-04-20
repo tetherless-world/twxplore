@@ -6,5 +6,5 @@ export interface FeaturesByType {
   features: MapFeature[];
   dirty: boolean;
   featureTypeState: MapFeatureTypeState;
-  attributesState: {[attribute: string]: MapFeatureAttributeState};
+  attributeStates: {[featureAttributeName: string]: MapFeatureAttributeState};
 }
