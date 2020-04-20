@@ -109,7 +109,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         */
 
         //filterStateOfFeatureType is now an object with properties containing relevant info needed to filter attributes of the feature type.
-        let attributesStateOfFeatureType =
+        const attributesStateOfFeatureType =
           result.featuresByType[addedFeature.type!].attributesState;
         //Loop through the feature's attribute
         for (const attribute of Object.keys(addedFeature)) {
@@ -126,7 +126,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
                 attribute
               ].min = (addedFeature as any)[attribute];
             }
-            //If this is NOT the first time coming across this attribute for this feature tpye
+            //If this is NOT the first time coming across this attribute for this feature type
             else {
               //Compare attribute value to the min found in the attribute state. Set new min if necessary.
               if (
