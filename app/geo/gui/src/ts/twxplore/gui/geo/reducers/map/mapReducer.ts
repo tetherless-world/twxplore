@@ -36,6 +36,7 @@ import {
 } from "../../actions/map/AllFiltersSetAction";
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
 import {setAllFilterIndexNull} from "../../reducerFunctions/setAllFilterIndexNull";
+import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -78,8 +79,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Retrieving the feature in the row
         const addedFeature: MapFeature = row[0].properties;
         //if the uri of the addedFeature and a feature in the redux state match
-        const resultFeature = result.features.find(
-          ({uri}) => uri === addedFeature.uri
+        const resultFeature = getFeatureFromStateFeaturesList(
+          result.features,
+          addedFeature.uri
         );
         if (!resultFeature) {
           throw Error(
@@ -134,8 +136,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const actionUri of finishLoadAction.payload.uris) {
         //if the uri provided by the action payload and a feature in the redux state match
         //then get the feature from the redux state
-        const resultFeature = result.features.find(
-          ({uri}) => uri === actionUri
+        const resultFeature = getFeatureFromStateFeaturesList(
+          result.features,
+          actionUri
         );
         if (!resultFeature) {
           throw Error(
@@ -203,7 +206,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         queryInProgress: true,
       };
 
-      const resultFeature = result.features.find(({uri}) => uri === featureUri);
+      const resultFeature = getFeatureFromStateFeaturesList(
+        result.features,
+        featureUri
+      );
       if (!resultFeature) {
         throw Error(
           "Attempt to change state of feature from CLICKED to CLICKED_AND_LOADING failed.\
@@ -329,8 +335,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     case "@@kepler.gl/LAYER_CLICK": {
       const layerClickAction: any = action;
 
-      const resultFeature = result.features.find(
-        ({uri}) => uri === layerClickAction.payload.info.object.properties.uri
+      const resultFeature = getFeatureFromStateFeaturesList(
+        result.features,
+        layerClickAction.payload.info.object.properties.uri
       );
       if (!resultFeature) {
         throw Error(
