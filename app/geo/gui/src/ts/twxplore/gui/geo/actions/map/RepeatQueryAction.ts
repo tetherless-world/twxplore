@@ -8,6 +8,6 @@ export interface RepeatQueryAction extends Action<{featureUri: string}> {
 }
 
 export const repeatQuery = (featureUri: string): RepeatQueryAction => ({
-  payload: {featureUri: featureUri},
+  payload: {featureUri},
   type: REPEAT_QUERY,
 });
