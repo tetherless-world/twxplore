@@ -11,7 +11,6 @@ import {
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
-import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 import {
   START_QUERYING,
   StartQueryingAction,
@@ -36,6 +35,7 @@ import {
   AllFiltersSetAction,
 } from "../../actions/map/AllFiltersSetAction";
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
+import {setAllFilterIndexNull} from "../../reducerFunctions/setAllFilterIndexNull";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -156,7 +156,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             result.featuresByType[featureType as keyof typeof FeatureType];
           let filterTypeStateOfFeatureType =
             result.featuresByType[featureType as keyof typeof FeatureType]
-              .attributesState;
+              .attributeStates;
 
           if (
             featuresByTypeOfType.featureTypeState ===
@@ -219,9 +219,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const featureType of Object.values(FeatureType)) {
         let featuresByTypeOfType =
           result.featuresByType[featureType as keyof typeof FeatureType];
-        let filterTypeStateOfFeatureType =
+        let attributeStatesOfFeatureType =
           result.featuresByType[featureType as keyof typeof FeatureType]
-            .attributesState;
+            .attributeStates;
 
         if (
           //If the filters of the attributes of a FeatureType have been added/set
@@ -235,10 +235,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           //and we need to wait for the queries to end before re-adding the filters.
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
-          Object.keys(filterTypeStateOfFeatureType).map(attributeName => {
-            //Set the filter index for all attributes within the filter to null because filter are being removed
-            filterTypeStateOfFeatureType[attributeName].filterIndex = null;
-          });
+          //
+          setAllFilterIndexNull(attributeStatesOfFeatureType);
         }
       }
       //Reset the attribute counter as no attributes are filterable at the time.
