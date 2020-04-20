@@ -33,6 +33,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  //necessary to pass this into onChangeCommitted since it is no longer called inline :(
   var filterIndexOfAttribute: number | null = null;
 
   //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
