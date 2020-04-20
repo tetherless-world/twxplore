@@ -35,7 +35,7 @@ import {
   AllFiltersSetAction,
 } from "../../actions/map/AllFiltersSetAction";
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
-import {setAllFilterIndexNull} from "../../reducerFunctions/setAllFilterIndexNull";
+import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
@@ -250,7 +250,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
           //
-          setAllFilterIndexNull(attributeStatesOfFeatureType);
+          setAllFilterIndexesNull(attributeStatesOfFeatureType);
         }
       }
       //Reset the attribute counter as no attributes are filterable at the time.

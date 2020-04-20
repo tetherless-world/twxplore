@@ -1,6 +1,6 @@
 import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState";
 
-export const setAllFilterIndexNull = (attributeStatesOfFeatureType: {
+export const setAllFilterIndexesNull = (attributeStatesOfFeatureType: {
   [featureAttributeName: string]: MapFeatureAttributeState;
 }) => {
   Object.keys(attributeStatesOfFeatureType).map(attributeName => {
