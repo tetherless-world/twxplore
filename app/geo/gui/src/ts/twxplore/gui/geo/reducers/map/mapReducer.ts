@@ -119,6 +119,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
         const attributeStatesOfFeatureType =
           result.featuresByType[addedFeature.type!].attributeStates;
+        console.debug(attributeStatesOfFeatureType);
 
         //Compare the attributes of the addedFeature to what is stored on the state. Update if neccessary.
         updateAttributeStatesOfFeatureType(
