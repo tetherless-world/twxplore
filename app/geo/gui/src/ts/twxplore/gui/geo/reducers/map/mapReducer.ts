@@ -47,6 +47,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     When a list in featuresByType is changed, then dirty is set to true.
     */
     case ADD_MAP_FEATURES: {
+      console.debug("ADD_MAP_FEATURES action being handled");
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       //for each feature provided by the action payload
       for (const feature of addMapFeaturesAction.payload.features) {
@@ -66,6 +67,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           feature.type! as keyof typeof result.featuresByType
         ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
       }
+      console.debug("ADD_MAP_FEATURES action completed.");
       break;
     }
 
@@ -73,6 +75,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     Handles the action that renders features onto the map
     */
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
+      console.debug("ADD_DATA_TO_MAP action being handled");
       const addDataToMapAction: any = action;
       //This action is a KeplerGL action, and features are put into 'rows'
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
@@ -123,6 +126,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           addedFeature
         );
       }
+      console.debug("ADD_DATA_TO_MAP action completed.");
       break;
     }
     /*
@@ -131,6 +135,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     feature from loadingState and change the state of the feature back to RENDERED.
     */
     case FINISH_LOAD_ACTION: {
+      console.debug("FINISH_LOAD_ACTION started");
       const finishLoadAction = action as FinishLoadAction;
       //for all features that have finished loading
       for (const actionUri of finishLoadAction.payload.uris) {
@@ -177,6 +182,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           }
         }
       }
+      console.debug("FINISH_LOAD_ACTION complete");
       break;
     }
 
@@ -196,6 +202,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     feature is put into the CLICKED_AND_LOADING state
     */
     case START_QUERYING: {
+      console.debug("START_QUERYING action being handled");
       const startQueryingAction = action as StartQueryingAction;
       //Uri of the feature being queried
       const featureUri = startQueryingAction.payload.uri;
@@ -247,11 +254,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       //Reset the attribute counter as no attributes are filterable at the time.
       result.filterableAttributesCounter = 0;
-
+      console.debug("START_QUERYING action completed");
       break;
     }
 
     case REPEAT_QUERY: {
+      console.debug("REPEAT_QUERY action being handled");
       const repeatQueryAction = action as RepeatQueryAction;
       const featureUri = repeatQueryAction.payload.featureUri;
       if (!result.loadingState[featureUri]) {
@@ -261,6 +269,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       //the queryInProgress variable for this state becomes true as we are going to repeat the query but with a different offset
       result.loadingState[featureUri].queryInProgress = true;
+      console.debug("REPEAT_QUERY action completed.");
       break;
     }
 
@@ -272,6 +281,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     */
 
     case COMPLETED_QUERY: {
+      console.debug("COMPLETED_QUERY action being handled");
       const completedQueryAction = action as CompletedQueryAction;
       const featureUri = completedQueryAction.payload.uri;
       const latestQueryLength = completedQueryAction.payload.latestQueryLength;
@@ -288,6 +298,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Track the length of the last query.
         result.loadingState[featureUri].latestQueryLength = latestQueryLength;
       }
+      console.debug("COMPLETE_QUERY action completed");
       break;
     }
 
@@ -300,6 +311,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       has been dispatched (which also implies the number of filters).
       These filters will be attached to attributes in FilterSliders.tsx
       */
+      console.debug("ADD_FILTER action being handled");
       const addFilterAction = action as any;
       //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED to indicate the process
       //for adding a filter for each filterable attribute of this feature type has begun
@@ -307,20 +319,25 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         MapFeatureTypeState.FILTERS_ADDED;
       //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
+      console.debug("ADD_FILTER action completed");
       break;
     }
 
     case ALL_FILTERS_SET: {
+      console.debug("ALL_FILTERS_SET action being handled");
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
         allFiltersSetAction.payload.featureType
       ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
+      console.debug("ALL_FILTERS_SET action completed");
       break;
     }
 
     case "@@kepler.gl/REMOVE_FILTER": {
+      console.debug("REMOVE_FILTER action being handled");
       //Decrement filterCounter on the redux state, because a filter has just been removed.
       result.filterCounter -= 1;
+      console.debug("REMOVE_FILTER action compeleted");
       break;
     }
 
@@ -333,6 +350,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     to change the state of the feature to CLICKED
     */
     case "@@kepler.gl/LAYER_CLICK": {
+      console.debug("LAYER_CLICK action being handled");
       const layerClickAction: any = action;
 
       const resultFeature = getFeatureFromStateFeaturesList(
@@ -354,6 +372,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           " to state " +
           MapFeatureState.CLICKED
       );
+      console.debug("LAYER_CLICK action completed");
+
       break;
     }
     default: {
