@@ -33,42 +33,52 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+  var filterIndexOfAttribute: number | null = null;
 
+  //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
   const featureTypeState = state.featuresByType[featureType].featureTypeState;
-  const featureTypeAttributeState =
+
+  //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
+  //an attribute of that FeatureType.
+  //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
+  const attributeStatesOfFeatureType =
     state.featuresByType[featureType].attributeStates;
+
   const dispatch = useDispatch();
+
   const handleChange = (
     event: any,
     newValue: number | number[],
-    attribute: string,
-    idx: number
+    filterIndexOfAttribute: number
   ) => {
-    dispatch(setFilter(idx, "value", newValue));
+    dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
   };
-
+  const onChangeCommitted = (event: any, newValue: number | number[]) => {
+    handleChange(event, newValue, filterIndexOfAttribute!);
+  };
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
-      {Object.keys(featureTypeAttributeState).map(attribute => {
-        //attribute being an attribute of a feature e.g. timestamp, frequency
-        const attributeProperties = featureTypeAttributeState[attribute]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        const idx = attributeProperties.filterIndex;
+      {//for each attributeName string-key that points to a MapFeatureAttribute state
+      Object.keys(attributeStatesOfFeatureType).map(attributeName => {
+        const stateOfAttribute = attributeStatesOfFeatureType[attributeName]; //e.g. timestamp:{min,max}, frequency:{min, max}
+        filterIndexOfAttribute = stateOfAttribute.filterIndex;
         switch (featureTypeState) {
+          //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-            dispatch(setFilter(idx, "name", attribute));
+            dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
             dispatch(
               setFilter(
-                idx,
+                filterIndexOfAttribute,
                 "type",
-                getFeatureAttributeByName(attribute).filterType
+                getFeatureAttributeByName(attributeName).filterType
               )
             );
             dispatch(
-              setFilter(idx, "value", [
-                attributeProperties.min,
-                attributeProperties.max,
+              setFilter(filterIndexOfAttribute, "value", [
+                stateOfAttribute.min,
+                stateOfAttribute.max,
               ])
             );
             dispatch(
@@ -78,33 +88,29 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
             );
             return <React.Fragment />;
           }
+          //If filters have been set
           case MapFeatureTypeState.FILTERS_SET: {
             return (
-              <div key={attribute}>
+              <div key={attributeName}>
                 <Typography id="type" gutterBottom>
-                  {attribute}
+                  {attributeName}
                 </Typography>
                 <Slider
-                  defaultValue={[
-                    attributeProperties.min!,
-                    attributeProperties.max!,
-                  ]}
+                  defaultValue={[stateOfAttribute.min!, stateOfAttribute.max!]}
                   getAriaValueText={valuetext}
                   aria-labelledby="range-slider"
                   step={1}
-                  min={attributeProperties.min!}
-                  max={attributeProperties.max!}
+                  min={stateOfAttribute.min!}
+                  max={stateOfAttribute.max!}
                   valueLabelDisplay="auto"
-                  disabled={!attributeProperties.max!}
-                  onChangeCommitted={(
-                    event: any,
-                    newValue: number | number[]
-                  ) => handleChange(event, newValue, attribute, idx!)}
-                  name={attribute}
+                  disabled={!stateOfAttribute.max!}
+                  onChangeCommitted={onChangeCommitted}
+                  name={attributeName}
                 />
               </div>
             );
           }
+          //This handles the case in which the featureTypeState is ABSENT_ON_MAP or WAITING_ON_LOAD
           default: {
             return <React.Fragment />;
           }
