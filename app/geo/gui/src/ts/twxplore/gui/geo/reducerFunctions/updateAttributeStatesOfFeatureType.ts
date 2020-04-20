@@ -9,21 +9,21 @@ export const updateAttributeStatesOfFeatureType = (
   addedFeature: MapFeature
 ) => {
   //Loop through the feature's attribute
-  for (const attribute of Object.keys(addedFeature)) {
+  for (const attributeName of Object.keys(addedFeature)) {
     //If the arttribute is numeric
-    if (getFeatureAttributeByName(attribute).isNumeric) {
+    if (getFeatureAttributeByName(attributeName).isNumeric) {
       //If this is the first time coming across this attribute for this feature type
       if (
-        !attributeStatesOfFeatureType[attribute].min &&
-        !attributeStatesOfFeatureType[attribute].max
+        !attributeStatesOfFeatureType[attributeName].min &&
+        !attributeStatesOfFeatureType[attributeName].max
       ) {
         //New max of the attribute wil be the feature's value for the attribute
-        attributeStatesOfFeatureType[attribute].max = (addedFeature as any)[
-          attribute
+        attributeStatesOfFeatureType[attributeName].max = (addedFeature as any)[
+          attributeName
         ];
         //New min of the attribute wil be the feature's value for the attribute
-        attributeStatesOfFeatureType[attribute].min = (addedFeature as any)[
-          attribute
+        attributeStatesOfFeatureType[attributeName].min = (addedFeature as any)[
+          attributeName
         ];
       }
       //If this is NOT the first time coming across this attribute for this feature type
