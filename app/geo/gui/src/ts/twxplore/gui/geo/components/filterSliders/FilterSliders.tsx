@@ -26,6 +26,7 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
+//var filterIndexOfAttribute: number | null; //necessary to pass this into onChangeCommitted since it
 const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
 }) => {
@@ -33,8 +34,6 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  //necessary to pass this into onChangeCommitted since it is no longer called inline :(
-  var filterIndexOfAttribute: number | null = null;
 
   //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
   const featureTypeState = state.featuresByType[featureType].featureTypeState;
@@ -54,16 +53,16 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
   };
-  const onChangeCommitted = (event: any, newValue: number | number[]) => {
-    handleChange(event, newValue, filterIndexOfAttribute!);
-  };
+  //const onChangeCommitte = (event: any, newValue: number | number[]) => {
+  //handleChange(event, newValue, filterIndexOfAttribute!);
+  //};
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
       {//for each attributeName string-key that points to a MapFeatureAttribute state
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
         const stateOfAttribute = attributeStatesOfFeatureType[attributeName]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        filterIndexOfAttribute = stateOfAttribute.filterIndex;
+        const filterIndexOfAttribute = stateOfAttribute.filterIndex;
         switch (featureTypeState) {
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
@@ -105,7 +104,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                   max={stateOfAttribute.max!}
                   valueLabelDisplay="auto"
                   disabled={!stateOfAttribute.max!}
-                  onChangeCommitted={onChangeCommitted}
+                  onChangeCommitted={(
+                    event: any,
+                    newValue: number | number[]
+                  ) => handleChange(event, newValue, filterIndexOfAttribute!)}
                   name={attributeName}
                 />
               </div>
