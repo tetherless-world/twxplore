@@ -26,7 +26,9 @@ import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import ReactResizeDetector from "react-resize-detector";
-import {noDirtyFeaturesListCheck} from "./noDirtyFeaturesListCheck";
+import {FeaturesByType} from "../../states/map/FeaturesByType";
+import * as _ from "lodash";
+
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const limit = 500;
@@ -87,6 +89,18 @@ const MapImpl: React.FunctionComponent = () => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
   });
+
+  const hasDirtyFeatures = (featuresByType: {
+    [featureType: string]: FeaturesByType;
+  }) => {
+    for (const featureType of Object.values(FeatureType)) {
+      //Check if filters need to be added for this FeatureType
+      if (featuresByType[featureType].dirty) {
+        return true;
+      }
+    }
+    return false;
+  };
   console.log(getFeaturesWithinResults.loading);
   //if there are no states loaded
   if (state.features.length === 0) {
@@ -191,7 +205,7 @@ const MapImpl: React.FunctionComponent = () => {
           if (
             state.featuresByType[featureType].featureTypeState ===
               MapFeatureTypeState.NEEDS_FILTERS &&
-            noDirtyFeaturesListCheck(state.featuresByType)
+            !hasDirtyFeatures(state.featuresByType)
           ) {
             //Dispatch the addFilter action 3 times (1 for each of frequency, timeStamp, transmissionPower)
             for (var x = 0; x < 3; ++x) {
