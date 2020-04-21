@@ -37,7 +37,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
     <React.Fragment>
-      {Object.keys(state.featureTypesFilters).map(featureType => {
+      {Object.keys(state.featuresByType).map(featureType => {
         return (
           <ExpansionPanel key={featureType}>
             <ExpansionPanelSummary

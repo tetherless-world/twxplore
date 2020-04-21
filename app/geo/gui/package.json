@@ -8,7 +8,7 @@
     "@material-ui/lab": "^4.0.0-alpha.44",
     "@tetherless-world/twxplore-base": "1.0.8",
     "dotenv": "^8.2.0",
-    "kepler.gl": "^1.1.13",
+    "kepler.gl": "^2.1.2",
     "react-palm": "^3.1.2",
     "react-redux": "^7.1.3",
     "react-resize-detector": "^4.2.1",
@@ -16,11 +16,11 @@
     "react-sidebar": "^3.0.2",
     "redux": "^4.0.5",
     "redux-actions": "^2.6.5",
+    "redux-devtools-extension": "^2.13.8",
     "styled-components": "^5.0.0",
     "terraformer-wkt-parser": "^1.2.1",
     "wicket": "^1.3.5",
-    "xstate": "^4.7.8",
-    "redux-devtools-extension": "^2.13.8"
+    "xstate": "^4.7.8"
   },
   "license": "Apache 2",
   "private": true,

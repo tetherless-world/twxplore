@@ -1,4 +1,4 @@
-import {addDataToMap} from "kepler.gl/actions";
+import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -12,34 +12,61 @@ import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import Processors from "kepler.gl/processors";
 import KeplerGl from "kepler.gl";
-import ReactResizeDetector from "react-resize-detector";
+//import ReactResizeDetector from "react-resize-detector";
 import * as React from "react";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {changeMapFeatureState} from "../../actions/map/ChangeMapFeatureStateAction";
-import {FilterPanel} from "../filterPanel/FilterPanel";
+//import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
 import {addFilter} from "../../actions/map/AddFilterAction";
+import {completedQuery} from "../../actions/map/CompletedQueryAction";
+import {startQuerying} from "../../actions/map/StartQueryingAction";
+import {finishLoad} from "../../actions/map/FinishLoadAction";
+import {repeatQuery} from "../../actions/map/RepeatQueryAction";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {FilterPanel} from "../filterPanel/FilterPanel";
+import ReactResizeDetector from "react-resize-detector";
+import {FeaturesByType} from "../../states/map/FeaturesByType";
+import * as _ from "lodash";
 
+//import KeplerGlSchema from "kepler.gl/schemas";
+
+const limit = 500;
+const DEBUG = true;
 var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
+  //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
 
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-
+  /*
+  const fake_state: any = useSelector(
+    (rootState: RootState) => rootState.keplerGl
+  );
+  console.debug(fake_state);
+  */
   // Load features on first render
   const initialFeaturesQueryResult = useQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
-  const [getFeaturesWithin] = useLazyQuery<
+  // LazyQuery to get features within a feature.
+  const [getFeaturesWithin, getFeaturesWithinResults] = useLazyQuery<
     MapFeaturesQuery,
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
+      //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
+      dispatch(
+        completedQuery(
+          getFeaturesWithinResults.variables.query.withinFeatureUri!,
+          data.features.length
+        )
+      );
+      // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
@@ -59,9 +86,25 @@ const MapImpl: React.FunctionComponent = () => {
         )
       );
     },
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
   });
 
+  const hasDirtyFeatures = (featuresByType: {
+    [featureType: string]: FeaturesByType;
+  }) => {
+    for (const featureType of Object.values(FeatureType)) {
+      //Check if filters need to be added for this FeatureType
+      if (featuresByType[featureType].dirty) {
+        return true;
+      }
+    }
+    return false;
+  };
+  console.log(getFeaturesWithinResults.loading);
+  //if there are no states loaded
   if (state.features.length === 0) {
+    //if the data variable has been loaded
     if (initialFeaturesQueryResult.data) {
       // Not tracking any features yet, add the boroughs we loaded
       dispatch(
@@ -97,68 +140,175 @@ const MapImpl: React.FunctionComponent = () => {
       case MapFeatureState.LOADED: {
         /*
         Features in this state have been queried, created and pushed into the
-        features state list that is located on the store. The next step is to
-        add the data of the features to the map using the addDataToMap action which is reduced by
-        keplerGL reducer.. The geometry of the feature is used
-        to display its location and shape on the map.
+        features state list that is located on the store. They have also been pushed into the appropriate place of the 
+        featuresByType map located on the store. During this process, the 'dirty' variable of the lists in which they were pushed have
+        been set to true. The next step is to loop through each list of featuresByType and re-add the features to the map
+        if their dirty variable is true.
+
         */
-        //!Object.keys(state.featureTypesFilters).includes(feature.type!))
-        for (const feature of featuresInState) {
-          const filterCounter = state.filterCounter;
-          if (
-            feature.type! === FeatureType.Transmission &&
-            filterCounter < 20
-          ) {
-            //hardcoded number of filters to add for now
-            //this is first time coming across type. Add a filter for it and create a typeRange object for it.
-            dispatch(addFilter(feature.type, feature, filterCounter));
-            return null;
+
+        //looping through every featureType available.
+        for (const featureType of Object.values(FeatureType)) {
+          //if the dirty variable indicates that the list of features of that type has been modified since last add
+          if (state.featuresByType[featureType].dirty) {
+            const dirtyLoaded = state.featuresByType[featureType].features;
+            //const newLoaded = [...oldLoaded, ...featuresInState];
+
+            //create new dataset with
+            const datasets = {
+              data: Processors.processGeojson({
+                type: "FeatureCollection",
+                features: dirtyLoaded.map(feature => {
+                  return {
+                    type: "Feature",
+                    geometry: wkt.parse(feature.geometry.wkt),
+                    properties: feature,
+                  };
+                }),
+              }),
+              info: {
+                id: featureType,
+              },
+            };
+            /*
+            if (fake_state.map) {
+              config = getMapConfig();
+            }
+            */
+            //might remove this, but will leave it for now
+            dispatch(removeDataset(featureType));
+            //dispatch addDataToMap action with new dataset
+
+            dispatch(
+              addDataToMap({
+                datasets,
+                options: {centerMap: true, readOnly: true},
+              })
+            );
           }
         }
 
-        const datasets = {
-          data: Processors.processGeojson({
-            type: "FeatureCollection",
-            features: featuresInState.map(feature => {
-              return {
-                type: "Feature",
-                geometry: wkt.parse(feature.geometry.wkt),
-                properties: feature,
-              };
-            }),
-          }),
-          info: {
-            id: featuresInState[0].type,
-          },
-        };
-        dispatch(
-          addDataToMap({
-            datasets,
-            options: {centerMap: true, readOnly: true},
-          })
-        );
+        break;
+      }
 
+      /*
+      Features in this state have been rendered. Checks the state of all FeatureTypes to see if they NEED_FILTERS.
+      If so, then adds 3 filters for that FeatureType (1 for each of frequency, timeStamp, transmissionPower).
+
+      */
+      case MapFeatureState.RENDERED: {
+        //loop through each feature type
+        for (const featureType of Object.values(FeatureType)) {
+          //Check if filters need to be added for this FeatureType
+          //We don't want to addFilters when some featuresByType lists are
+          //still dirty because then the filters will be removed by removeDataset() in the LOADED case
+          if (
+            state.featuresByType[featureType].featureTypeState ===
+              MapFeatureTypeState.NEEDS_FILTERS &&
+            !hasDirtyFeatures(state.featuresByType)
+          ) {
+            //Dispatch the addFilter action 3 times (1 for each of frequency, timeStamp, transmissionPower)
+            for (var x = 0; x < 3; ++x) {
+              /*
+              Dispatch addFilter with the FeatureType,
+              which is also the name of the dataset
+              we are attaching the filter too.
+              Note that the attribute we intend to use with the filter isn't passed with addFilter.
+              Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType, and 
+              worry about assigning them an attribute in FilterSliders.tsx (setFilter(idx,"name","timeStamp"))
+              */
+              dispatch(
+                addFilter(FeatureType[featureType as keyof typeof FeatureType])
+              );
+            }
+          }
+        }
         break;
       }
 
       case MapFeatureState.CLICKED: {
         /*
-      Features in this state have been clicked on the map. They now need to
-      LOAD in their child features.
+      Features in this state have been clicked on the map. A query for calling features within this feature is called with a limit.
+      This feature may contain even more features than the limit and thus is put into the 'CLICKED AND LOADING' state.
       */
-
-        const clickedUris: string[] = [];
+        //For clicked feature
         for (const clickedFeature of featuresInState) {
+          //if the feature is expandable. Should be changed later with something like if isExpandable()
           if (clickedFeature.type !== FeatureType.Transmission) {
+            for (var x = state.filterCounter - 1; x >= 0; x--) {
+              dispatch(removeFilter(x));
+            }
+            //call the lazyQuery to get features within the clickedFeaturee
             getFeaturesWithin({
               variables: {
-                query: {withinFeatureUri: clickedFeature.uri},
+                query: {
+                  withinFeatureUri: clickedFeature.uri,
+                },
+                limit,
+                offset: 0,
               },
             });
+            //dispatch action that indicates that the query has been started.
+            dispatch(startQuerying(clickedFeature.uri));
           }
-          clickedUris.push(clickedFeature.uri);
         }
-        dispatch(changeMapFeatureState(clickedUris, MapFeatureState.RENDERED));
+        break;
+      }
+
+      /*
+      Features in this state have been clicked and querying to find features within them has already been completed once.
+      The loading and finishedQuery variables are used to check if a query is still in progress. Once the query is done,
+      we compare the number of features gotten from the query (latestDataCounter) to the limit we gave it. If they are equal,
+      then more querying needs to be done as we need to query until we are not capped by the limit.
+      The totalDataCounter tracks how many features have been received and is used to offset for the next query.
+
+      */
+      case MapFeatureState.CLICKED_AND_LOADING: {
+        const finishedLoadingUris: string[] = [];
+
+        //for each clicked-and-loading feature
+        for (const clickedFeature of featuresInState) {
+          //Get the loadingState of the feature
+          const featureLoadingState = state.loadingState[clickedFeature.uri];
+          //if the queryInProgress loadingState of the loadingState indicates that a query is still ongoing
+          if (featureLoadingState.queryInProgress) {
+            //Stop doing stuff. We shouldn't start another query while one is still ongoing!
+            console.log(getFeaturesWithinResults.data);
+            console.log(getFeaturesWithinResults.variables);
+            break;
+          }
+
+          //A query is not in progress. If the length of the previous query was capped by the limit variable that was passed...
+          if (
+            featureLoadingState.latestQueryLength === limit &&
+            (featureLoadingState.offset < 2000 || !DEBUG)
+          ) {
+            console.log("Made it here");
+            //Same lazyQuery as in the CLICKED state, we are simply going further
+            getFeaturesWithin({
+              variables: {
+                query: {
+                  withinFeatureUri: clickedFeature.uri,
+                },
+
+                limit,
+                offset: featureLoadingState.offset,
+              },
+            });
+            //This will set the queryInprogress in loadingState of the feature to 'true' again.
+            dispatch(repeatQuery(clickedFeature.uri));
+            //If the length of the results of the query were not capped by the limited. That indicates that there are no more feautures to query.
+          } else {
+            //push the feature into a list of features that have finished loading.
+            finishedLoadingUris.push(clickedFeature.uri);
+          }
+        }
+        //dispatch action to loadingState of all features that have finished loading from the redux state.
+        //This dispatch was the bane of my existence for the whole day.
+        //To prevent re-renders, it will only be called when the finishedLoadingUris list is populated
+        if (finishedLoadingUris.length > 0)
+          dispatch(finishLoad(finishedLoadingUris));
+        break;
       }
     }
   }
@@ -166,7 +316,6 @@ const MapImpl: React.FunctionComponent = () => {
   // Kepler.gl documentation:
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
-
   return (
     <div>
       <div style={{width: "100%"}}>
@@ -177,9 +326,8 @@ const MapImpl: React.FunctionComponent = () => {
             <div>
               <KeplerGl
                 id="map"
-                width={width}
                 mapboxApiAccessToken="pk.eyJ1Ijoia3Jpc3RvZmVya3dhbiIsImEiOiJjazVwdzRrYm0yMGF4M2xud3Ywbmg2eTdmIn0.6KS33yQaRAC2TzWUn1Da3g"
-                height={height}
+                width={width}
               />
             </div>
           )}

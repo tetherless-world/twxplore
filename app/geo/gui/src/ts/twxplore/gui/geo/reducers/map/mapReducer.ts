@@ -1,11 +1,6 @@
 import {BaseAction} from "redux-actions";
 
 import {MapFeatureState} from "../../states/map/MapFeatureState";
-import {MapFeature} from "../../states/map/MapFeature";
-import {
-  CHANGE_MAP_FEATURE_STATE,
-  ChangeMapFeatureStateAction,
-} from "../../actions/map/ChangeMapFeatureStateAction";
 import {
   ADD_MAP_FEATURES,
   AddMapFeaturesAction,
@@ -16,97 +11,295 @@ import {
   ChangeTypeVisibilityAction,
 } from "../../actions/map/ChangeTypeVisibilityAction";
 import {ADD_FILTER} from "../../actions/map/AddFilterAction";
+import {
+  START_QUERYING,
+  StartQueryingAction,
+} from "../../actions/map/StartQueryingAction";
+import {
+  COMPLETED_QUERY,
+  CompletedQueryAction,
+} from "../../actions/map/CompletedQueryAction";
+import {
+  FINISH_LOAD_ACTION,
+  FinishLoadAction,
+} from "../../actions/map/FinishLoadAction";
+import {MapFeature} from "../../states/map/MapFeature";
+import {
+  REPEAT_QUERY,
+  RepeatQueryAction,
+} from "../../actions/map/RepeatQueryAction";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {
+  ALL_FILTERS_SET,
+  AllFiltersSetAction,
+} from "../../actions/map/AllFiltersSetAction";
+import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
+import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
+import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
 
   switch (action.type) {
+    /*
+    In this step, features are added to the features list and featuresByType map in state.
+    When a list in featuresByType is changed, then dirty is set to true.
+    */
     case ADD_MAP_FEATURES: {
+      console.debug("ADD_MAP_FEATURES action being handled");
       const addMapFeaturesAction = action as AddMapFeaturesAction;
+      //for each feature provided by the action payload
       for (const feature of addMapFeaturesAction.payload.features) {
+        //push the feature into the feature list provided by the state
         result.features.push(feature);
+        //push the feature into the featureByType list provided by the state
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].features.push(feature);
+        //Because the list was modified, set the 'dirty' variable to true
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].dirty = true;
+        //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD to ensure that filters
+        //for this feature type will not be added until all queries are completed
+        result.featuresByType[
+          feature.type! as keyof typeof result.featuresByType
+        ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
       }
+      console.debug("ADD_MAP_FEATURES action completed.");
       break;
     }
+
+    /*
+    Handles the action that renders features onto the map
+    */
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
+      console.debug("ADD_DATA_TO_MAP action being handled");
       const addDataToMapAction: any = action;
+      //This action is a KeplerGL action, and features are put into 'rows'
       for (const row of addDataToMapAction.payload.datasets.data.rows) {
+        //Retrieving the feature in the row
         const addedFeature: MapFeature = row[0].properties;
-        for (const resultFeature of result.features) {
-          if (resultFeature.uri === addedFeature.uri) {
-            resultFeature.state = MapFeatureState.RENDERED;
-            console.debug(
-              "changed map feature " +
-                resultFeature.uri +
-                " to state " +
-                MapFeatureState.RENDERED
-            );
-          }
+        //if the uri of the addedFeature and a feature in the redux state match
+        const resultFeature = getFeatureFromStateFeaturesList(
+          result.features,
+          addedFeature.uri
+        );
+        if (!resultFeature) {
+          throw Error(
+            "Features are not added to the map until after they are loaded,\
+              and therefore it should exist in the features list on the state.\
+              (Look at code ADD_MAP_FEATURES reducer case)"
+          );
         }
+
+        //Change the state of the feature to RENDERED, because we are putting it on the map
+        resultFeature.state = MapFeatureState.RENDERED;
+        //Change the dirty variable for that feature type to false, as it is obvious we are now adding
+        //features of that type to the map.
+        result.featuresByType[
+          resultFeature.type! as keyof typeof result.featuresByType
+        ].dirty = false;
+        console.debug(
+          "changed map feature " +
+            resultFeature.uri +
+            " to state " +
+            MapFeatureState.RENDERED
+        );
+
         /*
-        Checks the filterState of the type of feature being added to the map.
-        Loops throrugh the attributes of the feature, checks to see which are of type number
-        and updates the min and maxes of the attribute in the filterState if neccessary
+        Check the filterState of the type of feature being added to the map.
+        Loop throrugh the attributes of the feature and check to see which are of type number.
+        Updates the min and maxes of the attributes in the filterState if necessary.
         */
-        const filterStateOfType =
-          result.featureTypesFilters[addedFeature.type!];
-        if (addedFeature.type === FeatureType.Transmission) {
-          for (const attribute of Object.keys(addedFeature)) {
-            //     console.log(attribute + " " + typeof ((addedFeature as any)[attribute]));
-            console.log(
-              FeatureAttributeName[
-                attribute as keyof typeof FeatureAttributeName
-              ]
-            );
-            if (getFeatureAttributeByName(attribute).isNumeric) {
-              {
-                if (
-                  (addedFeature as any)[attribute] <
-                  filterStateOfType[attribute].min!
-                )
-                  filterStateOfType[attribute].min = (addedFeature as any)[
-                    attribute
-                  ];
-                else if (
-                  (addedFeature as any)[attribute] >
-                  filterStateOfType[attribute].max!
-                )
-                  filterStateOfType[attribute].max = (addedFeature as any)[
-                    attribute
-                  ];
-              }
-            }
+
+        //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
+        //an attribute of that FeatureType.
+        //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
+        const attributeStatesOfFeatureType =
+          result.featuresByType[addedFeature.type!].attributeStates;
+        console.debug(attributeStatesOfFeatureType);
+
+        //Compare the attributes of the addedFeature to what is stored on the state. Update if neccessary.
+        updateAttributeStatesOfFeatureType(
+          attributeStatesOfFeatureType,
+          addedFeature
+        );
+      }
+      console.debug("ADD_DATA_TO_MAP action completed.");
+      break;
+    }
+    /*
+    This action is dispatched and handled when the last query to retrieve all features within a feature
+    has completed. There are no more queries to do, it has finished loading, and so we need to remove the loading state of the
+    feature from loadingState and change the state of the feature back to RENDERED.
+    */
+    case FINISH_LOAD_ACTION: {
+      console.debug("FINISH_LOAD_ACTION started");
+      const finishLoadAction = action as FinishLoadAction;
+      //for all features that have finished loading
+      for (const actionUri of finishLoadAction.payload.uris) {
+        //if the uri provided by the action payload and a feature in the redux state match
+        //then get the feature from the redux state
+        const resultFeature = getFeatureFromStateFeaturesList(
+          result.features,
+          actionUri
+        );
+        if (!resultFeature) {
+          throw Error(
+            "Attempt to change state of feature from CLICKED_AND_LOADING to RENDERED failed.\
+            Feature does not exist in features list in the redux state"
+          );
+        }
+
+        //Set the state of the feature from CLICKED_AND_LOADING to RENDERED
+        resultFeature.state = MapFeatureState.RENDERED;
+
+        //Remove the loading state of the feature from loadingState
+        delete result.loadingState[actionUri];
+
+        //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
+        for (const featureType of Object.values(FeatureType)) {
+          let featuresByTypeOfType =
+            result.featuresByType[featureType as keyof typeof FeatureType];
+          let filterTypeStateOfFeatureType =
+            result.featuresByType[featureType as keyof typeof FeatureType]
+              .attributeStates;
+
+          if (
+            featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.WAITING_FOR_LOAD
+          ) {
+            featuresByTypeOfType.featureTypeState =
+              //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
+              MapFeatureTypeState.NEEDS_FILTERS;
+            //Give each attribute with the FeatureType that is filterable a filter idx (index)
+            Object.keys(filterTypeStateOfFeatureType).map(attributeName => {
+              filterTypeStateOfFeatureType[attributeName].filterIndex =
+                result.filterableAttributesCounter;
+              result.filterableAttributesCounter += 1;
+            });
           }
         }
       }
+      console.debug("FINISH_LOAD_ACTION complete");
       break;
     }
-    case CHANGE_MAP_FEATURE_STATE: {
-      const changeMapFeatureStateAction = action as ChangeMapFeatureStateAction;
-      for (const actionUri of changeMapFeatureStateAction.payload.uris) {
-        for (const resultFeature of result.features) {
-          if (resultFeature.uri === actionUri) {
-            resultFeature.state = changeMapFeatureStateAction.payload.state;
-            console.debug(
-              "changed map feature " +
-                resultFeature.uri +
-                " to state " +
-                changeMapFeatureStateAction.payload.state
-            );
-          }
-        }
-      }
-      break;
-    }
+
+    //Probably needs some reworking
     case CHANGE_TYPE_VISIBILITY: {
       const changeTypeVisibilityAction = action as ChangeTypeVisibilityAction;
       const targetedType = changeTypeVisibilityAction.payload.typeName;
       result.typesVisibility[targetedType] = !result.typesVisibility[
         targetedType
       ];
+      break;
+    }
+
+    /*
+    This action is dispatched and handled when the first query to retrieve all features within a feature
+    has begun. The loading state of the feature is initialized in loadingState with default values. The
+    feature is put into the CLICKED_AND_LOADING state
+    */
+    case START_QUERYING: {
+      console.debug("START_QUERYING action being handled");
+      const startQueryingAction = action as StartQueryingAction;
+      //Uri of the feature being queried
+      const featureUri = startQueryingAction.payload.uri;
+      //Create loading state of the feature with default values.
+      result.loadingState[featureUri] = {
+        offset: 0,
+        latestQueryLength: 0,
+        queryInProgress: true,
+      };
+
+      const resultFeature = getFeatureFromStateFeaturesList(
+        result.features,
+        featureUri
+      );
+      if (!resultFeature) {
+        throw Error(
+          "Attempt to change state of feature from CLICKED to CLICKED_AND_LOADING failed.\
+          Feature does not exist in features list in the redux state"
+        );
+      }
+
+      //Change the state of the feature to CLICKED_AND_LOADING where it may queried further.
+      resultFeature.state = MapFeatureState.CLICKED_AND_LOADING;
+
+      //Change state of all feature types that have had their filters added to WAITING FOR LOAD because a query has just started
+      //for each FeatureType
+      for (const featureType of Object.values(FeatureType)) {
+        let featuresByTypeOfType =
+          result.featuresByType[featureType as keyof typeof FeatureType];
+        let attributeStatesOfFeatureType =
+          result.featuresByType[featureType as keyof typeof FeatureType]
+            .attributeStates;
+
+        if (
+          //If the filters of the attributes of a FeatureType have been added/set
+          featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.FILTERS_ADDED ||
+          featuresByTypeOfType.featureTypeState ===
+            MapFeatureTypeState.FILTERS_SET
+        ) {
+          //Set the state of the featureTypeState to WAITING_FOR_LOAD
+          //because a query has started. Filters are going to be removed
+          //and we need to wait for the queries to end before re-adding the filters.
+          featuresByTypeOfType.featureTypeState =
+            MapFeatureTypeState.WAITING_FOR_LOAD;
+          //
+          setAllFilterIndexesNull(attributeStatesOfFeatureType);
+        }
+      }
+      //Reset the attribute counter as no attributes are filterable at the time.
+      result.filterableAttributesCounter = 0;
+      console.debug("START_QUERYING action completed");
+      break;
+    }
+
+    case REPEAT_QUERY: {
+      console.debug("REPEAT_QUERY action being handled");
+      const repeatQueryAction = action as RepeatQueryAction;
+      const featureUri = repeatQueryAction.payload.featureUri;
+      if (!result.loadingState[featureUri]) {
+        throw Error(
+          "There should be a loading state for the feature at this point."
+        );
+      }
+      //the queryInProgress variable for this state becomes true as we are going to repeat the query but with a different offset
+      result.loadingState[featureUri].queryInProgress = true;
+      console.debug("REPEAT_QUERY action completed.");
+      break;
+    }
+
+    /*
+    This action is dispatched and handled when a query to retrieve all features within a feature
+    has completed. This is different from FINISH_LOAD_ACTION, which is called only when the LAST query
+    has completed. After the last query, COMPLETED_QUERY is called before FINISH_LOAD_ACTION. The loading state of the feature is updated
+    with the results of every query after it has been completed.
+    */
+
+    case COMPLETED_QUERY: {
+      console.debug("COMPLETED_QUERY action being handled");
+      const completedQueryAction = action as CompletedQueryAction;
+      const featureUri = completedQueryAction.payload.uri;
+      const latestQueryLength = completedQueryAction.payload.latestQueryLength;
+      //If the feature does not have loading state in loadingState
+      if (!result.loadingState[featureUri]) {
+        throw Error(
+          "There should be a loading state for the feature at this point."
+        );
+      } else {
+        //queryInProgress set to false because the query just finished
+        result.loadingState[featureUri].queryInProgress = false;
+        //The new offset needs to account for the length of the results from the last query
+        result.loadingState[featureUri].offset += latestQueryLength;
+        //Track the length of the last query.
+        result.loadingState[featureUri].latestQueryLength = latestQueryLength;
+      }
+      console.debug("COMPLETE_QUERY action completed");
       break;
     }
 
@@ -119,24 +312,33 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       has been dispatched (which also implies the number of filters).
       These filters will be attached to attributes in FilterSliders.tsx
       */
-      const addFilterAction: any = action; //any cast because AddFilterAction does not extend BaseAction (no payload property)
-      const addedFeature: any = addFilterAction.feature;
-      if (!result.featureTypesFilters[addedFeature.type!]) {
-        result.featureTypesFilters[addedFeature.type!] = {};
-        const filterStateOfType =
-          result.featureTypesFilters[addedFeature.type!];
-        for (const attribute of Object.keys(addedFeature)) {
-          if (getFeatureAttributeByName(attribute).isNumeric) {
-            filterStateOfType[attribute] = {min: null, max: null, idx: null};
-            filterStateOfType[attribute].max = addedFeature[attribute];
-            filterStateOfType[attribute].min = addedFeature[attribute];
-            filterStateOfType[attribute].idx = result.attributeCounter;
-
-            result.attributeCounter += 1;
-          }
-        }
-      }
+      console.debug("ADD_FILTER action being handled");
+      const addFilterAction = action as any;
+      //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED to indicate the process
+      //for adding a filter for each filterable attribute of this feature type has begun
+      result.featuresByType[addFilterAction.dataId].featureTypeState =
+        MapFeatureTypeState.FILTERS_ADDED;
+      //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
+      console.debug("ADD_FILTER action completed");
+      break;
+    }
+
+    case ALL_FILTERS_SET: {
+      console.debug("ALL_FILTERS_SET action being handled");
+      const allFiltersSetAction = action as AllFiltersSetAction;
+      result.featuresByType[
+        allFiltersSetAction.payload.featureType
+      ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
+      console.debug("ALL_FILTERS_SET action completed");
+      break;
+    }
+
+    case "@@kepler.gl/REMOVE_FILTER": {
+      console.debug("REMOVE_FILTER action being handled");
+      //Decrement filterCounter on the redux state, because a filter has just been removed.
+      result.filterCounter -= 1;
+      console.debug("REMOVE_FILTER action compeleted");
       break;
     }
 
@@ -144,22 +346,35 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       result.keplerGlInstanceRegistered = true;
       break;
 
+    /*
+    This action is dispatched and handled when a feature is clicked. It's purpose is
+    to change the state of the feature to CLICKED
+    */
     case "@@kepler.gl/LAYER_CLICK": {
+      console.debug("LAYER_CLICK action being handled");
       const layerClickAction: any = action;
-      for (const resultFeature of result.features) {
-        if (
-          resultFeature.uri ===
-          layerClickAction.payload.info.object.properties.uri
-        ) {
-          resultFeature.state = MapFeatureState.CLICKED;
-          console.debug(
-            "changed map feature " +
-              resultFeature.uri +
-              " to state " +
-              MapFeatureState.RENDERED
-          );
-        }
+
+      const resultFeature = getFeatureFromStateFeaturesList(
+        result.features,
+        layerClickAction.payload.info.object.properties.uri
+      );
+      if (!resultFeature) {
+        throw Error(
+          "Attempt to change state of feature from RENDERED to CLICKED failed.\
+          Feature does not exist in features list in the redux state"
+        );
       }
+
+      //Change the state of the feature to CLICKED
+      resultFeature.state = MapFeatureState.CLICKED;
+      console.debug(
+        "changed map feature " +
+          resultFeature.uri +
+          " to state " +
+          MapFeatureState.CLICKED
+      );
+      console.debug("LAYER_CLICK action completed");
+
       break;
     }
     default: {
