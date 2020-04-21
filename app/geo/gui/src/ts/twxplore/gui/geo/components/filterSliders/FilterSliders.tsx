@@ -53,9 +53,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
   };
-  //const onChangeCommitte = (event: any, newValue: number | number[]) => {
-  //handleChange(event, newValue, filterIndexOfAttribute!);
-  //};
+
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
