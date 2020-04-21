@@ -26,26 +26,25 @@ export const updateAttributeStatesOfFeatureType = (
         attributeStatesOfFeatureType[attributeName].min = addedFeature[
           attributeKey
         ] as number;
+        continue;
       }
       //If this is NOT the first time coming across this attribute for this feature type
-      else {
-        //Compare attribute value to the min found in the attribute state. Set new min if necessary.
-        if (
-          (addedFeature[attributeKey] as number) <
-          attributeStatesOfFeatureType[attributeKey].min!
-        )
-          attributeStatesOfFeatureType[attributeKey].min = addedFeature[
-            attributeKey
-          ] as number;
-        //Compare attribute value to the max found in the attribute state. Set new max if necessary.
-        else if (
-          (addedFeature[attributeKey] as number) >
-          attributeStatesOfFeatureType[attributeKey].max!
-        )
-          attributeStatesOfFeatureType[attributeKey].max = addedFeature[
-            attributeKey
-          ] as number;
-      }
+      //Compare attribute value to the min found in the attribute state. Set new min if necessary.
+      if (
+        (addedFeature[attributeKey] as number) <
+        attributeStatesOfFeatureType[attributeKey].min!
+      )
+        attributeStatesOfFeatureType[attributeKey].min = addedFeature[
+          attributeKey
+        ] as number;
+      //Compare attribute value to the max found in the attribute state. Set new max if necessary.
+      else if (
+        (addedFeature[attributeKey] as number) >
+        attributeStatesOfFeatureType[attributeKey].max!
+      )
+        attributeStatesOfFeatureType[attributeKey].max = addedFeature[
+          attributeKey
+        ] as number;
     }
   }
 };
