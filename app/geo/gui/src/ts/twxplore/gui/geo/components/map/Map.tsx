@@ -26,6 +26,7 @@ import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import ReactResizeDetector from "react-resize-detector";
+import {noDirtyFeaturesListCheck} from "./noDirtyFeaturesListCheck";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const limit = 500;
@@ -185,9 +186,12 @@ const MapImpl: React.FunctionComponent = () => {
         //loop through each feature type
         for (const featureType of Object.values(FeatureType)) {
           //Check if filters need to be added for this FeatureType
+          //We don't want to addFilters when some featuresByType lists are
+          //still dirty because then the filters will be removed by removeDataset() in the LOADED case
           if (
             state.featuresByType[featureType].featureTypeState ===
-            MapFeatureTypeState.NEEDS_FILTERS
+              MapFeatureTypeState.NEEDS_FILTERS &&
+            noDirtyFeaturesListCheck(state.featuresByType)
           ) {
             //Dispatch the addFilter action 3 times (1 for each of frequency, timeStamp, transmissionPower)
             for (var x = 0; x < 3; ++x) {
