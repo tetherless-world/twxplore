@@ -7,7 +7,7 @@ import io.github.tetherlessworld.twxplore.lib.geo.models.domain.ParsedGeometry
 import models.domain.{Feature, FeatureType, FrequencyRange, TimestampRange}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, UnionType, fields}
+import sangria.schema.{Argument, Field, FloatType, IntType, ListType, OptionInputType, Schema, UnionType, fields}
 
 object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   // Enum types
@@ -19,8 +19,15 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   implicit val TimestampRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, TimestampRange]()
 
   implicit val ParsedWktPoint2DObjectType = deriveObjectType[GeoGraphQlSchemaContext, Point2D]()
-  implicit val ParsedWktLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, Line]()
-  implicit val ParsedWktPolygonObjectType = deriveObjectType[GeoGraphQlSchemaContext, Polygon]()
+  implicit val ParsedWktLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, Line](
+    // Optimize the representation to return a list of points
+    ReplaceField("points", Field("points", ListType(FloatType), resolve = _.value.points.flatMap(point => List(point.x, point.y))))
+  )
+  implicit val ParsedWktPolygonObjectType = deriveObjectType[GeoGraphQlSchemaContext, Polygon](
+    // Optimize the representation to return [[line 1 points],[line 2 points]] and so on
+    // A line's points are [x1, y1, x2, y2, ...]
+    ReplaceField("lines", Field("lines", ListType(ListType(FloatType)), resolve = _.value.lines.map(line => line.points.flatMap(point => List(point.x, point.y)))))
+  )
   implicit val ParsedWktMultiLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiLine]()
   implicit val ParsedWktMultiPointObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiPoint]()
   implicit val ParsedWktMultiPolygonObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiPolygon]()

@@ -29,12 +29,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
                       y
                     }
                     ... on Polygon {
-                      lines {
-                        points {
-                          x
-                          y
-                        }
-                      }
+                      lines
                     }
                   }
                   uri
