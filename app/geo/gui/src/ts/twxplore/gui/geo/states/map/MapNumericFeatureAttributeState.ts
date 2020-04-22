@@ -8,7 +8,7 @@ This is important info that will be used for setting filter values.
 Unsure, if I should call this FeatureTypeAttributeState instead.
 Or maybe 'AttributeOfFeatureTypeState'
 */
-export interface MapFeatureAttributeState {
+export interface MapNumericFeatureAttributeState {
   min: number | null;
   max: number | null;
   filterIndex: number | null;
