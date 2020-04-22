@@ -208,7 +208,7 @@ const MapImpl: React.FunctionComponent = () => {
             !hasDirtyFeatures(state.featuresByType)
           ) {
             //Dispatch the addFilter action 3 times (1 for each of frequency, timeStamp, transmissionPower)
-            for (var x = 0; x < 3; ++x) {
+            for (var x = 0; x < 5; ++x) {
               /*
               Dispatch addFilter with the FeatureType,
               which is also the name of the dataset
