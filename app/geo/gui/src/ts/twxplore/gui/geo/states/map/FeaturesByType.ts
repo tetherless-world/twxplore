@@ -1,11 +1,7 @@
 import {MapFeature} from "./MapFeature";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
-import {MapNumericFeatureAttributeState} from "./MapNumericFeatureAttributeState";
-import {MapStringFeatureAttributeState} from "./MapStringFeatureAttributeState";
+import {MapFeatureAttributeState} from "./MapFeatureAttributeState/MapFeatureAttributeState";
 
-type MapFeatureAttributeState =
-  | MapStringFeatureAttributeState
-  | MapNumericFeatureAttributeState;
 export interface FeaturesByType {
   features: MapFeature[];
   dirty: boolean;
