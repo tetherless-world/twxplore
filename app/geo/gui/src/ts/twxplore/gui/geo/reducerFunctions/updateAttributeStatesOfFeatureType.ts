@@ -1,6 +1,8 @@
-import {MapNumericFeatureAttributeState} from "../states/map/MapNumericFeatureAttributeState";
 import {MapFeature} from "../states/map/MapFeature";
 import {getFeatureAttributeByName} from "../attributeStrategies/getFeatureAttributeByName";
+import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {MapNumericFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
+import {MapStringFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 
 export const updateAttributeStatesOfFeatureType = (
   attributeStatesOfFeatureType: {
@@ -11,10 +13,12 @@ export const updateAttributeStatesOfFeatureType = (
   //Loop through the feature's attribute
   for (const attributeName of Object.keys(addedFeature)) {
     const attributeKey = attributeName as keyof MapFeature;
+    //Specifying the exact attribute state to be updated.
     let attributeStateOfFeatureType =
       attributeStatesOfFeatureType[attributeName];
-    //If the arttribute is numeric
+    //If the attribute is numeric
     if (getFeatureAttributeByName(attributeName).isNumeric) {
+      attributeStateOfFeatureType = attributeStateOfFeatureType as MapNumericFeatureAttributeState;
       //If this is the first time coming across this attribute for this feature type
       if (
         attributeStateOfFeatureType.min === null &&
@@ -39,6 +43,20 @@ export const updateAttributeStatesOfFeatureType = (
         attributeStateOfFeatureType.max!
       )
         attributeStateOfFeatureType.max = addedFeature[attributeKey] as number;
+    }
+    //If the attribute is a string e.g. locality, label
+    else if (getFeatureAttributeByName(attributeName).isString) {
+      //Interpret this attributeState as a MapSTRINGFeatureAttributeState
+      attributeStateOfFeatureType = attributeStateOfFeatureType as MapStringFeatureAttributeState;
+      //if the value of the attribute for this feature, e.g. locality = "EastWood", is not already present in the attributeState
+      if (
+        !attributeStateOfFeatureType.values.includes(
+          addedFeature[attributeKey] as string
+        )
+      ) {
+        //add the value of the attribute into the values list of the attributeState
+        attributeStateOfFeatureType.values.push();
+      }
     }
   }
 };
