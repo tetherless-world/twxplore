@@ -1,23 +1,30 @@
 package models.graphql
 
+import com.github.raduba.gis.ParsedWkt
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.UnparsedGeometry
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.ParsedGeometry
 import models.domain.{Feature, FeatureType, FrequencyRange, TimestampRange}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, fields}
+import sangria.schema.{Argument, Field, IntType, InterfaceType, ListType, OptionInputType, Schema, fields}
 
 object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   // Enum types
   implicit val FeatureTypeType = deriveEnumType[FeatureType]()
 
-  // Object types, in dependence order
-  implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, UnparsedGeometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
+  // Interface types
+  implicit val ParsedWkt: InterfaceType[GeoGraphQlSchemaContext, ParsedWkt] =
+    InterfaceType(
+      "ParsedWkt",
+      fields[GeoGraphQlSchemaContext, ParsedWkt](
+      )
+    )
 
+  // Object types, in dependence order
   implicit val FrequencyRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, FrequencyRange]()
+
+  implicit val ParsedGeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, ParsedGeometry]()
 
   implicit val TimestampRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, TimestampRange]()
 
