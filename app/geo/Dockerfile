@@ -12,8 +12,8 @@ FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y default-jre-headless unzip
 
-COPY --from=build /app/app/geo/target/universal/geo-app-1.0.1-SNAPSHOT.zip /
-RUN unzip -q geo-app-1.0.1-SNAPSHOT.zip && mv /geo-app-1.0.1-SNAPSHOT /app && chmod +x /app/bin/geo-app
+COPY --from=build /app/app/geo/target/universal/geo-app-1.0.0-SNAPSHOT.zip /
+RUN unzip -q geo-app-1.0.0-SNAPSHOT.zip && mv /geo-app-1.0.0-SNAPSHOT /app && chmod +x /app/bin/geo-app
 
 EXPOSE 9000
 

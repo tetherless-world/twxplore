@@ -5,7 +5,11 @@ services:
       context: .
       dockerfile: app/geo/Dockerfile
     container_name: geo-app
-    stdin_open: true
+  geo-gui:
+    build:
+      context: .
+      dockerfile: app/geo/gui/Dockerfile
+    container_name: geo-gui
     ports:
       - 127.0.0.1:8081:80
   twks-server:
@@ -15,7 +19,7 @@ services:
         limits:
           memory: 4g
     environment:
-      JAVA_OPTIONS: "-Dtwks.extcp=/extcp -Dtwks.dump=/dump -Dtwks.extfs=/extfs -Dtwks.initialNanopublicationFilePath=/geo-data/loaded/reverse_beacon/features.ttl.bz2,/geo-data/loaded/tiger_line/features.ttl.bz2,/geo-data/loaded/uls/features.ttl.bz2 -Dtwks.tdbLocation=/data"
+      JAVA_OPTIONS: "-Dtwks.extcp=/extcp -Dtwks.dump=/dump -Dtwks.extfs=/extfs -Dtwks.initialNanopublicationFilePath=/geo-data/loaded/dsa/features.ttl.bz2,/geo-data/loaded/reverse_beacon/features.ttl.bz2,/geo-data/loaded/tiger_line/features.ttl.bz2,/geo-data/loaded/uls/features.ttl.bz2 -Dtwks.tdbLocation=/data"
     image: tetherlessworld/twks-server
     ports:
       - 127.0.0.1:8080:8080
