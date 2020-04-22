@@ -1,25 +1,46 @@
 package models.graphql
 
+import com.github.raduba.gis._
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.twxplore.lib.base.models.graphql.BaseGraphQlSchemaDefinition
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.Geometry
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.ParsedGeometry
 import models.domain.{Feature, FeatureType, FrequencyRange, TimestampRange}
 import sangria.macros.derive._
 import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
-import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, fields}
+import sangria.schema.{Argument, Field, IntType, ListType, OptionInputType, Schema, UnionType, fields}
 
 object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   // Enum types
   implicit val FeatureTypeType = deriveEnumType[FeatureType]()
 
   // Object types, in dependence order
-  implicit val GeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, Geometry](
-    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
-  )
-
   implicit val FrequencyRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, FrequencyRange]()
 
   implicit val TimestampRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, TimestampRange]()
+
+  implicit val ParsedWktPoint2DObjectType = deriveObjectType[GeoGraphQlSchemaContext, Point2D]()
+  implicit val ParsedWktLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, Line]()
+  implicit val ParsedWktPolygonObjectType = deriveObjectType[GeoGraphQlSchemaContext, Polygon]()
+  implicit val ParsedWktMultiLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiLine]()
+  implicit val ParsedWktMultiPointObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiPoint]()
+  implicit val ParsedWktMultiPolygonObjectType = deriveObjectType[GeoGraphQlSchemaContext, MultiPolygon]()
+//  case class Point2D(x: Double, y: Double) extends ParsedWkt
+//  case class Line(points: List[Point2D]) extends ParsedWkt
+//  case class Polygon(lines: List[Line]) extends ParsedWkt
+//
+//  case class MultiPoint(points: List[Point2D]) extends ParsedWkt
+//  case class MultiLine(lines: List[Line]) extends ParsedWkt
+//  case class MultiPolygon(polygons: List[Polygon]) extends ParsedWkt
+
+  implicit val ParsedWkt =
+    UnionType(
+      "ParsedWkt",
+      types = List(ParsedWktPoint2DObjectType, ParsedWktLineObjectType, ParsedWktPolygonObjectType, ParsedWktMultiLineObjectType, ParsedWktMultiPointObjectType, ParsedWktMultiPolygonObjectType)
+    )
+
+  implicit val ParsedGeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, ParsedGeometry](
+    ReplaceField("parsedWkt", Field("parsedWkt", ParsedWkt, resolve = _.value.parsedWkt))
+  )
 
   implicit val FeatureObjectType = deriveObjectType[GeoGraphQlSchemaContext, Feature](
     //    ReplaceField("uri", Field("uri", UriType, resolve = _.value.uri))
