@@ -10,6 +10,10 @@ import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAtt
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {allFiltersSet} from "../../actions/map/AllFiltersSetAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
+import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
+import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
+import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +38,77 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+
+  const setDefaultFilterValue = (
+    filterIndexOfAttribute: number,
+    attributeName: string,
+    stateOfAttribute: MapFeatureAttributeState
+  ) => {
+    switch (getFeatureAttributeByName(attributeName).typeOf) {
+      case TypeOfFeatureAttribute.NUMBER: {
+        stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
+        dispatch(
+          setFilter(filterIndexOfAttribute, "value", [
+            stateOfAttribute.min,
+            stateOfAttribute.max,
+          ])
+        );
+        break;
+      }
+      //Do nothing, we don't populate the filter until the user makes a selection
+      case TypeOfFeatureAttribute.STRING: {
+        /*stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
+        dispatch(
+          setFilter(filterIndexOfAttribute, "value", [stateOfAttribute.values])
+        );
+        */
+        break;
+      }
+      default: {
+        throw Error("Unhandled case for typeOf FeatureAttribute");
+      }
+    }
+  };
+
+  const returnFilterComponent = (
+    filterIndexOfAttribute: number,
+    attributeName: string,
+    stateOfAttribute: MapFeatureAttributeState
+  ) => {
+    switch (getFeatureAttributeByName(attributeName).typeOf) {
+      case TypeOfFeatureAttribute.NUMBER: {
+        stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
+        return (
+          <div key={attributeName}>
+            <Typography id="type" gutterBottom>
+              {attributeName}
+            </Typography>
+            <Slider
+              defaultValue={[stateOfAttribute.min!, stateOfAttribute.max!]}
+              getAriaValueText={valuetext}
+              aria-labelledby="range-slider"
+              step={1}
+              min={stateOfAttribute.min!}
+              max={stateOfAttribute.max!}
+              valueLabelDisplay="auto"
+              disabled={!stateOfAttribute.max!}
+              onChangeCommitted={(event: any, newValue: number | number[]) =>
+                handleChange(event, newValue, filterIndexOfAttribute!)
+              }
+              name={attributeName}
+            />
+          </div>
+        );
+      }
+      case TypeOfFeatureAttribute.STRING: {
+        stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
+        return null;
+      }
+      default: {
+        throw Error("Unhandled case for typeOf FeatureAttribute");
+      }
+    }
+  };
 
   //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
   const featureTypeState = state.featuresByType[featureType].featureTypeState;
@@ -73,11 +148,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
                 getFeatureAttributeByName(attributeName).filterType
               )
             );
-            dispatch(
-              setFilter(filterIndexOfAttribute, "value", [
-                stateOfAttribute.min,
-                stateOfAttribute.max,
-              ])
+            setDefaultFilterValue(
+              filterIndexOfAttribute!,
+              attributeName,
+              stateOfAttribute
             );
             dispatch(
               allFiltersSet(
@@ -88,27 +162,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
           }
           //If filters have been set
           case MapFeatureTypeState.FILTERS_SET: {
-            return (
-              <div key={attributeName}>
-                <Typography id="type" gutterBottom>
-                  {attributeName}
-                </Typography>
-                <Slider
-                  defaultValue={[stateOfAttribute.min!, stateOfAttribute.max!]}
-                  getAriaValueText={valuetext}
-                  aria-labelledby="range-slider"
-                  step={1}
-                  min={stateOfAttribute.min!}
-                  max={stateOfAttribute.max!}
-                  valueLabelDisplay="auto"
-                  disabled={!stateOfAttribute.max!}
-                  onChangeCommitted={(
-                    event: any,
-                    newValue: number | number[]
-                  ) => handleChange(event, newValue, filterIndexOfAttribute!)}
-                  name={attributeName}
-                />
-              </div>
+            return returnFilterComponent(
+              filterIndexOfAttribute!,
+              attributeName,
+              stateOfAttribute
             );
           }
           //This handles the case in which the featureTypeState is ABSENT_ON_MAP or WAITING_ON_LOAD
