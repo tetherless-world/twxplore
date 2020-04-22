@@ -5,7 +5,7 @@ import java.util.{Calendar, Date}
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena._
 import io.github.tetherlessworld.twxplore.lib.base.models.domain.SchemaProperties
-import io.github.tetherlessworld.twxplore.lib.geo.models.domain.UnparsedGeometry
+import io.github.tetherlessworld.twxplore.lib.geo.models.domain.{ParsedGeometry, UnparsedGeometry}
 import models.domain.vocabulary.LOCAL
 import org.apache.jena.datatypes.xsd.XSDDateTime
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
@@ -13,7 +13,7 @@ import org.apache.jena.rdf.model.{Literal, Model, Resource, ResourceFactory}
 import org.apache.jena.vocabulary.RDF
 
 final case class Feature(
-                          geometry: UnparsedGeometry,
+                          geometry: ParsedGeometry,
                           uri: Uri,
                           frequency: Option[Double] = None,
                           frequencyRange: Option[FrequencyRange] = None,
@@ -94,12 +94,14 @@ object Feature {
     final def transmissionPower_=(value: Int) = setPropertyLiterals(LOCAL.transmissionPower, List(value.asInstanceOf[Int]))
   }
 
+  private final class UnparseableGeometryException extends Exception
+
   implicit object FeatureRdfReader extends RdfReader[Feature] {
     override def read(resource: Resource): Feature =
       Feature(
         frequency = resource.frequency,
         frequencyRange = resource.frequencyRange,
-        geometry = Rdf.read[UnparsedGeometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()),
+        geometry = Rdf.read[UnparsedGeometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()).parse().getOrElse(throw new UnparseableGeometryException),
         label = resource.labels.headOption,
         locality = resource.addressLocality,
         postalCode = resource.postalCode,
@@ -127,7 +129,7 @@ object Feature {
       if (value.timestampRange.isDefined) resource.timestampRange = value.timestampRange.get
       if (value.transmissionPower.isDefined) resource.transmissionPower = value.transmissionPower.get
       if (value.`type`.isDefined) resource.addProperty(RDF.`type`, model.createResource(value.`type`.get.uri.toString))
-      resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[UnparsedGeometry](model, value.geometry))
+      resource.addProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP, Rdf.write[UnparsedGeometry](model, UnparsedGeometry(label=value.geometry.label, uri=value.geometry.uri, wkt=value.geometry.wkt)))
     }
   }
 

@@ -11,7 +11,7 @@ import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 final case class UnparsedGeometry(label: Option[String], uri: Uri, wkt: String) extends Geometry {
   def parse(): Option[ParsedGeometry] = {
     WktParser.parseAll(WktParser.geometry, wkt) match {
-      case WktParser.Success(parsedWkt, _) => Some(ParsedGeometry(label, uri, wkt = parsedWkt))
+      case WktParser.Success(parsedWkt, _) => Some(ParsedGeometry(label, parsedWkt, uri, wkt))
       case _ => None
     }
   }

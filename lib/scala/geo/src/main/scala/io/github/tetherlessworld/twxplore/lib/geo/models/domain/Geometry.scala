@@ -5,4 +5,5 @@ import edu.rpi.tw.twks.uri.Uri
 trait Geometry {
   val label: Option[String]
   val uri: Uri
+  val wkt: String
 }
