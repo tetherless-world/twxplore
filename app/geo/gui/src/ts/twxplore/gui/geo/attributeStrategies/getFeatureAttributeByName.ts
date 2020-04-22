@@ -6,6 +6,9 @@ import {TimestampFeatureAttribute} from "./TimeStampFeatureAttribute";
 import {FrequencyFeatureAttribute} from "./FrequencyFeatureAttribute";
 import {TransmissionPowerFeatureAttribute} from "./TransmissionPowerFeatureAttribute";
 import {IgnoreFeatureAttribute} from "./IgnoreFeatureAttribute";
+import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
+import {LocalityFeatureAttribute} from "./LocalityFeatureAttribute";
+import {LabelFeatureAttribute} from "./LabelFeatureAttribute";
 
 export const getFeatureAttributeByName = (name: string) => {
   console.log(FeatureAttributeName[name as FeatureAttributeKey]);
@@ -18,6 +21,15 @@ export const getFeatureAttributeByName = (name: string) => {
     }
     case FeatureAttributeName.transmissionPower: {
       return TransmissionPowerFeatureAttribute.instance;
+    }
+    case FeatureAttributeName.locality: {
+      return LocalityFeatureAttribute.instance;
+    }
+    case FeatureAttributeName.label: {
+      return LabelFeatureAttribute.instance;
+    }
+    case FeatureAttributeName.regions: {
+      return RegionsFeatureAttribute.instance;
     }
 
     default: {
