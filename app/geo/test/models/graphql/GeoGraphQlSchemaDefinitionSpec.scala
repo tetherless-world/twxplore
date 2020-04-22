@@ -22,6 +22,23 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
         graphql"""
          query FeaturesQuery {
            features(query: {}, limit: 10, offset: 0) {
+               geometry {
+                  parsedWkt {
+                    ... on Point2D {
+                      x
+                      y
+                    }
+                    ... on Polygon {
+                      lines {
+                        points {
+                          x
+                          y
+                        }
+                      }
+                    }
+                  }
+                  uri
+               }
                regions
                uri
            }
@@ -33,6 +50,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
       results must include(GeoTestData.containingFeature.uri.toString)
       results must include(GeoTestData.containedFeature.uri.toString)
       results must include(GeoTestData.feature.regions(0))
+      results must include("4.3457")
     }
 
     "list all features without limit and offset" in {

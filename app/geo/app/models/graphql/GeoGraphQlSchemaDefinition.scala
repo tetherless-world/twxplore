@@ -35,7 +35,7 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
   implicit val ParsedWkt =
     UnionType(
       "ParsedWkt",
-      types = List(ParsedWktPoint2DObjectType)
+      types = List(ParsedWktPoint2DObjectType, ParsedWktLineObjectType, ParsedWktPolygonObjectType, ParsedWktMultiLineObjectType, ParsedWktMultiPointObjectType, ParsedWktMultiPolygonObjectType)
     )
 
   implicit val ParsedGeometryObjectType = deriveObjectType[GeoGraphQlSchemaContext, ParsedGeometry](
