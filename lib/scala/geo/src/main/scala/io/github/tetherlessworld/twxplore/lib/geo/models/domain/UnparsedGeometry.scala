@@ -7,26 +7,26 @@ import org.apache.jena.geosparql.implementation.datatype.WKTDatatype
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class Geometry(label: Option[String], uri: Uri, wkt: String)
+final case class UnparsedGeometry(label: Option[String], uri: Uri, wkt: String)
 
-object Geometry {
+object UnparsedGeometry {
   TypeMapper.getInstance().registerDatatype(WKTDatatype.INSTANCE)
 
   implicit class GeometryResource(val resource: Resource)
     extends RdfProperties
       with RdfsProperties
 
-  implicit object GeometryRdfReader extends RdfReader[Geometry] {
-    override def read(resource: Resource): Geometry =
-      Geometry(
+  implicit object GeometryRdfReader extends RdfReader[UnparsedGeometry] {
+    override def read(resource: Resource): UnparsedGeometry =
+      UnparsedGeometry(
         label = resource.labels.headOption,
         uri = Uri.parse(resource.getURI),
         wkt = resource.getProperty(Geo.AS_WKT_PROP).getObject.asLiteral().getString
       )
   }
 
-  implicit object GeometryRdfWriter extends RdfWriter[Geometry] {
-    override def write(model: Model, value: Geometry): Resource = {
+  implicit object GeometryRdfWriter extends RdfWriter[UnparsedGeometry] {
+    override def write(model: Model, value: UnparsedGeometry): Resource = {
       val resource = model.createResource(value.uri.toString)
       resource.types = List(resource.getModel.createResource("http://www.opengis.net/ont/sf#Geometry"))
       if (value.label.isDefined)  resource.labels = List(value.label.get)
