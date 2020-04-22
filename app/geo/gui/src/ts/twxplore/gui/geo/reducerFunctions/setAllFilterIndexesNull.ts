@@ -1,4 +1,4 @@
-import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState";
+import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 
 export const setAllFilterIndexesNull = (attributeStatesOfFeatureType: {
   [featureAttributeName: string]: MapFeatureAttributeState;
