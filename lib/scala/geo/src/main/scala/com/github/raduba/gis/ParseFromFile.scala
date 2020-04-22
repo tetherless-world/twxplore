@@ -19,16 +19,16 @@ object ParseFromFile {
     }
   }
 
-  def parse(fileName: String): Try[Geometry] = {
+  def parse(fileName: String): Try[ParsedWkt] = {
     var source: BufferedSource = null
     try {
       source = scala.io.Source.fromFile(fileName)
       val wkt = source.mkString
-      val parseResult = WKTParser.parse(WKTParser.geometry, wkt)
+      val parseResult = WktParser.parse(WktParser.geometry, wkt)
       parseResult match {
-        case WKTParser.Success(p, _) => Success(p)
-        case WKTParser.Error(msg, _) => Failure(new Exception(msg))
-        case WKTParser.Failure(msg, _) => Failure(new Exception(msg))
+        case WktParser.Success(p, _) => Success(p)
+        case WktParser.Error(msg, _) => Failure(new Exception(msg))
+        case WktParser.Failure(msg, _) => Failure(new Exception(msg))
       }
     } catch {
       case NonFatal(e) => Failure(e)

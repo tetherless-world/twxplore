@@ -2,17 +2,17 @@ package com.github.raduba.gis
 
 import scala.util.parsing.combinator.JavaTokenParsers
 
-trait Geometry
+trait ParsedWkt
 
-case class Point2D(x: Double, y: Double) extends Geometry
-case class Line(points: List[Point2D]) extends Geometry
-case class Polygon(lines: List[Line]) extends Geometry
+case class Point2D(x: Double, y: Double) extends ParsedWkt
+case class Line(points: List[Point2D]) extends ParsedWkt
+case class Polygon(lines: List[Line]) extends ParsedWkt
 
-case class MultiPoint(points: List[Point2D]) extends Geometry
-case class MultiLine(lines: List[Line]) extends Geometry
-case class MultiPolygon(polygons: List[Polygon]) extends Geometry
+case class MultiPoint(points: List[Point2D]) extends ParsedWkt
+case class MultiLine(lines: List[Line]) extends ParsedWkt
+case class MultiPolygon(polygons: List[Polygon]) extends ParsedWkt
 
-object WKTParser extends JavaTokenParsers {
+object WktParser extends JavaTokenParsers {
   private def number: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 
   private def pointTuple: Parser[Point2D] = number ~ number ^^ { case (x ~ y) => Point2D(x, y) }
@@ -41,5 +41,5 @@ object WKTParser extends JavaTokenParsers {
   def multiPolygon: Parser[MultiPolygon] = "MULTIPOLYGON" ~> "(" ~> rep1sep(polyLine, ",") <~ ")" ^^ { MultiPolygon} |
     "MULTIPOLYGON" ~ "EMPTY" ^^ {_ => MultiPolygon(Nil) }
 
-  def geometry: Parser[Geometry] = point | lineString | polygon | multiPoint | multiLineString | multiPolygon
+  def geometry: Parser[ParsedWkt] = point | lineString | polygon | multiPoint | multiLineString | multiPolygon
 }

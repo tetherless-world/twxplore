@@ -1,5 +1,6 @@
 package io.github.tetherlessworld.twxplore.lib.geo.models.domain
 
+import com.github.raduba.gis.WktParser
 import edu.rpi.tw.twks.uri.Uri
 import io.github.tetherlessworld.scena.{RdfProperties, RdfReader, RdfWriter, RdfsProperties}
 import org.apache.jena.datatypes.TypeMapper
@@ -7,7 +8,14 @@ import org.apache.jena.geosparql.implementation.datatype.WKTDatatype
 import org.apache.jena.geosparql.implementation.vocabulary.Geo
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
 
-final case class UnparsedGeometry(label: Option[String], uri: Uri, wkt: String)
+final case class UnparsedGeometry(label: Option[String], uri: Uri, wkt: String) extends Geometry {
+  def parse(): Option[ParsedGeometry] = {
+    WktParser.parseAll(WktParser.geometry, wkt) match {
+      case WktParser.Success(parsedWkt, _) => Some(ParsedGeometry(label, uri, wkt = parsedWkt))
+      case _ => None
+    }
+  }
+}
 
 object UnparsedGeometry {
   TypeMapper.getInstance().registerDatatype(WKTDatatype.INSTANCE)
