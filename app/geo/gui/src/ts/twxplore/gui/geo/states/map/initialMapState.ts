@@ -4,6 +4,7 @@ import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
 import {FeatureAttributeName} from "./FeatureAttributeName";
 import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {TypeOfFeatureAttribute} from "./TypeOfFeatureAttribute";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -23,8 +24,8 @@ Object.values(FeatureType).map(type => {
 });
 
 //Here we create an initial featuresByType value for each FeatureType
-Object.values(FeatureType).map(type => {
-  featuresByType[type] = {
+Object.values(FeatureType).map(featureType => {
+  featuresByType[featureType] = {
     features: [],
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
@@ -33,12 +34,22 @@ Object.values(FeatureType).map(type => {
   //Populate the attribute state with null values for all properties.
   Object.keys(FeatureAttributeName).map(attributeName => {
     const FeatureAttribute = getFeatureAttributeByName(attributeName);
-    if (FeatureAttribute.isNumeric) {
-      featuresByType[type].attributeStates[attributeName] = {
-        min: null,
-        max: null,
-        filterIndex: null,
-      };
+    switch (FeatureAttribute.typeOf) {
+      case TypeOfFeatureAttribute.NUMBER: {
+        featuresByType[featureType].attributeStates[attributeName] = {
+          min: null,
+          max: null,
+          filterIndex: null,
+        };
+        break;
+      }
+      case TypeOfFeatureAttribute.STRING: {
+        featuresByType[featureType].attributeStates[attributeName] = {
+          values: [],
+          filterIndex: null,
+        };
+        break;
+      }
     }
   });
 });
