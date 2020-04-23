@@ -67,7 +67,9 @@ export const updateAttributeStatesOfFeatureType = (
           )
         ) {
           //add the value of the attribute into the values list of the attributeState
-          attributeStateOfFeatureType.values.push();
+          attributeStateOfFeatureType.values.push(
+            addedFeature[attributeKey] as string
+          );
         }
         break;
       }
