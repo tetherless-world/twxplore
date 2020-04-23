@@ -14,6 +14,7 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
+import {Select, MenuItem, Chip, Input} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,6 +23,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     margin: {
       height: theme.spacing(3),
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+      maxWidth: 300,
+    },
+    chips: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    chip: {
+      margin: 2,
+    },
+    noLabel: {
+      marginTop: theme.spacing(3),
     },
   })
 );
@@ -57,11 +73,6 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       }
       //Do nothing, we don't populate the filter until the user makes a selection
       case TypeOfFeatureAttribute.STRING: {
-        /*stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-        dispatch(
-          setFilter(filterIndexOfAttribute, "value", [stateOfAttribute.values])
-        );
-        */
         break;
       }
       default: {
@@ -93,7 +104,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
               valueLabelDisplay="auto"
               disabled={!stateOfAttribute.max!}
               onChangeCommitted={(event: any, newValue: number | number[]) =>
-                handleChange(event, newValue, filterIndexOfAttribute!)
+                handleChangeSlider(event, newValue, filterIndexOfAttribute!)
               }
               name={attributeName}
             />
@@ -102,7 +113,35 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       }
       case TypeOfFeatureAttribute.STRING: {
         stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-        return null;
+        return (
+          <Select
+            labelId="demo-mutiple-chip-label"
+            id="demo-mutiple-chip"
+            multiple
+            value={[]}
+            onChange={(event: React.ChangeEvent<{value: any}>) => {
+              handleChangeSelect(
+                event,
+                event.target.value,
+                filterIndexOfAttribute
+              );
+            }}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {(selected as string[]).map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+          >
+            {stateOfAttribute.values.map(attributeValueString => (
+              <MenuItem key={attributeValueString} value={attributeValueString}>
+                {attributeValueString}
+              </MenuItem>
+            ))}
+          </Select>
+        );
       }
       default: {
         throw Error("Unhandled case for typeOf FeatureAttribute");
@@ -121,12 +160,19 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
 
   const dispatch = useDispatch();
 
-  const handleChange = (
+  const handleChangeSlider = (
     event: any,
     newValue: number | number[],
     filterIndexOfAttribute: number
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
+  };
+  const handleChangeSelect = (
+    event: React.ChangeEvent<{value: unknown}>,
+    selectedValues: string[],
+    filterIndexOfAttribute: number
+  ) => {
+    dispatch(setFilter(filterIndexOfAttribute, "value", selectedValues));
   };
 
   return (
