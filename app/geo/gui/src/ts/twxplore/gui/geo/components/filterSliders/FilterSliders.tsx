@@ -14,7 +14,8 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
-import {Select, MenuItem, Chip, Input} from "@material-ui/core";
+import {FormControl, TextField} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -114,33 +115,29 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       case TypeOfFeatureAttribute.STRING: {
         stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
         return (
-          <Select
-            labelId="demo-mutiple-chip-label"
-            id="demo-mutiple-chip"
-            multiple
-            value={[]}
-            onChange={(event: React.ChangeEvent<{value: any}>) => {
-              handleChangeSelect(
-                event,
-                event.target.value,
-                filterIndexOfAttribute
-              );
-            }}
-            input={<Input id="select-multiple-chip" />}
-            renderValue={selected => (
-              <div className={classes.chips}>
-                {(selected as string[]).map(value => (
-                  <Chip key={value} label={value} className={classes.chip} />
-                ))}
-              </div>
-            )}
-          >
-            {stateOfAttribute.values.map(attributeValueString => (
-              <MenuItem key={attributeValueString} value={attributeValueString}>
-                {attributeValueString}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl className={classes.formControl}>
+            <Typography id="type" gutterBottom>
+              {attributeName}
+            </Typography>
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={stateOfAttribute.values}
+              getOptionLabel={option => option}
+              filterSelectedOptions
+              onChange={(event: any, value: string | string[]) => {
+                handleChangeSelect(event, value, filterIndexOfAttribute);
+              }}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="filterSelectedOptions"
+                  placeholder="Favorites"
+                />
+              )}
+            />
+          </FormControl>
         );
       }
       default: {
@@ -169,10 +166,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   };
   const handleChangeSelect = (
     event: React.ChangeEvent<{value: unknown}>,
-    selectedValues: string[],
+    newValue: string | string[],
     filterIndexOfAttribute: number
   ) => {
-    dispatch(setFilter(filterIndexOfAttribute, "value", selectedValues));
+    dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
   };
 
   return (
