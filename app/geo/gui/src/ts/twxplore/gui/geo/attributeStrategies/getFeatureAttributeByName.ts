@@ -8,6 +8,7 @@ import {TransmissionPowerFeatureAttribute} from "./TransmissionPowerFeatureAttri
 import {IgnoreFeatureAttribute} from "./IgnoreFeatureAttribute";
 import {LocalityFeatureAttribute} from "./LocalityFeatureAttribute";
 import {LabelFeatureAttribute} from "./LabelFeatureAttribute";
+//import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
 
 export const getFeatureAttributeByName = (name: string) => {
   console.log(FeatureAttributeName[name as FeatureAttributeKey]);
@@ -27,7 +28,8 @@ export const getFeatureAttributeByName = (name: string) => {
     case FeatureAttributeName.label: {
       return LabelFeatureAttribute.instance;
     }
-    /*case FeatureAttributeName.regions: {
+    /*
+    case FeatureAttributeName.regions: {
       return RegionsFeatureAttribute.instance;
     }
     */

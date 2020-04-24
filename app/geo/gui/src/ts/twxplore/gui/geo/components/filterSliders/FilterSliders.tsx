@@ -74,6 +74,13 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       }
       //Do nothing, we don't populate the filter until the user makes a selection
       case TypeOfFeatureAttribute.STRING: {
+        stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
+        dispatch(
+          setFilter(filterIndexOfAttribute, "domain", stateOfAttribute.values)
+        );
+        dispatch(
+          setFilter(filterIndexOfAttribute, "value", stateOfAttribute.values)
+        );
         break;
       }
       default: {
@@ -155,6 +162,10 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const attributeStatesOfFeatureType =
     state.featuresByType[featureType].attributeStates;
 
+  const fake_state: any = useSelector(
+    (rootState: RootState) => rootState.keplerGl
+  );
+  console.debug(fake_state);
   const dispatch = useDispatch();
 
   const handleChangeSlider = (
@@ -184,6 +195,13 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
             dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
+            dispatch(
+              setFilter(
+                filterIndexOfAttribute,
+                "fieldType",
+                getFeatureAttributeByName(attributeName).fieldType
+              )
+            );
             dispatch(
               setFilter(
                 filterIndexOfAttribute,
