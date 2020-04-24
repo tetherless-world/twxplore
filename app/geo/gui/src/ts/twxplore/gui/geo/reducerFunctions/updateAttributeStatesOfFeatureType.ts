@@ -62,6 +62,7 @@ export const updateAttributeStatesOfFeatureType = (
         attributeStateOfFeatureType = attributeStateOfFeatureType as MapStringFeatureAttributeState;
         //if the value of the attribute for this feature, e.g. locality = "EastWood", is not already present in the attributeState
         if (
+          addedFeature[attributeKey] !== null &&
           !attributeStateOfFeatureType.values.includes(
             addedFeature[attributeKey] as string
           )
