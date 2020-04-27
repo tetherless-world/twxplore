@@ -7,9 +7,7 @@ import {FieldType} from "../states/map/FieldType";
 export class LocalityFeatureAttribute implements FeatureAttribute {
   static readonly instance = new LocalityFeatureAttribute();
 
-  readonly isNumeric = false;
   readonly name = FeatureAttributeName.label;
-  readonly isString = true;
   readonly filterType = FilterType.MULTISELECT;
   readonly fieldType = FieldType.STRING;
   readonly ignore = false;

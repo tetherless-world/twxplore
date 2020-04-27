@@ -8,8 +8,6 @@ export class TimestampFeatureAttribute implements FeatureAttribute {
   static readonly instance = new TimestampFeatureAttribute();
 
   readonly name = FeatureAttributeName.timestamp;
-  readonly isNumeric = true;
-  readonly isString = false;
   readonly filterType = FilterType.TIMERANGE;
   readonly fieldType = FieldType.TIMESTAMP;
   readonly ignore = false;

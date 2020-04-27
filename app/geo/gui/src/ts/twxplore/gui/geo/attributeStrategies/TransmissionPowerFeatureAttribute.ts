@@ -7,9 +7,7 @@ import {FieldType} from "../states/map/FieldType";
 export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
   static readonly instance = new TransmissionPowerFeatureAttribute();
 
-  readonly isNumeric = true;
   readonly name = FeatureAttributeName.transmissionPower;
-  readonly isString = false;
   readonly filterType = FilterType.RANGE;
   readonly fieldType = FieldType.INTEGER;
   readonly ignore = false;

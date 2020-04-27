@@ -7,9 +7,7 @@ import {FieldType} from "../states/map/FieldType";
 export class RegionsFeatureAttribute implements FeatureAttribute {
   static readonly instance = new RegionsFeatureAttribute();
 
-  readonly isNumeric = false;
   readonly name = FeatureAttributeName.regions;
-  readonly isString = true;
   readonly filterType = FilterType.MULTISELECT;
   readonly fieldType = FieldType.STRING;
   readonly ignore = false;

@@ -6,9 +6,7 @@ import {FieldType} from "../states/map/FieldType";
 
 export class LabelFeatureAttribute implements FeatureAttribute {
   static readonly instance = new LabelFeatureAttribute();
-  readonly isNumeric = false;
   readonly name = FeatureAttributeName.label;
-  readonly isString = true;
   readonly filterType = FilterType.MULTISELECT;
   readonly fieldType = FieldType.STRING;
   readonly ignore = false;
