@@ -1,5 +1,5 @@
 import {MapFeature} from "../states/map/MapFeature";
-import {getFeatureAttributeByName} from "../attributeStrategies/getFeatureAttributeByName";
+import {getFeatureAttributeByName} from "../attributeStrategies/functions/getFeatureAttributeByName";
 import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {MapNumericFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";

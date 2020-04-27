@@ -3,7 +3,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
 import {FeatureAttributeName} from "./FeatureAttributeName";
-import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {getFeatureAttributeByName} from "../../attributeStrategies/functions/getFeatureAttributeByName";
 import {TypeOfFeatureAttribute} from "./TypeOfFeatureAttribute";
 
 const typesVisibility: {[index: string]: boolean} = {};
