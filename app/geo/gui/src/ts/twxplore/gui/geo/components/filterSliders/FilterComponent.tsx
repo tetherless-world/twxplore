@@ -75,9 +75,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       //Do nothing, we don't populate the filter until the user makes a selection
       case TypeOfFeatureAttribute.STRING: {
         stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-        dispatch(
-          setFilter(filterIndexOfAttribute, "domain", stateOfAttribute.values)
-        );
+        dispatch(setFilter(filterIndexOfAttribute, "domain"));
         dispatch(
           setFilter(filterIndexOfAttribute, "value", stateOfAttribute.values)
         );
