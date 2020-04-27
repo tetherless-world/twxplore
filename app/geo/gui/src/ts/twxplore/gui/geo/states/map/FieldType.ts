@@ -7,4 +7,5 @@ export enum FieldType {
   STRING = "string",
   TIMESTAMP = "timestamp",
   POINT = "point",
+  NONE = "none",
 }
