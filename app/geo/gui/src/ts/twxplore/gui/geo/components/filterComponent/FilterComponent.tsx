@@ -61,51 +61,12 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     attributeName: string,
     stateOfAttribute: MapFeatureAttributeState
   ) => {
-    /*dispatch(
-      setFilter(
-        filterIndexOfAttribute,
-        "domain",
-        getFeatureAttributeByName(attributeName).fieldType
-      )
-    );*/
-    dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-    dispatch(
-      setFilter(
-        filterIndexOfAttribute,
-        "fieldType",
-        getFeatureAttributeByName(attributeName).fieldType
-      )
+    const featureAttribute = getFeatureAttributeByName(attributeName);
+    featureAttribute.setInitialFilters(
+      filterIndexOfAttribute,
+      stateOfAttribute
     );
-    dispatch(
-      setFilter(
-        filterIndexOfAttribute,
-        "type",
-        getFeatureAttributeByName(attributeName).filterType
-      )
-    );
-    switch (getFeatureAttributeByName(attributeName).typeOf) {
-      case TypeOfFeatureAttribute.NUMBER: {
-        stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
-        dispatch(
-          setFilter(filterIndexOfAttribute, "value", [
-            stateOfAttribute.min,
-            stateOfAttribute.max,
-          ])
-        );
-        break;
-      }
-      //Do nothing, we don't populate the filter until the user makes a selection
-      case TypeOfFeatureAttribute.STRING: {
-        stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-
-        break;
-      }
-      default: {
-        throw Error("Unhandled case for typeOf FeatureAttribute");
-      }
-    }
   };
-
   const returnFilterComponent = (
     filterIndexOfAttribute: number,
     attributeName: string,
