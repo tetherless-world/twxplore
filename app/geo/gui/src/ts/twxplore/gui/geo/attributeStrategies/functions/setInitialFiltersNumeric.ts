@@ -1,30 +1,19 @@
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {useDispatch} from "react-redux";
 import {setFilter} from "kepler.gl/actions";
-import {getFeatureAttributeByName} from "./getFeatureAttributeByName";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
+import {FilterType} from "../../states/map/FilterType";
 
 const dispatch = useDispatch();
 export const setInitialFiltersNumeric = (
   filterIndexOfAttribute: number,
   attributeName: string,
-  stateOfAttribute: MapFeatureAttributeState
+  stateOfAttribute: MapFeatureAttributeState,
+  keplerFilterType: FilterType
 ): void => {
   dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-  dispatch(
-    setFilter(
-      filterIndexOfAttribute,
-      "fieldType",
-      getFeatureAttributeByName(attributeName).fieldType
-    )
-  );
-  dispatch(
-    setFilter(
-      filterIndexOfAttribute,
-      "type",
-      getFeatureAttributeByName(attributeName).filterType
-    )
-  );
+  dispatch(setFilter(filterIndexOfAttribute, "fieldType", attributeName));
+  dispatch(setFilter(filterIndexOfAttribute, "type", keplerFilterType));
   stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
   dispatch(
     setFilter(filterIndexOfAttribute, "value", [
@@ -33,16 +22,4 @@ export const setInitialFiltersNumeric = (
     ])
   );
   return;
-
-  //Do nothing, we don't populate the filter until the user makes a selection
-  /*
-    case TypeOfFeatureAttribute.STRING: {
-      stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-
-      break;
-    }
-    default: {
-      throw Error("Unhandled case for typeOf FeatureAttribute");
-    }
-    */
 };
