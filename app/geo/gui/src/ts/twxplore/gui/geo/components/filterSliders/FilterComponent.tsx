@@ -56,11 +56,33 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const setDefaultFilterValue = (
+  const setInitialFilter = (
     filterIndexOfAttribute: number,
     attributeName: string,
     stateOfAttribute: MapFeatureAttributeState
   ) => {
+    dispatch(
+      setFilter(
+        filterIndexOfAttribute,
+        "domain",
+        getFeatureAttributeByName(attributeName).fieldType
+      )
+    );
+    dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
+    dispatch(
+      setFilter(
+        filterIndexOfAttribute,
+        "fieldType",
+        getFeatureAttributeByName(attributeName).fieldType
+      )
+    );
+    dispatch(
+      setFilter(
+        filterIndexOfAttribute,
+        "type",
+        getFeatureAttributeByName(attributeName).filterType
+      )
+    );
     switch (getFeatureAttributeByName(attributeName).typeOf) {
       case TypeOfFeatureAttribute.NUMBER: {
         stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
@@ -75,7 +97,6 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       //Do nothing, we don't populate the filter until the user makes a selection
       case TypeOfFeatureAttribute.STRING: {
         stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-        dispatch(setFilter(filterIndexOfAttribute, "domain"));
         dispatch(
           setFilter(filterIndexOfAttribute, "value", stateOfAttribute.values)
         );
@@ -151,21 +172,6 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     }
   };
 
-  //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
-  const featureTypeState = state.featuresByType[featureType].featureTypeState;
-
-  //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
-  //an attribute of that FeatureType.
-  //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
-  const attributeStatesOfFeatureType =
-    state.featuresByType[featureType].attributeStates;
-
-  const fake_state: any = useSelector(
-    (rootState: RootState) => rootState.keplerGl
-  );
-  console.debug(fake_state);
-  const dispatch = useDispatch();
-
   const handleChangeSlider = (
     event: any,
     newValue: number | number[],
@@ -181,6 +187,21 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
   };
 
+  //Get the featureTypeState of the appropriate featureType which was passed in by FilterPanel as a prop
+  const featureTypeState = state.featuresByType[featureType].featureTypeState;
+
+  //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
+  //an attribute of that FeatureType.
+  //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
+  const attributeStatesOfFeatureType =
+    state.featuresByType[featureType].attributeStates;
+
+  const fake_state: any = useSelector(
+    (rootState: RootState) => rootState.keplerGl
+  );
+  console.debug(fake_state);
+  const dispatch = useDispatch();
+
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
@@ -192,22 +213,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-            dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-            dispatch(
-              setFilter(
-                filterIndexOfAttribute,
-                "fieldType",
-                getFeatureAttributeByName(attributeName).fieldType
-              )
-            );
-            dispatch(
-              setFilter(
-                filterIndexOfAttribute,
-                "type",
-                getFeatureAttributeByName(attributeName).filterType
-              )
-            );
-            setDefaultFilterValue(
+            setInitialFilter(
               filterIndexOfAttribute!,
               attributeName,
               stateOfAttribute
