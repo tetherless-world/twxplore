@@ -11,7 +11,7 @@ import {
   NopLogger,
 } from "@tetherless-world/twxplore-base";
 import {Provider} from "react-redux";
-import store from "./store";
+import {store} from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
 import {Map} from "./components/map/Map";
 import {Hrefs} from "./Hrefs";

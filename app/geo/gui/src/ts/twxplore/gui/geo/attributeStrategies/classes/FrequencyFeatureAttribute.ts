@@ -5,7 +5,6 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FilterType} from "../../states/map/FilterType";
 import {FieldType} from "../../states/map/FieldType";
-c;
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
   setInitialFilters(

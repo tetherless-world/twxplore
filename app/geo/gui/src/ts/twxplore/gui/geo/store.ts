@@ -59,7 +59,7 @@ export const middlewares = [taskMiddleware, routerMiddleware(history)];
 
 // add redux devtools
 
-export default createStore<any, any, any, any>(
+export const store = createStore<any, any, any, any>(
   rootReducer,
   initialRootState,
   composeEnhancers(applyMiddleware(...middlewares))
