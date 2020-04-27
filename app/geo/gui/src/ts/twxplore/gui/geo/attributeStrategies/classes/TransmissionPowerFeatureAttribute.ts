@@ -1,9 +1,10 @@
-import {FilterType} from "../states/map/FilterType";
-import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {FeatureAttribute} from "./FeatureAttribute";
-import {TypeOfFeatureAttribute} from "../states/map/TypeOfFeatureAttribute";
-import {FieldType} from "../states/map/FieldType";
 import {setInitialFiltersNumeric} from "../functions/setInitialFiltersNumeric";
+import {FeatureAttribute} from "./FeatureAttribute";
+import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import {FilterType} from "../../states/map/FilterType";
+import {FieldType} from "../../states/map/FieldType";
+import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 
 export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
   static readonly instance = new TransmissionPowerFeatureAttribute();
@@ -15,7 +16,7 @@ export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.fieldType
+      this.filterType
     );
   }
   readonly name = FeatureAttributeName.transmissionPower;

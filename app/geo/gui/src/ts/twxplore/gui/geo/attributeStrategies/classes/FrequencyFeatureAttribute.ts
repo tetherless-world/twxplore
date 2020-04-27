@@ -1,10 +1,11 @@
 import {FeatureAttribute} from "./FeatureAttribute";
-import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {FilterType} from "../states/map/FilterType";
-import {TypeOfFeatureAttribute} from "../states/map/TypeOfFeatureAttribute";
-import {FieldType} from "../states/map/FieldType";
-import {setInitialFiltersNumeric} from "../functions/setInitialFiltersNumeric";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {setInitialFiltersNumeric} from "../functions/setInitialFiltersNumeric";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
+import {FilterType} from "../../states/map/FilterType";
+import {FieldType} from "../../states/map/FieldType";
+c;
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
   setInitialFilters(
@@ -15,7 +16,7 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.fieldType
+      this.filterType
     );
   }
   static readonly instance = new FrequencyFeatureAttribute();
