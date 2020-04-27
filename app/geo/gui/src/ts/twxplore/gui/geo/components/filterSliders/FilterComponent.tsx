@@ -61,13 +61,13 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     attributeName: string,
     stateOfAttribute: MapFeatureAttributeState
   ) => {
-    dispatch(
+    /*dispatch(
       setFilter(
         filterIndexOfAttribute,
         "domain",
         getFeatureAttributeByName(attributeName).fieldType
       )
-    );
+    );*/
     dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
     dispatch(
       setFilter(
@@ -97,9 +97,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
       //Do nothing, we don't populate the filter until the user makes a selection
       case TypeOfFeatureAttribute.STRING: {
         stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
-        dispatch(
-          setFilter(filterIndexOfAttribute, "value", stateOfAttribute.values)
-        );
+
         break;
       }
       default: {
