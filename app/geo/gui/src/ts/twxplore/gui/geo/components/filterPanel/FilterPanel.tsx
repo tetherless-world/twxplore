@@ -11,7 +11,7 @@ import {useSelector, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import {FilterSliders} from "../filterSliders/FilterSliders";
+import {FilterSliders} from "../filterSliders/FilterComponent";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
