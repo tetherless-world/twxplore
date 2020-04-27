@@ -6,7 +6,7 @@ import {connect, useSelector, useDispatch} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
-import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
+import {getFeatureAttributeByName} from "../../attributeStrategies/functions/getFeatureAttributeByName";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {allFiltersSet} from "../../actions/map/AllFiltersSetAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
