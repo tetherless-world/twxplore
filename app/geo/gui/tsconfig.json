@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "src/ts",
+    "resolveJsonModule": true,
     "paths": {
       "twxplore/*": ["src/ts/twxplore/*"]
     }

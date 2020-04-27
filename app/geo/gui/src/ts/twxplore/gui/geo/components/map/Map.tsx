@@ -6,8 +6,9 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
+  MapFeaturesQuery_features,
 } from "../../api/queries/types/MapFeaturesQuery";
-import {useQuery, useLazyQuery} from "@apollo/react-hooks";
+import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import Processors from "kepler.gl/processors";
@@ -34,6 +35,7 @@ import * as _ from "lodash";
 const limit = 500;
 const DEBUG = true;
 var wkt = require("terraformer-wkt-parser");
+const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -41,17 +43,12 @@ const MapImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
-  /*
-  const fake_state: any = useSelector(
+
+  const keplerState: any = useSelector(
     (rootState: RootState) => rootState.keplerGl
   );
-  console.debug(fake_state);
-  */
+
   // Load features on first render
-  const initialFeaturesQueryResult = useQuery<
-    MapFeaturesQuery,
-    MapFeaturesQueryVariables
-  >(featuresQueryDocument, {variables: {query: {types: [FeatureType.State]}}});
 
   // LazyQuery to get features within a feature.
   const [getFeaturesWithin, getFeaturesWithinResults] = useLazyQuery<
@@ -105,11 +102,11 @@ const MapImpl: React.FunctionComponent = () => {
   //if there are no states loaded
   if (state.features.length === 0) {
     //if the data variable has been loaded
-    if (initialFeaturesQueryResult.data) {
+    if (keplerState.map) {
       // Not tracking any features yet, add the boroughs we loaded
       dispatch(
         addMapFeatures(
-          initialFeaturesQueryResult.data.features.map(feature => ({
+          stateJSON.map(feature => ({
             __typename: feature.__typename,
             geometry: feature.geometry,
             label: feature.label,

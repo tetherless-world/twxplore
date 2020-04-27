@@ -115,6 +115,10 @@ lazy val geoLib =
     .dependsOn(baseLib % "compile->compile;test->test")
     .disablePlugins(AssemblyPlugin)
     .settings(
+      libraryDependencies ++= Seq(
+        // For the WKT parser
+        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
+      ),
       name := "twxplore-geo-lib",
       skip in publish := true
     )
