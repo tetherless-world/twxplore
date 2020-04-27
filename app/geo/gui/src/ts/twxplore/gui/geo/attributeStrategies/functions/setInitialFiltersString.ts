@@ -5,7 +5,7 @@ import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttrib
 import {FilterType} from "../../states/map/FilterType";
 
 const dispatch = useDispatch();
-export const setInitialFiltersNumeric = (
+export const setInitialFiltersString = (
   filterIndexOfAttribute: number,
   attributeName: string,
   stateOfAttribute: MapFeatureAttributeState,
