@@ -1,5 +1,4 @@
 import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {MapStringFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {FeatureAttributeName} from "../../../states/map/FeatureAttributeName";
 
 export const buildInitialFeatureAttributeStateString = (
@@ -8,10 +7,7 @@ export const buildInitialFeatureAttributeStateString = (
   },
   featureAttributeName: FeatureAttributeName
 ) => {
-  let attributeStateOfFeatureType = attributeStatesOfFeatureType[
-    featureAttributeName
-  ] as MapStringFeatureAttributeState;
-  attributeStateOfFeatureType = {
+  attributeStatesOfFeatureType[featureAttributeName] = {
     values: [],
     filterIndex: null,
   };

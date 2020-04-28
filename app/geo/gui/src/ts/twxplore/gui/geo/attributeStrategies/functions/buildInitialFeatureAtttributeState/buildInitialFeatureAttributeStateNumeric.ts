@@ -1,5 +1,4 @@
 import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {MapNumericFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {FeatureAttributeName} from "../../../states/map/FeatureAttributeName";
 
 export const buildInitialFeatureAttributeStateNumeric = (
@@ -8,10 +7,7 @@ export const buildInitialFeatureAttributeStateNumeric = (
   },
   featureAttributeName: FeatureAttributeName
 ) => {
-  let attributeStateOfFeatureType = attributeStatesOfFeatureType[
-    featureAttributeName
-  ] as MapNumericFeatureAttributeState;
-  attributeStateOfFeatureType = {
+  attributeStatesOfFeatureType[featureAttributeName] = {
     min: null,
     max: null,
     filterIndex: null,
