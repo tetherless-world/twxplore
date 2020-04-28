@@ -5,17 +5,20 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FilterType} from "../../states/map/FilterType";
 import {FieldType} from "../../states/map/FieldType";
+import {Dispatch} from "redux";
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
   setInitialFilters(
     filterIndexOfAttribute: number,
-    stateOfAttribute: MapFeatureAttributeState
+    stateOfAttribute: MapFeatureAttributeState,
+    dispatch: Dispatch<any>
   ): void {
     setInitialFiltersNumeric(
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType
+      this.filterType,
+      dispatch
     );
   }
   static readonly instance = new FrequencyFeatureAttribute();

@@ -64,7 +64,8 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     const featureAttribute = getFeatureAttributeByName(attributeName);
     featureAttribute.setInitialFilters(
       filterIndexOfAttribute,
-      stateOfAttribute
+      stateOfAttribute,
+      dispatch
     );
   };
   const returnFilterComponent = (

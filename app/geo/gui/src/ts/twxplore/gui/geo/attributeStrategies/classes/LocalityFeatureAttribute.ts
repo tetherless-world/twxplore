@@ -5,18 +5,21 @@ import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FieldType} from "../../states/map/FieldType";
 import {setInitialFiltersString} from "../functions/setInitialFiltersString";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {Dispatch} from "redux";
 
 export class LocalityFeatureAttribute implements FeatureAttribute {
   static readonly instance = new LocalityFeatureAttribute();
   setInitialFilters(
     filterIndexOfAttribute: number,
-    stateOfAttribute: MapFeatureAttributeState
+    stateOfAttribute: MapFeatureAttributeState,
+    dispatch: Dispatch<any>
   ): void {
     setInitialFiltersString(
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType
+      this.filterType,
+      dispatch
     );
   }
   readonly name = FeatureAttributeName.label;

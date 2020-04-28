@@ -5,18 +5,21 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {FilterType} from "../../states/map/FilterType";
 import {FieldType} from "../../states/map/FieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
+import {Dispatch} from "redux";
 
 export class TimestampFeatureAttribute implements FeatureAttribute {
   static readonly instance = new TimestampFeatureAttribute();
   setInitialFilters(
     filterIndexOfAttribute: number,
-    stateOfAttribute: MapFeatureAttributeState
+    stateOfAttribute: MapFeatureAttributeState,
+    dispatch: Dispatch<any>
   ): void {
     setInitialFiltersNumeric(
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType
+      this.filterType,
+      dispatch
     );
   }
   readonly name = FeatureAttributeName.timestamp;
