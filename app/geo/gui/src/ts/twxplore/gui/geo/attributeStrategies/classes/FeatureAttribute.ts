@@ -19,4 +19,7 @@ export interface FeatureAttribute {
     stateOfAttribute: MapFeatureAttributeState,
     dispatch: Dispatch<any>
   ): void;
+  buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
+    [featureAttributeName: string]: MapFeatureAttributeState;
+  }): void;
 }
