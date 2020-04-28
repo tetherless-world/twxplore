@@ -4,7 +4,6 @@ import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
 import {FeatureAttributeName} from "./FeatureAttributeName";
 import {getFeatureAttributeByName} from "../../attributeStrategies/functions/getFeatureAttributeByName";
-import {TypeOfFeatureAttribute} from "./TypeOfFeatureAttribute";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
