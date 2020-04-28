@@ -36,7 +36,9 @@ Object.values(FeatureType).map(featureType => {
     let attributeStatesofFeatureType =
       featuresByType[featureType].attributeStates;
     attributeStatesofFeatureType;
-    FeatureAttribute.buildInitialFeatureAttributeState;
+    FeatureAttribute.buildInitialFeatureAttributeState(
+      attributeStatesofFeatureType
+    );
   });
 });
 
