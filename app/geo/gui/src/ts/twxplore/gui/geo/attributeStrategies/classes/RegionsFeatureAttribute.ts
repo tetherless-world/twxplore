@@ -9,6 +9,15 @@ import {Dispatch} from "redux";
 
 export class RegionsFeatureAttribute implements FeatureAttribute {
   static readonly instance = new RegionsFeatureAttribute();
+
+  buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
+    [featureAttributeName: string]: MapFeatureAttributeState;
+  }): void {
+    buildInitialFeatureAttributeStateString(
+      attributeStatesOfFeatureType,
+      this.name
+    );
+  }
   setInitialFilters(
     filterIndexOfAttribute: number,
     stateOfAttribute: MapFeatureAttributeState,

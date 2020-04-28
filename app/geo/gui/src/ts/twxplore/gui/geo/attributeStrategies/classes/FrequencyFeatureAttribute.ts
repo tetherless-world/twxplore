@@ -6,8 +6,17 @@ import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FilterType} from "../../states/map/FilterType";
 import {FieldType} from "../../states/map/FieldType";
 import {Dispatch} from "redux";
+import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
+  buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
+    [featureAttributeName: string]: MapFeatureAttributeState;
+  }): void {
+    buildInitialFeatureAttributeStateNumeric(
+      attributeStatesOfFeatureType,
+      this.name
+    );
+  }
   setInitialFilters(
     filterIndexOfAttribute: number,
     stateOfAttribute: MapFeatureAttributeState,

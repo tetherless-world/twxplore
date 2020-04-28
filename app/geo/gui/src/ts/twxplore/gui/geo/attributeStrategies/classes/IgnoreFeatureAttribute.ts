@@ -6,13 +6,20 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {Dispatch} from "redux";
 
 export class IgnoreFeatureAttribute implements FeatureAttribute {
-  static readonly instance = new IgnoreFeatureAttribute();
+  buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
+    [featureAttributeName: string]: MapFeatureAttributeState;
+  }): void {
+    throw new Error("Method not implemented.");
+  }
 
   setInitialFilters(
     filterIndexOfAttribute: number,
     stateOfAttribute: MapFeatureAttributeState,
     dispatch: Dispatch<any>
-  ): void {}
+  ): void {
+    throw new Error("Method not implemented.");
+  }
+  static readonly instance = new IgnoreFeatureAttribute();
   readonly name = "";
   readonly typeOf = TypeOfFeatureAttribute.UNDEFINED;
   readonly filterType = FilterType.NONE;
