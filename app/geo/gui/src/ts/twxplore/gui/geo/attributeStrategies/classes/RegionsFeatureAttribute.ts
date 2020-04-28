@@ -1,5 +1,5 @@
 import {FeatureAttribute} from "./FeatureAttribute";
-import {setInitialFiltersString} from "../functions/setInitialFiltersString";
+import {setInitialFiltersString} from "../functions/setInitialFilters/setInitialFiltersString";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {FilterType} from "../../states/map/FilterType";

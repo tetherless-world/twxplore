@@ -1,7 +1,7 @@
-import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
-import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
-import {FilterType} from "../../states/map/FilterType";
+import {MapNumericFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
+import {FilterType} from "../../../states/map/FilterType";
 import {Dispatch} from "redux";
 
 export const setInitialFiltersString = (

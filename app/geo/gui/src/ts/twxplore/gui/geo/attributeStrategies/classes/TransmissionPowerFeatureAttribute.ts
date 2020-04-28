@@ -1,4 +1,4 @@
-import {setInitialFiltersNumeric} from "../functions/setInitialFiltersNumeric";
+import {setInitialFiltersNumeric} from "../functions/setInitialFilters/setInitialFiltersNumeric";
 import {FeatureAttribute} from "./FeatureAttribute";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";

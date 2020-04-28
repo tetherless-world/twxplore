@@ -1,6 +1,6 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {setInitialFiltersNumeric} from "../functions/setInitialFiltersNumeric";
+import {setInitialFiltersNumeric} from "../functions/setInitialFilters/setInitialFiltersNumeric";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FilterType} from "../../states/map/FilterType";
