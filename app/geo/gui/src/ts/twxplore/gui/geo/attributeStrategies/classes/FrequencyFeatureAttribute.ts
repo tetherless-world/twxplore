@@ -32,7 +32,7 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
   }
   static readonly instance = new FrequencyFeatureAttribute();
 
-  readonly name = FeatureAttributeName.transmissionPower;
+  readonly name = FeatureAttributeName.frequency;
   readonly typeOf = TypeOfFeatureAttribute.NUMBER;
   readonly filterType = FilterType.RANGE;
   readonly fieldType = FieldType.INTEGER;

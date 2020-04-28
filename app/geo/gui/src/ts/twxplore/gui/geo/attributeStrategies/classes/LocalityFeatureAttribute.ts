@@ -31,7 +31,7 @@ export class LocalityFeatureAttribute implements FeatureAttribute {
       dispatch
     );
   }
-  readonly name = FeatureAttributeName.label;
+  readonly name = FeatureAttributeName.locality;
   readonly filterType = FilterType.MULTISELECT;
   readonly fieldType = FieldType.STRING;
   readonly ignore = false;

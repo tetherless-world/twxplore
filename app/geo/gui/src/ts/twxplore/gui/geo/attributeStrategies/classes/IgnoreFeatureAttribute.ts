@@ -8,17 +8,13 @@ import {Dispatch} from "redux";
 export class IgnoreFeatureAttribute implements FeatureAttribute {
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
-  }): void {
-    throw new Error("Method not implemented.");
-  }
+  }): void {}
 
   setInitialFilters(
     filterIndexOfAttribute: number,
     stateOfAttribute: MapFeatureAttributeState,
     dispatch: Dispatch<any>
-  ): void {
-    throw new Error("Method not implemented.");
-  }
+  ): void {}
   static readonly instance = new IgnoreFeatureAttribute();
   readonly name = "";
   readonly typeOf = TypeOfFeatureAttribute.UNDEFINED;
