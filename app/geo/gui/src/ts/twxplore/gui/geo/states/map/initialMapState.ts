@@ -34,23 +34,10 @@ Object.values(FeatureType).map(featureType => {
   //Populate the attribute state with null values for all properties.
   Object.keys(FeatureAttributeName).map(attributeName => {
     const FeatureAttribute = getFeatureAttributeByName(attributeName);
-    switch (FeatureAttribute.typeOf) {
-      case TypeOfFeatureAttribute.NUMBER: {
-        featuresByType[featureType].attributeStates[attributeName] = {
-          min: null,
-          max: null,
-          filterIndex: null,
-        };
-        break;
-      }
-      case TypeOfFeatureAttribute.STRING: {
-        featuresByType[featureType].attributeStates[attributeName] = {
-          values: [],
-          filterIndex: null,
-        };
-        break;
-      }
-    }
+    let attributeStatesofFeatureType =
+      featuresByType[featureType].attributeStates;
+    attributeStatesofFeatureType;
+    FeatureAttribute.buildInitialFeatureAttributeState;
   });
 });
 
