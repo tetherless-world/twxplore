@@ -11,11 +11,12 @@ export const updateStringAttributeStateOfFeatureType = (
   attributeName: string
 ) => {
   const attributeKey = attributeName as keyof MapFeature;
-  //Specifying the AttributeState to be updated based on the attribute of addedFeature that is being compared/analyzed
+  //Specifying the attribute state of the addedFeature's FeatureType to be updated (e.g. the state of 'frequency' of Transmissions)
+
   let attributeStateOfAttributeOfFeatureType = attributeStatesOfFeatureType[
     attributeName
   ] as MapStringFeatureAttributeState;
-  //If this is the first time coming across this attribute for this feature type
+  //If this is the first time coming across this attribute for the addedFeature's FeatureType
   if (!attributeStateOfAttributeOfFeatureType) {
     //Give the attribute a default MapStringFeatureAttributeState
     attributeStatesOfFeatureType[attributeName] = {
@@ -26,7 +27,7 @@ export const updateStringAttributeStateOfFeatureType = (
       attributeName
     ] as MapStringFeatureAttributeState;
   }
-  //add the value of the attribute of the addedFeature into the values list of the attributeState if the value is not null and is not already included.
+  //add the value of addedFeature's attribute into the values list of the attribute state if the value is not null and is not already included.
   if (
     addedFeature[attributeKey] !== null &&
     !attributeStateOfAttributeOfFeatureType.values.includes(
