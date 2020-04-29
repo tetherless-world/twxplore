@@ -1,5 +1,6 @@
 package stores
 
+import com.codahale.metrics.MetricRegistry
 import edu.rpi.tw.twks.client.direct.DirectTwksClient
 import edu.rpi.tw.twks.configuration.TwksGeoSPARQLConfiguration
 import edu.rpi.tw.twks.mem.{MemTwks, MemTwksConfiguration}
@@ -8,7 +9,7 @@ import io.github.tetherlessworld.scena.Rdf
 import models.GeoTestData
 
 object TestTwks {
-  val twks = new MemTwks(MemTwksConfiguration.builder().setGeoSparqlConfiguration(TwksGeoSPARQLConfiguration.builder().setEnable(true).build()).build())
+  val twks = new MemTwks(MemTwksConfiguration.builder().setGeoSparqlConfiguration(TwksGeoSPARQLConfiguration.builder().setEnable(true).build()).build(), new MetricRegistry())
   val twksClient = new DirectTwksClient(twks)
 
   private val nanopublicationBuilder = Nanopublication.builder()
