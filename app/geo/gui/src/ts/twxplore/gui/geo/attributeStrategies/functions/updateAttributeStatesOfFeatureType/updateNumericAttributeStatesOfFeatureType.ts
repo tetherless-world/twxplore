@@ -16,10 +16,15 @@ export const updateNumericAttributeStatesOfFeatureType = (
     attributeName
   ] as MapNumericFeatureAttributeState;
   //If this is the first time coming across this attribute for this feature type
-  if (
-    attributeStateOfFeatureType.min === null &&
-    attributeStateOfFeatureType.max === null
-  ) {
+  if (!attributeStateOfFeatureType) {
+    attributeStatesOfFeatureType[attributeName] = {
+      min: null,
+      max: null,
+      filterIndex: null,
+    };
+    attributeStateOfFeatureType = attributeStatesOfFeatureType[
+      attributeName
+    ] as MapNumericFeatureAttributeState;
     //New max of the attribute wil be the feature's value for the attribute
     attributeStateOfFeatureType.max = addedFeature[attributeKey] as number;
     //New min of the attribute wil be the feature's value for the attribute

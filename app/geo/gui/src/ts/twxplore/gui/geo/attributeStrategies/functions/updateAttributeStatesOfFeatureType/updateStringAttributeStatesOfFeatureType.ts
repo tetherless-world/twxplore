@@ -17,15 +17,29 @@ export const updateStringAttributeStatesOfFeatureType = (
   ] as MapStringFeatureAttributeState;
   //If this is the first time coming across this attribute for this feature type
   if (
+    !attributeStateOfFeatureType
+    //addedFeature[attributeKey] !== null &&
+    //!attributeStateOfFeatureType.values.includes(
+    //addedFeature[attributeKey] as string
+  ) {
+    attributeStatesOfFeatureType[attributeName] = {
+      values: [],
+      filterIndex: null,
+    };
+    attributeStateOfFeatureType = attributeStatesOfFeatureType[
+      attributeName
+    ] as MapStringFeatureAttributeState;
+  }
+  //add the value of the attribute into the values list of the attributeState
+  if (
     addedFeature[attributeKey] !== null &&
     !attributeStateOfFeatureType.values.includes(
       addedFeature[attributeKey] as string
     )
-  ) {
-    //add the value of the attribute into the values list of the attributeState
+  )
     attributeStateOfFeatureType.values.push(
       addedFeature[attributeKey] as string
     );
-  }
+
   return;
 };

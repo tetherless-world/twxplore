@@ -5,6 +5,7 @@ export const setAllFilterIndexesNull = (attributeStatesOfFeatureType: {
 }) => {
   Object.keys(attributeStatesOfFeatureType).map(attributeName => {
     //Set the filter index for all attributes within the filter to null because filter are being removed
-    attributeStatesOfFeatureType[attributeName].filterIndex = null;
+    if (attributeStatesOfFeatureType[attributeName])
+      attributeStatesOfFeatureType[attributeName].filterIndex = null;
   });
 };
