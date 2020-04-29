@@ -1,5 +1,5 @@
 # Build
-FROM hseeberger/scala-sbt:11.0.4_1.3.5_2.12.10 as build
+FROM hseeberger/scala-sbt:11.0.5_1.3.7_2.12.10 as build
 WORKDIR /app
 COPY /build.sbt .
 COPY /project/ ./project
