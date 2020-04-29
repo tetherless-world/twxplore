@@ -8,7 +8,7 @@ import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
 import {MapFeature} from "../../states/map/MapFeature";
-import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStatesOfFeatureType";
+import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStateOfFeatureType";
 
 export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
   updateAttributeStatesOfFeatureType(

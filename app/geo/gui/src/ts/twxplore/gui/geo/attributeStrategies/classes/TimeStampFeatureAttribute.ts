@@ -7,7 +7,7 @@ import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
-import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStatesOfFeatureType";
+import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStateOfFeatureType";
 import {MapFeature} from "../../states/map/MapFeature";
 
 export class TimestampFeatureAttribute implements FeatureAttribute {

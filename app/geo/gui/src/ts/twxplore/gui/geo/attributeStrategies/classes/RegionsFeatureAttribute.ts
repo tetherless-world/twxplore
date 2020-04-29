@@ -7,7 +7,7 @@ import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
-import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStatesOfFeatureType";
+import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStateOfFeatureType";
 import {MapFeature} from "../../states/map/MapFeature";
 
 export class RegionsFeatureAttribute implements FeatureAttribute {
