@@ -9,7 +9,7 @@ User interface framework for semantic applications
 Build all apps:
 
     docker-compose build
-    
+
 # Starting
 
 Start the apps:
