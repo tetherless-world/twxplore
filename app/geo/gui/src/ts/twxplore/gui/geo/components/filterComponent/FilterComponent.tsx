@@ -82,14 +82,17 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
               {attributeName}
             </Typography>
             <Slider
-              defaultValue={[stateOfAttribute.min!, stateOfAttribute.max!]}
+              defaultValue={[
+                stateOfAttribute.range.min!,
+                stateOfAttribute.range.max!,
+              ]}
               getAriaValueText={valuetext}
               aria-labelledby="range-slider"
               step={1}
-              min={stateOfAttribute.min!}
-              max={stateOfAttribute.max!}
+              min={stateOfAttribute.range.min!}
+              max={stateOfAttribute.range.max!}
               valueLabelDisplay="auto"
-              disabled={!stateOfAttribute.max!}
+              disabled={!stateOfAttribute.range.max!}
               onChangeCommitted={(event: any, newValue: number | number[]) =>
                 handleChangeSlider(event, newValue, filterIndexOfAttribute!)
               }

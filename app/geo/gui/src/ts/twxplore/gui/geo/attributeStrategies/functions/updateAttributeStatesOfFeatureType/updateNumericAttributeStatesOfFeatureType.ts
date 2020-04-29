@@ -18,27 +18,38 @@ export const updateNumericAttributeStatesOfFeatureType = (
   //If this is the first time coming across this attribute for this feature type
   if (!attributeStateOfFeatureType) {
     attributeStatesOfFeatureType[attributeName] = {
-      min: null,
-      max: null,
+      range: {min: null, max: null},
       filterIndex: null,
     };
     attributeStateOfFeatureType = attributeStatesOfFeatureType[
       attributeName
     ] as MapNumericFeatureAttributeState;
     //New max of the attribute wil be the feature's value for the attribute
-    attributeStateOfFeatureType.max = addedFeature[attributeKey] as number;
+    attributeStateOfFeatureType.range.max = addedFeature[
+      attributeKey
+    ] as number;
     //New min of the attribute wil be the feature's value for the attribute
-    attributeStateOfFeatureType.min = addedFeature[attributeKey] as number;
+    attributeStateOfFeatureType.range.min = addedFeature[
+      attributeKey
+    ] as number;
     return;
   }
   //If this is NOT the first time coming across this attribute for this feature type
   //Compare attribute value to the min found in the attribute state. Set new min if necessary.
-  if ((addedFeature[attributeKey] as number) < attributeStateOfFeatureType.min!)
-    attributeStateOfFeatureType.min = addedFeature[attributeKey] as number;
+  if (
+    (addedFeature[attributeKey] as number) <
+    attributeStateOfFeatureType.range.min!
+  )
+    attributeStateOfFeatureType.range.min = addedFeature[
+      attributeKey
+    ] as number;
   //Compare attribute value to the max found in the attribute state. Set new max if necessary.
   else if (
-    (addedFeature[attributeKey] as number) > attributeStateOfFeatureType.max!
+    (addedFeature[attributeKey] as number) >
+    attributeStateOfFeatureType.range.max!
   )
-    attributeStateOfFeatureType.max = addedFeature[attributeKey] as number;
+    attributeStateOfFeatureType.range.max = addedFeature[
+      attributeKey
+    ] as number;
   return;
 };

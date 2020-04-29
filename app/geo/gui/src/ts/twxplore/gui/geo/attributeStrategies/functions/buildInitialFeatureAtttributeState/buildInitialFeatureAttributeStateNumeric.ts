@@ -8,8 +8,7 @@ export const buildInitialFeatureAttributeStateNumeric = (
   featureAttributeName: FeatureAttributeName
 ) => {
   attributeStatesOfFeatureType[featureAttributeName] = {
-    min: null,
-    max: null,
+    range: {min: null, max: null},
     filterIndex: null,
   };
 };

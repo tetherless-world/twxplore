@@ -17,8 +17,8 @@ export const setInitialFiltersNumeric = (
   stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
   dispatch(
     setFilter(filterIndexOfAttribute, "value", [
-      stateOfAttribute.min,
-      stateOfAttribute.max,
+      stateOfAttribute.range.min,
+      stateOfAttribute.range.max,
     ])
   );
   return;
