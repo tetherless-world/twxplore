@@ -11,7 +11,7 @@ import {MapFeature} from "../../states/map/MapFeature";
 
 export interface FeatureAttribute {
   readonly name: string;
-  readonly typeOf: TypeOfFeatureAttribute;
+  readonly typeOfAttribute: TypeOfFeatureAttribute;
   readonly KeplerFilterType: KeplerFilterType;
   readonly KeplerFieldType: KeplerFieldType;
   readonly ignore: boolean;

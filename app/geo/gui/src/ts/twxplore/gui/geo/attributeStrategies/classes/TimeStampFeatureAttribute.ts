@@ -49,5 +49,5 @@ export class TimestampFeatureAttribute implements FeatureAttribute {
   readonly KeplerFilterType = KeplerFilterType.TIMERANGE;
   readonly KeplerFieldType = KeplerFieldType.TIMESTAMP;
   readonly ignore = false;
-  readonly typeOf = TypeOfFeatureAttribute.NUMBER;
+  readonly typeOfAttribute = TypeOfFeatureAttribute.NUMBER;
 }

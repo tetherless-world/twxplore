@@ -49,5 +49,5 @@ export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
   readonly KeplerFilterType = KeplerFilterType.RANGE;
   readonly KeplerFieldType = KeplerFieldType.INTEGER;
   readonly ignore = false;
-  readonly typeOf = TypeOfFeatureAttribute.NUMBER;
+  readonly typeOfAttribute = TypeOfFeatureAttribute.NUMBER;
 }

@@ -49,5 +49,5 @@ export class RegionsFeatureAttribute implements FeatureAttribute {
   readonly KeplerFilterType = KeplerFilterType.MULTISELECT;
   readonly KeplerFieldType = KeplerFieldType.STRING;
   readonly ignore = false;
-  readonly typeOf = TypeOfFeatureAttribute.STRING;
+  readonly typeOfAttribute = TypeOfFeatureAttribute.STRING;
 }

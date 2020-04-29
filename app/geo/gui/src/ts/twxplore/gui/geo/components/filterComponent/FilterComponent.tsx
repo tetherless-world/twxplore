@@ -73,7 +73,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     attributeName: string,
     stateOfAttribute: MapFeatureAttributeState
   ) => {
-    switch (getFeatureAttributeByName(attributeName).typeOf) {
+    switch (getFeatureAttributeByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
         return (

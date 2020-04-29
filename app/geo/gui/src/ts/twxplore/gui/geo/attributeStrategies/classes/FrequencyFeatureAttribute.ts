@@ -46,7 +46,7 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
   }
   static readonly instance = new FrequencyFeatureAttribute();
   readonly name = FeatureAttributeName.frequency;
-  readonly typeOf = TypeOfFeatureAttribute.NUMBER;
+  readonly typeOfAttribute = TypeOfFeatureAttribute.NUMBER;
   readonly KeplerFilterType = KeplerFilterType.RANGE;
   readonly KeplerFieldType = KeplerFieldType.INTEGER;
   readonly ignore = false;

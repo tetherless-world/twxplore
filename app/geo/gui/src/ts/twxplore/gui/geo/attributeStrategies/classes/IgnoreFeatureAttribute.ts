@@ -23,7 +23,7 @@ export class IgnoreFeatureAttribute implements FeatureAttribute {
   ): void {}
   static readonly instance = new IgnoreFeatureAttribute();
   readonly name = "";
-  readonly typeOf = TypeOfFeatureAttribute.UNDEFINED;
+  readonly typeOfAttribute = TypeOfFeatureAttribute.UNDEFINED;
   readonly KeplerFilterType = KeplerFilterType.NONE;
   readonly KeplerFieldType = KeplerFieldType.NONE;
   readonly ignore = true;
