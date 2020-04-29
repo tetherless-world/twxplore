@@ -3,8 +3,8 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {setInitialFiltersNumeric} from "../functions/setInitialFilters/setInitialFiltersNumeric";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {FilterType} from "../../states/map/FilterType";
-import {FieldType} from "../../states/map/FieldType";
+import {KeplerFilterType} from "../../states/map/KeplerFilterType";
+import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
 import {MapFeature} from "../../states/map/MapFeature";
@@ -40,14 +40,14 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType,
+      this.KeplerFilterType,
       dispatch
     );
   }
   static readonly instance = new FrequencyFeatureAttribute();
   readonly name = FeatureAttributeName.frequency;
   readonly typeOf = TypeOfFeatureAttribute.NUMBER;
-  readonly filterType = FilterType.RANGE;
-  readonly fieldType = FieldType.INTEGER;
+  readonly KeplerFilterType = KeplerFilterType.RANGE;
+  readonly KeplerFieldType = KeplerFieldType.INTEGER;
   readonly ignore = false;
 }

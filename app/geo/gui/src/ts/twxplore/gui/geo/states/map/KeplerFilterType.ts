@@ -1,4 +1,4 @@
-export enum FilterType {
+export enum KeplerFilterType {
   RANGE = "range",
   SELECT = "select",
   TIMERANGE = "timeRange",

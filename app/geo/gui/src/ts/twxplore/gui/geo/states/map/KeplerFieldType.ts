@@ -1,4 +1,4 @@
-export enum FieldType {
+export enum KeplerFieldType {
   BOOLEAN = "boolean",
   DATE = "date",
   GEOJSON = "geojson",

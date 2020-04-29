@@ -2,8 +2,8 @@ import {setInitialFiltersNumeric} from "../functions/setInitialFilters/setInitia
 import {FeatureAttribute} from "./FeatureAttribute";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {FilterType} from "../../states/map/FilterType";
-import {FieldType} from "../../states/map/FieldType";
+import {KeplerFilterType} from "../../states/map/KeplerFilterType";
+import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
@@ -40,14 +40,14 @@ export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType,
+      this.KeplerFilterType,
       dispatch
     );
   }
   static readonly instance = new TransmissionPowerFeatureAttribute();
   readonly name = FeatureAttributeName.transmissionPower;
-  readonly filterType = FilterType.RANGE;
-  readonly fieldType = FieldType.INTEGER;
+  readonly KeplerFilterType = KeplerFilterType.RANGE;
+  readonly KeplerFieldType = KeplerFieldType.INTEGER;
   readonly ignore = false;
   readonly typeOf = TypeOfFeatureAttribute.NUMBER;
 }

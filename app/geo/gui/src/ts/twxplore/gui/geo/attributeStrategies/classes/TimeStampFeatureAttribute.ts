@@ -2,8 +2,8 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {setInitialFiltersNumeric} from "../functions/setInitialFilters/setInitialFiltersNumeric";
 import {FeatureAttribute} from "./FeatureAttribute";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {FilterType} from "../../states/map/FilterType";
-import {FieldType} from "../../states/map/FieldType";
+import {KeplerFilterType} from "../../states/map/KeplerFilterType";
+import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
@@ -40,14 +40,14 @@ export class TimestampFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType,
+      this.KeplerFilterType,
       dispatch
     );
   }
   readonly name = FeatureAttributeName.timestamp;
   static readonly instance = new TimestampFeatureAttribute();
-  readonly filterType = FilterType.TIMERANGE;
-  readonly fieldType = FieldType.TIMESTAMP;
+  readonly KeplerFilterType = KeplerFilterType.TIMERANGE;
+  readonly KeplerFieldType = KeplerFieldType.TIMESTAMP;
   readonly ignore = false;
   readonly typeOf = TypeOfFeatureAttribute.NUMBER;
 }

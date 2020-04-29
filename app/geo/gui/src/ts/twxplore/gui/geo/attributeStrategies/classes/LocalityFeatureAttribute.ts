@@ -1,8 +1,8 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {FilterType} from "../../states/map/FilterType";
+import {KeplerFilterType} from "../../states/map/KeplerFilterType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {FieldType} from "../../states/map/FieldType";
+import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {setInitialFiltersString} from "../functions/setInitialFilters/setInitialFiltersString";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
@@ -41,13 +41,13 @@ export class LocalityFeatureAttribute implements FeatureAttribute {
       filterIndexOfAttribute,
       this.name,
       stateOfAttribute,
-      this.filterType,
+      this.KeplerFilterType,
       dispatch
     );
   }
   readonly name = FeatureAttributeName.locality;
-  readonly filterType = FilterType.MULTISELECT;
-  readonly fieldType = FieldType.STRING;
+  readonly KeplerFilterType = KeplerFilterType.MULTISELECT;
+  readonly KeplerFieldType = KeplerFieldType.STRING;
   readonly ignore = false;
   readonly typeOf = TypeOfFeatureAttribute.STRING;
 }
