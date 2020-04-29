@@ -159,19 +159,18 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
   const attributeStatesOfFeatureType =
     state.featuresByType[featureType].attributeStates;
 
-  const fake_state: any = useSelector(
-    (rootState: RootState) => rootState.keplerGl
-  );
-  console.debug(fake_state);
   const dispatch = useDispatch();
 
   return (
     <div className={classes.root}>
       <div className={classes.margin} />
-      {//for each attributeName string-key that points to a MapFeatureAttribute state
+      {//for each attributeName that corresponds to an attribute state for an attribute of the FeatureType
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
-        const stateOfAttribute = attributeStatesOfFeatureType[attributeName]; //e.g. timestamp:{min,max}, frequency:{min, max}
-        const filterIndexOfAttribute = stateOfAttribute.filterIndex;
+        //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
+        const attributeStateOfAttributeOfFeatureType =
+          attributeStatesOfFeatureType[attributeName]; //e.g. timestamp:{min,max}, frequency:{min, max}
+        const filterIndexOfAttribute =
+          attributeStateOfAttributeOfFeatureType.filterIndex;
         switch (featureTypeState) {
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
@@ -179,8 +178,9 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
             setInitialFilter(
               filterIndexOfAttribute!,
               attributeName,
-              stateOfAttribute
+              attributeStateOfAttributeOfFeatureType
             );
+            //All filters set, dispatch an action to change the state of the FeatureType to reflect that.
             dispatch(
               allFiltersSet(
                 FeatureType[featureType as keyof typeof FeatureType]
@@ -193,7 +193,7 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
             return returnFilterComponent(
               filterIndexOfAttribute!,
               attributeName,
-              stateOfAttribute
+              attributeStateOfAttributeOfFeatureType
             );
           }
           //This handles the case in which the featureTypeState is ABSENT_ON_MAP or WAITING_ON_LOAD
