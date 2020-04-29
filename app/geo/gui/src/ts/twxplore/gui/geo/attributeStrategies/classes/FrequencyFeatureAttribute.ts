@@ -8,7 +8,7 @@ import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
 import {MapFeature} from "../../states/map/MapFeature";
-import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStateOfFeatureType";
+import {updateNumericAttributeStateOfFeatureType} from "../functions/updateAttributeStateOfFeatureType/updateNumericAttributeStateOfFeatureType";
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
   updateAttributeStatesOfFeatureType(
@@ -17,7 +17,7 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
     },
     addedFeature: MapFeature
   ): void {
-    updateNumericAttributeStatesOfFeatureType(
+    updateNumericAttributeStateOfFeatureType(
       attributeStatesOfFeatureType,
       addedFeature,
       this.name

@@ -8,7 +8,7 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
 import {MapFeature} from "../../states/map/MapFeature";
-import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStateOfFeatureType";
+import {updateStringAttributeStateOfFeatureType} from "../functions/updateAttributeStateOfFeatureType/updateStringAttributeStateOfFeatureType";
 
 export class LocalityFeatureAttribute implements FeatureAttribute {
   static readonly instance = new LocalityFeatureAttribute();
@@ -18,7 +18,7 @@ export class LocalityFeatureAttribute implements FeatureAttribute {
     },
     addedFeature: MapFeature
   ): void {
-    updateStringAttributeStatesOfFeatureType(
+    updateStringAttributeStateOfFeatureType(
       attributeStatesOfFeatureType,
       addedFeature,
       this.name

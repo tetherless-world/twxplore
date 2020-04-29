@@ -3,7 +3,7 @@ import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeS
 
 import {MapFeature} from "../../../states/map/MapFeature";
 
-export const updateNumericAttributeStatesOfFeatureType = (
+export const updateNumericAttributeStateOfFeatureType = (
   attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   },
