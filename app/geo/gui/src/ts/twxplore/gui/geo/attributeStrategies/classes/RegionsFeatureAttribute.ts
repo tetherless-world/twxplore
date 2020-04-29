@@ -7,10 +7,22 @@ import {FieldType} from "../../states/map/FieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
+import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStatesOfFeatureType";
+import {MapFeature} from "../../states/map/MapFeature";
 
 export class RegionsFeatureAttribute implements FeatureAttribute {
-  static readonly instance = new RegionsFeatureAttribute();
-
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void {
+    updateStringAttributeStatesOfFeatureType(
+      attributeStatesOfFeatureType,
+      addedFeature,
+      this.name
+    );
+  }
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void {
@@ -33,6 +45,7 @@ export class RegionsFeatureAttribute implements FeatureAttribute {
     );
   }
   readonly name = FeatureAttributeName.regions;
+  static readonly instance = new RegionsFeatureAttribute();
   readonly filterType = FilterType.MULTISELECT;
   readonly fieldType = FieldType.STRING;
   readonly ignore = false;

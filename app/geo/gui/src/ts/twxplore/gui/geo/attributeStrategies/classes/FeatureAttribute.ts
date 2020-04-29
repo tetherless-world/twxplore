@@ -22,4 +22,10 @@ export interface FeatureAttribute {
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void;
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void;
 }

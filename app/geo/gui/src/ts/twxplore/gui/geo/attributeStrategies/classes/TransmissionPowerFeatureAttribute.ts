@@ -7,9 +7,22 @@ import {FieldType} from "../../states/map/FieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
+import {MapFeature} from "../../states/map/MapFeature";
+import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStatesOfFeatureType";
 
 export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
-  static readonly instance = new TransmissionPowerFeatureAttribute();
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void {
+    updateNumericAttributeStatesOfFeatureType(
+      attributeStatesOfFeatureType,
+      addedFeature,
+      this.name
+    );
+  }
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void {
@@ -31,6 +44,7 @@ export class TransmissionPowerFeatureAttribute implements FeatureAttribute {
       dispatch
     );
   }
+  static readonly instance = new TransmissionPowerFeatureAttribute();
   readonly name = FeatureAttributeName.transmissionPower;
   readonly filterType = FilterType.RANGE;
   readonly fieldType = FieldType.INTEGER;

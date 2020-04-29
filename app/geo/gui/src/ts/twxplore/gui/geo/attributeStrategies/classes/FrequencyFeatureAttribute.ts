@@ -7,8 +7,22 @@ import {FilterType} from "../../states/map/FilterType";
 import {FieldType} from "../../states/map/FieldType";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
+import {MapFeature} from "../../states/map/MapFeature";
+import {updateNumericAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateNumericAttributeStatesOfFeatureType";
 
 export class FrequencyFeatureAttribute implements FeatureAttribute {
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void {
+    updateNumericAttributeStatesOfFeatureType(
+      attributeStatesOfFeatureType,
+      addedFeature,
+      this.name
+    );
+  }
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void {
@@ -31,11 +45,9 @@ export class FrequencyFeatureAttribute implements FeatureAttribute {
     );
   }
   static readonly instance = new FrequencyFeatureAttribute();
-
   readonly name = FeatureAttributeName.frequency;
   readonly typeOf = TypeOfFeatureAttribute.NUMBER;
   readonly filterType = FilterType.RANGE;
   readonly fieldType = FieldType.INTEGER;
-
   readonly ignore = false;
 }
