@@ -7,9 +7,23 @@ import {setInitialFiltersString} from "../functions/setInitialFilters/setInitial
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
+import {MapFeature} from "../../states/map/MapFeature";
+import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStatesOfFeatureType";
 
 export class LocalityFeatureAttribute implements FeatureAttribute {
   static readonly instance = new LocalityFeatureAttribute();
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void {
+    updateStringAttributeStatesOfFeatureType(
+      attributeStatesOfFeatureType,
+      addedFeature,
+      this.name
+    );
+  }
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void {

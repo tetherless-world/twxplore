@@ -7,8 +7,22 @@ import {FieldType} from "../../states/map/FieldType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {Dispatch} from "redux";
 import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
+import {updateStringAttributeStatesOfFeatureType} from "../functions/updateAttributeStatesOfFeatureType/updateStringAttributeStatesOfFeatureType";
+import {MapFeature} from "../../states/map/MapFeature";
 
 export class LabelFeatureAttribute implements FeatureAttribute {
+  updateAttributeStatesOfFeatureType(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    addedFeature: MapFeature
+  ): void {
+    updateStringAttributeStatesOfFeatureType(
+      attributeStatesOfFeatureType,
+      addedFeature,
+      this.name
+    );
+  }
   buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
     [featureAttributeName: string]: MapFeatureAttributeState;
   }): void {

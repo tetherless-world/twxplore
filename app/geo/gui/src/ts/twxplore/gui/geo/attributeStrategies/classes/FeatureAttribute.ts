@@ -5,6 +5,7 @@ import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {FieldType} from "../../states/map/FieldType";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
+import {MapFeature} from "../../states/map/MapFeature";
 
 // TypeScript
 
