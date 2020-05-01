@@ -20,7 +20,7 @@ export const setInitialFiltersNumeric = (
       stateOfAttribute.range.max,
     ])
   );
-  dispatch(setFilter(filterIndexOfAttribute, "enlarged", false));
+  dispatch(setFilter(filterIndexOfAttribute, "enlarged", false)); //disables any pop-up Kepler may bring up with the filter
 
   return;
 };
