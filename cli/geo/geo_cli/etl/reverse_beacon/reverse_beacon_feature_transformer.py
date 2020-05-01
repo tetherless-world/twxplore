@@ -20,7 +20,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
         self.__geocoder = Geocoder()
         self.__uls_entities_by_call_sign = uls_entities_by_call_sign
 
-    def transform(self, **kwds) -> Generator[Feature, None, None]:
+    def transform(self) -> Generator[Feature, None, None]:
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_transmission_count = 0
         duplicate_transmitter_count = 0
@@ -55,7 +55,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
-                        if uls_entity["State"] != "NY":
+                        if uls_entity.get("State") != "NY":
                             skipped_uls_entity_count += 1
                             continue
                         # Observed attributes that don't change between spotters, unlike speed and snr/db
@@ -80,7 +80,11 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 row = max(rows, key=lambda row: row["db"])
 
                 uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
-                address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
+                try:
+                    address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
+                except KeyError:
+                    skipped_uls_entity_count += 1
+                    continue
                 try:
                     wkt = self.__geocoder.geocode(address)
                 except LookupError:
@@ -97,7 +101,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 transmission_feature = \
                     Feature(
                         frequency=float(row["freq"]),
-                        label="Amateur radio transmission: %s (%s) @ %s on frequency %s" % (uls_entity['Call Sign'], uls_entity['Entity Name'], row["date"], row["freq"]),
+                        label="Amateur radio transmission: %s (%s)" % (uls_entity['Call Sign'], uls_entity['Entity Name']),
                         locality=uls_entity['City'],
                         geometry=geometry,
                         postal_code=uls_entity['Zip Code'],
