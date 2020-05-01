@@ -25,7 +25,6 @@ import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import {FilterPanel} from "../filterPanel/FilterPanel";
 import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
@@ -322,9 +321,6 @@ const MapImpl: React.FunctionComponent = () => {
             </div>
           )}
         />
-      </div>
-      <div>
-        <FilterPanel />
       </div>
     </div>
   );
