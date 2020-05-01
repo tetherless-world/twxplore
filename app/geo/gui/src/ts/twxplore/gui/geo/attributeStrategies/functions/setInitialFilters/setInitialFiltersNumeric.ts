@@ -20,5 +20,7 @@ export const setInitialFiltersNumeric = (
       stateOfAttribute.range.max,
     ])
   );
+  dispatch(setFilter(filterIndexOfAttribute, "enlarged", false));
+
   return;
 };

@@ -14,6 +14,7 @@ export const setInitialFiltersString = (
   stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
   dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
   dispatch(setFilter(filterIndexOfAttribute, "type", keplerFilterType));
+  dispatch(setFilter(filterIndexOfAttribute, "enlarged", false)); //disables any pop-up Kepler may bring up with the filter
 
   return;
 };
