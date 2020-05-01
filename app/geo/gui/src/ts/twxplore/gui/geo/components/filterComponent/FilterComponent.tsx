@@ -56,18 +56,6 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const setInitialFilter = (
-    filterIndexOfAttribute: number,
-    attributeName: string,
-    stateOfAttribute: MapFeatureAttributeState
-  ) => {
-    const featureAttribute = getFeatureAttributeByName(attributeName);
-    featureAttribute.setInitialFilters(
-      filterIndexOfAttribute,
-      stateOfAttribute,
-      dispatch
-    );
-  };
   const returnFilterComponent = (
     filterIndexOfAttribute: number,
     attributeName: string,
@@ -175,10 +163,11 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-            setInitialFilter(
+            const featureAttribute = getFeatureAttributeByName(attributeName);
+            featureAttribute.setInitialFilters(
               filterIndexOfAttribute!,
-              attributeName,
-              attributeStateOfAttributeOfFeatureType
+              attributeStateOfAttributeOfFeatureType,
+              dispatch
             );
             //All filters set, dispatch an action to change the state of the FeatureType to reflect that.
             dispatch(
