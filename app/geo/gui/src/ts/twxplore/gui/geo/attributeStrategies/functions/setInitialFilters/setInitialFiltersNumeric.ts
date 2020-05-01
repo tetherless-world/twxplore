@@ -12,7 +12,6 @@ export const setInitialFiltersNumeric = (
   dispatch: Dispatch<any>
 ): void => {
   dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-  dispatch(setFilter(filterIndexOfAttribute, "KeplerFieldType", attributeName));
   dispatch(setFilter(filterIndexOfAttribute, "type", keplerFilterType));
   stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
   dispatch(
