@@ -20,7 +20,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
         self.__geocoder = Geocoder()
         self.__uls_entities_by_call_sign = uls_entities_by_call_sign
 
-    def transform(self, **kwds) -> Generator[Feature, None, None]:
+    def transform(self) -> Generator[Feature, None, None]:
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_transmission_count = 0
         duplicate_transmitter_count = 0
@@ -97,7 +97,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 transmission_feature = \
                     Feature(
                         frequency=float(row["freq"]),
-                        label="Amateur radio transmission: %s (%s) @ %s on frequency %s" % (uls_entity['Call Sign'], uls_entity['Entity Name'], row["date"], row["freq"]),
+                        label="Amateur radio transmission: %s (%s)" % (uls_entity['Call Sign'], uls_entity['Entity Name']),
                         locality=uls_entity['City'],
                         geometry=geometry,
                         postal_code=uls_entity['Zip Code'],

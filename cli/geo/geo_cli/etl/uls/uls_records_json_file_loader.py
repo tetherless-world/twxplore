@@ -36,7 +36,11 @@ class UlsRecordsJsonFileLoader:
 
     def load(self, records: Generator[UlsRecord, None, None]):
         for record in records:
-            self.__uls_records_by_call_sign[record["Call Sign"]] = dict(record.items())
+            try:
+                call_sign = record["Call Sign"]
+            except KeyError:
+                continue
+            self.__uls_records_by_call_sign[call_sign] = dict(record.items())
 
     @classmethod
     def loaded_file_path(cls, file_name_prefix) -> Path:
