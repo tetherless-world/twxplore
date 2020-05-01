@@ -271,7 +271,7 @@ const MapImpl: React.FunctionComponent = () => {
           //A query is not in progress AND if the length of the previous query was capped by the limit variable that was passed...
           if (
             featureLoadingState.latestQueryLength === limit &&
-            (featureLoadingState.offset < 2000 || !DEBUG)
+            (featureLoadingState.offset < 5000 || !DEBUG)
           ) {
             console.log("Made it here");
             //Same lazyQuery as in the CLICKED state, we are simply going further
