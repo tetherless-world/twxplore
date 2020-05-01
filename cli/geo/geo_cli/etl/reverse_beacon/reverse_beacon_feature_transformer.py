@@ -55,7 +55,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
-                        if uls_entity["State"] != "NY":
+                        if uls_entity.get("State") != "NY":
                             skipped_uls_entity_count += 1
                             continue
                         # Observed attributes that don't change between spotters, unlike speed and snr/db
@@ -80,7 +80,11 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 row = max(rows, key=lambda row: row["db"])
 
                 uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
-                address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
+                try:
+                    address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
+                except KeyError:
+                    skipped_uls_entity_count += 1
+                    continue
                 try:
                     wkt = self.__geocoder.geocode(address)
                 except LookupError:
