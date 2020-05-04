@@ -48,7 +48,7 @@ function valuetext(value: number) {
 }
 
 //var filterIndexOfAttribute: number | null; //necessary to pass this into onChangeCommitted since it
-const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
+const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   featureType,
 }) => {
   const classes = useStyles();
@@ -194,4 +194,4 @@ const FilterSlidersImpl: React.FunctionComponent<{featureType: string}> = ({
     </div>
   );
 };
-export const FilterSliders = connect()(FilterSlidersImpl);
+export const FilterComponent = connect()(FilterComponentImpl);
