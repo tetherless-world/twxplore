@@ -9,11 +9,11 @@ Unsure, if I should call this FeatureTypeAttributeState instead.
 Or maybe 'AttributeOfFeatureTypeState'
 */
 export interface MapNumericFeatureAttributeState {
-  range: MapFeatureAttributeNumericRange;
+  range: MapFeatureAttributeNumericRange | null;
   filterIndex: number | null;
 }
 
 interface MapFeatureAttributeNumericRange {
-  min: number | null;
-  max: number | null;
+  min: number;
+  max: number;
 }
