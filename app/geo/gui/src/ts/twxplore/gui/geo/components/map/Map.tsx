@@ -281,7 +281,7 @@ const MapImpl: React.FunctionComponent = () => {
                   withinFeatureUri: clickedFeature.uri,
                 },
 
-                limit,
+                limit: LIMIT,
                 offset: featureLoadingState.offset,
               },
             });
