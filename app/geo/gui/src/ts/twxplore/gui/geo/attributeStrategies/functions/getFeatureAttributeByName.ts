@@ -8,6 +8,7 @@ import {TransmissionPowerFeatureAttribute} from "../classes/TransmissionPowerFea
 import {LabelFeatureAttribute} from "../classes/LabelFeatureAttribute";
 import {LocalityFeatureAttribute} from "../classes/LocalityFeatureAttribute";
 import {IgnoreFeatureAttribute} from "../classes/IgnoreFeatureAttribute";
+import {TimestampFeatureAttribute} from "../classes/TimestampFeatureAttribute";
 //import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
 
 export const getFeatureAttributeByName = (name: string) => {
