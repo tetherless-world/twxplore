@@ -2,7 +2,6 @@
 
 import {KeplerFilterType} from "../../states/map/KeplerFilterType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
 import {MapFeature} from "../../states/map/MapFeature";
@@ -12,17 +11,13 @@ import {MapFeature} from "../../states/map/MapFeature";
 export interface FeatureAttribute {
   readonly name: string;
   readonly typeOfAttribute: TypeOfFeatureAttribute;
-  readonly KeplerFilterType: KeplerFilterType;
-  readonly KeplerFieldType: KeplerFieldType;
+  readonly keplerFilterType: KeplerFilterType;
   readonly ignore: boolean;
   setInitialFilters(
     filterIndexOfAttribute: number,
     stateOfAttribute: MapFeatureAttributeState,
     dispatch: Dispatch<any>
   ): void;
-  buildInitialFeatureAttributeState(attributeStatesOfFeatureType: {
-    [featureAttributeName: string]: MapFeatureAttributeState;
-  }): void;
   updateAttributeStatesOfFeatureType(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;

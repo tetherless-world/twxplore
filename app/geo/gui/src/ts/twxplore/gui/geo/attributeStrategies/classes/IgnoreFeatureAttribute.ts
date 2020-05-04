@@ -1,7 +1,6 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {KeplerFilterType} from "../../states/map/KeplerFilterType";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
 
@@ -24,7 +23,6 @@ export class IgnoreFeatureAttribute implements FeatureAttribute {
   static readonly instance = new IgnoreFeatureAttribute();
   readonly name = "";
   readonly typeOfAttribute = TypeOfFeatureAttribute.UNDEFINED;
-  readonly KeplerFilterType = KeplerFilterType.NONE;
-  readonly KeplerFieldType = KeplerFieldType.NONE;
+  readonly keplerFilterType = KeplerFilterType.NONE;
   readonly ignore = true;
 }
