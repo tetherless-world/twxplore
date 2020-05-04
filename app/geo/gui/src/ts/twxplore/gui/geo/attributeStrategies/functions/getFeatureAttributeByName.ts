@@ -2,7 +2,6 @@ import {
   FeatureAttributeName,
   FeatureAttributeKey,
 } from "../../states/map/FeatureAttributeName";
-import {TimestampFeatureAttribute} from "../classes/TimestampFeatureAttribute";
 import {FrequencyFeatureAttribute} from "../classes/FrequencyFeatureAttribute";
 import {TransmissionPowerFeatureAttribute} from "../classes/TransmissionPowerFeatureAttribute";
 
