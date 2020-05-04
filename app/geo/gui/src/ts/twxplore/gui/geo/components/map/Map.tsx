@@ -31,8 +31,9 @@ import * as _ from "lodash";
 
 //import KeplerGlSchema from "kepler.gl/schemas";
 
-const limit = 500;
+const LIMIT = 500;
 const DEBUG = true;
+const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
 const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
 const MapImpl: React.FunctionComponent = () => {
@@ -235,7 +236,7 @@ const MapImpl: React.FunctionComponent = () => {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
                 },
-                limit,
+                limit: LIMIT,
                 offset: 0,
               },
             });
@@ -269,8 +270,8 @@ const MapImpl: React.FunctionComponent = () => {
 
           //A query is not in progress AND if the length of the previous query was capped by the limit variable that was passed...
           if (
-            featureLoadingState.latestQueryLength === limit &&
-            (featureLoadingState.offset < 5000 || !DEBUG)
+            featureLoadingState.latestQueryLength === LIMIT &&
+            (featureLoadingState.offset < DEBUG_FEATURES_MAX || !DEBUG)
           ) {
             console.log("Made it here");
             //Same lazyQuery as in the CLICKED state, we are simply going further
