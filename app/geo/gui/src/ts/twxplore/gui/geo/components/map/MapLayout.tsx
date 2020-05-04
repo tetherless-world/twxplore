@@ -17,7 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import {Map} from "../map/Map";
+import {Map} from "./Map";
 import {connect} from "react-redux";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 
@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const MapPageImpl: React.FunctionComponent = () => {
+const MapLayoutImpl: React.FunctionComponent = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -153,4 +153,4 @@ const MapPageImpl: React.FunctionComponent = () => {
     </div>
   );
 };
-export const MapPage = connect()(MapPageImpl);
+export const MapLayout = connect()(MapLayoutImpl);

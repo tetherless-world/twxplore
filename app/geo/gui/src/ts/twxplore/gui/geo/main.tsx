@@ -16,7 +16,7 @@ import {SelectionHome} from "./components/SelectionHome/SelectionHome";
 import {Hrefs} from "./Hrefs";
 import {apolloClient} from "./api/apolloClient";
 import {NoRoute} from "./components/error/NoRoute";
-import {MapPage} from "./components/mapPage.tsx/MapPage";
+import {MapLayout} from "./components/map/MapLayout";
 
 // Logger
 const logger = Environment.development ? new ConsoleLogger() : new NopLogger();
@@ -31,8 +31,8 @@ ReactDOM.render(
         <Provider store={store}>
           <Router history={browserHistory}>
             <Switch>
-              <Route exact path={Hrefs.home} component={MapPage} />
-              <Route exact path={Hrefs.map} component={MapPage} />
+              <Route exact path={Hrefs.home} component={MapLayout} />
+              <Route exact path={Hrefs.map} component={MapLayout} />
               <Route exact path={Hrefs.selection} component={SelectionHome} />
               <Route component={NoRoute} />
             </Switch>
