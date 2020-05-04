@@ -13,10 +13,10 @@ import {
 import {Provider} from "react-redux";
 import store from "./store";
 import {SelectionHome} from "./components/SelectionHome/SelectionHome";
-import {Map} from "./components/map/Map";
 import {Hrefs} from "./Hrefs";
 import {apolloClient} from "./api/apolloClient";
 import {NoRoute} from "./components/error/NoRoute";
+import {MapLayout} from "./components/map/MapLayout";
 
 // Logger
 const logger = Environment.development ? new ConsoleLogger() : new NopLogger();
@@ -31,8 +31,8 @@ ReactDOM.render(
         <Provider store={store}>
           <Router history={browserHistory}>
             <Switch>
-              <Route exact path={Hrefs.home} component={Map} />
-              <Route exact path={Hrefs.map} component={Map} />
+              <Route exact path={Hrefs.home} component={MapLayout} />
+              <Route exact path={Hrefs.map} component={MapLayout} />
               <Route exact path={Hrefs.selection} component={SelectionHome} />
               <Route component={NoRoute} />
             </Switch>

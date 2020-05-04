@@ -2,8 +2,6 @@ import {MapState} from "./MapState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
-import {FeatureAttributeName} from "./FeatureAttributeName";
-import {getFeatureAttributeByName} from "../../attributeStrategies/getFeatureAttributeByName";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -23,24 +21,23 @@ Object.values(FeatureType).map(type => {
 });
 
 //Here we create an initial featuresByType value for each FeatureType
-Object.values(FeatureType).map(type => {
-  featuresByType[type] = {
+Object.values(FeatureType).map(featureType => {
+  featuresByType[featureType] = {
     features: [],
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
     attributeStates: {},
   };
   //Populate the attribute state with null values for all properties.
-  Object.keys(FeatureAttributeName).map(attributeName => {
+  /*Object.keys(FeatureAttributeName).map(attributeName => {
     const FeatureAttribute = getFeatureAttributeByName(attributeName);
-    if (FeatureAttribute.isNumeric) {
-      featuresByType[type].attributeStates[attributeName] = {
-        min: null,
-        max: null,
-        filterIndex: null,
-      };
-    }
-  });
+    let attributeStatesofFeatureType =
+      featuresByType[featureType].attributeStates;
+    attributeStatesofFeatureType;
+    FeatureAttribute.buildInitialFeatureAttributeState(
+      attributeStatesofFeatureType
+    );
+  });*/
 });
 
 //const featureTypesFilters: {[featureType: string]: MapFilterState} = {};

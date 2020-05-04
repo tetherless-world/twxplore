@@ -1,6 +1,6 @@
 import {MapFeature} from "./MapFeature";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
-import {MapFeatureAttributeState} from "./MapFeatureAttributeState";
+import {MapFeatureAttributeState} from "./MapFeatureAttributeState/MapFeatureAttributeState";
 
 export interface FeaturesByType {
   features: MapFeature[];

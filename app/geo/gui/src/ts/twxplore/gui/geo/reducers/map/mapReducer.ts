@@ -43,6 +43,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
   switch (action.type) {
     /*
+    Triggered from Map.tsx for features after a query is completed
     In this step, features are added to the features list and featuresByType map in state.
     When a list in featuresByType is changed, then dirty is set to true.
     */
@@ -61,8 +62,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         result.featuresByType[
           feature.type! as keyof typeof result.featuresByType
         ].dirty = true;
-        //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD to ensure that filters
-        //for this feature type will not be added until all queries are completed
+        //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD because a load is ongoing and
+        //to ensure that filters for this feature type will not be added until all queries are completed
         result.featuresByType[
           feature.type! as keyof typeof result.featuresByType
         ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
@@ -72,7 +73,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
 
     /*
-    Handles the action that renders features onto the map
+    Handles the action that renders features onto the map.
+    Triggered from Map.tsx for features in the LOADED switch-case.
     */
     case "@@kepler.gl/ADD_DATA_TO_MAP": {
       console.debug("ADD_DATA_TO_MAP action being handled");
@@ -108,14 +110,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             MapFeatureState.RENDERED
         );
 
-        /*
-        Check the filterState of the type of feature being added to the map.
-        Loop throrugh the attributes of the feature and check to see which are of type number.
-        Updates the min and maxes of the attributes in the filterState if necessary.
-        */
-
-        //attributeStatesOfFeatureType is now an object, with each of its properties being the state of
-        //an attribute of that FeatureType.
+        //attributeStatesOfFeatureType is now an object, with each of its properties being the state of an attribute of the addedFeature's FeatureType.
         //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
         const attributeStatesOfFeatureType =
           result.featuresByType[addedFeature.type!].attributeStates;
@@ -163,7 +158,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         for (const featureType of Object.values(FeatureType)) {
           let featuresByTypeOfType =
             result.featuresByType[featureType as keyof typeof FeatureType];
-          let filterTypeStateOfFeatureType =
+          let attributeStatesOfFeatureType =
             result.featuresByType[featureType as keyof typeof FeatureType]
               .attributeStates;
 
@@ -174,9 +169,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState =
               //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
               MapFeatureTypeState.NEEDS_FILTERS;
-            //Give each attribute with the FeatureType that is filterable a filter idx (index)
-            Object.keys(filterTypeStateOfFeatureType).map(attributeName => {
-              filterTypeStateOfFeatureType[attributeName].filterIndex =
+            //Now that this FeatureType needs filters, give each attribute a filter idx based on the filterableAttributesCounter (index)
+            Object.keys(attributeStatesOfFeatureType).map(attributeName => {
+              attributeStatesOfFeatureType[attributeName].filterIndex =
                 result.filterableAttributesCounter;
               result.filterableAttributesCounter += 1;
             });
