@@ -23,7 +23,7 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
     ] as MapNumericFeatureAttributeState;
     //If this is the first time coming across this attribute for the addedFeature's FeatureType
     if (!attributeStateOfAttributeOffFeatureType) {
-      //Give the MapNumericAttributeState a temporary default value
+      //Give the MapNumericAttributeState min/max the addedFeature's value for the attribute
       attributeStatesOfFeatureType[attributeName] = {
         range: {
           min: addedFeature[attributeKey] as number,
