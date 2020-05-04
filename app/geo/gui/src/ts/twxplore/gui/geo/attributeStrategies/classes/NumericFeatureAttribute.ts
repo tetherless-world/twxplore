@@ -3,9 +3,7 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {KeplerFilterType} from "../../states/map/KeplerFilterType";
-import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {Dispatch} from "redux";
-import {buildInitialFeatureAttributeStateNumeric} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAttributeStateNumeric";
 import {MapFeature} from "../../states/map/MapFeature";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
@@ -63,7 +61,7 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
   ): void {
     const attributeName = this.name;
     dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-    dispatch(setFilter(filterIndexOfAttribute, "type", this.KeplerFilterType));
+    dispatch(setFilter(filterIndexOfAttribute, "type", this.keplerFilterType));
     stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
     dispatch(
       setFilter(filterIndexOfAttribute, "value", [
@@ -77,7 +75,6 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
   }
   abstract readonly name: FeatureAttributeName;
   readonly typeOfAttribute = TypeOfFeatureAttribute.NUMBER;
-  abstract readonly KeplerFilterType: KeplerFilterType;
-  abstract readonly KeplerFieldType: KeplerFieldType;
+  abstract readonly keplerFilterType: KeplerFilterType;
   readonly ignore = false;
 }

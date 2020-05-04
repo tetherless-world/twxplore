@@ -1,12 +1,10 @@
 import {FeatureAttribute} from "./FeatureAttribute";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {MapFeature} from "../../states/map/MapFeature";
-import {buildInitialFeatureAttributeStateString} from "../functions/buildInitialFeatureAtttributeState/buildInitialFeatureAtttributeStateString";
 import {Dispatch} from "redux";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {KeplerFilterType} from "../../states/map/KeplerFilterType";
-import {KeplerFieldType} from "../../states/map/KeplerFieldType";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
 
@@ -57,14 +55,13 @@ export abstract class StringFeatureAttribute implements FeatureAttribute {
     const attributeName = this.name;
     stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
     dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-    dispatch(setFilter(filterIndexOfAttribute, "type", this.KeplerFilterType));
+    dispatch(setFilter(filterIndexOfAttribute, "type", this.keplerFilterType));
     dispatch(setFilter(filterIndexOfAttribute, "enlarged", false)); //disables any pop-up Kepler may bring up with the filter
 
     return;
   }
   abstract readonly name: FeatureAttributeName;
   readonly typeOfAttribute = TypeOfFeatureAttribute.STRING;
-  abstract readonly KeplerFilterType: KeplerFilterType;
-  abstract readonly KeplerFieldType: KeplerFieldType;
+  abstract readonly keplerFilterType: KeplerFilterType;
   readonly ignore = false;
 }
