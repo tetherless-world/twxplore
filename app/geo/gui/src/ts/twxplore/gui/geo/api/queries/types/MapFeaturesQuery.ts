@@ -1,15 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
-import { FeatureQuery, FeatureType } from "./../../graphqlGlobalTypes";
+import {FeatureQuery, FeatureType} from "./../../graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: MapFeaturesQuery
 // ====================================================
 
 export interface MapFeaturesQuery_features_geometry {
-  __typename: "Geometry";
+  __typename: "ParsedGeometry";
   label: string | null;
   wkt: string;
   uri: string;

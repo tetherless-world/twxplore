@@ -1,5 +1,30 @@
 {
   "__schema": {
-    "types": []
+    "types": [
+      {
+        "kind": "UNION",
+        "name": "ParsedWkt",
+        "possibleTypes": [
+          {
+            "name": "Point2D"
+          },
+          {
+            "name": "Line"
+          },
+          {
+            "name": "Polygon"
+          },
+          {
+            "name": "MultiLine"
+          },
+          {
+            "name": "MultiPoint"
+          },
+          {
+            "name": "MultiPolygon"
+          }
+        ]
+      }
+    ]
   }
 }
