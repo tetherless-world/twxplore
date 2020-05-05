@@ -28,6 +28,8 @@ import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
+import {LoadingState} from "../../states/map/LoadingState";
+import BlockUi from "react-block-ui";
 
 //import KeplerGlSchema from "kepler.gl/schemas";
 
@@ -36,6 +38,7 @@ const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
 const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
+var Loader = require("react-loader");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -92,6 +95,16 @@ const MapImpl: React.FunctionComponent = () => {
     for (const featureType of Object.values(FeatureType)) {
       //Check if filters need to be added for this FeatureType
       if (featuresByType[featureType].dirty) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const isLoading = (loadingState: {[clickedUri: string]: LoadingState}) => {
+    for (const clickedUri of Object.keys(loadingState)) {
+      //Check if filters need to be added for this FeatureType
+      if (loadingState[clickedUri].queryInProgress) {
         return true;
       }
     }
@@ -309,6 +322,8 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <div style={{width: "100%"}}>
+        <Loader loaded={!isLoading(state.loadingState)} />
+
         <ReactResizeDetector
           handleWidth
           handleHeight

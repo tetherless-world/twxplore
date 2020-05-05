@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {FeatureQuery, FeatureType} from "./../../graphqlGlobalTypes";
+import { FeatureQuery, FeatureType } from "./../../graphqlGlobalTypes";
 
 // ====================================================
 // GraphQL query operation: MapFeaturesQuery
