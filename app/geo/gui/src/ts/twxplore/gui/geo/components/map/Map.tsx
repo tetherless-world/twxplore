@@ -29,7 +29,6 @@ import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import {LoadingState} from "../../states/map/LoadingState";
-import BlockUi from "react-block-ui";
 
 //import KeplerGlSchema from "kepler.gl/schemas";
 
