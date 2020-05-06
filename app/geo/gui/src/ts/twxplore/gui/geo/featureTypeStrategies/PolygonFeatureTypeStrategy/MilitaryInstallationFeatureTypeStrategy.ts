@@ -3,7 +3,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 export class MilitaryInstallationFeatureTypeStrategy extends PolygonFeatureTypeStrategy {
   readonly name = FeatureType.MilitaryInstallation;
-  readonly withinFeatureTypes = [
+  readonly childFeatureTypes = [
     FeatureType.Transmission,
     FeatureType.Transmitter,
   ];
