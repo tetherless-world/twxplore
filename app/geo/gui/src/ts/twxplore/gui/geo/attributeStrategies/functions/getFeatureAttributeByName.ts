@@ -2,13 +2,13 @@ import {
   FeatureAttributeName,
   FeatureAttributeKey,
 } from "../../states/map/FeatureAttributeName";
-import {FrequencyFeatureAttribute} from "../classes/FrequencyFeatureAttribute";
-import {TransmissionPowerFeatureAttribute} from "../classes/TransmissionPowerFeatureAttribute";
+import {FrequencyFeatureAttribute} from "../classes/FrequencyFeatureAttributeStrategy";
+import {TransmissionPowerFeatureAttribute} from "../classes/TransmissionPowerFeatureAttributeStrategy";
 
-import {LabelFeatureAttribute} from "../classes/LabelFeatureAttribute";
-import {LocalityFeatureAttribute} from "../classes/LocalityFeatureAttribute";
-import {IgnoreFeatureAttribute} from "../classes/IgnoreFeatureAttribute";
-import {TimestampFeatureAttribute} from "../classes/TimestampFeatureAttribute";
+import {LabelFeatureAttribute} from "../classes/LabelFeatureAttributeStrategy";
+import {LocalityFeatureAttribute} from "../classes/LocalityFeatureAttributeStrategy";
+import {IgnoreFeatureAttribute} from "../classes/IgnoreFeatureAttributeStrategy";
+import {TimestampFeatureAttribute} from "../classes/TimestampFeatureAttributeStrategy";
 //import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
 
 export const getFeatureAttributeByName = (name: string) => {

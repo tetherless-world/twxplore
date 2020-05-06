@@ -8,7 +8,8 @@ import {MapFeature} from "../../states/map/MapFeature";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
 
-export abstract class NumericFeatureAttribute implements FeatureAttribute {
+export abstract class NumericFeatureAttributeStrategy
+  implements FeatureAttribute {
   buildInitialFeatureAttributeState(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;

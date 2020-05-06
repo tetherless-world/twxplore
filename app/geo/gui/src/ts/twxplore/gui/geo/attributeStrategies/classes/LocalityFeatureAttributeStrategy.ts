@@ -1,9 +1,9 @@
-import {StringFeatureAttribute} from "./StringFeatureAttribute";
+import {StringFeatureAttribute} from "./StringFeatureAttributeStrategy";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {KeplerFilterType} from "../../states/map/KeplerFilterType";
 
-export class LocalityFeatureAttribute extends StringFeatureAttribute {
-  static readonly instance = new LocalityFeatureAttribute();
+export class LocalityFeatureAttributeStrategy extends StringFeatureAttribute {
+  static readonly instance = new LocalityFeatureAttributeStrategy();
   readonly name = FeatureAttributeName.locality;
   readonly keplerFilterType = KeplerFilterType.MULTISELECT;
 }

@@ -8,7 +8,8 @@ import {KeplerFilterType} from "../../states/map/KeplerFilterType";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
 
-export abstract class StringFeatureAttribute implements FeatureAttribute {
+export abstract class StringFeatureAttributeStrategy
+  implements FeatureAttribute {
   buildInitialFeatureAttributeState(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;

@@ -8,7 +8,7 @@ import {MapFeature} from "../../states/map/MapFeature";
 
 // TypeScript
 
-export interface FeatureAttribute {
+export interface FeatureAttributeStrategy {
   readonly name: string;
   readonly typeOfAttribute: TypeOfFeatureAttribute;
   readonly keplerFilterType: KeplerFilterType;
