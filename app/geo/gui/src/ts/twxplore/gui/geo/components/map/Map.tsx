@@ -227,10 +227,10 @@ const MapImpl: React.FunctionComponent = () => {
         //For clicked feature
         for (const clickedFeature of featuresInState) {
           //if the feature is expandable. TO BE DONE: Should be changed later with something like if isExpandable()
-          const FeatureTypeStrategy = getFeatureTypeStrategyByName(
+          const featureTypeStrategy = getFeatureTypeStrategyByName(
             clickedFeature.type!
           );
-          if (FeatureTypeStrategy.isExpandable) {
+          if (featureTypeStrategy.isExpandable) {
             /*We're about to start changing things up so now time to remove all our filters. When a filter is added to the map via addFilter, keplerGl adds a filter object to its list of filters.
             Remove filter takes an number indicating the index of the filter in Kepler's filter list that is to be removed.
             */
@@ -243,7 +243,7 @@ const MapImpl: React.FunctionComponent = () => {
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
-                  types: FeatureTypeStrategy.withinFeatureTypes,
+                  types: featureTypeStrategy.withinFeatureTypes,
                 },
                 limit: LIMIT,
                 offset: 0,
