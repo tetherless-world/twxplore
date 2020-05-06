@@ -29,6 +29,7 @@ import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import * as Loader from "react-loader";
+import {getFeatureTypeByName} from "../../featureTypeStrategies/getFeatureTypeByName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -226,7 +227,10 @@ const MapImpl: React.FunctionComponent = () => {
         //For clicked feature
         for (const clickedFeature of featuresInState) {
           //if the feature is expandable. TO BE DONE: Should be changed later with something like if isExpandable()
-          if (clickedFeature.type !== FeatureType.Transmission) {
+          const FeatureTypeStrategy = getFeatureTypeByName(
+            clickedFeature.type!
+          );
+          if (FeatureTypeStrategy.isExpandable) {
             /*We're about to start changing things up so now time to remove all our filters. When a filter is added to the map via addFilter, keplerGl adds a filter object to its list of filters.
             Remove filter takes an number indicating the index of the filter in Kepler's filter list that is to be removed.
             */
@@ -239,6 +243,7 @@ const MapImpl: React.FunctionComponent = () => {
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
+                  types: FeatureTypeStrategy.withinFeatureTypes,
                 },
                 limit: LIMIT,
                 offset: 0,
