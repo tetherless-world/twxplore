@@ -28,8 +28,7 @@ import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
-import {LoadingState} from "../../states/map/LoadingState";
-
+import * as Loader from "react-loader";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -37,7 +36,6 @@ const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
 const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
-var Loader = require("react-loader");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -100,15 +98,9 @@ const MapImpl: React.FunctionComponent = () => {
     return false;
   };
 
-  const isLoading = (loadingState: {[clickedUri: string]: LoadingState}) => {
-    for (const clickedUri of Object.keys(loadingState)) {
-      //Check if filters need to be added for this FeatureType
-      if (loadingState[clickedUri].queryInProgress) {
-        return true;
-      }
-    }
-    return false;
-  };
+  const queryInProgress = Object.keys(state.loadingState).some(
+    clickedUri => state.loadingState[clickedUri].queryInProgress
+  );
   //if there are no states loaded
   if (state.features.length === 0) {
     //if the data variable has been loaded
@@ -321,7 +313,7 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <div style={{width: "100%"}}>
-        <Loader loaded={!isLoading(state.loadingState)} />
+        <Loader loaded={!queryInProgress} />
 
         <ReactResizeDetector
           handleWidth
