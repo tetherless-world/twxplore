@@ -8,7 +8,7 @@ import {TransmitterFeatureTypeStrategy} from "./PointFeatureType/TransmitterFeat
 
 //type FeatureTypeKey = keyof typeof FeatureType;
 
-export const getFeatureTypeByName = (featureTypeName: FeatureType) => {
+export const getFeatureTypeStrategyByName = (featureTypeName: FeatureType) => {
   switch (featureTypeName) {
     case FeatureType.State: {
       return StateFeatureTypeStrategy.instance;

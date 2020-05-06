@@ -29,7 +29,7 @@ import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import * as Loader from "react-loader";
-import {getFeatureTypeByName} from "../../featureTypeStrategies/getFeatureTypeByName";
+import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -227,7 +227,7 @@ const MapImpl: React.FunctionComponent = () => {
         //For clicked feature
         for (const clickedFeature of featuresInState) {
           //if the feature is expandable. TO BE DONE: Should be changed later with something like if isExpandable()
-          const FeatureTypeStrategy = getFeatureTypeByName(
+          const FeatureTypeStrategy = getFeatureTypeStrategyByName(
             clickedFeature.type!
           );
           if (FeatureTypeStrategy.isExpandable) {
