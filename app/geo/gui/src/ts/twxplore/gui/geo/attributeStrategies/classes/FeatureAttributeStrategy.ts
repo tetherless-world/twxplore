@@ -8,7 +8,7 @@ import {MapFeature} from "../../states/map/MapFeature";
 
 // TypeScript
 
-export interface FeatureAttribute {
+export interface FeatureAttributeStrategy {
   readonly name: string;
   readonly typeOfAttribute: TypeOfFeatureAttribute;
   readonly keplerFilterType: KeplerFilterType;
@@ -23,5 +23,11 @@ export interface FeatureAttribute {
       [featureAttributeName: string]: MapFeatureAttributeState;
     },
     addedFeature: MapFeature
+  ): void;
+  buildInitialFeatureAttributeState(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    filterIndexCounter: number
   ): void;
 }

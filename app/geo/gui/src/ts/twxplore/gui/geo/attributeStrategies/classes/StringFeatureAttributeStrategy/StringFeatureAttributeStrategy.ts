@@ -1,14 +1,26 @@
-import {FeatureAttribute} from "./FeatureAttribute";
-import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {MapFeature} from "../../states/map/MapFeature";
+import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {MapFeature} from "../../../states/map/MapFeature";
 import {Dispatch} from "redux";
-import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {KeplerFilterType} from "../../states/map/KeplerFilterType";
-import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
+import {FeatureAttributeName} from "../../../states/map/FeatureAttributeName";
+import {TypeOfFeatureAttribute} from "../../../states/map/TypeOfFeatureAttribute";
+import {KeplerFilterType} from "../../../states/map/KeplerFilterType";
+import {MapStringFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
+import {FeatureAttributeStrategy} from "../FeatureAttributeStrategy";
 
-export abstract class StringFeatureAttribute implements FeatureAttribute {
+export abstract class StringFeatureAttributeStrategy
+  implements FeatureAttributeStrategy {
+  buildInitialFeatureAttributeState(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    filterIndexCounter: number
+  ): void {
+    let attributeName = this.name;
+    attributeStatesOfFeatureType[attributeName] = {
+      filterIndex: filterIndexCounter,
+    };
+  }
   updateAttributeStatesOfFeatureType(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;
@@ -23,15 +35,9 @@ export abstract class StringFeatureAttribute implements FeatureAttribute {
       attributeName
     ] as MapStringFeatureAttributeState;
     //If this is the first time coming across this attribute for the addedFeature's FeatureType
-    if (!attributeStateOfAttributeOfFeatureType) {
+    if (!attributeStateOfAttributeOfFeatureType.values) {
       //Give the attribute a default MapStringFeatureAttributeState
-      attributeStatesOfFeatureType[attributeName] = {
-        values: [],
-        filterIndex: null,
-      };
-      attributeStateOfAttributeOfFeatureType = attributeStatesOfFeatureType[
-        attributeName
-      ] as MapStringFeatureAttributeState;
+      attributeStateOfAttributeOfFeatureType.values = [];
     }
     //add the value of addedFeature's attribute into the values list of the attribute state if the value is not null and is not already included.
     if (

@@ -1,0 +1,12 @@
+import {PolygonFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
+
+export class StateFeatureTypeStrategy extends PolygonFeatureTypeStrategy {
+  readonly name = FeatureType.State;
+  readonly childFeatureTypes = [
+    FeatureType.County,
+    FeatureType.MetropolitanDivision,
+    FeatureType.MilitaryInstallation,
+  ];
+  static readonly instance = new StateFeatureTypeStrategy();
+}

@@ -2,6 +2,8 @@ import {MapState} from "./MapState";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
+import {FeatureAttributeName} from "./FeatureAttributeName";
+import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/functions/getFeatureAttributeStrategyByName";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -29,15 +31,19 @@ Object.values(FeatureType).map(featureType => {
     attributeStates: {},
   };
   //Populate the attribute state with null values for all properties.
-  /*Object.keys(FeatureAttributeName).map(attributeName => {
-    const FeatureAttribute = getFeatureAttributeByName(attributeName);
+  var filterIndexCounter = 0;
+  Object.keys(FeatureAttributeName).map(attributeName => {
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
     let attributeStatesofFeatureType =
       featuresByType[featureType].attributeStates;
-    attributeStatesofFeatureType;
-    FeatureAttribute.buildInitialFeatureAttributeState(
-      attributeStatesofFeatureType
+    featureAttributeStrategy.buildInitialFeatureAttributeState(
+      attributeStatesofFeatureType,
+      filterIndexCounter
     );
-  });*/
+    filterIndexCounter += 1;
+  });
 });
 
 //const featureTypesFilters: {[featureType: string]: MapFilterState} = {};
@@ -48,6 +54,5 @@ export const initialMapState: MapState = {
   featuresByType: featuresByType,
   typesVisibility: typesVisibility,
   filterCounter: 0,
-  filterableAttributesCounter: 0,
   loadingState: {},
 };

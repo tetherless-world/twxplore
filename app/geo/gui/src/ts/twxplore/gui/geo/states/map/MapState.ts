@@ -13,6 +13,5 @@ export interface MapState {
   //  [featureType: string]: {[attribute: string]: FilterStateTypes};
   // };
   filterCounter: number;
-  filterableAttributesCounter: number;
   loadingState: {[featureUri: string]: LoadingState};
 }

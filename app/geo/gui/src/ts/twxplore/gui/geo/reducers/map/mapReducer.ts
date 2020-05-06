@@ -154,6 +154,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Remove the loading state of the feature from loadingState
         delete result.loadingState[actionUri];
 
+        var filterIndexCounter = 0;
         //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
         for (const featureType of Object.values(FeatureType)) {
           let featuresByTypeOfType =
@@ -169,11 +170,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState =
               //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
               MapFeatureTypeState.NEEDS_FILTERS;
-            //Now that this FeatureType needs filters, give each attribute a filter idx based on the filterableAttributesCounter (index)
+            //Now that this FeatureType needs filters, give each attribute a filter idx using a counter
             Object.keys(attributeStatesOfFeatureType).map(attributeName => {
-              attributeStatesOfFeatureType[attributeName].filterIndex =
-                result.filterableAttributesCounter;
-              result.filterableAttributesCounter += 1;
+              attributeStatesOfFeatureType[
+                attributeName
+              ].filterIndex = filterIndexCounter;
+              filterIndexCounter += 1;
             });
           }
         }
@@ -248,8 +250,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           setAllFilterIndexesNull(attributeStatesOfFeatureType);
         }
       }
-      //Reset the attribute counter as no attributes are filterable at the time.
-      result.filterableAttributesCounter = 0;
       console.debug("START_QUERYING action completed");
       break;
     }

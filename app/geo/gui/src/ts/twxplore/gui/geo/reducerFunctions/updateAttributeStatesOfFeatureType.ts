@@ -1,5 +1,5 @@
 import {MapFeature} from "../states/map/MapFeature";
-import {getFeatureAttributeByName} from "../attributeStrategies/functions/getFeatureAttributeByName";
+import {getFeatureAttributeStrategyByName} from "../attributeStrategies/functions/getFeatureAttributeStrategyByName";
 import {MapFeatureAttributeState} from "../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 
 export const updateAttributeStatesOfFeatureType = (
@@ -10,8 +10,10 @@ export const updateAttributeStatesOfFeatureType = (
 ) => {
   //Loop through the feature's attribute
   for (const attributeName of Object.keys(addedFeature)) {
-    const FeatureAttribute = getFeatureAttributeByName(attributeName);
-    FeatureAttribute.updateAttributeStatesOfFeatureType(
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
+    featureAttributeStrategy.updateAttributeStatesOfFeatureType(
       attributeStatesOfFeatureType,
       addedFeature
     );
