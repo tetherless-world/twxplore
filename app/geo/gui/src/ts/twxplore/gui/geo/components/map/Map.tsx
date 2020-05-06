@@ -230,7 +230,7 @@ const MapImpl: React.FunctionComponent = () => {
           const featureTypeStrategy = getFeatureTypeStrategyByName(
             clickedFeature.type!
           );
-          if (featureTypeStrategy.isExpandable) {
+          if (featureTypeStrategy.expandable) {
             /*We're about to start changing things up so now time to remove all our filters. When a filter is added to the map via addFilter, keplerGl adds a filter object to its list of filters.
             Remove filter takes an number indicating the index of the filter in Kepler's filter list that is to be removed.
             */

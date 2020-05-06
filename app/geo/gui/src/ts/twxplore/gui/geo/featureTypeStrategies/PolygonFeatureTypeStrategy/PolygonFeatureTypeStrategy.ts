@@ -4,5 +4,5 @@ export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
   abstract readonly name: string;
   abstract readonly withinFeatureTypes: string[];
-  readonly isExpandable = true;
+  readonly expandable = true;
 }
