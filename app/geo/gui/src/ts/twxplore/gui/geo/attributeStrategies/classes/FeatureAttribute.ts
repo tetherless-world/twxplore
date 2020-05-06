@@ -24,4 +24,10 @@ export interface FeatureAttribute {
     },
     addedFeature: MapFeature
   ): void;
+  buildInitialFeatureAttributeState(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    filterIndexCounter: number
+  ): void;
 }
