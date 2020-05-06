@@ -6,10 +6,10 @@ import {MilitaryInstallationFeatureTypeStrategy} from "./PolygonFeatureTypeStrat
 import {TransmissionFeatureTypeStrategy} from "./PointFeatureType/TransmissionFeatureTypeStrategy";
 import {TransmitterFeatureTypeStrategy} from "./PointFeatureType/TransmitterFeatureTypeStrategy";
 
-type FeatureTypeKey = keyof typeof FeatureType;
+//type FeatureTypeKey = keyof typeof FeatureType;
 
-export const getFeatureTypeByName = (name: string) => {
-  switch (FeatureType[name as FeatureTypeKey]) {
+export const getFeatureTypeByName = (featureTypeName: FeatureType) => {
+  switch (featureTypeName) {
     case FeatureType.State: {
       return StateFeatureTypeStrategy.instance;
     }
