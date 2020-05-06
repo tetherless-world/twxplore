@@ -10,12 +10,12 @@ import {getFeatureAttributeByName} from "../../attributeStrategies/functions/get
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {allFiltersSet} from "../../actions/map/AllFiltersSetAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
-import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {FormControl, TextField} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,11 +59,11 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const returnFilterComponent = (
     filterIndexOfAttribute: number,
     attributeName: string,
-    stateOfAttribute: MapNumericFeatureAttributeState
+    stateOfAttribute: MapFeatureAttributeState
   ) => {
     switch (getFeatureAttributeByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
-        stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
+        let stateOfAttributeNumeric = stateOfAttribute as MapNumericFeatureAttributeState;
         return (
           <div key={attributeName}>
             <Typography id="type" gutterBottom>
@@ -71,16 +71,16 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             </Typography>
             <Slider
               defaultValue={[
-                stateOfAttribute.range!.min,
-                stateOfAttribute.range!.max,
+                stateOfAttributeNumeric.range!.min,
+                stateOfAttributeNumeric.range!.max,
               ]}
               getAriaValueText={valuetext}
               aria-labelledby="range-slider"
               step={1}
-              min={stateOfAttribute.range!.min}
-              max={stateOfAttribute.range!.max}
+              min={stateOfAttributeNumeric.range!.min}
+              max={stateOfAttributeNumeric.range!.max}
               valueLabelDisplay="auto"
-              disabled={!stateOfAttribute.range!.max}
+              disabled={!stateOfAttributeNumeric.range!.max}
               onChangeCommitted={(event: any, newValue: number | number[]) =>
                 handleChangeSlider(event, newValue, filterIndexOfAttribute!)
               }
@@ -90,7 +90,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         );
       }
       case TypeOfFeatureAttribute.STRING: {
-        stateOfAttribute = stateOfAttribute as MapStringFeatureAttributeState;
+        let stateOfAttributeString = stateOfAttribute as MapStringFeatureAttributeState;
         return (
           <FormControl className={classes.formControl}>
             <Typography id="type" gutterBottom>
@@ -99,7 +99,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             <Autocomplete
               multiple
               id="tags-outlined"
-              options={stateOfAttribute.values}
+              options={stateOfAttributeString.values!}
               getOptionLabel={option => option}
               filterSelectedOptions
               onChange={(event: any, value: string | string[]) => {
