@@ -1,15 +1,15 @@
-import {FeatureAttribute} from "./FeatureAttribute";
-import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {MapFeature} from "../../states/map/MapFeature";
+import {MapFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {MapFeature} from "../../../states/map/MapFeature";
 import {Dispatch} from "redux";
-import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
-import {KeplerFilterType} from "../../states/map/KeplerFilterType";
-import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
+import {FeatureAttributeName} from "../../../states/map/FeatureAttributeName";
+import {TypeOfFeatureAttribute} from "../../../states/map/TypeOfFeatureAttribute";
+import {KeplerFilterType} from "../../../states/map/KeplerFilterType";
+import {MapStringFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
+import {FeatureAttributeStrategy} from "../FeatureAttributeStrategy";
 
 export abstract class StringFeatureAttributeStrategy
-  implements FeatureAttribute {
+  implements FeatureAttributeStrategy {
   buildInitialFeatureAttributeState(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;

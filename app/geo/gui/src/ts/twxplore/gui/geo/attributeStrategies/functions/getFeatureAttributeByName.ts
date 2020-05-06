@@ -1,33 +1,33 @@
+//import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
+
 import {
   FeatureAttributeName,
   FeatureAttributeKey,
 } from "../../states/map/FeatureAttributeName";
-import {FrequencyFeatureAttribute} from "../classes/FrequencyFeatureAttributeStrategy";
-import {TransmissionPowerFeatureAttribute} from "../classes/TransmissionPowerFeatureAttributeStrategy";
-
-import {LabelFeatureAttribute} from "../classes/LabelFeatureAttributeStrategy";
-import {LocalityFeatureAttribute} from "../classes/LocalityFeatureAttributeStrategy";
-import {IgnoreFeatureAttribute} from "../classes/IgnoreFeatureAttributeStrategy";
-import {TimestampFeatureAttribute} from "../classes/TimestampFeatureAttributeStrategy";
-//import {RegionsFeatureAttribute} from "./RegionsFeatureAttribute";
+import {TimestampFeatureAttributeStrategy} from "../classes/NumericFeatureAttributeStrategy/TimestampFeatureAttributeStrategy";
+import {FrequencyFeatureAttributeStrategy} from "../classes/NumericFeatureAttributeStrategy/FrequencyFeatureAttributeStrategy";
+import {TransmissionPowerFeatureAttributeStrategy} from "../classes/NumericFeatureAttributeStrategy/TransmissionPowerFeatureAttributeStrategy";
+import {LocalityFeatureAttributeStrategy} from "../classes/StringFeatureAttributeStrategy/LocalityFeatureAttributeStrategy";
+import {LabelFeatureAttributeStrategy} from "../classes/StringFeatureAttributeStrategy/LabelFeatureAttributeStrategy";
+import {IgnoreFeatureAttributeStrategy} from "../classes/IgnoreFeatureAttributeStrategy";
 
 export const getFeatureAttributeByName = (name: string) => {
   console.log(FeatureAttributeName[name as FeatureAttributeKey]);
   switch (FeatureAttributeName[name as FeatureAttributeKey]) {
     case FeatureAttributeName.timestamp: {
-      return TimestampFeatureAttribute.instance;
+      return TimestampFeatureAttributeStrategy.instance;
     }
     case FeatureAttributeName.frequency: {
-      return FrequencyFeatureAttribute.instance;
+      return FrequencyFeatureAttributeStrategy.instance;
     }
     case FeatureAttributeName.transmissionPower: {
-      return TransmissionPowerFeatureAttribute.instance;
+      return TransmissionPowerFeatureAttributeStrategy.instance;
     }
     case FeatureAttributeName.locality: {
-      return LocalityFeatureAttribute.instance;
+      return LocalityFeatureAttributeStrategy.instance;
     }
     case FeatureAttributeName.label: {
-      return LabelFeatureAttribute.instance;
+      return LabelFeatureAttributeStrategy.instance;
     }
     /*
     case FeatureAttributeName.regions: {
@@ -36,7 +36,7 @@ export const getFeatureAttributeByName = (name: string) => {
     */
 
     default: {
-      return IgnoreFeatureAttribute.instance;
+      return IgnoreFeatureAttributeStrategy.instance;
     }
   }
 };
