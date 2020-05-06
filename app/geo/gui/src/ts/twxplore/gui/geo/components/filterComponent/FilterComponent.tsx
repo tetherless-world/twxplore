@@ -59,11 +59,11 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const returnFilterComponent = (
     filterIndexOfAttribute: number,
     attributeName: string,
-    stateOfAttribute: MapFeatureAttributeState
+    attributeState: MapFeatureAttributeState
   ) => {
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
-        let stateOfAttributeNumeric = stateOfAttribute as MapNumericFeatureAttributeState;
+        const numericAttributeState = attributeState as MapNumericFeatureAttributeState;
         return (
           <div key={attributeName}>
             <Typography id="type" gutterBottom>
@@ -71,16 +71,16 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             </Typography>
             <Slider
               defaultValue={[
-                stateOfAttributeNumeric.range!.min,
-                stateOfAttributeNumeric.range!.max,
+                numericAttributeState.range!.min,
+                numericAttributeState.range!.max,
               ]}
               getAriaValueText={valuetext}
               aria-labelledby="range-slider"
               step={1}
-              min={stateOfAttributeNumeric.range!.min}
-              max={stateOfAttributeNumeric.range!.max}
+              min={numericAttributeState.range!.min}
+              max={numericAttributeState.range!.max}
               valueLabelDisplay="auto"
-              disabled={!stateOfAttributeNumeric.range!.max}
+              disabled={!numericAttributeState.range!.max}
               onChangeCommitted={(event: any, newValue: number | number[]) =>
                 handleChangeSlider(event, newValue, filterIndexOfAttribute!)
               }
@@ -90,7 +90,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         );
       }
       case TypeOfFeatureAttribute.STRING: {
-        let stateOfAttributeString = stateOfAttribute as MapStringFeatureAttributeState;
+        let stringAttributeState = attributeState as MapStringFeatureAttributeState;
         return (
           <FormControl className={classes.formControl}>
             <Typography id="type" gutterBottom>
@@ -99,7 +99,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             <Autocomplete
               multiple
               id="tags-outlined"
-              options={stateOfAttributeString.values!}
+              options={stringAttributeState.values!}
               getOptionLabel={option => option}
               filterSelectedOptions
               onChange={(event: any, value: string | string[]) => {
