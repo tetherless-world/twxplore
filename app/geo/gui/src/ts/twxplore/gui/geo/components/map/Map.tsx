@@ -243,7 +243,7 @@ const MapImpl: React.FunctionComponent = () => {
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
-                  types: featureTypeStrategy.withinFeatureTypes,
+                  types: featureTypeStrategy.childFeatureTypes,
                 },
                 limit: LIMIT,
                 offset: 0,
