@@ -6,7 +6,7 @@ import {connect, useSelector, useDispatch} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {setFilter} from "kepler.gl/actions";
-import {getFeatureAttributeByName} from "../../attributeStrategies/functions/getFeatureAttributeByName";
+import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/functions/getFeatureAttributeStrategyByName";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {allFiltersSet} from "../../actions/map/AllFiltersSetAction";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
@@ -61,7 +61,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     attributeName: string,
     stateOfAttribute: MapFeatureAttributeState
   ) => {
-    switch (getFeatureAttributeByName(attributeName).typeOfAttribute) {
+    switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         let stateOfAttributeNumeric = stateOfAttribute as MapNumericFeatureAttributeState;
         return (
@@ -163,7 +163,9 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-            const featureAttribute = getFeatureAttributeByName(attributeName);
+            const featureAttribute = getFeatureAttributeStrategyByName(
+              attributeName
+            );
             featureAttribute.setInitialFilters(
               filterIndexOfAttribute!,
               attributeStateOfAttributeOfFeatureType,

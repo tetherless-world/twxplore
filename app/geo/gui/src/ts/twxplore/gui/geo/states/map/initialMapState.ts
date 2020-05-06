@@ -3,7 +3,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
 import {FeatureAttributeName} from "./FeatureAttributeName";
-import {getFeatureAttributeByName} from "../../attributeStrategies/functions/getFeatureAttributeByName";
+import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/functions/getFeatureAttributeStrategyByName";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -33,7 +33,7 @@ Object.values(FeatureType).map(featureType => {
   //Populate the attribute state with null values for all properties.
   var filterIndexCounter = 0;
   Object.keys(FeatureAttributeName).map(attributeName => {
-    const FeatureAttribute = getFeatureAttributeByName(attributeName);
+    const FeatureAttribute = getFeatureAttributeStrategyByName(attributeName);
     let attributeStatesofFeatureType =
       featuresByType[featureType].attributeStates;
     FeatureAttribute.buildInitialFeatureAttributeState(
