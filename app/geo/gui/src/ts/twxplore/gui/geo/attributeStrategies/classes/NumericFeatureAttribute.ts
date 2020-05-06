@@ -64,7 +64,7 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
 
   setInitialFilters(
     filterIndexOfAttribute: number,
-    stateOfAttribute: MapFeatureAttributeState,
+    stateOfAttribute: MapNumericFeatureAttributeState,
     dispatch: Dispatch<any>
   ): void {
     const attributeName = this.name;

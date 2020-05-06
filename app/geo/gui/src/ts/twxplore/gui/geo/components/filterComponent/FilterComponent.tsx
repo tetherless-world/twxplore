@@ -59,7 +59,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const returnFilterComponent = (
     filterIndexOfAttribute: number,
     attributeName: string,
-    stateOfAttribute: MapFeatureAttributeState
+    stateOfAttribute: MapNumericFeatureAttributeState
   ) => {
     switch (getFeatureAttributeByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
