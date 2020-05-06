@@ -1,4 +1,4 @@
 export interface MapStringFeatureAttributeState {
-  values: string[];
+  values?: string[];
   filterIndex: number | null;
 }
