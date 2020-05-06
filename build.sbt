@@ -10,7 +10,7 @@ val playVersion = "2.8.0"
 val jenaVersion = "3.14.0"
 val scenaVersion = "1.0.1-SNAPSHOT"
 val slf4jVersion = "1.7.25"
-val twksVersion = "1.0.4-SNAPSHOT"
+val twksVersion = "1.0.5-SNAPSHOT"
 
 
 // Publish settings
