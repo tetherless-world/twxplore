@@ -154,6 +154,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Remove the loading state of the feature from loadingState
         delete result.loadingState[actionUri];
 
+        var filterIndexCounter = 0;
         //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
         for (const featureType of Object.values(FeatureType)) {
           let featuresByTypeOfType =
@@ -166,7 +167,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState ===
             MapFeatureTypeState.WAITING_FOR_LOAD
           ) {
-            var filterIndexCounter = 0;
             featuresByTypeOfType.featureTypeState =
               //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
               MapFeatureTypeState.NEEDS_FILTERS;
