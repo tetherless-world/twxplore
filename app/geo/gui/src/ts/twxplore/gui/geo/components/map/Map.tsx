@@ -28,7 +28,7 @@ import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
-
+import * as Loader from "react-loader";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -97,6 +97,10 @@ const MapImpl: React.FunctionComponent = () => {
     }
     return false;
   };
+
+  const queryInProgress = Object.keys(state.loadingState).some(
+    clickedUri => state.loadingState[clickedUri].queryInProgress
+  );
   //if there are no states loaded
   if (state.features.length === 0) {
     //if the data variable has been loaded
@@ -309,6 +313,8 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <div style={{width: "100%"}}>
+        <Loader loaded={!queryInProgress} />
+
         <ReactResizeDetector
           handleWidth
           handleHeight
