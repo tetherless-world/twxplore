@@ -7,4 +7,5 @@ export class MetropolitanDivisionFeatureTypeStrategy extends PolygonFeatureTypeS
     FeatureType.Transmission,
     FeatureType.Transmitter,
   ];
+  static readonly instance = new MetropolitanDivisionFeatureTypeStrategy();
 }

@@ -7,4 +7,5 @@ export class MilitaryInstallationFeatureTypeStrategy extends PolygonFeatureTypeS
     FeatureType.Transmission,
     FeatureType.Transmitter,
   ];
+  static readonly instance = "hey";
 }

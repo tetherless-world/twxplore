@@ -7,4 +7,5 @@ export class CountyFeatureTypeStrategy extends PolygonFeatureTypeStrategy {
     FeatureType.Transmission,
     FeatureType.Transmitter,
   ];
+  static readonly instance = new CountyFeatureTypeStrategy();
 }

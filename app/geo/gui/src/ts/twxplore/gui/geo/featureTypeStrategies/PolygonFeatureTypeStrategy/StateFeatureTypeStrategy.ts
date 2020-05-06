@@ -8,4 +8,5 @@ export class StateFeatureTypeStrategy extends PolygonFeatureTypeStrategy {
     FeatureType.MetropolitanDivision,
     FeatureType.MilitaryInstallation,
   ];
+  static readonly instance = new StateFeatureTypeStrategy();
 }
