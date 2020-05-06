@@ -33,10 +33,12 @@ Object.values(FeatureType).map(featureType => {
   //Populate the attribute state with null values for all properties.
   var filterIndexCounter = 0;
   Object.keys(FeatureAttributeName).map(attributeName => {
-    const FeatureAttribute = getFeatureAttributeStrategyByName(attributeName);
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
     let attributeStatesofFeatureType =
       featuresByType[featureType].attributeStates;
-    FeatureAttribute.buildInitialFeatureAttributeState(
+    featureAttributeStrategy.buildInitialFeatureAttributeState(
       attributeStatesofFeatureType,
       filterIndexCounter
     );

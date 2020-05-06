@@ -163,10 +163,10 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           //If filters have been added
           case MapFeatureTypeState.FILTERS_ADDED: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
-            const featureAttribute = getFeatureAttributeStrategyByName(
+            const featureAttributeStrategy = getFeatureAttributeStrategyByName(
               attributeName
             );
-            featureAttribute.setInitialFilters(
+            featureAttributeStrategy.setInitialFilters(
               filterIndexOfAttribute!,
               attributeStateOfAttributeOfFeatureType,
               dispatch

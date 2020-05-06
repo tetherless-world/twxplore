@@ -10,8 +10,10 @@ export const updateAttributeStatesOfFeatureType = (
 ) => {
   //Loop through the feature's attribute
   for (const attributeName of Object.keys(addedFeature)) {
-    const FeatureAttribute = getFeatureAttributeStrategyByName(attributeName);
-    FeatureAttribute.updateAttributeStatesOfFeatureType(
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
+    featureAttributeStrategy.updateAttributeStatesOfFeatureType(
       attributeStatesOfFeatureType,
       addedFeature
     );
