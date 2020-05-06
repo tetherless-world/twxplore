@@ -9,6 +9,17 @@ import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttrib
 import {setFilter} from "kepler.gl/actions";
 
 export abstract class NumericFeatureAttribute implements FeatureAttribute {
+  buildInitialFeatureAttributeState(
+    attributeStatesOfFeatureType: {
+      [featureAttributeName: string]: MapFeatureAttributeState;
+    },
+    filterIndexCounter: number
+  ): void {
+    let attributeName = this.name;
+    attributeStatesOfFeatureType[attributeName] = {
+      filterIndex: filterIndexCounter,
+    };
+  }
   updateAttributeStatesOfFeatureType(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;
@@ -22,14 +33,11 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
       attributeName
     ] as MapNumericFeatureAttributeState;
     //If this is the first time coming across this attribute for the addedFeature's FeatureType
-    if (!attributeStateOfAttributeOffFeatureType) {
+    if (!attributeStateOfAttributeOffFeatureType.range) {
       //Give the MapNumericAttributeState min/max the addedFeature's value for the attribute
-      attributeStatesOfFeatureType[attributeName] = {
-        range: {
-          min: addedFeature[attributeKey] as number,
-          max: addedFeature[attributeKey] as number,
-        },
-        filterIndex: null,
+      attributeStateOfAttributeOffFeatureType.range = {
+        min: addedFeature[attributeKey] as number,
+        max: addedFeature[attributeKey] as number,
       };
 
       return;
@@ -38,17 +46,17 @@ export abstract class NumericFeatureAttribute implements FeatureAttribute {
     //Compare attribute value of addedFeature to the min found in the attribute state. Set new min if necessary.
     if (
       (addedFeature[attributeKey] as number) <
-      attributeStateOfAttributeOffFeatureType.range!.min
+      attributeStateOfAttributeOffFeatureType.range.min
     )
-      attributeStateOfAttributeOffFeatureType.range!.min = addedFeature[
+      attributeStateOfAttributeOffFeatureType.range.min = addedFeature[
         attributeKey
       ] as number;
     //Compare attribute value to the max found in the attribute state. Set new max if necessary.
     else if (
       (addedFeature[attributeKey] as number) >
-      attributeStateOfAttributeOffFeatureType.range!.max
+      attributeStateOfAttributeOffFeatureType.range.max
     )
-      attributeStateOfAttributeOffFeatureType.range!.max = addedFeature[
+      attributeStateOfAttributeOffFeatureType.range.max = addedFeature[
         attributeKey
       ] as number;
     return;
