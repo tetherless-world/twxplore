@@ -1,4 +1,5 @@
 import * as React from "react";
+import {layerConfigChange} from "kepler.gl/actions";
 import {makeStyles, createStyles} from "@material-ui/core/styles";
 import {
   FormControl,
@@ -38,16 +39,24 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   );
   const dispatch = useDispatch();
 
-  const getLayerIndex = (keplerState: any, layerLabel: string) => {
-    const keplerLayers = keplerState.map.visState.layers;
+  const getLayerIndex = (
+    keplerLayers: {config: {dataId: string}}[],
+    layerLabel: string
+  ): number => {
     return keplerLayers.findIndex(
-      (layer: {config: {label: string}}) => layer.config.label === layerLabel
+      (layer: {config: {dataId: string}}) => layer.config.dataId === layerLabel
     );
   };
-  const handleChange = (typeEnum: FeatureType) => (
+  const handleChange = (featureType: FeatureType) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(changeTypeVisibility(typeEnum));
+    const keplerLayers = keplerState.map.visState.layers;
+    const layerIndex = getLayerIndex(keplerLayers, featureType);
+    const newLayerConfig = {
+      isVisible: !state.featuresByType[featureType].visible,
+    };
+    dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+    dispatch(changeTypeVisibility(featureType));
   };
 
   const logger: Logger = React.useContext(LoggerContext);
@@ -60,20 +69,23 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
       <FormControl className={classes.formControl}>
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
-          {Object.values(FeatureType).map(typeString => {
+          {Object.values(FeatureType).map(featureType => {
             //const typeName = (FeatureType as any)[key];
-            const typeEnum: FeatureType =
-              FeatureType[typeString as keyof typeof FeatureType];
+            //const featureType: FeatureType =
+            //FeatureType[typeString as keyof typeof FeatureType];
             return (
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.typesVisibility[typeEnum]}
-                    onChange={handleChange(typeEnum)}
-                    value={typeString}
+                    checked={state.featuresByType[featureType].visible!}
+                    onChange={handleChange(featureType)}
+                    value={featureType}
+                    disabled={
+                      state.featuresByType[featureType].visible === null
+                    }
                   />
                 }
-                label={typeString}
+                label={featureType}
               />
             );
           })}
