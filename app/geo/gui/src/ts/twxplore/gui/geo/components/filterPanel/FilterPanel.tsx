@@ -36,7 +36,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <React.Fragment>
+    <div>
       {Object.keys(state.featuresByType).map(featureType => {
         return (
           <ExpansionPanel key={featureType}>
@@ -57,7 +57,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
           </ExpansionPanel>
         );
       })}
-    </React.Fragment>
+    </div>
   );
 };
 export const FilterPanel = connect()(FilterPanelImpl);
