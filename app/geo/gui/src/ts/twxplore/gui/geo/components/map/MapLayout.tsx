@@ -14,12 +14,12 @@ import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import {Map} from "./Map";
 import {connect} from "react-redux";
 import {FilterPanel} from "../filterPanel/FilterPanel";
+import {Icon} from "@material-ui/core";
 
 const drawerWidth = 240;
 
@@ -112,7 +112,7 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             edge="start"
             className={clsx(classes.menuButton, open && classes.hide)}
           >
-            <MenuIcon />
+            <Icon className="fas fa-sliders-h" style={{color: "white"}} />
           </IconButton>
           <Typography variant="h6" noWrap>
             Map
