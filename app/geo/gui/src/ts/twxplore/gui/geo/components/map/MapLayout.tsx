@@ -10,20 +10,20 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
+//import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import {Map} from "./Map";
 import {connect} from "react-redux";
 import {FilterPanel} from "../filterPanel/FilterPanel";
-import {Icon} from "@material-ui/core";
+import {Icon, Grid, Box} from "@material-ui/core";
+import {SelectionPanel} from "../selectionPanel/SelectionPanel";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
+const useDrawerStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const MapLayoutImpl: React.FunctionComponent = () => {
-  const classes = useStyles();
+  const classes = useDrawerStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -137,10 +137,25 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             )}
           </IconButton>
         </div>
-        <Divider />
-        <List>
-          <FilterPanel />
-        </List>
+
+        <Grid container spacing={3}>
+          <Box borderTop={1}>
+            <Grid>
+              <Typography align={"center"}>Filters</Typography>
+            </Grid>
+            <Grid>
+              <FilterPanel />
+            </Grid>
+          </Box>
+          <Box borderTop={1}>
+            <Grid>
+              <Typography align={"center"}>Toggle Layer Visibility</Typography>
+            </Grid>
+            <Grid>
+              <SelectionPanel />
+            </Grid>
+          </Box>
+        </Grid>
       </Drawer>
       <main
         className={clsx(classes.content, {
