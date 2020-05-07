@@ -16,7 +16,6 @@ import {RootState} from "../../states/root/RootState";
 import {changeTypeVisibility} from "../../actions/map/ChangeTypeVisibilityAction";
 import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -33,16 +32,26 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
+
+  const keplerState: any = useSelector(
+    (rootState: RootState) => rootState.keplerGl
+  );
   const dispatch = useDispatch();
 
+  const getLayerIndex = (keplerState: any, layerLabel: string) => {
+    const keplerLayers = keplerState.map.visState.layers;
+    return keplerLayers.findIndex(
+      (layer: {config: {label: string}}) => layer.config.label === layerLabel
+    );
+  };
   const handleChange = (typeEnum: FeatureType) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(changeTypeVisibility(typeEnum));
   };
 
-  const logger : Logger = React.useContext(LoggerContext)
-  logger.info("test")
+  const logger: Logger = React.useContext(LoggerContext);
+  logger.info("test");
   //const featureTypes: {[index: string]: String} = {}
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
