@@ -53,28 +53,18 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const feature of addMapFeaturesAction.payload.features) {
         //push the feature into the feature list provided by the state
         result.features.push(feature);
+        let featuresByTypeOfFeatureType = result.featuresByType[feature.type!];
         //push the feature into the featureByType list provided by the state
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].features.push(feature);
+        featuresByTypeOfFeatureType.features.push(feature);
         //Because the list was modified, set the 'dirty' variable to true
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].dirty = true;
-        if (
-          result.featuresByType[
-            feature.type! as keyof typeof result.featuresByType
-          ].visible === null
-        ) {
-          result.featuresByType[
-            feature.type! as keyof typeof result.featuresByType
-          ].visible = true;
+        featuresByTypeOfFeatureType.dirty = true;
+        if (featuresByTypeOfFeatureType.visible === null) {
+          featuresByTypeOfFeatureType.visible = true;
         }
         //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD because a load is ongoing and
         //to ensure that filters for this feature type will not be added until all queries are completed
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.WAITING_FOR_LOAD;
       }
       console.debug("ADD_MAP_FEATURES action completed.");
       break;
