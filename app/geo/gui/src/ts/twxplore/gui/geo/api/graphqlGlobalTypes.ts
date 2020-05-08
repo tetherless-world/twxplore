@@ -11,6 +11,7 @@ export enum FeatureType {
   County = "County",
   MetropolitanDivision = "MetropolitanDivision",
   MilitaryInstallation = "MilitaryInstallation",
+  Root = "Root",
   State = "State",
   Transmission = "Transmission",
   Transmitter = "Transmitter",
