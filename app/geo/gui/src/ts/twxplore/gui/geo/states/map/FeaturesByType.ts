@@ -7,5 +7,5 @@ export interface FeaturesByType {
   dirty: boolean;
   featureTypeState: MapFeatureTypeState;
   attributeStates: {[featureAttributeName: string]: MapFeatureAttributeState};
-  visible: boolean | null;
+  visible: boolean;
 }

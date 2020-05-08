@@ -58,7 +58,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         featuresByTypeOfFeatureType.features.push(feature);
         //Because the list was modified, set the 'dirty' variable to true
         featuresByTypeOfFeatureType.dirty = true;
-        if (featuresByTypeOfFeatureType.visible === null) {
+        // if the featureTypeState is ABSENT_ON_MAP indicating that this is the first time a feature of this feature type is being added
+        if (
+          featuresByTypeOfFeatureType.featureTypeState ===
+          MapFeatureTypeState.ABSENT_ON_MAP
+        ) {
           featuresByTypeOfFeatureType.visible = true;
         }
         //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD because a load is ongoing and

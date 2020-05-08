@@ -21,7 +21,7 @@ Object.values(FeatureType).map(featureType => {
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
     attributeStates: {},
-    visible: null,
+    visible: false,
   };
   //Populate the attribute state with null values for all properties.
   var filterIndexCounter = 0;
