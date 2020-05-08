@@ -36,6 +36,7 @@ import {
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
+import {CLICK_ROOT} from "../../actions/map/RootClickAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -334,6 +335,16 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
       console.debug("ALL_FILTERS_SET action completed");
       break;
+    }
+
+    case CLICK_ROOT: {
+      const rootFeature = state.features.find(
+        ({type}) => type === FeatureType.Root
+      );
+      if (!rootFeature) {
+        throw Error("No root feature in features list!");
+      }
+      rootFeature.state = MapFeatureState.CLICKED;
     }
 
     case "@@kepler.gl/REMOVE_FILTER": {
