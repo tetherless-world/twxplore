@@ -1,4 +1,9 @@
-import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
+import {
+  addDataToMap,
+  removeFilter,
+  removeDataset,
+  layerConfigChange,
+} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -214,6 +219,17 @@ const MapImpl: React.FunctionComponent = () => {
                 addFilter(FeatureType[featureType as keyof typeof FeatureType])
               );
             }
+            const keplerLayers = keplerState.map.visState.layers;
+            const layerIndex = keplerLayers.findIndex(
+              (layer: {config: {dataId: string}}) =>
+                layer.config.dataId === featureType
+            );
+            const newLayerConfig = {
+              label: featureType,
+            };
+            dispatch(
+              layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
+            );
           }
         }
         break;
