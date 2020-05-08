@@ -36,7 +36,7 @@ import {
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
-import {CLICK_ROOT} from "../../actions/map/RootClickAction";
+import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
