@@ -11,7 +11,6 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
-  MapFeaturesQuery_features,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
@@ -35,13 +34,13 @@ import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
+import {clickRoot} from "../../actions/map/ClickRootAction";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
-const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -110,30 +109,10 @@ const MapImpl: React.FunctionComponent = () => {
     clickedUri => state.loadingState[clickedUri].queryInProgress
   );
   //if there are no states loaded
-  if (state.features.length === 0) {
-    //if the data variable has been loaded
+  if (state.features.length === 1) {
     if (keplerState.map) {
       // Not tracking any features yet, add the states from the stateJSON file.
-      dispatch(
-        addMapFeatures(
-          stateJSON.map(feature => ({
-            __typename: feature.__typename,
-            geometry: feature.geometry,
-            label: feature.label ? feature.label : undefined,
-            frequency: feature.frequency ? feature.frequency : undefined,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : undefined,
-            type: feature.type ? feature.type : undefined,
-            uri: feature.uri,
-            locality: feature.locality ? feature.locality : undefined,
-            regions: feature.regions,
-            postalCode: feature.postalCode ? feature.postalCode : undefined,
-            transmissionPower: feature.transmissionPower
-              ? feature.transmissionPower
-              : undefined,
-            state: MapFeatureState.LOADED,
-          }))
-        )
-      );
+      dispatch(clickRoot());
     }
   }
 
