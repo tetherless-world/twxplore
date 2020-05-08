@@ -115,18 +115,18 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           stateJSON.map(feature => ({
-            __typename: feature.__typename,
             geometry: feature.geometry,
             label: feature.label,
+            uri: feature.uri,
+            type: feature.type,
             frequency: feature.frequency,
             timestamp: feature.timestamp,
-            type: feature.type,
-            uri: feature.uri,
             locality: feature.locality,
             regions: feature.regions,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
+            __typename: feature.__typename,
           }))
         )
       );
@@ -285,6 +285,9 @@ const MapImpl: React.FunctionComponent = () => {
 
         //for each clicked-and-loading feature
         for (const clickedFeature of featuresInState) {
+          const featureTypeStrategy = getFeatureTypeStrategyByName(
+            clickedFeature.type!
+          );
           //Get the loadingState of the feature
           const featureLoadingState = state.loadingState[clickedFeature.uri];
           //if the queryInProgress loadingState of the loadingState indicates that a query is still ongoing
@@ -304,6 +307,7 @@ const MapImpl: React.FunctionComponent = () => {
               variables: {
                 query: {
                   withinFeatureUri: clickedFeature.uri,
+                  types: featureTypeStrategy.childFeatureTypes,
                 },
 
                 limit: LIMIT,
