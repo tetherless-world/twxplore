@@ -109,8 +109,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 <TextField
                   {...params}
                   variant="outlined"
-                  label="filterSelectedOptions"
-                  placeholder="Favorites"
+                  placeholder="Select"
                 />
               )}
             />

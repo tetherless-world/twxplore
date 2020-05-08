@@ -13,14 +13,6 @@ Object.values(FeatureType).map(type => {
 const featuresByType: {
   [featureType: string]: FeaturesByType;
 } = {};
-Object.values(FeatureType).map(type => {
-  featuresByType[type] = {
-    features: [],
-    dirty: false,
-    featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
-    attributeStates: {},
-  };
-});
 
 //Here we create an initial featuresByType value for each FeatureType
 Object.values(FeatureType).map(featureType => {
@@ -29,6 +21,7 @@ Object.values(FeatureType).map(featureType => {
     dirty: false,
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
     attributeStates: {},
+    visible: false,
   };
   //Populate the attribute state with null values for all properties.
   var filterIndexCounter = 0;

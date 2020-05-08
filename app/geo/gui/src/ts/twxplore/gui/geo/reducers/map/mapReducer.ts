@@ -1,5 +1,4 @@
 import {BaseAction} from "redux-actions";
-
 import {MapFeatureState} from "../../states/map/MapFeatureState";
 import {
   ADD_MAP_FEATURES,
@@ -54,19 +53,22 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       for (const feature of addMapFeaturesAction.payload.features) {
         //push the feature into the feature list provided by the state
         result.features.push(feature);
+        let featuresByTypeOfFeatureType = result.featuresByType[feature.type!];
         //push the feature into the featureByType list provided by the state
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].features.push(feature);
+        featuresByTypeOfFeatureType.features.push(feature);
         //Because the list was modified, set the 'dirty' variable to true
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].dirty = true;
+        featuresByTypeOfFeatureType.dirty = true;
+        // if the featureTypeState is ABSENT_ON_MAP indicating that this is the first time a feature of this feature type is being added
+        if (
+          featuresByTypeOfFeatureType.featureTypeState ===
+          MapFeatureTypeState.ABSENT_ON_MAP
+        ) {
+          featuresByTypeOfFeatureType.visible = true;
+        }
         //Set featureTypeState for this FeatureType to WAITING_FOR_LOAD because a load is ongoing and
         //to ensure that filters for this feature type will not be added until all queries are completed
-        result.featuresByType[
-          feature.type! as keyof typeof result.featuresByType
-        ].featureTypeState = MapFeatureTypeState.WAITING_FOR_LOAD;
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.WAITING_FOR_LOAD;
       }
       console.debug("ADD_MAP_FEATURES action completed.");
       break;
@@ -187,10 +189,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     //Probably needs some reworking
     case CHANGE_TYPE_VISIBILITY: {
       const changeTypeVisibilityAction = action as ChangeTypeVisibilityAction;
-      const targetedType = changeTypeVisibilityAction.payload.typeName;
-      result.typesVisibility[targetedType] = !result.typesVisibility[
-        targetedType
-      ];
+      const featureType = changeTypeVisibilityAction.payload.typeName;
+      result.featuresByType[featureType].visible! = !result.featuresByType[
+        featureType
+      ].visible!;
       break;
     }
 
