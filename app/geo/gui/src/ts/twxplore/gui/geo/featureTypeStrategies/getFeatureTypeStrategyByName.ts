@@ -3,8 +3,8 @@ import {CountyFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy/CountyFeat
 import {StateFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy/StateFeatureTypeStrategy";
 import {MetropolitanDivisionFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy/MetropolitanDivisionFeatureType";
 import {MilitaryInstallationFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy/MilitaryInstallationFeatureTypeStrategy";
-import {TransmissionFeatureTypeStrategy} from "./PointFeatureType/TransmissionFeatureTypeStrategy";
-import {TransmitterFeatureTypeStrategy} from "./PointFeatureType/TransmitterFeatureTypeStrategy";
+import {TransmissionFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmissionFeatureTypeStrategy";
+import {TransmitterFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmitterFeatureTypeStrategy";
 
 //type FeatureTypeKey = keyof typeof FeatureType;
 
