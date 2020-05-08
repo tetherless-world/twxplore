@@ -51,6 +51,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const addMapFeaturesAction = action as AddMapFeaturesAction;
       //for each feature provided by the action payload
       for (const feature of addMapFeaturesAction.payload.features) {
+        Object.keys(feature).forEach(key =>
+          (feature as any)[key] === undefined
+            ? delete (feature as any)[key]
+            : {}
+        );
         //push the feature into the feature list provided by the state
         result.features.push(feature);
         let featuresByTypeOfFeatureType = result.featuresByType[feature.type!];

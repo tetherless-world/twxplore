@@ -73,15 +73,17 @@ const MapImpl: React.FunctionComponent = () => {
           data.features.map(feature => ({
             __typename: feature.__typename,
             geometry: feature.geometry,
-            label: feature.label,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-            type: feature.type,
+            label: feature.label ? feature.label : undefined,
+            frequency: feature.frequency ? feature.frequency : undefined,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : undefined,
+            type: feature.type ? feature.type : undefined,
             uri: feature.uri,
-            locality: feature.locality,
+            locality: feature.locality ? feature.locality : undefined,
             regions: feature.regions,
-            postalCode: feature.postalCode,
-            transmissionPower: feature.transmissionPower,
+            postalCode: feature.postalCode ? feature.postalCode : undefined,
+            transmissionPower: feature.transmissionPower
+              ? feature.transmissionPower
+              : undefined,
             state: MapFeatureState.LOADED,
           }))
         )
@@ -115,18 +117,20 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           stateJSON.map(feature => ({
-            geometry: feature.geometry,
-            label: feature.label,
-            uri: feature.uri,
-            type: feature.type,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp,
-            locality: feature.locality,
-            regions: feature.regions,
-            postalCode: feature.postalCode,
-            transmissionPower: feature.transmissionPower,
-            state: MapFeatureState.LOADED,
             __typename: feature.__typename,
+            geometry: feature.geometry,
+            label: feature.label ? feature.label : undefined,
+            frequency: feature.frequency ? feature.frequency : undefined,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : undefined,
+            type: feature.type ? feature.type : undefined,
+            uri: feature.uri,
+            locality: feature.locality ? feature.locality : undefined,
+            regions: feature.regions,
+            postalCode: feature.postalCode ? feature.postalCode : undefined,
+            transmissionPower: feature.transmissionPower
+              ? feature.transmissionPower
+              : undefined,
+            state: MapFeatureState.LOADED,
           }))
         )
       );
