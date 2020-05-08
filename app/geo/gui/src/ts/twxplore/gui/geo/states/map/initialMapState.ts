@@ -4,6 +4,8 @@ import {FeaturesByType} from "./FeaturesByType";
 import {MapFeatureTypeState} from "./MapFeatureTypeState";
 import {FeatureAttributeName} from "./FeatureAttributeName";
 import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/functions/getFeatureAttributeStrategyByName";
+import {MapFeature} from "./MapFeature";
+import {MapFeatureState} from "./MapFeatureState";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -23,6 +25,7 @@ Object.values(FeatureType).map(featureType => {
     attributeStates: {},
     visible: false,
   };
+
   //Populate the attribute state with null values for all properties.
   var filterIndexCounter = 0;
   Object.keys(FeatureAttributeName).map(attributeName => {
@@ -39,11 +42,19 @@ Object.values(FeatureType).map(featureType => {
   });
 });
 
-//const featureTypesFilters: {[featureType: string]: MapFilterState} = {};
-
+const features = [];
+const rootFeature: MapFeature = {
+  __typename: "Feature",
+  regions: [],
+  uri: "root-uri",
+  geometry: {__typename: "ParsedGeometry", label: "", wkt: "", uri: ""},
+  state: MapFeatureState.LOADED,
+  type: FeatureType.Root,
+};
+features.push(rootFeature);
 export const initialMapState: MapState = {
   keplerGlInstanceRegistered: false,
-  features: [],
+  features,
   featuresByType: featuresByType,
   typesVisibility: typesVisibility,
   filterCounter: 0,
