@@ -29,7 +29,9 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   override def getFeatures(limit: Option[Int], offset: Option[Int], query: FeatureQuery): List[Feature] =
-    if (limit.isDefined && offset.isDefined) {
+    if (query.onlyFeatureUri.isDefined) {
+      getFeaturesByUris(List(query.onlyFeatureUri.get))
+    } else if (limit.isDefined && offset.isDefined) {
       getFeaturesByUris(getFeatureUris(limit = limit.get, offset = offset.get, query = query))
     } else if (!limit.isDefined && !offset.isDefined) {
       getFeatures(query)
@@ -117,7 +119,6 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       "?featureGeometry geo:asWKT ?featureGeometryWkt ."
     ) ++
       toContainsFeatureUriWherePatterns(query.containsFeatureUri) ++
-      toOnlyFeatureUriWherePatterns(query.onlyFeatureUri) ++
       toTypeWherePatterns(query.types) ++
       toWithinFeatureUriWherePatterns(query.withinFeatureUri)
 

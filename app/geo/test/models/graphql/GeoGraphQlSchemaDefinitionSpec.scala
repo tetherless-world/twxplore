@@ -100,7 +100,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
     val query =
       graphql"""
           query FeaturesByType($$uri: String!) {
-            features(query: {onlyFeatureUri: [$$uri]}, limit: 10, offset: 0) {
+            features(query: {onlyFeatureUri: $$uri}, limit: 10, offset: 0) {
               uri
             }
           }
