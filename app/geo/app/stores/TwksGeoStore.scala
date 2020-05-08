@@ -29,7 +29,9 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
   def this(configuration: Configuration) = this(BaseTwksStore.createTwksClient(configuration))
 
   override def getFeatures(limit: Option[Int], offset: Option[Int], query: FeatureQuery): List[Feature] =
-    if (limit.isDefined && offset.isDefined) {
+    if (query.onlyFeatureUri.isDefined) {
+      getFeaturesByUris(List(query.onlyFeatureUri.get))
+    } else if (limit.isDefined && offset.isDefined) {
       getFeaturesByUris(getFeatureUris(limit = limit.get, offset = offset.get, query = query))
     } else if (!limit.isDefined && !offset.isDefined) {
       getFeatures(query)
@@ -54,7 +56,6 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
         val model = queryExecution.execConstruct()
         model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
-
 
   override def getFeaturesCount(query: FeatureQuery): Int = {
     withAssertionsQueryExecution(QueryFactory.create(
