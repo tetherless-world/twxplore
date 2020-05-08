@@ -55,7 +55,6 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
         model.listSubjectsWithProperty(RDF.`type`, Geo.FEATURE_RES).asScala.toList.map(resource => Rdf.read[Feature](resource))
     }
 
-
   override def getFeaturesCount(query: FeatureQuery): Int = {
     withAssertionsQueryExecution(QueryFactory.create(
       s"""
@@ -118,6 +117,7 @@ final class TwksGeoStore(twksClient: TwksClient) extends BaseTwksStore(twksClien
       "?featureGeometry geo:asWKT ?featureGeometryWkt ."
     ) ++
       toContainsFeatureUriWherePatterns(query.containsFeatureUri) ++
+      toOnlyFeatureUriWherePatterns(query.onlyFeatureUri) ++
       toTypeWherePatterns(query.types) ++
       toWithinFeatureUriWherePatterns(query.withinFeatureUri)
 

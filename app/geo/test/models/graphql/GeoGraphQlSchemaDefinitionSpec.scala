@@ -96,6 +96,22 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
     }
   }
 
+  "get features by exact URI" in {
+    val query =
+      graphql"""
+          query FeaturesByType($$uri: String!) {
+            features(query: {onlyFeatureUri: [$$uri]}, limit: 10, offset: 0) {
+              uri
+            }
+          }
+        """
+    val result = executeQuery(query, vars = Json.obj("uri" -> GeoTestData.feature.uri.toString))
+    result must be(Json.parse(
+      s"""
+         |{"data":{"features":[{"uri":"${GeoTestData.feature.uri.toString()}"}]}}
+         |""".stripMargin))
+  }
+
   "get features within feature" in {
     val query =
       graphql"""
