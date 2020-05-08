@@ -11,9 +11,10 @@ object FeatureType {
   case object County extends FeatureType
   case object MetropolitanDivision extends FeatureType
   case object MilitaryInstallation extends FeatureType
+  case object Root extends FeatureType
   case object State extends FeatureType
   case object Transmission extends FeatureType
   case object Transmitter extends FeatureType
 
-  val values = List(County, MetropolitanDivision, MilitaryInstallation, Transmission, Transmitter, State)
+  val values = List(County, MetropolitanDivision, MilitaryInstallation, Root, Transmission, Transmitter, State)
 }
