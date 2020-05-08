@@ -15,7 +15,7 @@ import {useSelector, useDispatch, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {changeTypeVisibility} from "../../actions/map/ChangeTypeVisibilityAction";
-import {LoggerContext, Logger} from "@tetherless-world/twxplore-base";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,19 +39,13 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   );
   const dispatch = useDispatch();
 
-  const getLayerIndex = (
-    keplerLayers: {config: {dataId: string}}[],
-    layerLabel: string
-  ): number => {
-    return keplerLayers.findIndex(
-      (layer: {config: {dataId: string}}) => layer.config.dataId === layerLabel
-    );
-  };
   const handleChange = (featureType: FeatureType) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const keplerLayers = keplerState.map.visState.layers;
-    const layerIndex = getLayerIndex(keplerLayers, featureType);
+    const layerIndex = keplerLayers.findIndex(
+      (layer: {config: {dataId: string}}) => layer.config.dataId === featureType
+    );
     const newLayerConfig = {
       isVisible: !state.featuresByType[featureType].visible,
     };
@@ -59,8 +53,6 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
     dispatch(changeTypeVisibility(featureType));
   };
 
-  const logger: Logger = React.useContext(LoggerContext);
-  logger.info("test");
   //const featureTypes: {[index: string]: String} = {}
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
@@ -81,7 +73,8 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
                     onChange={handleChange(featureType)}
                     value={featureType}
                     disabled={
-                      state.featuresByType[featureType].visible === null
+                      state.featuresByType[featureType].featureTypeState ===
+                      MapFeatureTypeState.ABSENT_ON_MAP
                     }
                   />
                 }
