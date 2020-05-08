@@ -5,6 +5,7 @@ import {MetropolitanDivisionFeatureTypeStrategy} from "./PolygonFeatureTypeStrat
 import {MilitaryInstallationFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy/MilitaryInstallationFeatureTypeStrategy";
 import {TransmissionFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmissionFeatureTypeStrategy";
 import {TransmitterFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmitterFeatureTypeStrategy";
+import {RootFeatureTypeStrategy} from "./RootFeatureTypeStrategy";
 
 //type FeatureTypeKey = keyof typeof FeatureType;
 
@@ -27,6 +28,9 @@ export const getFeatureTypeStrategyByName = (featureTypeName: FeatureType) => {
     }
     case FeatureType.Transmitter: {
       return TransmitterFeatureTypeStrategy.instance;
+    }
+    case FeatureType.Root: {
+      return RootFeatureTypeStrategy.instance;
     }
 
     default: {
