@@ -23,7 +23,6 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 //import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
-import {addFilter} from "../../actions/map/AddFilterAction";
 import {completedQuery} from "../../actions/map/CompletedQueryAction";
 import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
@@ -35,6 +34,7 @@ import * as _ from "lodash";
 import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
+import {addFilter} from "../../actions/map/AddFilterAction";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -59,30 +59,27 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
+      const clickedFeatureUri = getFeaturesWithinResults.variables.query
+        .withinFeatureUri
+        ? getFeaturesWithinResults.variables.query.withinFeatureUri
+        : "root-uri";
       //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
-      dispatch(
-        completedQuery(
-          getFeaturesWithinResults.variables.query.withinFeatureUri!,
-          data.features.length
-        )
-      );
+      dispatch(completedQuery(clickedFeatureUri, data.features.length));
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
             __typename: feature.__typename,
             geometry: feature.geometry,
-            label: feature.label ? feature.label : undefined,
-            frequency: feature.frequency ? feature.frequency : undefined,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : undefined,
-            type: feature.type ? feature.type : undefined,
+            label: feature.label,
+            frequency: feature.frequency,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
+            type: feature.type,
             uri: feature.uri,
-            locality: feature.locality ? feature.locality : undefined,
+            locality: feature.locality,
             regions: feature.regions,
-            postalCode: feature.postalCode ? feature.postalCode : undefined,
-            transmissionPower: feature.transmissionPower
-              ? feature.transmissionPower
-              : undefined,
+            postalCode: feature.postalCode,
+            transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
           }))
         )
@@ -109,7 +106,10 @@ const MapImpl: React.FunctionComponent = () => {
     clickedUri => state.loadingState[clickedUri].queryInProgress
   );
   //if there are no states loaded
-  if (state.features.length === 1) {
+  if (
+    state.features.length === 1 &&
+    state.features[0].state === MapFeatureState.LOADED
+  ) {
     if (keplerState.map) {
       // Not tracking any features yet, add the states from the stateJSON file.
       dispatch(clickRoot());
