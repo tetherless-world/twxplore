@@ -59,6 +59,8 @@ const FilterPanelImpl: React.FunctionComponent = () => {
               </ExpansionPanelDetails>
             </ExpansionPanel>
           );
+        } else {
+          return <React.Fragment />;
         }
       })}
     </div>
