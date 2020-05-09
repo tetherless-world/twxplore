@@ -38,24 +38,28 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   return (
     <div>
       {Object.keys(state.featuresByType).map(featureType => {
-        return (
-          <ExpansionPanel key={featureType}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className={classes.heading}>{featureType}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <FilterComponent
-                featureType={
-                  FeatureType[featureType as keyof typeof FeatureType]
-                }
-              />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        );
+        if (featureType != FeatureType.Root) {
+          return (
+            <ExpansionPanel key={featureType}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>
+                  {featureType}
+                </Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <FilterComponent
+                  featureType={
+                    FeatureType[featureType as keyof typeof FeatureType]
+                  }
+                />
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          );
+        }
       })}
     </div>
   );
