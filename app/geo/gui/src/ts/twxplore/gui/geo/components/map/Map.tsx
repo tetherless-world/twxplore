@@ -69,15 +69,15 @@ const MapImpl: React.FunctionComponent = () => {
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
-            __typename: feature.__typename,
-            geometry: feature.geometry,
             label: feature.label,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-            type: feature.type,
             uri: feature.uri,
+            type: feature.type,
             locality: feature.locality,
             regions: feature.regions,
+            __typename: feature.__typename,
+            geometry: feature.geometry,
+            frequency: feature.frequency,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
