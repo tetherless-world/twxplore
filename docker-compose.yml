@@ -15,7 +15,7 @@ services:
   twks-server:
     container_name: twks-server
     environment:
-      JAVA_OPTIONS: "-Dtwks.extcp=/extcp -Dtwks.dump=/dump -Dtwks.extfs=/extfs -Dtwks.initialNanopublicationFilePath=/geo-data/loaded/dsa/features.ttl.bz2,/geo-data/loaded/reverse_beacon/features.ttl.bz2,/geo-data/loaded/tiger_line/features.ttl.bz2,/geo-data/loaded/uls/features.ttl.bz2 -Dtwks.tdbLocation=/data"
+      JAVA_OPTIONS: "-Dtwks.extcp=/extcp -Dtwks.dump=/dump -Dtwks.enableGeoSPARQL -Dtwks.extfs=/extfs -Dtwks.initialNanopublicationFilePath=/geo-data/loaded/dsa/features.ttl.bz2,/geo-data/loaded/reverse_beacon/features.ttl.bz2,/geo-data/loaded/tiger_line/features.ttl.bz2,/geo-data/loaded/uls/features.ttl.bz2 -Dtwks.tdbLocation=/data"
     image: tetherlessworld/twks-server
     ports:
       - 127.0.0.1:8080:8080
