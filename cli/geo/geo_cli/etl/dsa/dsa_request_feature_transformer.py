@@ -1,25 +1,18 @@
 import json
-from datetime import datetime
 from typing import Generator
 
 from rdflib import URIRef
 
-from geo_cli.etl._feature_transformer import _FeatureTransformer
+from geo_cli.etl.dsa._dsa_feature_transformer import _DsaFeatureTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY
-from geo_cli.path import ROOT_DIR_PATH
 
 
-class DsaRequestFeatureTransformer(_FeatureTransformer):
+class DsaRequestFeatureTransformer(_DsaFeatureTransformer):
     def transform(self, **kwds) -> Generator[Feature, None, None]:
-        def parse_datetime(value: str) -> datetime:
-            assert value.endswith("Z[GMT]"), value
-            value = value[:-len("Z[GMT]")]
-            value += "+00:00"
-            return datetime.fromisoformat(value)
-
-        requests_json_file_path = (ROOT_DIR_PATH / ".." / "DynamicSpectrumAccess" / "ontologies" / "requests.json").absolute()
+        requests_json_file_path = self._DSA_ONTOLOGIES_DIR_PATH / "requests.json"
+        yielded_features_count = 0
         with open(requests_json_file_path) as requests_json_file:
             request_json_objects = json.load(requests_json_file)
             for request_json_object in request_json_objects:
@@ -36,9 +29,11 @@ class DsaRequestFeatureTransformer(_FeatureTransformer):
                         ),
                         label=request_json_object["id"],
                         timestamp_range=(
-                            parse_datetime(request_json_object["dateRange"]["from"]),
-                            parse_datetime(request_json_object["dateRange"]["until"])
+                            self._parse_datetime(request_json_object["dateRange"]["from"]),
+                            self._parse_datetime(request_json_object["dateRange"]["until"])
                         ),
                         type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                         uri=URIRef("http://purl.org/twc/dsa/request/" + request_json_object["id"])
                     )
+                yielded_features_count += 1
+        self._logger.info("yielded %d request features", yielded_features_count)
