@@ -189,6 +189,9 @@ const MapImpl: React.FunctionComponent = () => {
               MapFeatureTypeState.NEEDS_FILTERS &&
             !hasDirtyFeatures(state.featuresByType)
           ) {
+            const featureTypeStrategy = getFeatureTypeStrategyByName(
+              featureType
+            );
             //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
             for (var x = 0; x < 5; ++x) {
               /*
@@ -219,9 +222,8 @@ const MapImpl: React.FunctionComponent = () => {
 
             const interactionConfigCopy =
               keplerState.map.visState.interactionConfig;
-            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] = [
-              "label",
-            ];
+            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
+              featureTypeStrategy.fieldsToShowOnPopup;
             dispatch(interactionConfigChange(interactionConfigCopy));
           }
         }
