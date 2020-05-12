@@ -4,7 +4,7 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 
 export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
-  getQuery(clickedFeatureUri: string): FeatureQuery {
+  getClickedQuery(clickedFeatureUri: string): FeatureQuery {
     return {
       withinFeatureUri: clickedFeatureUri,
       types: this.childFeatureTypes,

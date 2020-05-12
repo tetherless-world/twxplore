@@ -3,7 +3,7 @@ import {FeatureType, FeatureQuery} from "../api/graphqlGlobalTypes";
 import {NEW_YORK_STATE_FEATURE_URI} from "../states/map/NEW_YORK_STATE_FEATURE_URI";
 
 export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
-  getQuery(clickedFeatureUri: string): FeatureQuery {
+  getClickedQuery(clickedFeatureUri: string): FeatureQuery {
     return {
       onlyFeatureUri: NEW_YORK_STATE_FEATURE_URI,
     };

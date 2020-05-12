@@ -1,13 +1,10 @@
 import {FeatureTypeStrategy} from "../FeatureTypeStrategy";
-import {FeatureType, FeatureQuery} from "../../api/graphqlGlobalTypes";
+import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 
 export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
-  getQuery(clickedFeatureUri: string): FeatureQuery {
-    return {
-      withinFeatureUri: clickedFeatureUri,
-      types: this.childFeatureTypes,
-    };
+  getClickedQuery(clickedFeatureUri: string): null {
+    return null;
   }
   abstract readonly name: FeatureType;
   readonly childFeatureTypes = [];

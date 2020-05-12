@@ -255,7 +255,7 @@ const MapImpl: React.FunctionComponent = () => {
             //call the lazyQuery to get features within the clickedFeaturee
             getFeaturesWithin({
               variables: {
-                query: featureTypeStrategy.getQuery(clickedFeature.uri),
+                query: featureTypeStrategy.getClickedQuery(clickedFeature.uri),
                 limit: LIMIT,
                 offset: 0,
               },
@@ -300,7 +300,7 @@ const MapImpl: React.FunctionComponent = () => {
             //Same lazyQuery as in the CLICKED state, we are simply going further
             getFeaturesWithin({
               variables: {
-                query: featureTypeStrategy.getQuery(clickedFeature.uri),
+                query: featureTypeStrategy.getClickedQuery(clickedFeature.uri)!,
 
                 limit: LIMIT,
                 offset: featureLoadingState.offset,

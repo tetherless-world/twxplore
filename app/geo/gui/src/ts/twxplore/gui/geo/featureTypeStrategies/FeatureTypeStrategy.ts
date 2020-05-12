@@ -6,5 +6,5 @@ export interface FeatureTypeStrategy {
   readonly childFeatureTypes: FeatureType[];
   readonly expandable: boolean;
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
-  getQuery(clickedFeatureUri: string): FeatureQuery;
+  getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
 }
