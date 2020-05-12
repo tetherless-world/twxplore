@@ -3,6 +3,7 @@ import {
   removeFilter,
   removeDataset,
   layerConfigChange,
+  interactionConfigChange,
 } from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
@@ -202,6 +203,8 @@ const MapImpl: React.FunctionComponent = () => {
                 addFilter(FeatureType[featureType as keyof typeof FeatureType])
               );
             }
+
+            //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
             const keplerLayers = keplerState.map.visState.layers;
             const layerIndex = keplerLayers.findIndex(
               (layer: {config: {dataId: string}}) =>
@@ -213,6 +216,13 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
             );
+
+            const interactionConfigCopy =
+              keplerState.map.visState.interactionConfig;
+            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] = [
+              "label",
+            ];
+            dispatch(interactionConfigChange(interactionConfigCopy));
           }
         }
         break;
