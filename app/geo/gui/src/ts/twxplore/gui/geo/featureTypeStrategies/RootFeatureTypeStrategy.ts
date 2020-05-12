@@ -11,5 +11,6 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   readonly name = FeatureType.Root;
   readonly childFeatureTypes = [FeatureType.State];
   static readonly instance = new RootFeatureTypeStrategy();
-  expandable = true;
+  readonly expandable = true;
+  readonly fieldsToShowOnPopup = [];
 }
