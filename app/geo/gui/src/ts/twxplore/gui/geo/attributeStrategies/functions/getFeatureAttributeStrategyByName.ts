@@ -12,7 +12,6 @@ import {LabelFeatureAttributeStrategy} from "../classes/StringFeatureAttributeSt
 import {IgnoreFeatureAttributeStrategy} from "../classes/IgnoreFeatureAttributeStrategy";
 
 export const getFeatureAttributeStrategyByName = (name: string) => {
-  console.log(FeatureAttributeName[name as FeatureAttributeKey]);
   switch (FeatureAttributeName[name as FeatureAttributeKey]) {
     case FeatureAttributeName.timestamp: {
       return TimestampFeatureAttributeStrategy.instance;
