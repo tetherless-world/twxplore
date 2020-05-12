@@ -62,26 +62,25 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
           {Object.values(FeatureType).map(featureType => {
-            if (featureType != FeatureType.Root) {
-              return (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.featuresByType[featureType].visible!}
-                      onChange={handleChange(featureType)}
-                      value={featureType}
-                      disabled={
-                        state.featuresByType[featureType].featureTypeState ===
-                        MapFeatureTypeState.ABSENT_ON_MAP
-                      }
-                    />
-                  }
-                  label={featureType}
-                />
-              );
-            } else {
+            if (featureType == FeatureType.Root) {
               return <React.Fragment />;
             }
+            return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.featuresByType[featureType].visible!}
+                    onChange={handleChange(featureType)}
+                    value={featureType}
+                    disabled={
+                      state.featuresByType[featureType].featureTypeState ===
+                      MapFeatureTypeState.ABSENT_ON_MAP
+                    }
+                  />
+                }
+                label={featureType}
+              />
+            );
           })}
         </FormGroup>
         <FormHelperText>
