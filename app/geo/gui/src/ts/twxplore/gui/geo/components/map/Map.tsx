@@ -36,6 +36,7 @@ import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
+import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -63,7 +64,7 @@ const MapImpl: React.FunctionComponent = () => {
       const clickedFeatureUri = getFeaturesWithinResults.variables.query
         .withinFeatureUri
         ? getFeaturesWithinResults.variables.query.withinFeatureUri
-        : "root-uri";
+        : ROOT_FEATURE_URI;
       //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
       dispatch(completedQuery(clickedFeatureUri, data.features.length));
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
@@ -109,7 +110,8 @@ const MapImpl: React.FunctionComponent = () => {
   //if there are no states loaded
   if (
     state.features.length === 1 &&
-    state.features[0].state === MapFeatureState.LOADED
+    state.features[0].state === MapFeatureState.LOADED &&
+    state.features[0].uri === ROOT_FEATURE_URI
   ) {
     if (keplerState.map) {
       // Not tracking any features yet, add the states from the stateJSON file.

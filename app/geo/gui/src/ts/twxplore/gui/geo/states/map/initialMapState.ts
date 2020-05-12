@@ -6,6 +6,7 @@ import {FeatureAttributeName} from "./FeatureAttributeName";
 import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/functions/getFeatureAttributeStrategyByName";
 import {MapFeature} from "./MapFeature";
 import {MapFeatureState} from "./MapFeatureState";
+import {ROOT_FEATURE_URI} from "./ROOT_FEATURE_URI";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -46,7 +47,7 @@ const features = [];
 const rootFeature: MapFeature = {
   __typename: "Feature",
   regions: [],
-  uri: "root-uri",
+  uri: ROOT_FEATURE_URI,
   geometry: {__typename: "ParsedGeometry", label: "", wkt: "", uri: ""},
   state: MapFeatureState.LOADED,
   type: FeatureType.Root,

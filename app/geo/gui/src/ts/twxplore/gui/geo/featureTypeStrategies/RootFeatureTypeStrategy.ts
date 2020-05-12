@@ -1,11 +1,11 @@
 import {FeatureTypeStrategy} from "./FeatureTypeStrategy";
 import {FeatureType, FeatureQuery} from "../api/graphqlGlobalTypes";
+import {NEW_YORK_STATE_FEATURE_URI} from "../states/map/NEW_YORK_STATE_FEATURE_URI";
 
 export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   getQuery(clickedFeatureUri: string): FeatureQuery {
     return {
-      onlyFeatureUri:
-        "http://twxplore.github.io/app/geo/feature#tiger_line-tl_2019_us_state-38",
+      onlyFeatureUri: NEW_YORK_STATE_FEATURE_URI,
     };
   }
   readonly name = FeatureType.Root;
