@@ -6,7 +6,8 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
   static readonly instance = new TransmissionFeatureTypeStrategy();
   readonly fieldsToShowOnPopup = [
-    ...super.fieldsToShowOnPopup,
+    FeatureAttributeName.label,
+    FeatureAttributeName.type,
     FeatureAttributeName.frequency,
     FeatureAttributeName.timestamp,
     FeatureAttributeName.transmissionPower,

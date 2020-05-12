@@ -12,8 +12,5 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
   abstract readonly name: FeatureType;
   readonly childFeatureTypes = [];
   readonly expandable = false;
-  readonly fieldsToShowOnPopup = [
-    FeatureAttributeName.label,
-    FeatureAttributeName.type,
-  ];
+  abstract readonly fieldsToShowOnPopup: FeatureAttributeName[];
 }
