@@ -367,6 +367,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       console.debug("LAYER_CLICK action being handled");
       const layerClickAction: any = action;
 
+      if (layerClickAction.payload.info === null) {
+        break;
+      }
       const resultFeature = getFeatureFromStateFeaturesList(
         result.features,
         layerClickAction.payload.info.object.properties.uri
