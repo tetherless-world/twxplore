@@ -11,6 +11,7 @@ object FeatureType {
   case object County extends FeatureType
   case object MetropolitanDivision extends FeatureType
   case object MilitaryInstallation extends FeatureType
+  case object Policy extends FeatureType
   case object Root extends FeatureType
   case object State extends FeatureType
   case object Transmission extends FeatureType
