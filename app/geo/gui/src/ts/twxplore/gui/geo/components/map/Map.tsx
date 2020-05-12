@@ -113,8 +113,9 @@ const MapImpl: React.FunctionComponent = () => {
     state.features[0].state === MapFeatureState.LOADED &&
     state.features[0].uri === ROOT_FEATURE_URI
   ) {
+    //if the keplerState has been initialized
     if (keplerState.map) {
-      // Not tracking any features yet, add the states from the stateJSON file.
+      //Simulating clicking the root which starts the process of querying for the first visible feature type
       dispatch(clickRoot());
     }
   }
