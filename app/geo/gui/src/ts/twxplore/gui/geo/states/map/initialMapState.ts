@@ -17,6 +17,7 @@ const featuresByType: {
   [featureType: string]: FeaturesByType;
 } = {};
 
+var filterIndexCounter = 0;
 //Here we create an initial featuresByType value for each FeatureType
 Object.values(FeatureType).map(featureType => {
   featuresByType[featureType] = {
@@ -28,18 +29,19 @@ Object.values(FeatureType).map(featureType => {
   };
 
   //Populate the attribute state with null values for all properties.
-  var filterIndexCounter = 0;
   Object.keys(FeatureAttributeName).map(attributeName => {
     const featureAttributeStrategy = getFeatureAttributeStrategyByName(
       attributeName
     );
     let attributeStatesofFeatureType =
       featuresByType[featureType].attributeStates;
-    featureAttributeStrategy.buildInitialFeatureAttributeState(
-      attributeStatesofFeatureType,
-      filterIndexCounter
-    );
-    filterIndexCounter += 1;
+    if (featureType != FeatureType.Root && !featureAttributeStrategy.ignore) {
+      featureAttributeStrategy.buildInitialFeatureAttributeState(
+        attributeStatesofFeatureType,
+        filterIndexCounter
+      );
+      filterIndexCounter += 1;
+    }
   });
 });
 

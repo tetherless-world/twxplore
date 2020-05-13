@@ -237,6 +237,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           result.featuresByType[featureType as keyof typeof FeatureType]
             .attributeStates;
 
+        setAllFilterIndexesNull(attributeStatesOfFeatureType);
+
         if (
           //If the filters of the attributes of a FeatureType have been added/set
           featuresByTypeOfType.featureTypeState ===
@@ -250,7 +252,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
           //
-          setAllFilterIndexesNull(attributeStatesOfFeatureType);
         }
       }
       console.debug("START_QUERYING action completed");
@@ -340,6 +341,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         throw Error("No root feature in features list!");
       }
       rootFeature.state = MapFeatureState.CLICKED;
+      break;
     }
 
     case "@@kepler.gl/REMOVE_FILTER": {
