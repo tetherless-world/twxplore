@@ -38,6 +38,9 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   return (
     <div>
       {Object.keys(state.featuresByType).map(featureType => {
+        if (featureType == FeatureType.Root) {
+          return <React.Fragment />;
+        }
         return (
           <ExpansionPanel key={featureType}>
             <ExpansionPanelSummary

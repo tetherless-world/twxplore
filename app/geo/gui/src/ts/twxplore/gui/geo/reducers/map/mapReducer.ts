@@ -36,6 +36,7 @@ import {
 import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateAttributeStatesOfFeatureType";
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
+import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -236,6 +237,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           result.featuresByType[featureType as keyof typeof FeatureType]
             .attributeStates;
 
+        setAllFilterIndexesNull(attributeStatesOfFeatureType);
+
         if (
           //If the filters of the attributes of a FeatureType have been added/set
           featuresByTypeOfType.featureTypeState ===
@@ -249,7 +252,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
           //
-          setAllFilterIndexesNull(attributeStatesOfFeatureType);
         }
       }
       console.debug("START_QUERYING action completed");
@@ -331,6 +333,17 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
+    case CLICK_ROOT: {
+      const rootFeature = state.features.find(
+        ({type}) => type === FeatureType.Root
+      );
+      if (!rootFeature) {
+        throw Error("No root feature in features list!");
+      }
+      rootFeature.state = MapFeatureState.CLICKED;
+      break;
+    }
+
     case "@@kepler.gl/REMOVE_FILTER": {
       console.debug("REMOVE_FILTER action being handled");
       //Decrement filterCounter on the redux state, because a filter has just been removed.
@@ -351,6 +364,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       console.debug("LAYER_CLICK action being handled");
       const layerClickAction: any = action;
 
+      if (layerClickAction.payload.info === null) {
+        break;
+      }
       const resultFeature = getFeatureFromStateFeaturesList(
         result.features,
         layerClickAction.payload.info.object.properties.uri

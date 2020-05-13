@@ -1,4 +1,10 @@
-import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
+import {
+  addDataToMap,
+  removeFilter,
+  removeDataset,
+  layerConfigChange,
+  interactionConfigChange,
+} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -6,7 +12,6 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
-  MapFeaturesQuery_features,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
@@ -19,7 +24,6 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 //import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {getFeaturesByState} from "../../selectors/getFeaturesByState";
 import {MapFeature} from "../../states/map/MapFeature";
-import {addFilter} from "../../actions/map/AddFilterAction";
 import {completedQuery} from "../../actions/map/CompletedQueryAction";
 import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
@@ -30,13 +34,15 @@ import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
+import {clickRoot} from "../../actions/map/ClickRootAction";
+import {addFilter} from "../../actions/map/AddFilterAction";
+import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
-const stateJSON: MapFeaturesQuery_features[] = require("../../../../../../json/stateJSON.json");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
@@ -55,26 +61,25 @@ const MapImpl: React.FunctionComponent = () => {
     MapFeaturesQueryVariables
   >(featuresQueryDocument, {
     onCompleted: (data: MapFeaturesQuery) => {
+      const clickedFeatureUri = getFeaturesWithinResults.variables.query
+        .withinFeatureUri
+        ? getFeaturesWithinResults.variables.query.withinFeatureUri
+        : ROOT_FEATURE_URI;
       //dispatch an action to reflect a query just finishing. The loadingState for the query will be updated
-      dispatch(
-        completedQuery(
-          getFeaturesWithinResults.variables.query.withinFeatureUri!,
-          data.features.length
-        )
-      );
+      dispatch(completedQuery(clickedFeatureUri, data.features.length));
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
           data.features.map(feature => ({
-            __typename: feature.__typename,
-            geometry: feature.geometry,
             label: feature.label,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-            type: feature.type,
             uri: feature.uri,
+            type: feature.type,
             locality: feature.locality,
             regions: feature.regions,
+            __typename: feature.__typename,
+            geometry: feature.geometry,
+            frequency: feature.frequency,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
@@ -103,28 +108,15 @@ const MapImpl: React.FunctionComponent = () => {
     clickedUri => state.loadingState[clickedUri].queryInProgress
   );
   //if there are no states loaded
-  if (state.features.length === 0) {
-    //if the data variable has been loaded
+  if (
+    state.features.length === 1 &&
+    state.features[0].state === MapFeatureState.LOADED &&
+    state.features[0].uri === ROOT_FEATURE_URI
+  ) {
+    //if the keplerState has been initialized
     if (keplerState.map) {
-      // Not tracking any features yet, add the states from the stateJSON file.
-      dispatch(
-        addMapFeatures(
-          stateJSON.map(feature => ({
-            __typename: feature.__typename,
-            geometry: feature.geometry,
-            label: feature.label,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp,
-            type: feature.type,
-            uri: feature.uri,
-            locality: feature.locality,
-            regions: feature.regions,
-            postalCode: feature.postalCode,
-            transmissionPower: feature.transmissionPower,
-            state: MapFeatureState.LOADED,
-          }))
-        )
-      );
+      //Simulating clicking the root which starts the process of querying for the first visible feature type
+      dispatch(clickRoot());
     }
   }
 
@@ -200,6 +192,9 @@ const MapImpl: React.FunctionComponent = () => {
               MapFeatureTypeState.NEEDS_FILTERS &&
             !hasDirtyFeatures(state.featuresByType)
           ) {
+            const featureTypeStrategy = getFeatureTypeStrategyByName(
+              featureType
+            );
             //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
             for (var x = 0; x < 5; ++x) {
               /*
@@ -214,6 +209,25 @@ const MapImpl: React.FunctionComponent = () => {
                 addFilter(FeatureType[featureType as keyof typeof FeatureType])
               );
             }
+
+            //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
+            const keplerLayers = keplerState.map.visState.layers;
+            const layerIndex = keplerLayers.findIndex(
+              (layer: {config: {dataId: string}}) =>
+                layer.config.dataId === featureType
+            );
+            const newLayerConfig = {
+              label: featureType,
+            };
+            dispatch(
+              layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
+            );
+
+            const interactionConfigCopy =
+              keplerState.map.visState.interactionConfig;
+            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
+              featureTypeStrategy.fieldsToShowOnPopup;
+            dispatch(interactionConfigChange(interactionConfigCopy));
           }
         }
         break;
@@ -241,10 +255,7 @@ const MapImpl: React.FunctionComponent = () => {
             //call the lazyQuery to get features within the clickedFeaturee
             getFeaturesWithin({
               variables: {
-                query: {
-                  withinFeatureUri: clickedFeature.uri,
-                  types: featureTypeStrategy.childFeatureTypes,
-                },
+                query: featureTypeStrategy.getClickedQuery(clickedFeature.uri),
                 limit: LIMIT,
                 offset: 0,
               },
@@ -269,6 +280,9 @@ const MapImpl: React.FunctionComponent = () => {
 
         //for each clicked-and-loading feature
         for (const clickedFeature of featuresInState) {
+          const featureTypeStrategy = getFeatureTypeStrategyByName(
+            clickedFeature.type!
+          );
           //Get the loadingState of the feature
           const featureLoadingState = state.loadingState[clickedFeature.uri];
           //if the queryInProgress loadingState of the loadingState indicates that a query is still ongoing
@@ -286,9 +300,7 @@ const MapImpl: React.FunctionComponent = () => {
             //Same lazyQuery as in the CLICKED state, we are simply going further
             getFeaturesWithin({
               variables: {
-                query: {
-                  withinFeatureUri: clickedFeature.uri,
-                },
+                query: featureTypeStrategy.getClickedQuery(clickedFeature.uri)!,
 
                 limit: LIMIT,
                 offset: featureLoadingState.offset,

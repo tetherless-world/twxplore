@@ -62,9 +62,9 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
           {Object.values(FeatureType).map(featureType => {
-            //const typeName = (FeatureType as any)[key];
-            //const featureType: FeatureType =
-            //FeatureType[typeString as keyof typeof FeatureType];
+            if (featureType == FeatureType.Root) {
+              return <React.Fragment />;
+            }
             return (
               <FormControlLabel
                 control={

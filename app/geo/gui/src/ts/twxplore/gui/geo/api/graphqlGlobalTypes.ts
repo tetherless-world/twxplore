@@ -11,6 +11,8 @@ export enum FeatureType {
   County = "County",
   MetropolitanDivision = "MetropolitanDivision",
   MilitaryInstallation = "MilitaryInstallation",
+  Policy = "Policy",
+  Root = "Root",
   State = "State",
   Transmission = "Transmission",
   Transmitter = "Transmitter",
@@ -18,6 +20,7 @@ export enum FeatureType {
 
 export interface FeatureQuery {
   containsFeatureUri?: string | null;
+  onlyFeatureUri?: string | null;
   types?: FeatureType[] | null;
   withinFeatureUri?: string | null;
 }
