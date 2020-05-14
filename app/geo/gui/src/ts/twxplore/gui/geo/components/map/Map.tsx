@@ -38,7 +38,7 @@ import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
-const LIMIT = 5;
+const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
@@ -320,7 +320,7 @@ const MapImpl: React.FunctionComponent = () => {
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
   return (
     <div>
-      <Dimmer page active={queryInProgress}>
+      <Dimmer page active={queryInProgress || hasDirtyFeatures}>
         <Loader>
           {queryInProgress
             ? Object.values(state.loadingState)[0].message
