@@ -32,11 +32,11 @@ import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
-import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
+import {Loader, Dimmer} from "semantic-ui-react";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -329,9 +329,14 @@ const MapImpl: React.FunctionComponent = () => {
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
   return (
     <div>
+      <Dimmer page active={queryInProgress}>
+        <Loader>
+          {queryInProgress
+            ? Object.values(state.loadingState)[0].message
+            : null}
+        </Loader>
+      </Dimmer>
       <div style={{width: "100%"}}>
-        <Loader loaded={!queryInProgress} />
-
         <ReactResizeDetector
           handleWidth
           handleHeight
