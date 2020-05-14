@@ -215,7 +215,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         latestQueryLength: 0,
         queryInProgress: true,
       };
-      state.loadingMessage = "Querying for features...";
+      result.loadingMessage = "Querying for features...";
 
       const resultFeature = getFeatureFromStateFeaturesList(
         result.features,
@@ -272,7 +272,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       //the queryInProgress variable for this state becomes true as we are going to repeat the query but with a different offset
       result.loadingState[featureUri].queryInProgress = true;
-      state.loadingMessage = "Querying for more features...";
+      result.loadingMessage = "Querying for more features...";
       console.debug("REPEAT_QUERY action completed.");
       break;
     }
@@ -302,7 +302,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Track the length of the last query.
         result.loadingState[featureUri].latestQueryLength = latestQueryLength;
       }
-      state.loadingMessage = "Completed Query. Adding some features...";
+      result.loadingMessage = "Completed Query. Adding some features...";
       console.debug("COMPLETE_QUERY action completed");
       break;
     }
@@ -339,7 +339,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
 
     case CLICK_ROOT: {
-      const rootFeature = state.features.find(
+      const rootFeature = result.features.find(
         ({type}) => type === FeatureType.Root
       );
       if (!rootFeature) {
