@@ -7,7 +7,5 @@
   "scripts": {
     "lerna:bootstrap": "lerna bootstrap --hoist"
   },
-  "dependencies": {
-    "semantic-ui-react": "^0.88.2"
-  }
+  "dependencies": {}
 }

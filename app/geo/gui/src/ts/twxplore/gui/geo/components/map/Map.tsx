@@ -321,11 +321,7 @@ const MapImpl: React.FunctionComponent = () => {
   return (
     <div>
       <Dimmer page active={queryInProgress || hasDirtyFeatures}>
-        <Loader>
-          {queryInProgress
-            ? Object.values(state.loadingState)[0].message
-            : null}
-        </Loader>
+        <Loader>{state.loadingMessage}</Loader>
       </Dimmer>
       <div style={{width: "100%"}}>
         <ReactResizeDetector

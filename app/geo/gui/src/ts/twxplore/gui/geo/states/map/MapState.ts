@@ -14,4 +14,5 @@ export interface MapState {
   // };
   filterCounter: number;
   loadingState: {[featureUri: string]: LoadingState};
+  loadingMessage: string | null;
 }
