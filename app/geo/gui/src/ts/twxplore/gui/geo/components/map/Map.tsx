@@ -39,7 +39,7 @@ import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
-const LIMIT = 500;
+const LIMIT = 5;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
 var wkt = require("terraformer-wkt-parser");
@@ -92,17 +92,9 @@ const MapImpl: React.FunctionComponent = () => {
   });
 
   //This function checks if any of the featureByTypes are 'dirty'
-  const hasDirtyFeatures = (featuresByType: {
-    [featureType: string]: FeaturesByType;
-  }) => {
-    for (const featureType of Object.values(FeatureType)) {
-      //Check if filters need to be added for this FeatureType
-      if (featuresByType[featureType].dirty) {
-        return true;
-      }
-    }
-    return false;
-  };
+  const hasDirtyFeatures = Object.values(FeatureType).some(
+    featureType => state.featuresByType[featureType].dirty
+  );
 
   const queryInProgress = Object.keys(state.loadingState).some(
     clickedUri => state.loadingState[clickedUri].queryInProgress
@@ -190,7 +182,7 @@ const MapImpl: React.FunctionComponent = () => {
           if (
             state.featuresByType[featureType].featureTypeState ===
               MapFeatureTypeState.NEEDS_FILTERS &&
-            !hasDirtyFeatures(state.featuresByType)
+            !hasDirtyFeatures
           ) {
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
