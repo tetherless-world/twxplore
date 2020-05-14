@@ -63,10 +63,11 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
         <FormGroup>
           {Object.values(FeatureType).map(featureType => {
             if (featureType == FeatureType.Root) {
-              return <React.Fragment />;
+              return <React.Fragment key={featureType} />;
             }
             return (
               <FormControlLabel
+                key={featureType}
                 control={
                   <Checkbox
                     checked={state.featuresByType[featureType].visible!}
