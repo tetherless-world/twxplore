@@ -113,6 +113,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             MapFeatureState.RENDERED
         );
 
+        result.loadingMessage =
+          "Adding features of type " + resultFeature.type + " to map...";
         //attributeStatesOfFeatureType is now an object, with each of its properties being the state of an attribute of the addedFeature's FeatureType.
         //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
         const attributeStatesOfFeatureType =
@@ -213,6 +215,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         latestQueryLength: 0,
         queryInProgress: true,
       };
+      result.loadingMessage = "Querying for features...";
 
       const resultFeature = getFeatureFromStateFeaturesList(
         result.features,
@@ -269,6 +272,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       }
       //the queryInProgress variable for this state becomes true as we are going to repeat the query but with a different offset
       result.loadingState[featureUri].queryInProgress = true;
+      result.loadingMessage = "Querying for more features...";
       console.debug("REPEAT_QUERY action completed.");
       break;
     }
@@ -298,6 +302,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         //Track the length of the last query.
         result.loadingState[featureUri].latestQueryLength = latestQueryLength;
       }
+      result.loadingMessage = "Completed Query. Adding some features...";
       console.debug("COMPLETE_QUERY action completed");
       break;
     }
@@ -334,7 +339,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
 
     case CLICK_ROOT: {
-      const rootFeature = state.features.find(
+      const rootFeature = result.features.find(
         ({type}) => type === FeatureType.Root
       );
       if (!rootFeature) {

@@ -30,13 +30,12 @@ import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
-import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
-import * as Loader from "react-loader";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
+import {Loader, Dimmer} from "semantic-ui-react";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -92,17 +91,9 @@ const MapImpl: React.FunctionComponent = () => {
   });
 
   //This function checks if any of the featureByTypes are 'dirty'
-  const hasDirtyFeatures = (featuresByType: {
-    [featureType: string]: FeaturesByType;
-  }) => {
-    for (const featureType of Object.values(FeatureType)) {
-      //Check if filters need to be added for this FeatureType
-      if (featuresByType[featureType].dirty) {
-        return true;
-      }
-    }
-    return false;
-  };
+  const hasDirtyFeatures = Object.values(FeatureType).some(
+    featureType => state.featuresByType[featureType].dirty
+  );
 
   const queryInProgress = Object.keys(state.loadingState).some(
     clickedUri => state.loadingState[clickedUri].queryInProgress
@@ -190,7 +181,7 @@ const MapImpl: React.FunctionComponent = () => {
           if (
             state.featuresByType[featureType].featureTypeState ===
               MapFeatureTypeState.NEEDS_FILTERS &&
-            !hasDirtyFeatures(state.featuresByType)
+            !hasDirtyFeatures
           ) {
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
@@ -329,9 +320,10 @@ const MapImpl: React.FunctionComponent = () => {
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
   return (
     <div>
+      <Dimmer page active={queryInProgress || hasDirtyFeatures}>
+        <Loader>{state.loadingMessage}</Loader>
+      </Dimmer>
       <div style={{width: "100%"}}>
-        <Loader loaded={!queryInProgress} />
-
         <ReactResizeDetector
           handleWidth
           handleHeight

@@ -68,4 +68,5 @@ export const initialMapState: MapState = {
   typesVisibility: typesVisibility,
   filterCounter: 0,
   loadingState: {},
+  loadingMessage: null,
 };

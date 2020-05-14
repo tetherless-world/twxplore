@@ -92,7 +92,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
       case TypeOfFeatureAttribute.STRING: {
         let stringAttributeState = attributeState as MapStringFeatureAttributeState;
         return (
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.formControl} key={attributeName}>
             <Typography id="type" gutterBottom>
               {attributeName}
             </Typography>
@@ -176,7 +176,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 FeatureType[featureType as keyof typeof FeatureType]
               )
             );
-            return <React.Fragment />;
+            return <React.Fragment key={attributeName} />;
           }
           //If filters have been set
           case MapFeatureTypeState.FILTERS_SET: {
@@ -188,7 +188,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           }
           //This handles the case in which the featureTypeState is ABSENT_ON_MAP or WAITING_ON_LOAD
           default: {
-            return <React.Fragment />;
+            return <React.Fragment key={attributeName} />;
           }
         }
       })}
