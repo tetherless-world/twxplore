@@ -113,6 +113,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             MapFeatureState.RENDERED
         );
 
+        result.loadingMessage =
+          "Adding features of type " + resultFeature.type + " to map...";
         //attributeStatesOfFeatureType is now an object, with each of its properties being the state of an attribute of the addedFeature's FeatureType.
         //i.e. attributeStatesOfFeature = {frequency: {min:0, max:100, filterIndex: 0}, tranmsmissionPower: {min:0, max:20, filterIndex: 1}}
         const attributeStatesOfFeatureType =
