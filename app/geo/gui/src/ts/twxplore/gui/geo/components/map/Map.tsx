@@ -30,7 +30,6 @@ import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import ReactResizeDetector from "react-resize-detector";
-import {FeaturesByType} from "../../states/map/FeaturesByType";
 import * as _ from "lodash";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
