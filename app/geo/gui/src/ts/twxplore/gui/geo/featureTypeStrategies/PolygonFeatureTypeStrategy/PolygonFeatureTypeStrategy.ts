@@ -1,9 +1,18 @@
 import {FeatureTypeStrategy} from "../FeatureTypeStrategy";
 import {FeatureType, FeatureQuery} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import {Dispatch} from "redux";
+import {FeaturesByType} from "../../states/map/FeaturesByType";
 
 export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
+  layerConfigChange(
+    keplerLayers: any,
+    dispatch: Dispatch<any>,
+    featuresByType: FeaturesByType
+  ): void {
+    return;
+  }
   getClickedQuery(clickedFeatureUri: string): FeatureQuery {
     return {
       withinFeatureUri: clickedFeatureUri,
