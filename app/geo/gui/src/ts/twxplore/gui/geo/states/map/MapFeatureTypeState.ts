@@ -9,4 +9,7 @@ export enum MapFeatureTypeState {
   FILTERS_ADDED = "filters added",
   //The values of the filters for this Feature Type have been set. E.g. name, type, value
   FILTERS_SET = "filters set",
+  NEEDS_LAYER_CONFIG = "needs layer config",
+
+  FINISHED_SETUP = "finished setup ",
 }
