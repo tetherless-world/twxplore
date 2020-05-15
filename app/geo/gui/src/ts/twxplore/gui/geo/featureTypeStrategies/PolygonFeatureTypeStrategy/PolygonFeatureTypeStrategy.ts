@@ -8,6 +8,7 @@ export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
   layerConfigChange(
     keplerLayers: any,
+    layerIndex: number,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
