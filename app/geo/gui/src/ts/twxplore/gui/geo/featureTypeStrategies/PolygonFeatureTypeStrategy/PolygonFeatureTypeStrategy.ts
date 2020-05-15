@@ -9,7 +9,9 @@ export abstract class PolygonFeatureTypeStrategy
   layerConfigChange(
     keplerLayers: any,
     dispatch: Dispatch<any>,
-    featuresByType: FeaturesByType
+    featuresByType: {
+      [featureType: string]: FeaturesByType;
+    }
   ): void {
     return;
   }

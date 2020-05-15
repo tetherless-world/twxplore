@@ -9,9 +9,14 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   layerConfigChange(
     keplerLayers: any,
     dispatch: Dispatch<any>,
-    featuresByType: FeaturesByType
+    featuresByType: {
+      [featureType: string]: FeaturesByType;
+    }
   ): void {
-    return;
+    switch (featuresByType[this.name]) {
+      default: {
+      }
+    }
   }
   static readonly instance = new TransmissionFeatureTypeStrategy();
   readonly fieldsToShowOnPopup = [
