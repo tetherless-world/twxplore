@@ -201,22 +201,29 @@ const MapImpl: React.FunctionComponent = () => {
 
       */
       case MapFeatureState.RENDERED: {
-        //loop through each feature type
-        for (const featureType of Object.values(FeatureType)) {
-          /*Check if filters need to be added for this FeatureType AND
-          We don't want to addFilters when some featuresByType lists are
-          still dirty because then the filters will be removed by removeDataset() in the LOADED case*/
-          if (
-            state.featuresByType[featureType].featureTypeState ===
-              MapFeatureTypeState.NEEDS_FILTERS &&
-            !hasDirtyFeatures
-          ) {
+        /*We don't want to work with rendered features when some featuresByType lists are
+        still dirty because theres a chance that some filters and layers will be removed by removeDataset() in the LOADED case*/
+        if (!hasDirtyFeatures)
+          //loop through each feature type
+          for (const featureType of Object.values(FeatureType)) {
+            const keplerLayers = keplerState.map.visState.layers;
+            const layerIndex = keplerLayers.findIndex(
+              (layer: {config: {dataId: string}}) =>
+                layer.config.dataId === featureType
+            );
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
             );
-            //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
-            for (var x = 0; x < 5; ++x) {
-              /*
+            /*Check if filters need to be added for this FeatureType AND
+             */
+
+            if (
+              state.featuresByType[featureType].featureTypeState ===
+              MapFeatureTypeState.NEEDS_FILTERS
+            ) {
+              //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
+              for (var x = 0; x < 5; ++x) {
+                /*
               Dispatch addFilter with the FeatureType,
               which is also the name of the dataset
               we are attaching the filter too.
@@ -224,42 +231,34 @@ const MapImpl: React.FunctionComponent = () => {
               Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType (e.g. addFilter("Transmission")) and 
               worry about assigning them an attribute in FilterSliders.tsx (e.g setFilter(idx,"name","timeStamp"))
               */
+                dispatch(
+                  addFilter(
+                    FeatureType[featureType as keyof typeof FeatureType]
+                  )
+                );
+              }
+
+              //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
+
+              const newLayerConfig = {
+                label: featureType,
+              };
               dispatch(
-                addFilter(FeatureType[featureType as keyof typeof FeatureType])
+                layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
               );
-            }
 
-            //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
-            const keplerLayers = keplerState.map.visState.layers;
-            const layerIndex = keplerLayers.findIndex(
-              (layer: {config: {dataId: string}}) =>
-                layer.config.dataId === featureType
-            );
-            const newLayerConfig = {
-              label: featureType,
-            };
-            dispatch(
-              layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
-            );
+              const interactionConfigCopy =
+                keplerState.map.visState.interactionConfig;
+              interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
+                featureTypeStrategy.fieldsToShowOnPopup;
+              dispatch(interactionConfigChange(interactionConfigCopy));
 
-            const interactionConfigCopy =
-              keplerState.map.visState.interactionConfig;
-            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
-              featureTypeStrategy.fieldsToShowOnPopup;
-            dispatch(interactionConfigChange(interactionConfigCopy));
-
-            if (featureType === FeatureType.Transmission) {
-              dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
-              console.log(keplerLayers[layerIndex].type);
-
-              /*dispatch(
-                layerVisConfigChange(keplerLayers[layerIndex], {
-                  enabled3d: true,
-                })
-              );*/
+              if (featureType === FeatureType.Transmission) {
+                dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
+                console.log(keplerLayers[layerIndex].type);
+              }
             }
           }
-        }
         break;
       }
 
