@@ -10,6 +10,7 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
   }
   abstract layerConfigChange(
     keplerLayers: any,
+    layerIndex: number,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;

@@ -8,6 +8,7 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmitter;
   layerConfigChange(
     keplerLayers: any,
+    layerIndex: number,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;

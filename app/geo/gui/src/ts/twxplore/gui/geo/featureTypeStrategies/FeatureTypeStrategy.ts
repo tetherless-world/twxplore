@@ -11,6 +11,7 @@ export interface FeatureTypeStrategy {
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
   layerConfigChange(
     keplerLayers: any,
+    layerIndex: number,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
