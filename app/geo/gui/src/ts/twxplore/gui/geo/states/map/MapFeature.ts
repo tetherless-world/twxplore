@@ -3,4 +3,6 @@ import {MapFeaturesQuery_features} from "../../api/queries/types/MapFeaturesQuer
 
 export interface MapFeature extends MapFeaturesQuery_features {
   state: MapFeatureState;
+  lat?: number;
+  lng?: number;
 }

@@ -69,20 +69,46 @@ const MapImpl: React.FunctionComponent = () => {
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
-          data.features.map(feature => ({
-            label: feature.label,
-            uri: feature.uri,
-            type: feature.type,
-            locality: feature.locality,
-            regions: feature.regions,
-            __typename: feature.__typename,
-            geometry: feature.geometry,
-            frequency: feature.frequency,
-            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-            postalCode: feature.postalCode,
-            transmissionPower: feature.transmissionPower,
-            state: MapFeatureState.LOADED,
-          }))
+          data.features.map(feature =>
+            JSON.parse(
+              JSON.stringify({
+                label: feature.label,
+                uri: feature.uri,
+                type: feature.type,
+                locality: feature.locality,
+                regions: feature.regions,
+                __typename: feature.__typename,
+                geometry: feature.geometry,
+                frequency: feature.frequency,
+                timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
+                postalCode: feature.postalCode,
+                transmissionPower: feature.transmissionPower,
+                state: MapFeatureState.LOADED,
+                lat:
+                  feature.type === FeatureType.Transmission
+                    ? parseFloat(
+                        feature.geometry.wkt
+                          .replace("POINT", "")
+                          .replace("(", "")
+                          .trim()
+                          .replace(")", "")
+                          .split(" ")[0]
+                      )
+                    : undefined,
+                lng:
+                  feature.type === FeatureType.Transmission
+                    ? parseFloat(
+                        feature.geometry.wkt
+                          .replace("POINT", "")
+                          .replace("(", "")
+                          .trim()
+                          .replace(")", "")
+                          .split(" ")[1]
+                      )
+                    : undefined,
+              })
+            )
+          )
         )
       );
     },
