@@ -246,6 +246,7 @@ const MapImpl: React.FunctionComponent = () => {
                   dispatch,
                   state.featuresByType
                 );
+                break;
               }
             }
 
