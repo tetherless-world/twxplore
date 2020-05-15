@@ -4,7 +4,11 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {Dispatch} from "redux";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import {layerTypeChange} from "kepler.gl/actions";
+import {
+  layerTypeChange,
+  layerVisConfigChange,
+  layerConfigChange,
+} from "kepler.gl/actions";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
   layerConfigChange(
@@ -16,8 +20,23 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     }
   ): void {
     switch (featuresByType[this.name].featureTypeState) {
+      case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
+        const newLayerConfig = {
+          label: this.name,
+        };
+        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+      }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
         dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
+        break;
+      }
+      case MapFeatureTypeState.NEEDS_3D_ENABLED: {
+        dispatch(
+          layerVisConfigChange(keplerLayers[layerIndex], {
+            enabled3d: true,
+          })
+        );
+        break;
       }
       default: {
       }
