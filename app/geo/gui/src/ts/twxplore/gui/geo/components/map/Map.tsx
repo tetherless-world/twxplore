@@ -4,6 +4,7 @@ import {
   removeDataset,
   layerConfigChange,
   interactionConfigChange,
+  layerTypeChange,
 } from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
@@ -36,6 +37,7 @@ import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
+
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -245,6 +247,17 @@ const MapImpl: React.FunctionComponent = () => {
             interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
               featureTypeStrategy.fieldsToShowOnPopup;
             dispatch(interactionConfigChange(interactionConfigCopy));
+
+            if (featureType === FeatureType.Transmission) {
+              dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
+              console.log(keplerLayers[layerIndex].type);
+
+              /*dispatch(
+                layerVisConfigChange(keplerLayers[layerIndex], {
+                  enabled3d: true,
+                })
+              );*/
+            }
           }
         }
         break;
