@@ -2,7 +2,6 @@ import {
   addDataToMap,
   removeFilter,
   removeDataset,
-  layerConfigChange,
   interactionConfigChange,
   layerTypeChange,
 } from "kepler.gl/actions";
@@ -214,8 +213,41 @@ const MapImpl: React.FunctionComponent = () => {
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
             );
-            /*Check if filters need to be added for this FeatureType AND
-             */
+
+            let featureTypeStateOfFeatureType =
+              state.featuresByType[featureType].featureTypeState;
+            switch (featureTypeStateOfFeatureType) {
+              //Check if filters need to be added for this FeatureType
+              case MapFeatureTypeState.NEEDS_FILTERS: {
+                //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
+                for (var x = 0; x < 5; ++x) {
+                  /*
+              Dispatch addFilter with the FeatureType,
+              which is also the name of the dataset
+              we are attaching the filter too.
+              Note that the attribute we intend to use with the filter isn't passed with addFilter.
+              Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType (e.g. addFilter("Transmission")) and 
+              worry about assigning them an attribute in FilterSliders.tsx (e.g setFilter(idx,"name","timeStamp"))
+              */
+                  dispatch(
+                    addFilter(
+                      FeatureType[featureType as keyof typeof FeatureType]
+                    )
+                  );
+                }
+                break;
+              }
+              case MapFeatureTypeState.NEEDS_LAYER_LABEL:
+              case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
+              case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+                featureTypeStrategy.layerConfigChange(
+                  keplerLayers,
+                  layerIndex,
+                  dispatch,
+                  state.featuresByType
+                );
+              }
+            }
 
             if (
               state.featuresByType[featureType].featureTypeState ===
@@ -239,13 +271,6 @@ const MapImpl: React.FunctionComponent = () => {
               }
 
               //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
-
-              const newLayerConfig = {
-                label: featureType,
-              };
-              dispatch(
-                layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
-              );
 
               const interactionConfigCopy =
                 keplerState.map.visState.interactionConfig;
