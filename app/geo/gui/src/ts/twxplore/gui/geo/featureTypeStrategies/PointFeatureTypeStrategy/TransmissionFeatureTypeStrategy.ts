@@ -19,7 +19,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     featuresByType: {
       [featureType: string]: FeaturesByType;
     },
-    keplerFeatureTypeFields: any
+    keplerFieldsOfFeatureType: any
   ): void {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {

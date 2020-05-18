@@ -13,7 +13,7 @@ export abstract class PolygonFeatureTypeStrategy
     featuresByType: {
       [featureType: string]: FeaturesByType;
     },
-    keplerFeatureTypeFields: any
+    keplerFieldsOfFeatureType: any
   ): void {
     return;
   }

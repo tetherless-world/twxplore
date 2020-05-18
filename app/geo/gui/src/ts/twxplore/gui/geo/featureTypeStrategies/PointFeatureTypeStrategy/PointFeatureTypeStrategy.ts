@@ -15,7 +15,7 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
     featuresByType: {
       [featureType: string]: FeaturesByType;
     },
-    keplerFeatureTypeFields: any
+    keplerFieldsOfFeatureType: any
   ): void;
   abstract readonly name: FeatureType;
   readonly childFeatureTypes = [];
