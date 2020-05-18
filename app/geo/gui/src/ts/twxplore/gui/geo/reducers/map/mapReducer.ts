@@ -401,9 +401,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
-      if (
-        Object.keys(layerConfigChangeAction.payload.newConfig).includes("label")
-      )
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("label"))
         result.featuresByType[FeatureType.Transmission].featureTypeState =
           MapFeatureTypeState.NEEDS_LAYER_CHANGE;
 
