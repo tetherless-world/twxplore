@@ -1,9 +1,4 @@
-import {
-  addDataToMap,
-  removeFilter,
-  removeDataset,
-  interactionConfigChange,
-} from "kepler.gl/actions";
+import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -213,12 +208,13 @@ const MapImpl: React.FunctionComponent = () => {
               featureType
             );
 
+            /*
             const interactionConfigCopy =
               keplerState.map.visState.interactionConfig;
             interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
               featureTypeStrategy.fieldsToShowOnPopup;
             dispatch(interactionConfigChange(interactionConfigCopy));
-
+*/
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
             switch (featureTypeStateOfFeatureType) {
