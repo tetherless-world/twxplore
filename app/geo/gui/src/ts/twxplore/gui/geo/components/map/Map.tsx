@@ -199,13 +199,6 @@ const MapImpl: React.FunctionComponent = () => {
         if (!hasDirtyFeatures)
           //loop through each feature type
           for (const featureType of Object.values(FeatureType)) {
-            const keplerLayers = keplerState.map.visState.layers;
-            const keplerFieldsOfFeatureType =
-              keplerState.map.visState.datasets[featureType].fields;
-            const layerIndex = keplerLayers.findIndex(
-              (layer: {config: {dataId: string}}) =>
-                layer.config.dataId === featureType
-            );
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
             );
@@ -245,6 +238,13 @@ const MapImpl: React.FunctionComponent = () => {
               case MapFeatureTypeState.NEEDS_3D_ENABLED:
               case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
               case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+                const keplerLayers = keplerState.map.visState.layers;
+                const layerIndex = keplerLayers.findIndex(
+                  (layer: {config: {dataId: string}}) =>
+                    layer.config.dataId === featureType
+                );
+                const keplerFieldsOfFeatureType =
+                  keplerState.map.visState.datasets[featureType].fields;
                 featureTypeStrategy.layerConfigChange(
                   keplerLayers,
                   layerIndex,
