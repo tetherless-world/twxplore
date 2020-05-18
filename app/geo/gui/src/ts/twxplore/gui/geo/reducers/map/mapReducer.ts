@@ -401,25 +401,32 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
-      if (
-        layerConfigChangeAction.newConfig != undefined &&
-        Object.keys(layerConfigChangeAction.newConfig).includes("label")
-      ) {
-        result.featuresByType[FeatureType.Transmission].featureTypeState =
-          MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+      if (layerConfigChangeAction.newConfig != undefined) {
+        //case: NEEDS_LABEL
+        if (Object.keys(layerConfigChangeAction.newConfig).includes("label")) {
+          result.featuresByType[FeatureType.Transmission].featureTypeState =
+            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+        }
+        //case: NEEDS_LNG_AND_LAT
+        if (
+          Object.keys(layerConfigChangeAction.newConfig).includes("columns")
+        ) {
+          result.featuresByType[FeatureType.Transmission].featureTypeState =
+            MapFeatureTypeState.NEEDS_FILTERS;
+        }
       }
 
       break;
     }
     case "@@kepler.gl/LAYER_TYPE_CHANGE": {
       result.featuresByType[FeatureType.Transmission].featureTypeState =
-        MapFeatureTypeState.NEEDS_3D_ENABLED;
+        MapFeatureTypeState.NEEDS_LNG_AND_LAT;
       break;
     }
-
+    //Needs 3d Enabled
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
       result.featuresByType[FeatureType.Transmission].featureTypeState =
-        MapFeatureTypeState.NEEDS_FILTERS;
+        MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
 
       break;
     }
