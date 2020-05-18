@@ -3,7 +3,6 @@ import {
   removeFilter,
   removeDataset,
   interactionConfigChange,
-  layerTypeChange,
 } from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
@@ -214,6 +213,12 @@ const MapImpl: React.FunctionComponent = () => {
               featureType
             );
 
+            const interactionConfigCopy =
+              keplerState.map.visState.interactionConfig;
+            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
+              featureTypeStrategy.fieldsToShowOnPopup;
+            dispatch(interactionConfigChange(interactionConfigCopy));
+
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
             switch (featureTypeStateOfFeatureType) {
@@ -272,17 +277,6 @@ const MapImpl: React.FunctionComponent = () => {
               }
 
               //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
-
-              const interactionConfigCopy =
-                keplerState.map.visState.interactionConfig;
-              interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
-                featureTypeStrategy.fieldsToShowOnPopup;
-              dispatch(interactionConfigChange(interactionConfigCopy));
-
-              if (featureType === FeatureType.Transmission) {
-                dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
-                console.log(keplerLayers[layerIndex].type);
-              }
             }
           }
         break;
