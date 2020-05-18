@@ -16,7 +16,8 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    }
+    },
+    keplerFeatureTypeFields: any
   ): void {
     return;
   }

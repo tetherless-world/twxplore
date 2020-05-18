@@ -12,7 +12,8 @@ export abstract class PolygonFeatureTypeStrategy
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    }
+    },
+    keplerFeatureTypeFields: any
   ): void {
     return;
   }

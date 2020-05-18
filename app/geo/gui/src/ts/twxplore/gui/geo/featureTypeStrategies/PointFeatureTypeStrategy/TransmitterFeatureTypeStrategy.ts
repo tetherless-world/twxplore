@@ -12,7 +12,8 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    }
+    },
+    keplerFeatureTypeFields: any
   ): void {
     return;
   }

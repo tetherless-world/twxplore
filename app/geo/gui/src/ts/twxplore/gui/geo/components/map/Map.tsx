@@ -200,6 +200,8 @@ const MapImpl: React.FunctionComponent = () => {
           //loop through each feature type
           for (const featureType of Object.values(FeatureType)) {
             const keplerLayers = keplerState.map.visState.layers;
+            const keplerFeatureTypeFields =
+              keplerState.map.visState.datasets[featureType].fields;
             const layerIndex = keplerLayers.findIndex(
               (layer: {config: {dataId: string}}) =>
                 layer.config.dataId === featureType
@@ -247,7 +249,8 @@ const MapImpl: React.FunctionComponent = () => {
                   keplerLayers,
                   layerIndex,
                   dispatch,
-                  state.featuresByType
+                  state.featuresByType,
+                  keplerFeatureTypeFields
                 );
                 break;
               }

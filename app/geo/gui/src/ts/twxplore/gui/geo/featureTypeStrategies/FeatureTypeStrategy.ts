@@ -15,6 +15,7 @@ export interface FeatureTypeStrategy {
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    }
+    },
+    keplerFeatureTypeFields: any
   ): void;
 }
