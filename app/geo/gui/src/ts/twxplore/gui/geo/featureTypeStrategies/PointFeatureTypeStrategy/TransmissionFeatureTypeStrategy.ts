@@ -8,6 +8,7 @@ import {
   layerTypeChange,
   layerVisConfigChange,
   layerConfigChange,
+  //removeLayer,
 } from "kepler.gl/actions";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
@@ -22,6 +23,10 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
+        //dispatch(removeLayer(5));
+        dispatch(
+          layerConfigChange(keplerLayers[layerIndex], {isConfigActive: true})
+        );
         const newLayerConfig = {
           label: this.name,
         };
@@ -32,17 +37,29 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
         break;
       }
+      case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
+        const latFieldIdx = keplerLayers[layerIndex].columns["Y"].fieldIdx;
+        const lngFieldIdx = keplerLayers[layerIndex].columns["X"].fieldIdx;
+        const newLayerConfig = {
+          columns: {
+            lat: {value: "Y", fieldIdx: latFieldIdx},
+            lng: {value: "X", fieldIdx: lngFieldIdx},
+          },
+        };
+        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        break;
+      }
       case MapFeatureTypeState.NEEDS_3D_ENABLED: {
         dispatch(
           layerVisConfigChange(keplerLayers[layerIndex], {
             enable3d: true,
           })
         );
-        dispatch(
+        /*dispatch(
           layerVisConfigChange(keplerLayers[layerIndex], {
             worldUnitSize: 10,
           })
-        );
+        );*/
         break;
       }
 
