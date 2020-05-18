@@ -14,6 +14,8 @@ export enum MapFeatureTypeState {
 
   NEEDS_LAYER_CHANGE = "needs layer change",
 
+  NEEDS_LNG_AND_LAT = "needs lng and lat",
+
   NEEDS_3D_ENABLED = "needs 3d enabled",
 
   NEEDS_HEIGHT_ATTRIBUTE = "needs height attribute",
