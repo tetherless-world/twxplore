@@ -26,6 +26,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
           label: this.name,
         };
         dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        break;
       }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
         dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
@@ -34,13 +35,19 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
       case MapFeatureTypeState.NEEDS_3D_ENABLED: {
         dispatch(
           layerVisConfigChange(keplerLayers[layerIndex], {
-            enabled3d: true,
+            enable3d: true,
+          })
+        );
+        dispatch(
+          layerVisConfigChange(keplerLayers[layerIndex], {
+            worldUnitSize: 10,
           })
         );
         break;
       }
 
       default: {
+        break;
       }
     }
   }
