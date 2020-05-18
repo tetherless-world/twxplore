@@ -39,8 +39,12 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         break;
       }
       case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
-        const latFieldIdx = keplerLayers[layerIndex].columns["Y"].fieldIdx;
-        const lngFieldIdx = keplerLayers[layerIndex].columns["X"].fieldIdx;
+        const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
+          (keplerField: {id: string}) => keplerField.id === "Y"
+        );
+        const lngFieldIdx = keplerFieldsOfFeatureType.findIndex(
+          (keplerField: {id: string}) => keplerField.id === "X"
+        );
         const newLayerConfig = {
           columns: {
             lat: {value: "Y", fieldIdx: latFieldIdx},
