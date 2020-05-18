@@ -79,18 +79,7 @@ const MapImpl: React.FunctionComponent = () => {
                 postalCode: feature.postalCode,
                 transmissionPower: feature.transmissionPower,
                 state: MapFeatureState.LOADED,
-                lat:
-                  feature.type === FeatureType.Transmission
-                    ? parseFloat(
-                        feature.geometry.wkt
-                          .replace("POINT", "")
-                          .replace("(", "")
-                          .trim()
-                          .replace(")", "")
-                          .split(" ")[0]
-                      )
-                    : undefined,
-                lng:
+                Y:
                   feature.type === FeatureType.Transmission
                     ? parseFloat(
                         feature.geometry.wkt
@@ -99,6 +88,17 @@ const MapImpl: React.FunctionComponent = () => {
                           .trim()
                           .replace(")", "")
                           .split(" ")[1]
+                      )
+                    : undefined,
+                X:
+                  feature.type === FeatureType.Transmission
+                    ? parseFloat(
+                        feature.geometry.wkt
+                          .replace("POINT", "")
+                          .replace("(", "")
+                          .trim()
+                          .replace(")", "")
+                          .split(" ")[0]
                       )
                     : undefined,
               })
@@ -179,7 +179,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: true},
+                options: {centerMap: true, readOnly: false},
               })
             );
           }
@@ -240,6 +240,8 @@ const MapImpl: React.FunctionComponent = () => {
               }
               case MapFeatureTypeState.NEEDS_LAYER_LABEL:
               case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
+              case MapFeatureTypeState.NEEDS_3D_ENABLED:
+              case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
               case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
                 featureTypeStrategy.layerConfigChange(
                   keplerLayers,
