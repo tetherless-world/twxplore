@@ -19,6 +19,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
       [featureType: string]: FeaturesByType;
     }
   ): void {
+    //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
         const newLayerConfig = {
@@ -38,6 +39,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         );
         break;
       }
+
       default: {
       }
     }
