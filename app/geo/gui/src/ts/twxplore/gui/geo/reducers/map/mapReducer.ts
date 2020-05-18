@@ -401,10 +401,19 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
-      if (Object.keys(layerConfigChangeAction.newConfig).includes("label"))
+      if (
+        layerConfigChangeAction.newConfig != undefined &&
+        Object.keys(layerConfigChangeAction.newConfig).includes("label")
+      ) {
         result.featuresByType[FeatureType.Transmission].featureTypeState =
           MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+      }
 
+      break;
+    }
+    case "@@kepler.gl/LAYER_TYPE_CHANGE": {
+      result.featuresByType[FeatureType.Transmission].featureTypeState =
+        MapFeatureTypeState.NEEDS_3D_ENABLED;
       break;
     }
 
@@ -424,6 +433,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
     default: {
       console.log("mapReducer: ignoring action type " + action.type);
+      break;
     }
   }
 
