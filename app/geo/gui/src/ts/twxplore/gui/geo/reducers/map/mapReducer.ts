@@ -406,6 +406,20 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
+    case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
+      result.featuresByType[FeatureType.Transmission].featureTypeState =
+        MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
+
+      break;
+    }
+
+    case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
+      result.featuresByType[FeatureType.Transmission].featureTypeState =
+        MapFeatureTypeState.NEEDS_FILTERS;
+
+      break;
+    }
+
     default: {
       console.log("mapReducer: ignoring action type " + action.type);
     }
