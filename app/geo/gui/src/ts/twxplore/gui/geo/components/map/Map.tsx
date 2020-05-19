@@ -245,7 +245,7 @@ const MapImpl: React.FunctionComponent = () => {
                 );
                 const keplerFieldsOfFeatureType =
                   keplerState.map.visState.datasets[featureType].fields;
-                featureTypeStrategy.layerConfigChange(
+                featureTypeStrategy.dispatchLayerConfigurationActions(
                   keplerLayers,
                   layerIndex,
                   dispatch,

@@ -8,7 +8,7 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
   getClickedQuery(clickedFeatureUri: string): null {
     return null;
   }
-  abstract layerConfigChange(
+  abstract dispatchLayerConfigurationActions(
     keplerLayers: any,
     layerIndex: number,
     dispatch: Dispatch<any>,

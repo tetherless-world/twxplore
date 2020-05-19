@@ -10,7 +10,7 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
       onlyFeatureUri: NEW_YORK_STATE_FEATURE_URI,
     };
   }
-  layerConfigChange(
+  dispatchLayerConfigurationActions(
     keplerLayers: any,
     layerIndex: number,
     dispatch: Dispatch<any>,

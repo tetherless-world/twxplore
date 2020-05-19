@@ -3,10 +3,15 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {Dispatch} from "redux";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {
+  layerConfigChange,
+  //removeLayer,
+} from "kepler.gl/actions";
 
 export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmitter;
-  layerConfigChange(
+  dispatchLayerConfigurationActions(
     keplerLayers: any,
     layerIndex: number,
     dispatch: Dispatch<any>,
@@ -15,7 +20,23 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     },
     keplerFieldsOfFeatureType: any
   ): void {
-    return;
+    switch (featuresByType[this.name].featureTypeState) {
+      case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
+        //dispatch(removeLayer(5));
+        dispatch(
+          layerConfigChange(keplerLayers[layerIndex], {isConfigActive: true})
+        );
+        const newLayerConfig = {
+          label: this.name,
+        };
+        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
   }
   static readonly instance = new TransmitterFeatureTypeStrategy();
   readonly fieldsToShowOnPopup = [

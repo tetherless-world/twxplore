@@ -9,7 +9,7 @@ export interface FeatureTypeStrategy {
   readonly expandable: boolean;
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
-  layerConfigChange(
+  dispatchLayerConfigurationActions(
     keplerLayers: any,
     layerIndex: number,
     dispatch: Dispatch<any>,

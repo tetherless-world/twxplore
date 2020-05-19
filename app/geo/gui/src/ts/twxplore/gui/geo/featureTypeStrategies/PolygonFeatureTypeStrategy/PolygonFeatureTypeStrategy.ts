@@ -11,7 +11,7 @@ import {
 
 export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
-  layerConfigChange(
+  dispatchLayerConfigurationActions(
     keplerLayers: any,
     layerIndex: number,
     dispatch: Dispatch<any>,
