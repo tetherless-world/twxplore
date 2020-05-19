@@ -37,6 +37,7 @@ import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateA
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
+import {FILTER_COMPONENT_CREATED} from "../../actions/map/FilterComponentCreatedAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -335,7 +336,17 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
         allFiltersSetAction.payload.featureType
-      ].featureTypeState = MapFeatureTypeState.NEEDS_FILTER_COMPONENT;
+      ].featureTypeState = MapFeatureTypeState.NEEDS_LAYER_LABEL;
+      console.debug("ALL_FILTERS_SET action completed");
+      break;
+    }
+
+    case FILTER_COMPONENT_CREATED: {
+      console.debug("ALL_FILTERS_SET action being handled");
+      const allFiltersSetAction = action as AllFiltersSetAction;
+      result.featuresByType[
+        allFiltersSetAction.payload.featureType
+      ].featureTypeState = MapFeatureTypeState.NEEDS_LAYER_LABEL;
       console.debug("ALL_FILTERS_SET action completed");
       break;
     }
@@ -399,11 +410,23 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerConfigChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
       if (layerConfigChangeAction.newConfig != undefined) {
         //case: NEEDS_LABEL
         if (Object.keys(layerConfigChangeAction.newConfig).includes("label")) {
-          result.featuresByType[FeatureType.Transmission].featureTypeState =
-            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+          if (
+            FeatureType[layerIdOfFeatureType as keyof typeof FeatureType] ===
+            FeatureType.Transmission
+          ) {
+            featuresByTypeOfFeatureType.featureTypeState =
+              MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+          } else {
+            featuresByTypeOfFeatureType.featureTypeState =
+              MapFeatureTypeState.FINISHED_SETUP;
+          }
         }
         //case: NEEDS_LNG_AND_LAT
         if (
@@ -430,7 +453,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         )
       ) {
         result.featuresByType[FeatureType.Transmission].featureTypeState =
-          MapFeatureTypeState.NEEDS_FILTERS;
+          MapFeatureTypeState.FINISHED_SETUP;
       }
 
       break;
