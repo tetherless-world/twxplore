@@ -6,9 +6,9 @@ export enum MapFeatureTypeState {
   // There is no query currently running and this Feature Type is present on the map and filters haven't been adedd for it yet
   NEEDS_FILTERS = "needs filters",
   //Filters for the feature type have been added for the relevant attributes of this Feature Type
-  FILTERS_ADDED = "filters added",
+  NEEDS_INITIAL_FILTER_SETTING = "filters added",
   //The values of the filters for this Feature Type have been set. E.g. name, type, value
-  FILTERS_SET = "filters set",
+  NEEDS_FILTER_COMPONENT = "filters set",
 
   NEEDS_LAYER_LABEL = "needs layer label",
 

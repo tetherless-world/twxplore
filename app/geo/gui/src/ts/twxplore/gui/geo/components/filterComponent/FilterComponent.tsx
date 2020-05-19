@@ -160,7 +160,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           attributeStateOfAttributeOfFeatureType.filterIndex;
         switch (featureTypeState) {
           //If filters have been added
-          case MapFeatureTypeState.FILTERS_ADDED: {
+          case MapFeatureTypeState.NEEDS_INITIAL_FILTER_SETTING: {
             //if filters have not been set yet. Attach the slider to a filter based on the attribute's unique id
             const featureAttributeStrategy = getFeatureAttributeStrategyByName(
               attributeName
@@ -178,8 +178,8 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             );
             return <React.Fragment key={attributeName} />;
           }
-          //If filters have been set
-          case MapFeatureTypeState.FILTERS_SET: {
+          //If filters have been initialized
+          case MapFeatureTypeState.NEEDS_FILTER_COMPONENT: {
             return returnFilterComponent(
               filterIndexOfAttribute!,
               attributeName,

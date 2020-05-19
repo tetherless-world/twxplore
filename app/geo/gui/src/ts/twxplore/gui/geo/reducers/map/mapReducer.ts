@@ -174,7 +174,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           ) {
             if (featureType === FeatureType.Transmission)
               featuresByTypeOfType.featureTypeState =
-                MapFeatureTypeState.NEEDS_LAYER_LABEL;
+                MapFeatureTypeState.NEEDS_FILTERS;
             else
               featuresByTypeOfType.featureTypeState =
                 //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
@@ -247,14 +247,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         setAllFilterIndexesNull(attributeStatesOfFeatureType);
 
         if (
-          //If the filters of the attributes of a FeatureType have been added/set
-          featuresByTypeOfType.featureTypeState ===
-            MapFeatureTypeState.FILTERS_ADDED ||
-          featuresByTypeOfType.featureTypeState ===
-            MapFeatureTypeState.FILTERS_SET
+          //If features of that type are present on the map
+          featuresByTypeOfType.featureTypeState !=
+          MapFeatureTypeState.ABSENT_ON_MAP
         ) {
           //Set the state of the featureTypeState to WAITING_FOR_LOAD
-          //because a query has started. Filters are going to be removed
+          //because a query has started. Filters and layers are going to be removed
           //and we need to wait for the queries to end before re-adding the filters.
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
@@ -325,7 +323,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED to indicate the process
       //for adding a filter for each filterable attribute of this feature type has begun
       result.featuresByType[addFilterAction.dataId].featureTypeState =
-        MapFeatureTypeState.FILTERS_ADDED;
+        MapFeatureTypeState.NEEDS_INITIAL_FILTER_SETTING;
       //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
       console.debug("ADD_FILTER action completed");
@@ -337,7 +335,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
         allFiltersSetAction.payload.featureType
-      ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
+      ].featureTypeState = MapFeatureTypeState.NEEDS_FILTER_COMPONENT;
       console.debug("ALL_FILTERS_SET action completed");
       break;
     }
