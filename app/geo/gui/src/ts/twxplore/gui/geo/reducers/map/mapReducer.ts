@@ -412,7 +412,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           Object.keys(layerConfigChangeAction.newConfig).includes("columns")
         ) {
           result.featuresByType[FeatureType.Transmission].featureTypeState =
-            MapFeatureTypeState.NEEDS_FILTERS;
+            MapFeatureTypeState.NEEDS_3D_ENABLED;
         }
       }
 
@@ -425,8 +425,15 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     //Needs 3d Enabled
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
-      result.featuresByType[FeatureType.Transmission].featureTypeState =
-        MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
+      const layerVisConfigChangeAction: any = action;
+      if (
+        Object.keys(layerVisConfigChangeAction.newVisConfig).includes(
+          "enable3d"
+        )
+      ) {
+        result.featuresByType[FeatureType.Transmission].featureTypeState =
+          MapFeatureTypeState.NEEDS_FILTERS;
+      }
 
       break;
     }
