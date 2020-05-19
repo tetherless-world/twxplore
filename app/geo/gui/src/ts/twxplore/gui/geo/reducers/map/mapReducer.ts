@@ -450,7 +450,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
     case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
       result.featuresByType[FeatureType.Transmission].featureTypeState =
-        MapFeatureTypeState.NEEDS_FILTERS;
+        MapFeatureTypeState.FINISHED_SETUP;
 
       break;
     }
