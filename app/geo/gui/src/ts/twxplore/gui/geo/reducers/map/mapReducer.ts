@@ -37,7 +37,6 @@ import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateA
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
-import {FILTER_COMPONENT_CREATED} from "../../actions/map/FilterComponentCreatedAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -332,16 +331,6 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
 
     case ALL_FILTERS_SET: {
-      console.debug("ALL_FILTERS_SET action being handled");
-      const allFiltersSetAction = action as AllFiltersSetAction;
-      result.featuresByType[
-        allFiltersSetAction.payload.featureType
-      ].featureTypeState = MapFeatureTypeState.NEEDS_LAYER_LABEL;
-      console.debug("ALL_FILTERS_SET action completed");
-      break;
-    }
-
-    case FILTER_COMPONENT_CREATED: {
       console.debug("ALL_FILTERS_SET action being handled");
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
