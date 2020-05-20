@@ -3,7 +3,6 @@ import {layerConfigChange} from "kepler.gl/actions";
 import {makeStyles, createStyles} from "@material-ui/core/styles";
 import {
   FormControl,
-  FormLabel,
   FormGroup,
   FormControlLabel,
   Checkbox,
@@ -60,7 +59,6 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
   return (
     <Grid item xs={12} className={classes.root}>
       <FormControl className={classes.formControl}>
-        <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
           {Object.values(FeatureType).map(featureType => {
             if (featureType == FeatureType.Root) {

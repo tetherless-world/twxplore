@@ -26,13 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
       height: theme.spacing(1),
     },
     formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 240,
+      width: 180,
     },
     autoComplete: {
       margin: theme.spacing(0),
-      width: 240,
       float: "left",
     },
     chips: {

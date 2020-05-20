@@ -322,9 +322,8 @@ const MapImpl: React.FunctionComponent = () => {
     <div
       style={{
         position: "absolute",
-        top: "0px" /* Header Height */,
-        bottom: "0px" /* Footer Height */,
         width: "100%",
+        height: "80vh",
       }}
     >
       <Dimmer page active={queryInProgress || hasDirtyFeatures}>
