@@ -20,7 +20,7 @@ import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeStat
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: 300,
+      width: 220,
     },
     margin: {
       height: theme.spacing(3),
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
-      maxWidth: 300,
+      maxWidth: 220,
     },
     chips: {
       display: "flex",
