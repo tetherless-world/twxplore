@@ -29,13 +29,13 @@ import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import ReactResizeDetector from "react-resize-detector";
 import * as _ from "lodash";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
+import ReactResizeDetector from "react-resize-detector";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -319,7 +319,14 @@ const MapImpl: React.FunctionComponent = () => {
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
   return (
-    <div>
+    <div
+      style={{
+        position: "absolute",
+        top: "0px" /* Header Height */,
+        bottom: "0px" /* Footer Height */,
+        width: "100%",
+      }}
+    >
       <Dimmer page active={queryInProgress || hasDirtyFeatures}>
         <Loader>{state.loadingMessage}</Loader>
       </Dimmer>
