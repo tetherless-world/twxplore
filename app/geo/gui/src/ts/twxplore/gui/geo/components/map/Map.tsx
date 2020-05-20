@@ -319,13 +319,7 @@ const MapImpl: React.FunctionComponent = () => {
   // Note that if you dispatch actions such as adding data to a kepler.gl instance before the React component is mounted, the action will not be performed. Instance reducer can only handle actions when it is instantiated.
   // In other words, we need to render <KeplerGl> before we call addDataToMap, which means we need to render <KeplerGl> while the boroughs are loading.
   return (
-    <div
-      style={{
-        position: "absolute",
-        width: "100%",
-        height: "80vh",
-      }}
-    >
+    <div>
       <Dimmer page active={queryInProgress || hasDirtyFeatures}>
         <Loader>{state.loadingMessage}</Loader>
       </Dimmer>
