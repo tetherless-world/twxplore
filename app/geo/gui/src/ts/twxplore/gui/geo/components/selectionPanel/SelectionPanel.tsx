@@ -9,6 +9,7 @@ import {
   Checkbox,
   FormHelperText,
   Theme,
+  Grid,
 } from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {useSelector, useDispatch, connect} from "react-redux";
@@ -20,10 +21,10 @@ import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex",
+      flexGrow: 1,
     },
     formControl: {
-      margin: theme.spacing(3),
+      marginLeft: theme.spacing(1),
     },
   })
 );
@@ -57,7 +58,7 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <div className={classes.root}>
+    <Grid item xs={12} className={classes.root}>
       <FormControl className={classes.formControl}>
         <FormLabel component="legend">Choose types to display</FormLabel>
         <FormGroup>
@@ -88,7 +89,7 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
           Types chosen here will be visible on the map and invisible otherwise.
         </FormHelperText>
       </FormControl>
-    </div>
+    </Grid>
   );
 };
 export const SelectionPanel = connect()(SelectionPanelImpl);

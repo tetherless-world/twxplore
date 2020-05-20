@@ -6,6 +6,7 @@ import {
   ExpansionPanelSummary,
   Typography,
   ExpansionPanelDetails,
+  Grid,
 } from "@material-ui/core";
 import {useSelector, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightRegular,
     },
+    expansionPanel: {},
   })
 );
 
@@ -32,17 +34,14 @@ const FilterPanelImpl: React.FunctionComponent = () => {
     (rootState: RootState) => rootState.app.map
   );
 
-  //const featureTypes: {[index: string]: String} = {}
-
-  //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <div>
+    <Grid item xs={12}>
       {Object.keys(state.featuresByType).map(featureType => {
         if (featureType == FeatureType.Root) {
           return <React.Fragment key={featureType} />;
         }
         return (
-          <ExpansionPanel key={featureType}>
+          <ExpansionPanel key={featureType} className={classes.expansionPanel}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
@@ -60,7 +59,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
           </ExpansionPanel>
         );
       })}
-    </div>
+    </Grid>
   );
 };
 export const FilterPanel = connect()(FilterPanelImpl);
