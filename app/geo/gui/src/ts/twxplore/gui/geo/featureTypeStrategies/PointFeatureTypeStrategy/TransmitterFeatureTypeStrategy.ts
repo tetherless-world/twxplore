@@ -9,7 +9,6 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.label,
     FeatureAttributeName.type,
     FeatureAttributeName.frequencyString,
-    FeatureAttributeName.timestampString,
     FeatureAttributeName.postalcode,
     FeatureAttributeName.locality,
   ];
