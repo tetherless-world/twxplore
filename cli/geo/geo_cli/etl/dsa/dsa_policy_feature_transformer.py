@@ -56,7 +56,7 @@ class DsaPolicyFeatureTransformer(_DsaFeatureTransformer):
                 try:
                     child_location_json_object = location_json_objects_by_id[child_location_id]
                 except KeyError:
-                    self._logger.warning("location {} is referenced but not available", child_location_id)
+                    self._logger.warning("location %s is referenced but not available", child_location_id)
                     child_location_json_object = {"id": child_location_id, "__type": "missing"}
             child_location_json_objects[child_location_i] = child_location_json_object
 
@@ -163,6 +163,7 @@ class DsaPolicyFeatureTransformer(_DsaFeatureTransformer):
             yield \
                 Feature(
                     frequency_range=frequency_range,
+                    frequency_unit="MHz",
                     geometry=geometry,
                     label=label,
                     type=TWXPLORE_GEO_APP_ONTOLOGY.Policy,

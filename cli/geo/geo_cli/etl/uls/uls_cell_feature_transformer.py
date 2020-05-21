@@ -117,6 +117,7 @@ class UlsCellFeatureTransformer(_FeatureTransformer):
                     Feature(
                         label=f"Cellular transmitter: {call_sign} on {frequency}",
                         frequency=frequency,
+                        frequency_unit="MHz",
                         geometry=location_geometry,
                         locality=location_uls_record.get('Location City'),
                         regions=(state_name,) if state_name else None,

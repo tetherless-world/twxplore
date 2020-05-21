@@ -11,7 +11,7 @@ from geo_cli.path import DATA_DIR_PATH
 class Geocoder:
     def __init__(self):
         self.__cache_dir_path = DATA_DIR_PATH / "geocode_cache"
-        self.__google_maps_api_key = os.environ["GOOGLE_MAPS_API_KEY"]
+        self.__google_maps_api_key = None
         self.__logger = logging.getLogger(self.__class__.__name__)
 
         cached_file_count = 0
@@ -34,6 +34,8 @@ class Geocoder:
             with open(cache_file_path) as cache_file:
                 geocode_result = json.load(cache_file)
         else:
+            if self.__google_maps_api_key is None:
+                self.__google_maps_api_key = os.environ["GOOGLE_MAPS_API_KEY"]
             client = googlemaps.Client(key=self.__google_maps_api_key)
             geocode_result = client.geocode(address)
             if geocode_result:
