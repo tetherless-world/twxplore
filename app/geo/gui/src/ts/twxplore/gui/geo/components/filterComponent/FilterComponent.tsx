@@ -66,33 +66,47 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         const numericAttributeState = attributeState as MapNumericFeatureAttributeState;
+        if (
+          numericAttributeState.range!.min === null ||
+          numericAttributeState.range!.max === null
+        ) {
+          return <React.Fragment />;
+        }
         return (
-          <Grid item xs={12} key={attributeName}>
-            <Typography id="type" gutterBottom>
-              {attributeName}
-            </Typography>
-            <Slider
-              defaultValue={[
-                numericAttributeState.range!.min,
-                numericAttributeState.range!.max,
-              ]}
-              getAriaValueText={valuetext}
-              aria-labelledby="range-slider"
-              step={1}
-              min={numericAttributeState.range!.min}
-              max={numericAttributeState.range!.max}
-              valueLabelDisplay="auto"
-              disabled={!numericAttributeState.range!.max}
-              onChangeCommitted={(event: any, newValue: number | number[]) =>
-                handleChangeSlider(event, newValue, filterIndexOfAttribute!)
-              }
-              name={attributeName}
-            />
-          </Grid>
+          numericAttributeState.range && (
+            <Grid item xs={12} key={attributeName}>
+              <Typography id="type" gutterBottom>
+                {attributeName}
+              </Typography>
+              <Slider
+                defaultValue={[
+                  numericAttributeState.range!.min,
+                  numericAttributeState.range!.max,
+                ]}
+                getAriaValueText={valuetext}
+                aria-labelledby="range-slider"
+                step={1}
+                min={numericAttributeState.range!.min}
+                max={numericAttributeState.range!.max}
+                valueLabelDisplay="auto"
+                disabled={!numericAttributeState.range!.max}
+                onChangeCommitted={(event: any, newValue: number | number[]) =>
+                  handleChangeSlider(event, newValue, filterIndexOfAttribute!)
+                }
+                name={attributeName}
+              />
+            </Grid>
+          )
         );
       }
       case TypeOfFeatureAttribute.STRING: {
         let stringAttributeState = attributeState as MapStringFeatureAttributeState;
+        if (
+          !stringAttributeState.values ||
+          stringAttributeState.values.length === 0
+        ) {
+          return <React.Fragment />;
+        }
         return (
           <Grid item xs={12} key={attributeName}>
             <FormControl className={classes.formControl} key={attributeName}>
