@@ -13,6 +13,7 @@ class Feature(NamedTuple):
     locality: Optional[str] = None
     frequency: Optional[float] = None
     frequency_range: Optional[Tuple[float, float]] = None
+    frequency_unit: Optional[str] = None
     postal_code: Optional[str] = None
     regions: Optional[Tuple[str, ...]] = None
     timestamp: Optional[datetime] = None
