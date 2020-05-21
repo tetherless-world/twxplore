@@ -57,7 +57,7 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <Grid item xs={12} className={classes.root}>
+    <Grid item container direction="column" className={classes.root}>
       <FormControl className={classes.formControl}>
         <FormGroup>
           {Object.values(FeatureType).map(featureType => {

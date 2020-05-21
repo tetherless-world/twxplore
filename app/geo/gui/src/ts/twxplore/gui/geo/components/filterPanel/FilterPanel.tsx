@@ -35,7 +35,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   );
 
   return (
-    <Grid item xs={12}>
+    <Grid container item direction="column">
       {Object.keys(state.featuresByType).map(featureType => {
         if (featureType == FeatureType.Root) {
           return <React.Fragment key={featureType} />;

@@ -144,14 +144,13 @@ const MapLayoutImpl: React.FunctionComponent = () => {
         <Grid
           container
           spacing={2}
-          key={"complete grid"}
           className={classes.drawerGridContainer}
+          direction="column"
         >
           <Grid
             container
             item
             spacing={0}
-            key={"container grid for filterPanel"}
             justify={"flex-start"}
             className={classes.drawerGridContainer}
           >
@@ -166,7 +165,7 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             container
             item
             spacing={0}
-            key={"container grid for selectionPanel"}
+            direction="column"
             className={classes.drawerGridContainer}
             justify={"flex-start"}
           >
