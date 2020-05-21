@@ -84,10 +84,15 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
             frequencyString: feature.frequency
-              ? feature.frequency.toString() + feature.frequencyUnit
+              ? (Math.floor(feature.frequency * 100) / 100).toString() +
+                " " +
+                feature.frequencyUnit
               : undefined,
             timestampString: feature.timestamp
               ? new Date(feature.timestamp * 1000).toString()
+              : undefined,
+            transmissionPowerString: feature.transmissionPower
+              ? feature.transmissionPower.toString() + " dB"
               : undefined,
           }))
         )

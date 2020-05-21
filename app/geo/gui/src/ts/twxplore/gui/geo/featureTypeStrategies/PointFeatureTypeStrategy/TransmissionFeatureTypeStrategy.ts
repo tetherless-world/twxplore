@@ -10,7 +10,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.type,
     FeatureAttributeName.frequencyString,
     FeatureAttributeName.timestampString,
-    FeatureAttributeName.transmissionPower,
+    FeatureAttributeName.transmissionPowerString,
     FeatureAttributeName.postalcode,
     FeatureAttributeName.locality,
   ];
