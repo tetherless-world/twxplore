@@ -78,10 +78,17 @@ const MapImpl: React.FunctionComponent = () => {
             __typename: feature.__typename,
             geometry: feature.geometry,
             frequency: feature.frequency,
+            frequencyUnit: feature.frequencyUnit,
             timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
+            frequencyString: feature.frequency
+              ? feature.frequency.toString() + feature.frequencyUnit
+              : undefined,
+            timestampString: feature.timestamp
+              ? new Date(feature.timestamp * 1000).toString()
+              : undefined,
           }))
         )
       );
