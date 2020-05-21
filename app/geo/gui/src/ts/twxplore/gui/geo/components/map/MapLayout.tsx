@@ -18,7 +18,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import {Map} from "./Map";
 import {connect} from "react-redux";
 import {FilterPanel} from "../filterPanel/FilterPanel";
-import {Icon, Grid, Box} from "@material-ui/core";
+import {Icon, Grid} from "@material-ui/core";
 import {SelectionPanel} from "../selectionPanel/SelectionPanel";
 
 const drawerWidth = 240;
@@ -54,6 +54,9 @@ const useDrawerStyles = makeStyles((theme: Theme) =>
     },
     drawerPaper: {
       width: drawerWidth,
+    },
+    drawerGridContainer: {
+      flexGrow: 1,
     },
     drawerHeader: {
       display: "flex",
@@ -138,23 +141,40 @@ const MapLayoutImpl: React.FunctionComponent = () => {
           </IconButton>
         </div>
 
-        <Grid container spacing={3}>
-          <Box borderTop={1}>
-            <Grid>
+        <Grid
+          container
+          spacing={2}
+          className={classes.drawerGridContainer}
+          direction="column"
+        >
+          <Grid
+            container
+            item
+            spacing={0}
+            justify={"flex-start"}
+            className={classes.drawerGridContainer}
+          >
+            <Grid item xs={12}>
               <Typography align={"center"}>Filters</Typography>
             </Grid>
-            <Grid>
-              <FilterPanel />
-            </Grid>
-          </Box>
-          <Box borderTop={1}>
-            <Grid>
+
+            <FilterPanel />
+          </Grid>
+
+          <Grid
+            container
+            item
+            spacing={0}
+            direction="column"
+            className={classes.drawerGridContainer}
+            justify={"flex-start"}
+          >
+            <Grid item xs={12}>
               <Typography align={"center"}>Toggle Layer Visibility</Typography>
             </Grid>
-            <Grid>
-              <SelectionPanel />
-            </Grid>
-          </Box>
+
+            <SelectionPanel />
+          </Grid>
         </Grid>
       </Drawer>
       <main
