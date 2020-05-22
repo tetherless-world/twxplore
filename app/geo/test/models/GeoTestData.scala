@@ -24,6 +24,7 @@ object GeoTestData {
         uri = Uri.parse("http://example.com/geometry"))
     val feature = Feature(
         frequency = Some(1.0),
+        frequencyUnit = Some("MHz"),
         geometry = featureGeometry.parse().get,
         label = Some("Test feature"),
         locality = Some("Troy"),
@@ -36,6 +37,7 @@ object GeoTestData {
     )
     val featureWithRanges = Feature(
         frequencyRange = Some(FrequencyRange(1.0, 2.0)),
+        frequencyUnit = Some("MHz"),
         geometry = featureGeometry.parse().get,
         label = Some("Test feature"),
         locality = Some("Troy"),

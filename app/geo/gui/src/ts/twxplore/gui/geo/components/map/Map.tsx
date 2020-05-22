@@ -23,14 +23,13 @@ import {startQuerying} from "../../actions/map/StartQueryingAction";
 import {finishLoad} from "../../actions/map/FinishLoadAction";
 import {repeatQuery} from "../../actions/map/RepeatQueryAction";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import ReactResizeDetector from "react-resize-detector";
 import * as _ from "lodash";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 import {clickRoot} from "../../actions/map/ClickRootAction";
 import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
-
+import ReactResizeDetector from "react-resize-detector";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -64,46 +63,54 @@ const MapImpl: React.FunctionComponent = () => {
       // dispatch an action to which will put the features in LOADING state and add the features to lists in the store.
       dispatch(
         addMapFeatures(
-          data.features.map(feature =>
-            JSON.parse(
-              JSON.stringify({
-                label: feature.label,
-                uri: feature.uri,
-                type: feature.type,
-                locality: feature.locality,
-                regions: feature.regions,
-                __typename: feature.__typename,
-                geometry: feature.geometry,
-                frequency: feature.frequency,
-                timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
-                postalCode: feature.postalCode,
-                transmissionPower: feature.transmissionPower,
-                state: MapFeatureState.LOADED,
-                Y:
-                  feature.type === FeatureType.Transmission
-                    ? parseFloat(
-                        feature.geometry.wkt
-                          .replace("POINT", "")
-                          .replace("(", "")
-                          .trim()
-                          .replace(")", "")
-                          .split(" ")[1]
-                      )
-                    : undefined,
-                X:
-                  feature.type === FeatureType.Transmission
-                    ? parseFloat(
-                        feature.geometry.wkt
-                          .replace("POINT", "")
-                          .replace("(", "")
-                          .trim()
-                          .replace(")", "")
-                          .split(" ")[0]
-                      )
-                    : undefined,
-              })
-            )
-          )
+          data.features.map(feature => ({
+            label: feature.label,
+            uri: feature.uri,
+            type: feature.type,
+            locality: feature.locality,
+            regions: feature.regions,
+            __typename: feature.__typename,
+            geometry: feature.geometry,
+            frequency: feature.frequency,
+            frequencyUnit: feature.frequencyUnit,
+            timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
+            postalCode: feature.postalCode,
+            transmissionPower: feature.transmissionPower,
+            state: MapFeatureState.LOADED,
+            frequencyString: feature.frequency
+              ? (Math.floor(feature.frequency * 100) / 100).toString() +
+                " " +
+                feature.frequencyUnit
+              : undefined,
+            timestampString: feature.timestamp
+              ? new Date(feature.timestamp * 1000).toString()
+              : undefined,
+            transmissionPowerString: feature.transmissionPower
+              ? feature.transmissionPower.toString() + " dB"
+              : undefined,
+            Y:
+              feature.type === FeatureType.Transmission
+                ? parseFloat(
+                    feature.geometry.wkt
+                      .replace("POINT", "")
+                      .replace("(", "")
+                      .trim()
+                      .replace(")", "")
+                      .split(" ")[1]
+                  )
+                : undefined,
+            X:
+              feature.type === FeatureType.Transmission
+                ? parseFloat(
+                    feature.geometry.wkt
+                      .replace("POINT", "")
+                      .replace("(", "")
+                      .trim()
+                      .replace(")", "")
+                      .split(" ")[0]
+                  )
+                : undefined,
+          }))
         )
       );
     },

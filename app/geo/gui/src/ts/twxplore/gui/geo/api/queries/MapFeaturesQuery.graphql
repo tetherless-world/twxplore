@@ -8,6 +8,7 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
     locality
     postalCode
     regions
+    frequencyUnit
     transmissionPower
     geometry {
       label

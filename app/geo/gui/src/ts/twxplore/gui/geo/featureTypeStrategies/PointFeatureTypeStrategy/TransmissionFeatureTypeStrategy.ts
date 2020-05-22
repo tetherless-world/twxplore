@@ -77,9 +77,9 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly fieldsToShowOnPopup = [
     FeatureAttributeName.label,
     FeatureAttributeName.type,
-    FeatureAttributeName.frequency,
-    FeatureAttributeName.timestamp,
-    FeatureAttributeName.transmissionPower,
+    FeatureAttributeName.frequencyString,
+    FeatureAttributeName.timestampString,
+    FeatureAttributeName.transmissionPowerString,
     FeatureAttributeName.postalcode,
     FeatureAttributeName.locality,
   ];

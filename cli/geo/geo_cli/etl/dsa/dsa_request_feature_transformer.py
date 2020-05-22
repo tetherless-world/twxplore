@@ -23,6 +23,7 @@ class DsaRequestFeatureTransformer(_DsaFeatureTransformer):
                             request_json_object["frequencyRange"]["minimum"],
                             request_json_object["frequencyRange"]["maximum"]
                         ),
+                        frequency_unit="MHz",
                         geometry=Geometry(
                             uri=URIRef(location_json_object["geometry"]["id"]),
                             wkt=location_json_object["geometry"]["wkt"]

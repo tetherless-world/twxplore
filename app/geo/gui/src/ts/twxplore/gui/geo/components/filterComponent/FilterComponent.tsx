@@ -13,22 +13,24 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
-import {FormControl, TextField} from "@material-ui/core";
+import {FormControl, TextField, Grid} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: 300,
+      width: 220,
     },
     margin: {
-      height: theme.spacing(3),
+      height: theme.spacing(1),
     },
     formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
+      width: 180,
+    },
+    autoComplete: {
+      margin: theme.spacing(0),
+      float: "left",
     },
     chips: {
       display: "flex",
@@ -64,56 +66,69 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         const numericAttributeState = attributeState as MapNumericFeatureAttributeState;
+        if (
+          numericAttributeState.range!.min === null ||
+          numericAttributeState.range!.max === null
+        ) {
+          return <React.Fragment />;
+        }
         return (
-          <div key={attributeName}>
-            <Typography id="type" gutterBottom>
-              {attributeName}
-            </Typography>
-            <Slider
-              defaultValue={[
-                numericAttributeState.range!.min,
-                numericAttributeState.range!.max,
-              ]}
-              getAriaValueText={valuetext}
-              aria-labelledby="range-slider"
-              step={1}
-              min={numericAttributeState.range!.min}
-              max={numericAttributeState.range!.max}
-              valueLabelDisplay="auto"
-              disabled={!numericAttributeState.range!.max}
-              onChangeCommitted={(event: any, newValue: number | number[]) =>
-                handleChangeSlider(event, newValue, filterIndexOfAttribute!)
-              }
-              name={attributeName}
-            />
-          </div>
+          numericAttributeState.range && (
+            <Grid item xs={12} key={attributeName}>
+              <Typography id="type" gutterBottom>
+                {attributeName}
+              </Typography>
+              <Slider
+                defaultValue={[
+                  numericAttributeState.range!.min,
+                  numericAttributeState.range!.max,
+                ]}
+                getAriaValueText={valuetext}
+                aria-labelledby="range-slider"
+                step={1}
+                min={numericAttributeState.range!.min}
+                max={numericAttributeState.range!.max}
+                valueLabelDisplay="auto"
+                disabled={!numericAttributeState.range!.max}
+                onChangeCommitted={(event: any, newValue: number | number[]) =>
+                  handleChangeSlider(event, newValue, filterIndexOfAttribute!)
+                }
+                name={attributeName}
+              />
+            </Grid>
+          )
         );
       }
       case TypeOfFeatureAttribute.STRING: {
         let stringAttributeState = attributeState as MapStringFeatureAttributeState;
+        if (
+          !stringAttributeState.values ||
+          stringAttributeState.values.length === 0
+        ) {
+          return <React.Fragment />;
+        }
         return (
-          <FormControl className={classes.formControl} key={attributeName}>
-            <Typography id="type" gutterBottom>
-              {attributeName}
-            </Typography>
-            <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={stringAttributeState.values!}
-              getOptionLabel={option => option}
-              filterSelectedOptions
-              onChange={(event: any, value: string | string[]) => {
-                handleChangeSelect(event, value, filterIndexOfAttribute);
-              }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Select"
-                />
-              )}
-            />
-          </FormControl>
+          <Grid item xs={12} key={attributeName}>
+            <FormControl className={classes.formControl} key={attributeName}>
+              <Typography id="type" gutterBottom>
+                {attributeName}
+              </Typography>
+              <Autocomplete
+                className={classes.autoComplete}
+                multiple
+                id="tags-outlined"
+                options={stringAttributeState.values!}
+                getOptionLabel={option => option}
+                filterSelectedOptions
+                onChange={(event: any, value: string | string[]) => {
+                  handleChangeSelect(event, value, filterIndexOfAttribute);
+                }}
+                renderInput={params => (
+                  <TextField {...params} variant="outlined" />
+                )}
+              />
+            </FormControl>
+          </Grid>
         );
       }
       default: {
@@ -149,8 +164,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const dispatch = useDispatch();
 
   return (
-    <div className={classes.root}>
-      <div className={classes.margin} />
+    <Grid item xs={12}>
       {//for each attributeName that corresponds to an attribute state for an attribute of the FeatureType
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
@@ -192,7 +206,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           }
         }
       })}
-    </div>
+    </Grid>
   );
 };
 export const FilterComponent = connect()(FilterComponentImpl);
