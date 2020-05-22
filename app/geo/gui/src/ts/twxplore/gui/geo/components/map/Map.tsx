@@ -88,7 +88,7 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
-            Y:
+            /*Y:
               feature.type === FeatureType.Transmission
                 ? parseFloat(
                     feature.geometry.wkt
@@ -109,7 +109,7 @@ const MapImpl: React.FunctionComponent = () => {
                       .replace(")", "")
                       .split(" ")[0]
                   )
-                : undefined,
+                : undefined,*/
           }))
         )
       );
@@ -261,30 +261,6 @@ const MapImpl: React.FunctionComponent = () => {
                 );
                 break;
               }
-            }
-
-            if (
-              state.featuresByType[featureType].featureTypeState ===
-              MapFeatureTypeState.NEEDS_FILTERS
-            ) {
-              //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
-              for (var x = 0; x < 5; ++x) {
-                /*
-              Dispatch addFilter with the FeatureType,
-              which is also the name of the dataset
-              we are attaching the filter too.
-              Note that the attribute we intend to use with the filter isn't passed with addFilter.
-              Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType (e.g. addFilter("Transmission")) and 
-              worry about assigning them an attribute in FilterSliders.tsx (e.g setFilter(idx,"name","timeStamp"))
-              */
-                dispatch(
-                  addFilter(
-                    FeatureType[featureType as keyof typeof FeatureType]
-                  )
-                );
-              }
-
-              //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
             }
           }
         break;
