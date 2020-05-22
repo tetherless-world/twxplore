@@ -172,13 +172,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState ===
             MapFeatureTypeState.WAITING_FOR_LOAD
           ) {
-            if (featureType === FeatureType.Transmission)
+            if (featureType === FeatureType.Transmission) {
               featuresByTypeOfType.featureTypeState =
-                MapFeatureTypeState.NEEDS_FILTERS;
-            else
+                MapFeatureTypeState.FINISHED_SETUP;
+            } else {
               featuresByTypeOfType.featureTypeState =
                 //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
-                MapFeatureTypeState.NEEDS_FILTERS;
+                MapFeatureTypeState.FINISHED_SETUP;
+            }
             //Now that this FeatureType needs filters, give each attribute a filter idx using a counter
             Object.keys(attributeStatesOfFeatureType).map(attributeName => {
               attributeStatesOfFeatureType[
