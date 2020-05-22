@@ -193,7 +193,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             return <React.Fragment key={attributeName} />;
           }
           //If filters have been initialized and all work done for setting up a feature type has completed.
-          case MapFeatureTypeState.NEEDS_FILTER_COMPONENT: {
+          case MapFeatureTypeState.FINISHED_SETUP: {
             return returnFilterComponent(
               filterIndexOfAttribute!,
               attributeName,
