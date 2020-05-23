@@ -174,11 +174,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           ) {
             if (featureType === FeatureType.Transmission) {
               featuresByTypeOfType.featureTypeState =
-                MapFeatureTypeState.FINISHED_SETUP;
+                MapFeatureTypeState.NEEDS_FILTERS;
             } else {
               featuresByTypeOfType.featureTypeState =
                 //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
-                MapFeatureTypeState.FINISHED_SETUP;
+                MapFeatureTypeState.NEEDS_FILTERS;
             }
             //Now that this FeatureType needs filters, give each attribute a filter idx using a counter
             Object.keys(attributeStatesOfFeatureType).map(attributeName => {
@@ -400,6 +400,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
+      if (layerConfigChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerConfigChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =

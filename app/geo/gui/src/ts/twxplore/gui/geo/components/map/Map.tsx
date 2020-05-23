@@ -88,7 +88,7 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
-            /*Y:
+            Y:
               feature.type === FeatureType.Transmission
                 ? parseFloat(
                     feature.geometry.wkt
@@ -109,7 +109,7 @@ const MapImpl: React.FunctionComponent = () => {
                       .replace(")", "")
                       .split(" ")[0]
                   )
-                : undefined,*/
+                : undefined,
           }))
         )
       );
