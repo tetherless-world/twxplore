@@ -8,6 +8,7 @@ import {
   layerTypeChange,
   layerVisConfigChange,
   layerConfigChange,
+  layerVisualChannelConfigChange,
   //removeLayer,
 } from "kepler.gl/actions";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
@@ -60,14 +61,34 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
             enable3d: true,
           })
         );
-        /*dispatch(
-          layerVisConfigChange(keplerLayers[layerIndex], {
-            worldUnitSize: 10,
-          })
-        );*/
+
         break;
       }
-
+      case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+        const keplerTableFieldIndexOfAttribute = keplerFieldsOfFeatureType.find(
+          (keplerFieldOfFeatureType: any) =>
+            keplerFieldOfFeatureType.name ===
+            FeatureAttributeName.transmissionPower
+        );
+        const channel = "size";
+        dispatch(
+          layerVisualChannelConfigChange(
+            keplerLayers[layerIndex],
+            {
+              sizeField: {
+                name: FeatureAttributeName.transmissionPower,
+                format: "",
+                tableFieldIndex: keplerTableFieldIndexOfAttribute,
+                type: "integer",
+                analyzerType: "INT",
+                id: FeatureAttributeName.transmissionPower,
+              },
+            },
+            channel
+          )
+        );
+        break;
+      }
       default: {
         break;
       }
