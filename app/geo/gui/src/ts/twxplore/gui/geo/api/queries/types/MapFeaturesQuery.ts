@@ -10,7 +10,7 @@ import { FeatureQuery, FeatureType } from "./../../graphqlGlobalTypes";
 // ====================================================
 
 export interface MapFeaturesQuery_features_geometry_parsedWkt_Line {
-  __typename: "Line" | "Polygon" | "MultiLine" | "MultiPoint" | "MultiPolygon";
+  __typename: "Line" | "MultiLine" | "MultiPoint";
 }
 
 export interface MapFeaturesQuery_features_geometry_parsedWkt_Point2D {
@@ -19,7 +19,22 @@ export interface MapFeaturesQuery_features_geometry_parsedWkt_Point2D {
   y: number;
 }
 
-export type MapFeaturesQuery_features_geometry_parsedWkt = MapFeaturesQuery_features_geometry_parsedWkt_Line | MapFeaturesQuery_features_geometry_parsedWkt_Point2D;
+export interface MapFeaturesQuery_features_geometry_parsedWkt_Polygon {
+  __typename: "Polygon";
+  lines: number[][];
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon_polygons {
+  __typename: "Polygon";
+  lines: number[][];
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon {
+  __typename: "MultiPolygon";
+  polygons: MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon_polygons[];
+}
+
+export type MapFeaturesQuery_features_geometry_parsedWkt = MapFeaturesQuery_features_geometry_parsedWkt_Line | MapFeaturesQuery_features_geometry_parsedWkt_Point2D | MapFeaturesQuery_features_geometry_parsedWkt_Polygon | MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
 
 export interface MapFeaturesQuery_features_geometry {
   __typename: "ParsedGeometry";

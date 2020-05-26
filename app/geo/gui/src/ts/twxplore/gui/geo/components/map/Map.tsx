@@ -12,6 +12,7 @@ import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
   MapFeaturesQuery_features_geometry_parsedWkt_Point2D,
+  //MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
@@ -101,6 +102,7 @@ const MapImpl: React.FunctionComponent = () => {
             y: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .y,
+            parsedWkt: feature.geometry.parsedWkt,
           }))
         )
       );
@@ -165,6 +167,20 @@ const MapImpl: React.FunctionComponent = () => {
                   return {
                     type: "Feature",
                     geometry: wkt.parse(feature.geometry.wkt),
+                    /*geometry: {
+                      type: feature.geometry.parsedWkt.__typename,
+                      coordinates: initialArray.reduce(function(
+                        result,
+                        value,
+                        index,
+                        array
+                      ) {
+                        if (index % 2 === 0)
+                          result.push(array.slice(index, index + 2));
+                        return result;
+                      },
+                      []),
+                    },*/
                     properties: feature,
                   };
                 }),

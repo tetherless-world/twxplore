@@ -19,6 +19,14 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
           x
           y
         }
+        ... on Polygon {
+          lines
+        }
+        ... on MultiPolygon {
+          polygons {
+            lines
+          }
+        }
       }
     }
   }

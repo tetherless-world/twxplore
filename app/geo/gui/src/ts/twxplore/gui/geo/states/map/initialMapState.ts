@@ -55,7 +55,7 @@ const rootFeature: MapFeature = {
     label: "",
     wkt: "",
     uri: "",
-    parsedWkt: {__typename: "Polygon"},
+    parsedWkt: {__typename: "Polygon", lines: []},
   },
   state: MapFeatureState.LOADED,
   type: FeatureType.Root,
