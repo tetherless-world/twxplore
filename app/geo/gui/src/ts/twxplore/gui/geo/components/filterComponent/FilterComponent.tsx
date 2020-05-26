@@ -58,14 +58,19 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     (rootState: RootState) => rootState.app.map
   );
 
-  const returnFilterComponent = (
-    filterIndexOfAttribute: number,
-    attributeName: string,
-    attributeState: MapFeatureAttributeState
-  ) => {
+  const returnFilterComponent = (kwds: {
+    filterIndexOfAttribute: number | null;
+    attributeName: string;
+    attributeStateOfAttributeOfFeatureType: MapFeatureAttributeState;
+  }) => {
+    const {
+      filterIndexOfAttribute,
+      attributeName,
+      attributeStateOfAttributeOfFeatureType,
+    } = kwds;
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
-        const numericAttributeState = attributeState as MapNumericFeatureAttributeState;
+        const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
         if (
           numericAttributeState.range!.min === null ||
           numericAttributeState.range!.max === null
@@ -100,7 +105,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         );
       }
       case TypeOfFeatureAttribute.STRING: {
-        let stringAttributeState = attributeState as MapStringFeatureAttributeState;
+        let stringAttributeState = attributeStateOfAttributeOfFeatureType as MapStringFeatureAttributeState;
         if (
           !stringAttributeState.values ||
           stringAttributeState.values.length === 0
@@ -121,7 +126,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 getOptionLabel={option => option}
                 filterSelectedOptions
                 onChange={(event: any, value: string | string[]) => {
-                  handleChangeSelect(event, value, filterIndexOfAttribute);
+                  handleChangeSelect(event, value, filterIndexOfAttribute!);
                 }}
                 renderInput={params => (
                   <TextField {...params} variant="outlined" />
@@ -194,11 +199,11 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           }
           //If filters have been initialized and all work done for setting up a feature type has completed.
           case MapFeatureTypeState.FINISHED_SETUP: {
-            return returnFilterComponent(
-              filterIndexOfAttribute!,
+            return returnFilterComponent({
+              filterIndexOfAttribute,
               attributeName,
-              attributeStateOfAttributeOfFeatureType
-            );
+              attributeStateOfAttributeOfFeatureType,
+            });
           }
           //This handles the case in which the featureTypeState is ABSENT_ON_MAP or WAITING_ON_LOAD
           default: {
