@@ -31,46 +31,6 @@ class GeoCli:
         self.__include_pipeline_ids = include_pipeline_ids
         self.__logger = logging.getLogger(__name__)
 
-    # def _etl_dsa(self):
-    #     with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "dsa" / "features.ttl") as loader:
-    #         loader.load(DsaPolicyFeatureTransformer().transform())
-    #         loader.load(DsaRequestFeatureTransformer().transform())
-    #
-    # def _etl_reverse_beacon(self):
-    #     uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
-    #     if not os.path.isfile(uls_entities_json_file_path):
-    #         self.__logger.info("transforming ULS entities")
-    #         with UlsRecordsJsonFileLoader("l_amat_entities") as loader:
-    #             for transformer in (
-    #                 UlsRecordTransformer(record_format=UlsRecordFormat.EN, zip_file_base_name="l_amat"),
-    #             ):
-    #                 loader.load(transformer.transform())
-    #         self.__logger.info("transformed ULS entities and wrote to disk")
-    #     self.__logger.info("loading ULS entities from %s", uls_entities_json_file_path)
-    #     with open(uls_entities_json_file_path) as json_file:
-    #         uls_entities_by_call_sign = json.load(json_file)
-    #     self.__logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
-    #
-    #     self.__logger.info("transforming and loading Reverse Beacon data")
-    #     with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "features.ttl") as rdf_file_loader:
-    #         with RequestJsonFeatureLoader(DATA_DIR_PATH / "loaded" / "reverse_beacon" / "requests.json") as request_json_loader:
-    #             features = tuple(self.__limit_features_per_pipeline(ReverseBeaconFeatureTransformer(uls_entities_by_call_sign=uls_entities_by_call_sign).transform()))
-    #             rdf_file_loader.load(features)
-    #             request_json_loader.load(features)
-    #     self.__logger.info("transformed and loaded Reverse Beacon data")
-
-    # def _etl_tiger_line(self):
-    #     self.__logger.info("transforming and loading TIGER/Line data")
-    #     with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "tiger_line" / "features.ttl") as loader:
-    #         loader.load(self.__limit_features_per_pipeline(TigerLineFeatureTransformer().transform()))
-    #     self.__logger.info("transformed and loaded TIGER/Line data")
-
-    # def _etl_uls(self):
-    #     self.__logger.info("transforming and loading ULS data")
-    #     with FileRdfFeatureLoader(DATA_DIR_PATH / "loaded" / "uls" / "features.ttl") as loader:
-    #         loader.load(self.__limit_features_per_pipeline(UlsCellFeatureTransformer().transform()))
-    #     self.__logger.info("transformed and loaded ULS data")
-
     def __limit_features_per_pipeline(self, features: Generator[Feature, None, None]) -> Union[Generator[Feature, None, None], Tuple[Feature, ...]]:
         if self.__features_per_pipeline is None:
             return features

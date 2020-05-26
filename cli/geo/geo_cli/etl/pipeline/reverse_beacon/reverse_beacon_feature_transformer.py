@@ -25,17 +25,17 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
 
         uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
         if not os.path.isfile(uls_entities_json_file_path):
-            self.__logger.info("transforming ULS entities")
+            self._logger.info("transforming ULS entities")
             with UlsRecordsJsonFileLoader("l_amat_entities") as loader:
                 for transformer in (
                     UlsRecordTransformer(record_format=UlsRecordFormat.EN, zip_file_base_name="l_amat"),
                 ):
                     loader.load(transformer.transform())
-            self.__logger.info("transformed ULS entities and wrote to disk")
-        self.__logger.info("loading ULS entities from %s", uls_entities_json_file_path)
+            self._logger.info("transformed ULS entities and wrote to disk")
+        self._logger.info("loading ULS entities from %s", uls_entities_json_file_path)
         with open(uls_entities_json_file_path) as json_file:
             uls_entities_by_call_sign = json.load(json_file)
-        self.__logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
+        self._logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
 
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_transmission_count = 0
