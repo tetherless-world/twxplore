@@ -21,16 +21,11 @@ class _RdfFeatureLoader(_FeatureLoader):
 
         feature_resource.add(RDF.type, GEO.Feature)
 
-        if feature.frequency is not None or feature.frequency_range is not None:
-            if feature.frequency is not None:
-                feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequency, Literal(feature.frequency, datatype=XSD.float))
-            elif feature.frequency_range is not None:
-                feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMaximum, Literal(feature.frequency_range[1], datatype=XSD.float))
-                feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMinimum, Literal(feature.frequency_range[0], datatype=XSD.float))
-            else:
-                raise NotImplementedError
-            assert feature.frequency_unit is not None
-            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyUnit, Literal(feature.frequency_unit))
+        if feature.frequency is not None:
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequency, Literal(feature.frequency, datatype=XSD.float))
+        elif feature.frequency_range is not None:
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMaximum, Literal(feature.frequency_range[1], datatype=XSD.float))
+            feature_resource.add(TWXPLORE_GEO_APP_ONTOLOGY.frequencyMinimum, Literal(feature.frequency_range[0], datatype=XSD.float))
 
         feature_resource.add(GEO.hasDefaultGeometry, self.__add_geometry_to_graph(feature.geometry))
 

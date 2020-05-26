@@ -17,7 +17,6 @@ final case class Feature(
                           uri: Uri,
                           frequency: Option[Double] = None,
                           frequencyRange: Option[FrequencyRange] = None,
-                          frequencyUnit: Option[String] = None,
                           label: Option[String] = None,
                           locality: Option[String] = None,
                           postalCode: Option[String] = None,
@@ -71,9 +70,6 @@ object Feature {
       resource.addProperty(LOCAL.frequencyMaximum, frequencyToLiteral(value.maximum))
     }
 
-    final def frequencyUnit: Option[String] = getPropertyObjectStrings(LOCAL.frequencyUnit).headOption.map(literal => (literal))
-    final def frequencyUnit_=(value: String) = setPropertyLiterals(LOCAL.frequencyUnit, List(value))
-
     final def timestamp: Option[Date] = getPropertyObjectLiterals(LOCAL.timestamp).headOption.map(literal => timestampFromLiteral(literal))
     final def timestamp_=(value: Date) = resource.setProperty(LOCAL.timestamp, List(timestampToLiteral(value)))
 
@@ -101,12 +97,10 @@ object Feature {
   private final class UnparseableGeometryException extends Exception
 
   implicit object FeatureRdfReader extends RdfReader[Feature] {
-    override def read(resource: Resource): Feature = {
-      val feature =
+    override def read(resource: Resource): Feature =
         Feature(
           frequency = resource.frequency,
           frequencyRange = resource.frequencyRange,
-          frequencyUnit = resource.frequencyUnit,
           geometry = Rdf.read[UnparsedGeometry](resource.getProperty(Geo.HAS_DEFAULT_GEOMETRY_PROP).getObject.asResource()).parse().getOrElse(throw new UnparseableGeometryException),
           label = resource.labels.headOption,
           locality = resource.addressLocality,
@@ -118,13 +112,6 @@ object Feature {
           `type` = resource.types.flatMap(typeResource => FeatureType.values.find(value => typeResource.getURI == value.uri.toString)).headOption,
           uri = Uri.parse(resource.getURI)
         )
-      if (feature.frequency.isDefined || feature.frequencyRange.isDefined) {
-        if (!feature.frequencyUnit.isDefined) {
-          throw new IllegalStateException(s"${feature.uri} missing frequency unit")
-        }
-      }
-      feature
-    }
   }
 
   implicit object FeatureRdfWriter extends RdfWriter[Feature] {
@@ -134,7 +121,6 @@ object Feature {
       //      resource.addProperty(RDF.`type`, Geo.FEATURE_RES)
       if (value.frequency.isDefined) resource.frequency = value.frequency.get
       if (value.frequencyRange.isDefined) resource.frequencyRange = value.frequencyRange.get
-      if (value.frequencyUnit.isDefined) resource.frequencyUnit = value.frequencyUnit.get
       if (value.label.isDefined) resource.labels = List(value.label.get)
       if (value.locality.isDefined) resource.addressLocality = value.locality.get
       if (value.postalCode.isDefined) resource.postalCode = value.postalCode.get

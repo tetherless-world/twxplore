@@ -100,8 +100,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
 
                 transmission_feature = \
                     Feature(
-                        frequency=float(row["freq"]),
-                        frequency_unit="KHz",
+                        frequency=float(row["freq"]) * 1000.0,
                         label="Amateur radio transmission: %s (%s)" % (uls_entity['Call Sign'], uls_entity['Entity Name']),
                         locality=uls_entity['City'],
                         geometry=geometry,
