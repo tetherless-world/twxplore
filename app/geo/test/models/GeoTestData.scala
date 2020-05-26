@@ -23,8 +23,7 @@ object GeoTestData {
         wkt = "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
         uri = Uri.parse("http://example.com/geometry"))
     val feature = Feature(
-        frequency = Some(1.0),
-        frequencyUnit = Some("MHz"),
+        frequency = Some(1.0 * 1000000),
         geometry = featureGeometry.parse().get,
         label = Some("Test feature"),
         locality = Some("Troy"),
@@ -36,8 +35,7 @@ object GeoTestData {
         uri = Uri.parse("http://example.com/feature")
     )
     val featureWithRanges = Feature(
-        frequencyRange = Some(FrequencyRange(1.0, 2.0)),
-        frequencyUnit = Some("MHz"),
+        frequencyRange = Some(FrequencyRange(1.0 * 1000000, 2.0 * 1000000)),
         geometry = featureGeometry.parse().get,
         label = Some("Test feature"),
         locality = Some("Troy"),

@@ -156,14 +156,13 @@ class DsaPolicyFeatureTransformer(_DsaFeatureTransformer):
 
             frequency_range = effective_policy_json_object.get("frequencyRange")
             if frequency_range:
-                frequency_range = (frequency_range["minimum"], frequency_range["maximum"])
+                frequency_range = (frequency_range["minimum"] * 1000000.0, frequency_range["maximum"] * 1000000.0)
 
             label = effective_policy_json_object["label"]
 
             yield \
                 Feature(
                     frequency_range=frequency_range,
-                    frequency_unit="MHz",
                     geometry=geometry,
                     label=label,
                     type=TWXPLORE_GEO_APP_ONTOLOGY.Policy,
