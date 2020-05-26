@@ -95,10 +95,10 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
-            X: (feature.geometry
+            x: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .x,
-            Y: (feature.geometry
+            y: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .y,
           }))
