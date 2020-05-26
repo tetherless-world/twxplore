@@ -1,26 +1,29 @@
 import {PointFeatureTypeStrategy} from "./PointFeatureTypeStrategy";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {Dispatch} from "redux";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {layerConfigChange, interactionConfigChange} from "kepler.gl/actions";
 
 export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmitter;
-  dispatchLayerConfigurationActions(
-    keplerLayerOfFeatureType: any,
-    keplerFiltersOfFeatureType: any,
-    keplerFieldsOfFeatureType: any,
-    keplerInteractionConfigOfFeatureType: any,
-    dispatch: Dispatch<any>,
-    featuresByType: {
-      [featureType: string]: FeaturesByType;
-    }
-  ): void {
-    switch (featuresByType[this.name].featureTypeState) {
+  dispatchLayerConfigurationActions(kwds: {
+    keplerLayerOfFeatureType: any;
+    keplerFilterOfFeatureType: any;
+    keplerFieldsOfFeatureType: any;
+    keplerInteractionConfig: any;
+    featureTypeStateOfFeatureType: MapFeatureTypeState;
+    dispatch: Dispatch<any>;
+  }): void {
+    const {
+      keplerLayerOfFeatureType,
+      keplerInteractionConfig,
+      featureTypeStateOfFeatureType,
+      dispatch,
+    } = kwds;
+    switch (featureTypeStateOfFeatureType) {
       case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
-        dispatch(interactionConfigChange(keplerInteractionConfigOfFeatureType));
+        dispatch(interactionConfigChange(keplerInteractionConfig));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );

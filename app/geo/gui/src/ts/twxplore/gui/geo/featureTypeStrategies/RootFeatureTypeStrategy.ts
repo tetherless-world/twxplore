@@ -2,7 +2,7 @@ import {FeatureTypeStrategy} from "./FeatureTypeStrategy";
 import {FeatureType, FeatureQuery} from "../api/graphqlGlobalTypes";
 import {NEW_YORK_STATE_FEATURE_URI} from "../states/map/NEW_YORK_STATE_FEATURE_URI";
 import {Dispatch} from "redux";
-import {FeaturesByType} from "../states/map/FeaturesByType";
+import {MapFeatureTypeState} from "../states/map/MapFeatureTypeState";
 
 export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   getClickedQuery(clickedFeatureUri: string): FeatureQuery {
@@ -10,16 +10,14 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
       onlyFeatureUri: NEW_YORK_STATE_FEATURE_URI,
     };
   }
-  dispatchLayerConfigurationActions(
-    keplerLayerOfFeatureType: any,
-    keplerFiltersOfFeatureType: any,
-    keplerFieldsOfFeatureType: any,
-    keplerInteractionConfigOfFeatureType: any,
-    dispatch: Dispatch<any>,
-    featuresByType: {
-      [featureType: string]: FeaturesByType;
-    }
-  ): void {
+  dispatchLayerConfigurationActions(kwds: {
+    keplerLayerOfFeatureType: any;
+    keplerFilterOfFeatureType: any;
+    keplerFieldsOfFeatureType: any;
+    keplerInteractionConfig: any;
+    featureTypeStateOfFeatureType: MapFeatureTypeState;
+    dispatch: Dispatch<any>;
+  }): void {
     return;
   }
   readonly name = FeatureType.Root;

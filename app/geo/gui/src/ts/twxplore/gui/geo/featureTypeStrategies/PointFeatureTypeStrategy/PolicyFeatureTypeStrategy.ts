@@ -1,21 +1,19 @@
 import {PointFeatureTypeStrategy} from "./PointFeatureTypeStrategy";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {Dispatch} from "redux";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 
 export class PolicyFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Policy;
-  dispatchLayerConfigurationActions(
-    keplerLayerOfFeatureType: any,
-    keplerFiltersOfFeatureType: any,
-    keplerFieldsOfFeatureType: any,
-    keplerInteractionConfigOfFeatureType: any,
-    dispatch: Dispatch<any>,
-    featuresByType: {
-      [featureType: string]: FeaturesByType;
-    }
-  ): void {
+  dispatchLayerConfigurationActions(kwds: {
+    keplerLayerOfFeatureType: any;
+    keplerFilterOfFeatureType: any;
+    keplerFieldsOfFeatureType: any;
+    keplerInteractionConfig: any;
+    featureTypeStateOfFeatureType: MapFeatureTypeState;
+    dispatch: Dispatch<any>;
+  }): void {
     return;
   }
   static readonly instance = new PolicyFeatureTypeStrategy();

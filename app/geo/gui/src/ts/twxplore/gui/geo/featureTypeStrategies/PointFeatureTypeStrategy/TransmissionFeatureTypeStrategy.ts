@@ -2,7 +2,6 @@ import {PointFeatureTypeStrategy} from "./PointFeatureTypeStrategy";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {Dispatch} from "redux";
-import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {
   layerTypeChange,
@@ -14,20 +13,26 @@ import {
 } from "kepler.gl/actions";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
-  dispatchLayerConfigurationActions(
-    keplerLayerOfFeatureType: any,
-    keplerFiltersOfFeatureType: any,
-    keplerFieldsOfFeatureType: any,
-    keplerInteractionConfigOfFeatureType: any,
-    dispatch: Dispatch<any>,
-    featuresByType: {
-      [featureType: string]: FeaturesByType;
-    }
-  ): void {
+  dispatchLayerConfigurationActions(kwds: {
+    keplerLayerOfFeatureType: any;
+    keplerFilterOfFeatureType: any;
+    keplerFieldsOfFeatureType: any;
+    keplerInteractionConfig: any;
+    featureTypeStateOfFeatureType: MapFeatureTypeState;
+    dispatch: Dispatch<any>;
+  }): void {
+    const {
+      keplerLayerOfFeatureType,
+      keplerFilterOfFeatureType,
+      keplerFieldsOfFeatureType,
+      keplerInteractionConfig,
+      featureTypeStateOfFeatureType,
+      dispatch,
+    } = kwds;
     //Check the featureTypeState of Transmissions
-    switch (featuresByType[this.name].featureTypeState) {
+    switch (featureTypeStateOfFeatureType) {
       case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
-        dispatch(interactionConfigChange(keplerInteractionConfigOfFeatureType));
+        dispatch(interactionConfigChange(keplerInteractionConfig));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
@@ -49,8 +54,8 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         );
         const newLayerConfig = {
           columns: {
-            lat: {value: "y", fieldIdx: latFieldIdx},
-            lng: {value: "x", fieldIdx: lngFieldIdx},
+            lat: {value: FeatureAttributeName.y, fieldIdx: latFieldIdx},
+            lng: {value: FeatureAttributeName.x, fieldIdx: lngFieldIdx},
           },
         };
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
@@ -83,7 +88,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
                 type: "integer",
                 analyzerType: "INT",
                 id: FeatureAttributeName.transmissionPower,
-                filterProps: keplerFiltersOfFeatureType,
+                filterProps: keplerFilterOfFeatureType,
               },
             },
             channel
