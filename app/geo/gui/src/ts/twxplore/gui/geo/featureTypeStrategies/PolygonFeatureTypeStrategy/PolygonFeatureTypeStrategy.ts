@@ -52,4 +52,5 @@ export abstract class PolygonFeatureTypeStrategy
   abstract readonly name: FeatureType;
   abstract readonly childFeatureTypes: FeatureType[];
   readonly expandable = true;
+  readonly heightAttributeFor3DMap = null;
 }

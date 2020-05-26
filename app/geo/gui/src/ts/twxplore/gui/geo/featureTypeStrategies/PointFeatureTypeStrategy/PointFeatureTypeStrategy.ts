@@ -24,4 +24,5 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
   readonly childFeatureTypes = [];
   readonly expandable = false;
   abstract readonly fieldsToShowOnPopup: FeatureAttributeName[];
+  abstract heightAttributeFor3DMap: FeatureAttributeName | null;
 }

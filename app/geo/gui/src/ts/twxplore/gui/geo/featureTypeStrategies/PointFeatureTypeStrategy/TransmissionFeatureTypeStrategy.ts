@@ -111,4 +111,5 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.postalcode,
     FeatureAttributeName.locality,
   ];
+  readonly heightAttributeFor3DMap = FeatureAttributeName.transmissionPower;
 }

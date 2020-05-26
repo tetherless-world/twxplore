@@ -8,6 +8,7 @@ export interface FeatureTypeStrategy {
   readonly childFeatureTypes: FeatureType[];
   readonly expandable: boolean;
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
+  readonly heightAttributeFor3DMap: FeatureAttributeName | null;
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
   dispatchLayerConfigurationActions(kwds: {
     keplerLayerOfFeatureType: any;

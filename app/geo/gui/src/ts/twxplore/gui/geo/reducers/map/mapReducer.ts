@@ -245,7 +245,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
         if (
           //If features of that type are present on the map
-          featuresByTypeOfType.featureTypeState !=
+          featuresByTypeOfType.featureTypeState !==
           MapFeatureTypeState.ABSENT_ON_MAP
         ) {
           //Set the state of the featureTypeState to WAITING_FOR_LOAD

@@ -47,4 +47,5 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.postalcode,
     FeatureAttributeName.locality,
   ];
+  readonly heightAttributeFor3DMap = null;
 }
