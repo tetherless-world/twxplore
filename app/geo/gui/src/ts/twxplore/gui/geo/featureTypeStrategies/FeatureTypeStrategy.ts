@@ -1,7 +1,7 @@
 import {FeatureType, FeatureQuery} from "../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../states/map/FeatureAttributeName";
-import {Dispatch} from "redux";
-import {MapFeatureTypeState} from "../states/map/MapFeatureTypeState";
+
+import {DispatchLayerConfigurationActionsParameters} from "./DispatchLayerConfigurationActionsParameters";
 
 export interface FeatureTypeStrategy {
   readonly name: FeatureType;
@@ -10,12 +10,7 @@ export interface FeatureTypeStrategy {
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
   readonly heightAttributeFor3DMap: FeatureAttributeName | null;
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
-  dispatchLayerConfigurationActions(kwds: {
-    keplerLayerOfFeatureType: any;
-    keplerFilterOfFeatureType: any;
-    keplerFieldsOfFeatureType: any;
-    keplerInteractionConfig: any;
-    featureTypeStateOfFeatureType: MapFeatureTypeState;
-    dispatch: Dispatch<any>;
-  }): void;
+  dispatchLayerConfigurationActions(
+    kwds: DispatchLayerConfigurationActionsParameters
+  ): void;
 }

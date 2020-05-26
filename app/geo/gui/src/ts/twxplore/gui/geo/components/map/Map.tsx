@@ -210,7 +210,7 @@ const MapImpl: React.FunctionComponent = () => {
             switch (featureTypeStateOfFeatureType) {
               //Check if filters need to be added for this FeatureType
               case MapFeatureTypeState.NEEDS_FILTERS: {
-                //Dispatch the addFilter action for the number of attributes that have an 'attribute state'. (i.e. for each filterable attribute)
+                //Dispatch the addFilter action for the number of attributes that have an 'attribute state'. If there are 5 attributes with an attribute state then 5 filters will be added.
                 for (
                   var x = 0;
                   x < Object.keys(attributeStatesOfFeatureType).length;

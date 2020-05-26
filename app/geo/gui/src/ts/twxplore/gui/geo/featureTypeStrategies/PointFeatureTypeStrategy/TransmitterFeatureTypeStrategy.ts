@@ -1,20 +1,15 @@
 import {PointFeatureTypeStrategy} from "./PointFeatureTypeStrategy";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
-import {Dispatch} from "redux";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {layerConfigChange, interactionConfigChange} from "kepler.gl/actions";
+import {DispatchLayerConfigurationActionsParameters} from "../DispatchLayerConfigurationActionsParameters";
 
 export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmitter;
-  dispatchLayerConfigurationActions(kwds: {
-    keplerLayerOfFeatureType: any;
-    keplerFilterOfFeatureType: any;
-    keplerFieldsOfFeatureType: any;
-    keplerInteractionConfig: any;
-    featureTypeStateOfFeatureType: MapFeatureTypeState;
-    dispatch: Dispatch<any>;
-  }): void {
+  dispatchLayerConfigurationActions(
+    kwds: DispatchLayerConfigurationActionsParameters
+  ): void {
     const {
       keplerLayerOfFeatureType,
       keplerInteractionConfig,

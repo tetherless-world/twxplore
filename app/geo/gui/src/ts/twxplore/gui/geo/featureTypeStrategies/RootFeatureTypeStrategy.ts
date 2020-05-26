@@ -1,8 +1,7 @@
 import {FeatureTypeStrategy} from "./FeatureTypeStrategy";
 import {FeatureType, FeatureQuery} from "../api/graphqlGlobalTypes";
 import {NEW_YORK_STATE_FEATURE_URI} from "../states/map/NEW_YORK_STATE_FEATURE_URI";
-import {Dispatch} from "redux";
-import {MapFeatureTypeState} from "../states/map/MapFeatureTypeState";
+import {DispatchLayerConfigurationActionsParameters} from "./DispatchLayerConfigurationActionsParameters";
 
 export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   getClickedQuery(clickedFeatureUri: string): FeatureQuery {
@@ -10,14 +9,9 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
       onlyFeatureUri: NEW_YORK_STATE_FEATURE_URI,
     };
   }
-  dispatchLayerConfigurationActions(kwds: {
-    keplerLayerOfFeatureType: any;
-    keplerFilterOfFeatureType: any;
-    keplerFieldsOfFeatureType: any;
-    keplerInteractionConfig: any;
-    featureTypeStateOfFeatureType: MapFeatureTypeState;
-    dispatch: Dispatch<any>;
-  }): void {
+  dispatchLayerConfigurationActions(
+    kwds: DispatchLayerConfigurationActionsParameters
+  ): void {
     return;
   }
   readonly name = FeatureType.Root;
@@ -25,4 +19,5 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   static readonly instance = new RootFeatureTypeStrategy();
   readonly expandable = true;
   readonly fieldsToShowOnPopup = [];
+  readonly heightAttributeFor3DMap = null;
 }
