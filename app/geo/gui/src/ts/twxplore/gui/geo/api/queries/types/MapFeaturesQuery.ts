@@ -26,6 +26,7 @@ export interface MapFeaturesQuery_features {
   locality: string | null;
   postalCode: string | null;
   regions: string[];
+  frequencyUnit: string | null;
   transmissionPower: number | null;
   geometry: MapFeaturesQuery_features_geometry;
 }
