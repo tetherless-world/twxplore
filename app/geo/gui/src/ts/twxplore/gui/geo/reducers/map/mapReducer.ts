@@ -172,14 +172,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState ===
             MapFeatureTypeState.WAITING_FOR_LOAD
           ) {
-            if (featureType === FeatureType.Transmission) {
-              featuresByTypeOfType.featureTypeState =
-                MapFeatureTypeState.NEEDS_FILTERS;
-            } else {
-              featuresByTypeOfType.featureTypeState =
-                //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
-                MapFeatureTypeState.NEEDS_FILTERS;
-            }
+            featuresByTypeOfType.featureTypeState =
+              //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
+              MapFeatureTypeState.NEEDS_FILTERS;
+
             //Now that this FeatureType needs filters, give each attribute a filter idx using a counter
             Object.keys(attributeStatesOfFeatureType).map(attributeName => {
               attributeStatesOfFeatureType[
@@ -336,7 +332,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
         allFiltersSetAction.payload.featureType
-      ].featureTypeState = MapFeatureTypeState.NEEDS_LAYER_LABEL;
+      ].featureTypeState = MapFeatureTypeState.NEEDS_POPUP_CHANGE;
       console.debug("ALL_FILTERS_SET action completed");
       break;
     }
@@ -398,44 +394,52 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
       break;
     }
+
+    //THE MapFeatureTypeState.NEEDS_POPUP_CHANGE and MapFeatureTypeState.NEEDS_LNG_AND_LAT dispatch actions that use this case
     case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
       const layerConfigChangeAction: any = action;
-      if (layerConfigChangeAction.oldLayer === undefined) break;
+      if (
+        layerConfigChangeAction.oldLayer === undefined ||
+        layerConfigChangeAction.newConfig === undefined
+      )
+        break;
       const layerIdOfFeatureType: string =
         layerConfigChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
         result.featuresByType[layerIdOfFeatureType];
-      if (layerConfigChangeAction.newConfig != undefined) {
-        //case: NEEDS_LABEL
-        if (Object.keys(layerConfigChangeAction.newConfig).includes("label")) {
-          if (
-            FeatureType[layerIdOfFeatureType as keyof typeof FeatureType] ===
-            FeatureType.Transmission
-          ) {
-            featuresByTypeOfFeatureType.featureTypeState =
-              MapFeatureTypeState.NEEDS_LAYER_CHANGE;
-          } else {
-            featuresByTypeOfFeatureType.featureTypeState =
-              MapFeatureTypeState.FINISHED_SETUP;
-          }
-        }
-        //case: NEEDS_LNG_AND_LAT
+
+      /*The layerConfigChangeAction is used for several different purposes (such as changing layer visibility), 
+      the below code is to check if we're currently in this case because the label of the layer is being changed. If so, that is our signal
+      that we are in the NEEDS_POPUP_CHANGE case and it is time to move forward and change the state */
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("label")) {
+        //If this layer is attached to the 'Transmission' FeatureType... then next step is to change the layer. Else, we're done.
         if (
-          Object.keys(layerConfigChangeAction.newConfig).includes("columns")
+          FeatureType[layerIdOfFeatureType as keyof typeof FeatureType] ===
+          FeatureType.Transmission
         ) {
-          result.featuresByType[FeatureType.Transmission].featureTypeState =
-            MapFeatureTypeState.NEEDS_3D_ENABLED;
+          featuresByTypeOfFeatureType.featureTypeState =
+            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+        } else {
+          featuresByTypeOfFeatureType.featureTypeState =
+            MapFeatureTypeState.FINISHED_SETUP;
         }
+      }
+      /*Checking to see if the action was used to change the 'columns' of the layer. If so, then it signifies 
+      that we are in MapFeatureTypeState.NEEDS_LNG_AND_LAT and it is time to move to NEEDS_3D_ENABLED*/
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("columns")) {
+        result.featuresByType[FeatureType.Transmission].featureTypeState =
+          MapFeatureTypeState.NEEDS_3D_ENABLED;
       }
 
       break;
     }
+    /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
     case "@@kepler.gl/LAYER_TYPE_CHANGE": {
       result.featuresByType[FeatureType.Transmission].featureTypeState =
         MapFeatureTypeState.NEEDS_LNG_AND_LAT;
       break;
     }
-    //Needs 3d Enabled
+    //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
       const layerVisConfigChangeAction: any = action;
       if (
@@ -450,6 +454,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
+    //MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE dispatches an action that uses this case.
     case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
       result.featuresByType[FeatureType.Transmission].featureTypeState =
         MapFeatureTypeState.FINISHED_SETUP;
