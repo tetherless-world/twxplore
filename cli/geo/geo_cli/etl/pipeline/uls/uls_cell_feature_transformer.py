@@ -3,8 +3,8 @@ from typing import Dict
 from zipfile import ZipFile
 
 from geo_cli.etl._feature_transformer import _FeatureTransformer
-from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION, STATE_NAMES
-from geo_cli.etl.uls.uls_record_transformer import UlsRecordTransformer
+from geo_cli.etl.pipeline.tiger_line.states import STATE_NAMES_BY_ABBREVIATION, STATE_NAMES
+from geo_cli.etl.pipeline.uls.uls_record_transformer import UlsRecordTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.model.uls_record import UlsRecord

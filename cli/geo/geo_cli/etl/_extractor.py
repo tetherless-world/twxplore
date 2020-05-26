@@ -1,0 +1,11 @@
+from abc import ABC, abstractmethod
+from typing import Dict
+
+
+class _Extractor(ABC):
+    @abstractmethod
+    def extract(self) -> Dict[str, object]:
+        """
+        Extract to DATA_DIR_PATH.
+        :return: a dict of **kwds to pass to transformer.transform
+        """

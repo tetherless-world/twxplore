@@ -9,14 +9,18 @@ class _FeatureLoader(ABC):
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
 
-    @abstractmethod
     def __enter__(self):
-        pass
+        """
+        Enter the loader. Typically used to open resources, such as files.
+        """
 
-    @abstractmethod
     def __exit__(self):
-        pass
+        """
+        Exit the loader. Typically used to close resources, such as files.
+        """
 
     @abstractmethod
     def load(self, features: Generator[Feature, None, None]) -> None:
-        pass
+        """
+        Load features from the given generator.
+        """
