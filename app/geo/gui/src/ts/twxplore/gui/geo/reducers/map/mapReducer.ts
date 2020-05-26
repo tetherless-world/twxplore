@@ -427,7 +427,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       /*Checking to see if the action was used to change the 'columns' of the layer. If so, then it signifies 
       that we are in MapFeatureTypeState.NEEDS_LNG_AND_LAT and it is time to move to NEEDS_3D_ENABLED*/
       if (Object.keys(layerConfigChangeAction.newConfig).includes("columns")) {
-        result.featuresByType[FeatureType.Transmission].featureTypeState =
+        featuresByTypeOfFeatureType.featureTypeState =
           MapFeatureTypeState.NEEDS_3D_ENABLED;
       }
 
@@ -435,19 +435,28 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     }
     /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
     case "@@kepler.gl/LAYER_TYPE_CHANGE": {
-      result.featuresByType[FeatureType.Transmission].featureTypeState =
+      const layerTypeChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerTypeChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+      featuresByTypeOfFeatureType.featureTypeState =
         MapFeatureTypeState.NEEDS_LNG_AND_LAT;
       break;
     }
     //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
       const layerVisConfigChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerVisConfigChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
       if (
         Object.keys(layerVisConfigChangeAction.newVisConfig).includes(
           "enable3d"
         )
       ) {
-        result.featuresByType[FeatureType.Transmission].featureTypeState =
+        featuresByTypeOfFeatureType.featureTypeState =
           MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
       }
 
@@ -456,7 +465,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
     //MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE dispatches an action that uses this case.
     case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
-      result.featuresByType[FeatureType.Transmission].featureTypeState =
+      const layerVisualChannelChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerVisualChannelChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+      featuresByTypeOfFeatureType.featureTypeState =
         MapFeatureTypeState.FINISHED_SETUP;
 
       break;
