@@ -211,13 +211,6 @@ const MapImpl: React.FunctionComponent = () => {
               featureType
             );
 
-            /*
-            const interactionConfigCopy =
-              keplerState.map.visState.interactionConfig;
-            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
-              featureTypeStrategy.fieldsToShowOnPopup;
-            dispatch(interactionConfigChange(interactionConfigCopy));
-*/
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
             switch (featureTypeStateOfFeatureType) {
@@ -241,27 +234,49 @@ const MapImpl: React.FunctionComponent = () => {
                 }
                 break;
               }
-              case MapFeatureTypeState.NEEDS_LAYER_LABEL:
+
+              /* Several cases here. The point is that when in any of these cases, let featureTypeStrategy handle what actions to dispatch.
+              Right now only TransmissionFeatureTypeStrategy does a lot with this (others just use this to configure their pop-up), but this will make it possible to configure layers of different
+              feature types later.
+              */
+              case MapFeatureTypeState.NEEDS_POPUP_CHANGE:
               case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
               case MapFeatureTypeState.NEEDS_3D_ENABLED:
               case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
               case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+                /* Get the kepler layers list as well as an index to get the keplerLayer that holds the relevant feature type.*/
                 const keplerLayers = keplerState.map.visState.layers;
                 const layerIndex = keplerLayers.findIndex(
                   (layer: {config: {dataId: string}}) =>
                     layer.config.dataId === featureType
                 );
+                const keplerLayerOfFeatureType = keplerLayers[layerIndex];
+
+                /*Get a kepler filter of the feature type. For now we hardcode to get the transmissionPower filter*/
                 const keplerFilters = keplerState.map.visState.filters;
-                const keplerFieldsOfFeatureType =
-                  keplerState.map.visState.datasets[featureType].fields;
-                featureTypeStrategy.dispatchLayerConfigurationActions(
-                  keplerLayers[layerIndex],
+                const keplerFilterOfFeatureType =
                   keplerFilters[
                     state.featuresByType[featureType].attributeStates[
                       FeatureAttributeName.transmissionPower
                     ].filterIndex!
-                  ],
+                  ];
+
+                /*Get the kepler list of fields of the feature type*/
+                const keplerFieldsOfFeatureType =
+                  keplerState.map.visState.datasets[featureType].fields;
+
+                /*Get the interactionConfig of kepler. This is used to change fieldsToShowOnPopup*/
+                const keplerInteractionConfigCopy =
+                  keplerState.map.visState.interactionConfig;
+                keplerInteractionConfigCopy.tooltip.config.fieldsToShow[
+                  featureType
+                ] = featureTypeStrategy.fieldsToShowOnPopup;
+
+                featureTypeStrategy.dispatchLayerConfigurationActions(
+                  keplerLayerOfFeatureType,
+                  keplerFilterOfFeatureType,
                   keplerFieldsOfFeatureType,
+                  keplerInteractionConfigCopy,
                   dispatch,
                   state.featuresByType
                 );

@@ -10,6 +10,7 @@ export class PolicyFeatureTypeStrategy extends PointFeatureTypeStrategy {
     keplerLayerOfFeatureType: any,
     keplerFiltersOfFeatureType: any,
     keplerFieldsOfFeatureType: any,
+    keplerInteractionConfigOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;

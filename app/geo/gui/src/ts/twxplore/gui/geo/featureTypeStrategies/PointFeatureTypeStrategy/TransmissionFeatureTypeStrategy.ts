@@ -9,6 +9,7 @@ import {
   layerVisConfigChange,
   layerConfigChange,
   layerVisualChannelConfigChange,
+  interactionConfigChange,
   //removeLayer,
 } from "kepler.gl/actions";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
@@ -17,6 +18,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     keplerLayerOfFeatureType: any,
     keplerFiltersOfFeatureType: any,
     keplerFieldsOfFeatureType: any,
+    keplerInteractionConfigOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
@@ -25,6 +27,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
+        dispatch(interactionConfigChange(keplerInteractionConfigOfFeatureType));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );

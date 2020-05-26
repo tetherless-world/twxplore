@@ -4,10 +4,7 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 import {Dispatch} from "redux";
 import {FeaturesByType} from "../../states/map/FeaturesByType";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import {
-  layerConfigChange,
-  //removeLayer,
-} from "kepler.gl/actions";
+import {layerConfigChange, interactionConfigChange} from "kepler.gl/actions";
 
 export abstract class PolygonFeatureTypeStrategy
   implements FeatureTypeStrategy {
@@ -15,6 +12,7 @@ export abstract class PolygonFeatureTypeStrategy
     keplerLayerOfFeatureType: any,
     keplerFiltersOfFeatureType: any,
     keplerFieldsOfFeatureType: any,
+    keplerInteractionConfigOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
@@ -22,7 +20,7 @@ export abstract class PolygonFeatureTypeStrategy
   ): void {
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
-        //dispatch(removeLayer(5));
+        dispatch(interactionConfigChange(keplerInteractionConfigOfFeatureType));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
