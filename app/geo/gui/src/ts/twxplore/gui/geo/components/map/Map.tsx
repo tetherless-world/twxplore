@@ -80,15 +80,12 @@ const MapImpl: React.FunctionComponent = () => {
             __typename: feature.__typename,
             geometry: feature.geometry,
             frequency: feature.frequency,
-            frequencyUnit: feature.frequencyUnit,
             timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
             frequencyString: feature.frequency
-              ? (Math.floor(feature.frequency * 100) / 100).toString() +
-                " " +
-                feature.frequencyUnit
+              ? (Math.floor(feature.frequency * 100) / 100).toString() + " "
               : undefined,
             timestampString: feature.timestamp
               ? new Date(feature.timestamp * 1000).toString()
@@ -102,7 +99,7 @@ const MapImpl: React.FunctionComponent = () => {
             y: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .y,
-            parsedWkt: feature.geometry.parsedWkt,
+            //parsedWkt: feature.geometry.parsedWkt,
           }))
         )
       );
@@ -195,7 +192,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: true},
+                options: {centerMap: true, readOnly: false},
               })
             );
           }

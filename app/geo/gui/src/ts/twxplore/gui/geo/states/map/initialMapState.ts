@@ -65,7 +65,6 @@ const rootFeature: MapFeature = {
   postalCode: null,
   locality: null,
   transmissionPower: null,
-  frequencyUnit: "",
 };
 features.push(rootFeature);
 export const initialMapState: MapState = {
