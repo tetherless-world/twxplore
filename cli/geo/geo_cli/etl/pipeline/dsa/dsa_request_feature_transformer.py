@@ -3,7 +3,7 @@ from typing import Generator
 
 from rdflib import URIRef
 
-from geo_cli.etl.dsa._dsa_feature_transformer import _DsaFeatureTransformer
+from geo_cli.etl.pipeline.dsa._dsa_feature_transformer import _DsaFeatureTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY

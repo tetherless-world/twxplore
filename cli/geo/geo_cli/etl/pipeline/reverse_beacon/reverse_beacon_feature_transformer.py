@@ -4,23 +4,39 @@ from datetime import datetime, timezone
 from io import TextIOWrapper
 from typing import Generator, Dict
 from zipfile import ZipFile
+import json
 
 from geo_cli.etl._feature_transformer import _FeatureTransformer
-from geo_cli.etl.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
+from geo_cli.etl.pipeline.tiger_line.states import STATE_NAMES_BY_ABBREVIATION
+
+from geo_cli.etl.pipeline.uls.uls_record_transformer import UlsRecordTransformer
+from geo_cli.etl.pipeline.uls.uls_records_json_file_loader import UlsRecordsJsonFileLoader
 from geo_cli.geocoder import Geocoder
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
+from geo_cli.model.uls_record_format import UlsRecordFormat
 from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE, TWXPLORE_GEO_APP_ONTOLOGY
 from geo_cli.path import DATA_DIR_PATH
 
 
 class ReverseBeaconFeatureTransformer(_FeatureTransformer):
-    def __init__(self, uls_entities_by_call_sign: Dict[str, Dict[str, object]]):
-        _FeatureTransformer.__init__(self)
-        self.__geocoder = Geocoder()
-        self.__uls_entities_by_call_sign = uls_entities_by_call_sign
-
     def transform(self) -> Generator[Feature, None, None]:
+        geocoder = Geocoder()
+
+        uls_entities_json_file_path = UlsRecordsJsonFileLoader.loaded_file_path("l_amat_entities")
+        if not os.path.isfile(uls_entities_json_file_path):
+            self._logger.info("transforming ULS entities")
+            with UlsRecordsJsonFileLoader("l_amat_entities") as loader:
+                for transformer in (
+                    UlsRecordTransformer(record_format=UlsRecordFormat.EN, zip_file_base_name="l_amat"),
+                ):
+                    loader.load(transformer.transform())
+            self._logger.info("transformed ULS entities and wrote to disk")
+        self._logger.info("loading ULS entities from %s", uls_entities_json_file_path)
+        with open(uls_entities_json_file_path) as json_file:
+            uls_entities_by_call_sign = json.load(json_file)
+        self._logger.info("loaded ULS entities from %s", uls_entities_json_file_path)
+
         extracted_data_dir_path = DATA_DIR_PATH / "extracted" / "reverse_beacon"
         duplicate_transmission_count = 0
         duplicate_transmitter_count = 0
@@ -51,7 +67,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                             # Exclude everything outside North America
                             continue
                         try:
-                            uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
+                            uls_entity = uls_entities_by_call_sign[row["dx"]]
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
@@ -79,14 +95,14 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 # Use the row with the highest signal-to-noise ratio
                 row = max(rows, key=lambda row: row["db"])
 
-                uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
+                uls_entity = uls_entities_by_call_sign[row["dx"]]
                 try:
                     address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
                 except KeyError:
                     skipped_uls_entity_count += 1
                     continue
                 try:
-                    wkt = self.__geocoder.geocode(address)
+                    wkt = geocoder.geocode(address)
                 except LookupError:
                     geocode_failure_count += 1
                     continue
