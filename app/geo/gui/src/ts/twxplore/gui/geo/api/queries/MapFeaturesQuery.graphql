@@ -14,6 +14,12 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
       label
       wkt
       uri
+      parsedWkt {
+        ... on Point2D {
+          x
+          y
+        }
+      }
     }
   }
 }

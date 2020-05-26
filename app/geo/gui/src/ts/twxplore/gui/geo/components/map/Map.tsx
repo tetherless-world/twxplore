@@ -11,6 +11,7 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
+  MapFeaturesQuery_features_geometry_parsedWkt_Point2D,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
@@ -94,28 +95,12 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
-            Y:
-              feature.type === FeatureType.Transmission
-                ? parseFloat(
-                    feature.geometry.wkt
-                      .replace("POINT", "")
-                      .replace("(", "")
-                      .trim()
-                      .replace(")", "")
-                      .split(" ")[1]
-                  )
-                : undefined,
-            X:
-              feature.type === FeatureType.Transmission
-                ? parseFloat(
-                    feature.geometry.wkt
-                      .replace("POINT", "")
-                      .replace("(", "")
-                      .trim()
-                      .replace(")", "")
-                      .split(" ")[0]
-                  )
-                : undefined,
+            Y: (feature.geometry
+              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
+              .y,
+            X: (feature.geometry
+              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
+              .x,
           }))
         )
       );
