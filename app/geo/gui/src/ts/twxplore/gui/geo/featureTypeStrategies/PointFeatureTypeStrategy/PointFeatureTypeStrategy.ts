@@ -9,13 +9,13 @@ export abstract class PointFeatureTypeStrategy implements FeatureTypeStrategy {
     return null;
   }
   abstract dispatchLayerConfigurationActions(
-    keplerLayers: any,
-    layerIndex: number,
+    keplerLayerOfFeatureType: any,
+    keplerFiltersOfFeatureType: any,
+    keplerFieldsOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    },
-    keplerFieldsOfFeatureType: any
+    }
   ): void;
   abstract readonly name: FeatureType;
   readonly childFeatureTypes = [];

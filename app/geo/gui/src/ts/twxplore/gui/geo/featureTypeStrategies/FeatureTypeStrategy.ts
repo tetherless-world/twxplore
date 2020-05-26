@@ -10,12 +10,12 @@ export interface FeatureTypeStrategy {
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
   dispatchLayerConfigurationActions(
-    keplerLayers: any,
-    layerIndex: number,
+    keplerLayerOfFeatureType: any,
+    keplerFiltersOfFeatureType: any,
+    keplerFieldsOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    },
-    keplerFieldsOfFeatureType: any
+    }
   ): void;
 }

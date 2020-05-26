@@ -7,8 +7,9 @@ import {Dispatch} from "redux";
 export class PolicyFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Policy;
   dispatchLayerConfigurationActions(
-    keplerLayers: any,
-    layerIndex: number,
+    keplerLayerOfFeatureType: any,
+    keplerFiltersOfFeatureType: any,
+    keplerFieldsOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;

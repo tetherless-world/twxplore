@@ -12,24 +12,24 @@ import {
 export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmitter;
   dispatchLayerConfigurationActions(
-    keplerLayers: any,
-    layerIndex: number,
+    keplerLayerOfFeatureType: any,
+    keplerFiltersOfFeatureType: any,
+    keplerFieldsOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    },
-    keplerFieldsOfFeatureType: any
+    }
   ): void {
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
         //dispatch(removeLayer(5));
         dispatch(
-          layerConfigChange(keplerLayers[layerIndex], {isConfigActive: true})
+          layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
         const newLayerConfig = {
           label: this.name,
         };
-        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
 

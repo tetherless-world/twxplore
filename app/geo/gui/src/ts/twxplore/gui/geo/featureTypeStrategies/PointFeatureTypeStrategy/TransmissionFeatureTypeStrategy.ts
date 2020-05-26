@@ -14,29 +14,29 @@ import {
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
   dispatchLayerConfigurationActions(
-    keplerLayers: any,
-    layerIndex: number,
+    keplerLayerOfFeatureType: any,
+    keplerFiltersOfFeatureType: any,
+    keplerFieldsOfFeatureType: any,
     dispatch: Dispatch<any>,
     featuresByType: {
       [featureType: string]: FeaturesByType;
-    },
-    keplerFieldsOfFeatureType: any
+    }
   ): void {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
         //dispatch(removeLayer(5));
         dispatch(
-          layerConfigChange(keplerLayers[layerIndex], {isConfigActive: true})
+          layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
         const newLayerConfig = {
           label: this.name,
         };
-        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
-        dispatch(layerTypeChange(keplerLayers[layerIndex], "hexagon"));
+        dispatch(layerTypeChange(keplerLayerOfFeatureType, "hexagon"));
         break;
       }
       case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
@@ -52,12 +52,12 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
             lng: {value: "X", fieldIdx: lngFieldIdx},
           },
         };
-        dispatch(layerConfigChange(keplerLayers[layerIndex], newLayerConfig));
+        dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
       case MapFeatureTypeState.NEEDS_3D_ENABLED: {
         dispatch(
-          layerVisConfigChange(keplerLayers[layerIndex], {
+          layerVisConfigChange(keplerLayerOfFeatureType, {
             enable3d: true,
           })
         );
@@ -73,7 +73,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         const channel = "size";
         dispatch(
           layerVisualChannelConfigChange(
-            keplerLayers[layerIndex],
+            keplerLayerOfFeatureType,
             {
               sizeField: {
                 name: FeatureAttributeName.transmissionPower,

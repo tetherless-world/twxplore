@@ -30,6 +30,7 @@ import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 import ReactResizeDetector from "react-resize-detector";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -250,14 +251,19 @@ const MapImpl: React.FunctionComponent = () => {
                   (layer: {config: {dataId: string}}) =>
                     layer.config.dataId === featureType
                 );
+                const keplerFilters = keplerState.map.visState.filters;
                 const keplerFieldsOfFeatureType =
                   keplerState.map.visState.datasets[featureType].fields;
                 featureTypeStrategy.dispatchLayerConfigurationActions(
-                  keplerLayers,
-                  layerIndex,
+                  keplerLayers[layerIndex],
+                  keplerFilters[
+                    state.featuresByType[featureType].attributeStates[
+                      FeatureAttributeName.transmissionPower
+                    ].filterIndex!
+                  ],
+                  keplerFieldsOfFeatureType,
                   dispatch,
-                  state.featuresByType,
-                  keplerFieldsOfFeatureType
+                  state.featuresByType
                 );
                 break;
               }
