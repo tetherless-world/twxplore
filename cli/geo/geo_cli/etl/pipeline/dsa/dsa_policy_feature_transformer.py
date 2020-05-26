@@ -1,10 +1,9 @@
 import json
-from datetime import datetime
 from typing import Generator
 
 from rdflib import URIRef
 
-from geo_cli.etl.dsa._dsa_feature_transformer import _DsaFeatureTransformer
+from geo_cli.etl.pipeline.dsa._dsa_feature_transformer import _DsaFeatureTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY
@@ -156,14 +155,13 @@ class DsaPolicyFeatureTransformer(_DsaFeatureTransformer):
 
             frequency_range = effective_policy_json_object.get("frequencyRange")
             if frequency_range:
-                frequency_range = (frequency_range["minimum"], frequency_range["maximum"])
+                frequency_range = (frequency_range["minimum"] * 1000000.0, frequency_range["maximum"] * 1000000.0)
 
             label = effective_policy_json_object["label"]
 
             yield \
                 Feature(
                     frequency_range=frequency_range,
-                    frequency_unit="MHz",
                     geometry=geometry,
                     label=label,
                     type=TWXPLORE_GEO_APP_ONTOLOGY.Policy,

@@ -3,11 +3,11 @@ from typing import Generator
 import pygeoif
 
 from geo_cli.etl._feature_transformer import _FeatureTransformer
-from geo_cli.etl.tiger_line.county_tiger_line_shapefile_record import CountyTigerLineShapefileRecord
-from geo_cli.etl.tiger_line.metdiv_tiger_line_shapefile_record import MetdivTigerLineShapefileRecord
-from geo_cli.etl.tiger_line.mil_tiger_line_shapefile_record import MilTigerLineShapefileRecord
-from geo_cli.etl.tiger_line.state_tiger_line_shapefile_record import StateTigerLineShapefileRecord
-from geo_cli.etl.tiger_line.tiger_line_zip_file import TigerLineZipFile
+from geo_cli.etl.pipeline.tiger_line.county_tiger_line_shapefile_record import CountyTigerLineShapefileRecord
+from geo_cli.etl.pipeline.tiger_line.metdiv_tiger_line_shapefile_record import MetdivTigerLineShapefileRecord
+from geo_cli.etl.pipeline.tiger_line.mil_tiger_line_shapefile_record import MilTigerLineShapefileRecord
+from geo_cli.etl.pipeline.tiger_line.state_tiger_line_shapefile_record import StateTigerLineShapefileRecord
+from geo_cli.etl.pipeline.tiger_line.tiger_line_zip_file import TigerLineZipFile
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE

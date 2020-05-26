@@ -3,7 +3,7 @@ from typing import Generator
 
 from rdflib import URIRef
 
-from geo_cli.etl.dsa._dsa_feature_transformer import _DsaFeatureTransformer
+from geo_cli.etl.pipeline.dsa._dsa_feature_transformer import _DsaFeatureTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
 from geo_cli.namespace import TWXPLORE_GEO_APP_ONTOLOGY
@@ -20,10 +20,9 @@ class DsaRequestFeatureTransformer(_DsaFeatureTransformer):
                 yield \
                     Feature(
                         frequency_range=(
-                            request_json_object["frequencyRange"]["minimum"],
-                            request_json_object["frequencyRange"]["maximum"]
+                            request_json_object["frequencyRange"]["minimum"] * 1000000.0,
+                            request_json_object["frequencyRange"]["maximum"] * 1000000.0
                         ),
-                        frequency_unit="MHz",
                         geometry=Geometry(
                             uri=URIRef(location_json_object["geometry"]["id"]),
                             wkt=location_json_object["geometry"]["wkt"]

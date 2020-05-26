@@ -10,6 +10,10 @@ class _FeatureTransformer(ABC):
         self._logger = logging.getLogger(self.__class__.__name__)
 
     @abstractmethod
-    def transform(self) -> Generator[Feature, None, None]:
-        pass
+    def transform(self, **kwds) -> Generator[Feature, None, None]:
+        """
+        Transform extracted data into Features.
+        :param kwds: kwds dictionary returned by extractor.extract
+        :return: a generator of Features
+        """
 
