@@ -444,7 +444,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         )
       ) {
         result.featuresByType[FeatureType.Transmission].featureTypeState =
-          MapFeatureTypeState.FINISHED_SETUP;
+          MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
       }
 
       break;

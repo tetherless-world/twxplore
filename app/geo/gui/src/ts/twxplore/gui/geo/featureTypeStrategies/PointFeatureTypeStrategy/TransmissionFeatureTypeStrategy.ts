@@ -25,8 +25,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
       case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
-        //dispatch(removeLayer(5));
-        dispatch(
+\        dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
         const newLayerConfig = {
@@ -69,7 +68,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
           (keplerFieldOfFeatureType: any) =>
             keplerFieldOfFeatureType.name ===
             FeatureAttributeName.transmissionPower
-        );
+        ).tableFieldIndex;
         const channel = "size";
         dispatch(
           layerVisualChannelConfigChange(
@@ -82,6 +81,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
                 type: "integer",
                 analyzerType: "INT",
                 id: FeatureAttributeName.transmissionPower,
+                filterProps: keplerFiltersOfFeatureType,
               },
             },
             channel
