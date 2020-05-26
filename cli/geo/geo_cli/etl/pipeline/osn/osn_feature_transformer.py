@@ -13,7 +13,7 @@ from tqdm import tqdm
 from geo_cli.etl._feature_transformer import _FeatureTransformer
 from geo_cli.model.feature import Feature
 from geo_cli.model.geometry import Geometry
-from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE
+from geo_cli.namespace import TWXPLORE_GEO_APP_GEOMETRY, TWXPLORE_GEO_APP_FEATURE, TWXPLORE_GEO_APP_ONTOLOGY
 
 
 class OsnFeatureTransformer(_FeatureTransformer):
@@ -46,7 +46,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                 # heading = float(row["heading"])
                                 # vertrate: This column contains the vertical speed of the aircraft in meters per second.
                                 # vertrate = float(row["vertrate"])
-                                callsign = row["callsign"]
+                                callsign = row["callsign"].strip()
                                 # onground: This flag indicates whether the aircraft is broadcasting surface positions (true) or airborne positions (false).
                                 onground = self.__FLAG_VALUES[row["onground"].upper()]
                                 # Ignore alert/spi
@@ -71,8 +71,9 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                         uri=TWXPLORE_GEO_APP_GEOMETRY[f"osn-geometry-{icao24}-{row['lastcontact']}"],
                                         wkt=f"POINT ({row['lon']} {row['lat']})",
                                     ),
-                                    label=f"Open Sky Network: ICAO transponder={icao24}, Call sign={callsign}, {'On ground' if onground else 'Airborne'}",
+                                    label=f"Open Sky Network: ICAO transponder={icao24}, {'Call sign=' + callsign if callsign else ''}, {'On ground' if onground else 'Airborne'}",
                                     timestamp=lastcontact,
+                                    type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                     uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
                                 )
                             existing_feature = features_by_icao24.get(icao24)
