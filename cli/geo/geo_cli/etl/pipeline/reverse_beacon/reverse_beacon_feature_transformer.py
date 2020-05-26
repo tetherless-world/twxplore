@@ -67,7 +67,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                             # Exclude everything outside North America
                             continue
                         try:
-                            uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
+                            uls_entity = uls_entities_by_call_sign[row["dx"]]
                         except KeyError:
                             missing_uls_entity_count += 1
                             continue
@@ -95,7 +95,7 @@ class ReverseBeaconFeatureTransformer(_FeatureTransformer):
                 # Use the row with the highest signal-to-noise ratio
                 row = max(rows, key=lambda row: row["db"])
 
-                uls_entity = self.__uls_entities_by_call_sign[row["dx"]]
+                uls_entity = uls_entities_by_call_sign[row["dx"]]
                 try:
                     address = f"{uls_entity['Street Address']}, {uls_entity['City']}, {uls_entity['State']} {uls_entity['Zip Code']}"
                 except KeyError:
