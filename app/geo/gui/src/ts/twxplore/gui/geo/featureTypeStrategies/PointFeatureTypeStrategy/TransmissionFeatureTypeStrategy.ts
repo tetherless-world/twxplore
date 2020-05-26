@@ -24,15 +24,14 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   ): void {
     //Check the featureTypeState of Transmissions
     switch (featuresByType[this.name].featureTypeState) {
-      case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
-\        dispatch(
+      case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
+        dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
         const newLayerConfig = {
           label: this.name,
         };
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
-        break;
       }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
         dispatch(layerTypeChange(keplerLayerOfFeatureType, "hexagon"));

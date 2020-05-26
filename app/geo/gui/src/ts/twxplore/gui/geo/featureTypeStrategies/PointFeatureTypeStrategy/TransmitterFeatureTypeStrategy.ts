@@ -21,7 +21,7 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     }
   ): void {
     switch (featuresByType[this.name].featureTypeState) {
-      case MapFeatureTypeState.NEEDS_LAYER_LABEL: {
+      case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
         //dispatch(removeLayer(5));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
