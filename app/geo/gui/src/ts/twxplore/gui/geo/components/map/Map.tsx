@@ -1,4 +1,9 @@
-import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
+import {
+  addDataToMap,
+  removeFilter,
+  removeDataset,
+  togglePerspective,
+} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -137,6 +142,8 @@ const MapImpl: React.FunctionComponent = () => {
     if (keplerState.map) {
       //Simulating clicking the root which starts the process of querying for the first visible feature type
       dispatch(clickRoot());
+      //Toggle the map to 3d perspective
+      dispatch(togglePerspective());
     }
   }
 
@@ -187,7 +194,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: false},
+                options: {centerMap: true, readOnly: true},
               })
             );
           }
