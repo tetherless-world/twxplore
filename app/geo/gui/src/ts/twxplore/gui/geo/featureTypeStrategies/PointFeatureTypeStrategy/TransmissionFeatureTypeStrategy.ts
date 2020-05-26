@@ -49,8 +49,8 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         );
         const newLayerConfig = {
           columns: {
-            lat: {value: "Y", fieldIdx: latFieldIdx},
-            lng: {value: "X", fieldIdx: lngFieldIdx},
+            lat: {value: "y", fieldIdx: latFieldIdx},
+            lng: {value: "x", fieldIdx: lngFieldIdx},
           },
         };
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));

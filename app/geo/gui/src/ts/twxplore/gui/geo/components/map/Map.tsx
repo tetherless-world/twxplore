@@ -203,13 +203,19 @@ const MapImpl: React.FunctionComponent = () => {
               featureType
             );
 
+            let attributeStatesOfFeatureType =
+              state.featuresByType[featureType].attributeStates;
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
             switch (featureTypeStateOfFeatureType) {
               //Check if filters need to be added for this FeatureType
               case MapFeatureTypeState.NEEDS_FILTERS: {
-                //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
-                for (var x = 0; x < 5; ++x) {
+                //Dispatch the addFilter action for the number of attributes that have an 'attribute state'. (i.e. for each filterable attribute)
+                for (
+                  var x = 0;
+                  x < Object.keys(attributeStatesOfFeatureType).length;
+                  ++x
+                ) {
                   /*
               Dispatch addFilter with the FeatureType,
               which is also the name of the dataset
