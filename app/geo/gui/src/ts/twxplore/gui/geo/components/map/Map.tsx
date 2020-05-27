@@ -301,9 +301,12 @@ const MapImpl: React.FunctionComponent = () => {
                   keplerState.map.visState.datasets[featureType].fields;
 
                 /*Get the interactionConfig of kepler. This is used to change fieldsToShowOnPopup*/
-                const keplerInteractionConfig =
-                  keplerState.map.visState.interactionConfig;
-                keplerInteractionConfig.tooltip.config.fieldsToShow[
+                const keplerInteractionConfigCopy = Object.assign(
+                  {},
+                  keplerState.map.visState.interactionConfig
+                );
+
+                keplerInteractionConfigCopy.tooltip.config.fieldsToShow[
                   featureType
                 ] = featureTypeStrategy.fieldsToShowOnPopup;
 
@@ -311,7 +314,7 @@ const MapImpl: React.FunctionComponent = () => {
                   keplerLayerOfFeatureType,
                   keplerFilterOfFeatureType,
                   keplerFieldsOfFeatureType,
-                  keplerInteractionConfig,
+                  keplerInteractionConfigCopy,
                   featureTypeStateOfFeatureType,
                   dispatch,
                 });
