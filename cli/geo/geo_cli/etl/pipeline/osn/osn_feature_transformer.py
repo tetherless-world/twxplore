@@ -63,9 +63,11 @@ class OsnFeatureTransformer(_FeatureTransformer):
                             except ValueError:
                                 continue
 
+                            # https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC%2020-165.pdf
+                            # https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast#Description
+                            # Model an ADS-B 1090ES transponder
                             feature = \
                                 Feature(
-                                    # https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast#Description
                                     frequency=1090.0 * 1000000.0, # 1090 MHz,
                                     geometry=Geometry(
                                         uri=TWXPLORE_GEO_APP_GEOMETRY[f"osn-geometry-{icao24}-{row['lastcontact']}"],
@@ -73,6 +75,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                     ),
                                     label=f"Open Sky Network: ICAO transponder={icao24}, {'Call sign=' + callsign if callsign else ''}, {'On ground' if onground else 'Airborne'}",
                                     timestamp=lastcontact,
+                                    transmission_power=27.0, # dBW, max of various ADS-B 1090ES systems, see faa.gov table above
                                     type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                     uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
                                 )
