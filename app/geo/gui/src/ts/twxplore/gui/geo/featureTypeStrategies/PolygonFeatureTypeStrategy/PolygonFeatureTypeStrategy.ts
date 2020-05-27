@@ -12,13 +12,13 @@ export abstract class PolygonFeatureTypeStrategy
   ): void {
     const {
       keplerLayerOfFeatureType,
-      keplerInteractionConfig,
+      keplerInteractionConfigCopy,
       featureTypeStateOfFeatureType,
       dispatch,
     } = kwds;
     switch (featureTypeStateOfFeatureType) {
       case MapFeatureTypeState.NEEDS_POPUP_CHANGE: {
-        dispatch(interactionConfigChange(keplerInteractionConfig));
+        dispatch(interactionConfigChange(keplerInteractionConfigCopy));
         dispatch(
           layerConfigChange(keplerLayerOfFeatureType, {isConfigActive: true})
         );
