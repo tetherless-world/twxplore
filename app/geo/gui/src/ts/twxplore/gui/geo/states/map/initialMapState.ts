@@ -50,7 +50,12 @@ const rootFeature: MapFeature = {
   __typename: "Feature",
   regions: [],
   uri: ROOT_FEATURE_URI,
-  geometry: {__typename: "ParsedGeometry", label: "", wkt: "", uri: ""},
+  geometry: {
+    __typename: "ParsedGeometry",
+    label: "",
+    uri: "",
+    parsedWkt: {__typename: "Polygon", lines: []},
+  },
   state: MapFeatureState.LOADED,
   type: FeatureType.Root,
   label: null,
@@ -59,7 +64,6 @@ const rootFeature: MapFeature = {
   postalCode: null,
   locality: null,
   transmissionPower: null,
-  frequencyUnit: "",
 };
 features.push(rootFeature);
 export const initialMapState: MapState = {

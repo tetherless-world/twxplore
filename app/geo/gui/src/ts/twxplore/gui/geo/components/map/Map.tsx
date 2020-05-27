@@ -2,8 +2,7 @@ import {
   addDataToMap,
   removeFilter,
   removeDataset,
-  layerConfigChange,
-  interactionConfigChange,
+  togglePerspective,
 } from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
@@ -12,6 +11,11 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
+  MapFeaturesQuery_features_geometry_parsedWkt,
+  MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
+  MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon,
+  MapFeaturesQuery_features_geometry_parsedWkt_Point,
+  //MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
 import {addMapFeatures} from "../../actions/map/AddMapFeaturesAction";
@@ -36,16 +40,14 @@ import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 import ReactResizeDetector from "react-resize-detector";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
-var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
-  //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
-
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
@@ -78,15 +80,16 @@ const MapImpl: React.FunctionComponent = () => {
             __typename: feature.__typename,
             geometry: feature.geometry,
             frequency: feature.frequency,
-            frequencyUnit: feature.frequencyUnit,
             timestamp: feature.timestamp ? feature.timestamp * 1000 : null,
             postalCode: feature.postalCode,
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
             frequencyString: feature.frequency
-              ? (Math.floor(feature.frequency * 100) / 100).toString() +
+              ? (
+                  Math.floor((feature.frequency / 1000000) * 100) / 100
+                ).toString() +
                 " " +
-                feature.frequencyUnit
+                "MHz"
               : undefined,
             timestampString: feature.timestamp
               ? new Date(feature.timestamp * 1000).toString()
@@ -94,6 +97,18 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
+            x:
+              feature.geometry.parsedWkt.__typename === "Point"
+                ? (feature.geometry
+                    .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
+                    .x
+                : undefined,
+            y:
+              feature.geometry.parsedWkt.__typename === "Point"
+                ? (feature.geometry
+                    .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
+                    .y
+                : undefined,
           }))
         )
       );
@@ -102,6 +117,31 @@ const MapImpl: React.FunctionComponent = () => {
     fetchPolicy: "network-only",
   });
 
+  const pairCoordinates = (
+    parsedWkt: MapFeaturesQuery_features_geometry_parsedWkt
+  ) => {
+    switch (parsedWkt.__typename) {
+      case "Point": {
+        const pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point;
+        return [pointParsedWkt.x, pointParsedWkt.y];
+      }
+      case "Polygon": {
+        const polygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Polygon;
+        return [_.chunk(polygonParsedWkt.lines[0], 2)];
+      }
+      case "MultiPolygon": {
+        const multiPolygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
+        const MultiPolygonArray = [];
+        for (const polygon of multiPolygonParsedWkt.polygons) {
+          MultiPolygonArray.push([_.chunk(polygon.lines[0], 2)]);
+        }
+        return MultiPolygonArray;
+      }
+      default: {
+        throw new Error("Unhandled case in pairCoordiantes");
+      }
+    }
+  };
   //This function checks if any of the featureByTypes are 'dirty'
   const hasDirtyFeatures = Object.values(FeatureType).some(
     featureType => state.featuresByType[featureType].dirty
@@ -120,6 +160,8 @@ const MapImpl: React.FunctionComponent = () => {
     if (keplerState.map) {
       //Simulating clicking the root which starts the process of querying for the first visible feature type
       dispatch(clickRoot());
+      //Toggle the map to 3d perspective
+      dispatch(togglePerspective());
     }
   }
 
@@ -155,7 +197,11 @@ const MapImpl: React.FunctionComponent = () => {
                 features: dirtyFeaturesOfFeatureType.map(feature => {
                   return {
                     type: "Feature",
-                    geometry: wkt.parse(feature.geometry.wkt),
+                    //geometry: wkt.parse(feature.geometry.wkt),
+                    geometry: {
+                      type: feature.geometry.parsedWkt.__typename,
+                      coordinates: pairCoordinates(feature.geometry.parsedWkt),
+                    },
                     properties: feature,
                   };
                 }),
@@ -185,22 +231,29 @@ const MapImpl: React.FunctionComponent = () => {
 
       */
       case MapFeatureState.RENDERED: {
-        //loop through each feature type
-        for (const featureType of Object.values(FeatureType)) {
-          /*Check if filters need to be added for this FeatureType AND
-          We don't want to addFilters when some featuresByType lists are
-          still dirty because then the filters will be removed by removeDataset() in the LOADED case*/
-          if (
-            state.featuresByType[featureType].featureTypeState ===
-              MapFeatureTypeState.NEEDS_FILTERS &&
-            !hasDirtyFeatures
-          ) {
+        /*We don't want to work with rendered features when some featuresByType lists are
+        still dirty because theres a chance that some filters and layers will be removed by removeDataset() in the LOADED case*/
+        if (!hasDirtyFeatures)
+          //loop through each feature type
+          for (const featureType of Object.values(FeatureType)) {
             const featureTypeStrategy = getFeatureTypeStrategyByName(
               featureType
             );
-            //Dispatch the addFilter action 5 times (1 for each of frequency, timeStamp, transmissionPower, label, and locality)
-            for (var x = 0; x < 5; ++x) {
-              /*
+
+            let attributeStatesOfFeatureType =
+              state.featuresByType[featureType].attributeStates;
+            let featureTypeStateOfFeatureType =
+              state.featuresByType[featureType].featureTypeState;
+            switch (featureTypeStateOfFeatureType) {
+              //Check if filters need to be added for this FeatureType
+              case MapFeatureTypeState.NEEDS_FILTERS: {
+                //Dispatch the addFilter action for the number of attributes that have an 'attribute state'. If there are 5 attributes with an attribute state then 5 filters will be added.
+                for (
+                  var x = 0;
+                  x < Object.keys(attributeStatesOfFeatureType).length;
+                  ++x
+                ) {
+                  /*
               Dispatch addFilter with the FeatureType,
               which is also the name of the dataset
               we are attaching the filter too.
@@ -208,31 +261,67 @@ const MapImpl: React.FunctionComponent = () => {
               Here, we just ensure that that the appropriate number of filters are added to Kepler, attached to the right dataset/FeatureType (e.g. addFilter("Transmission")) and 
               worry about assigning them an attribute in FilterSliders.tsx (e.g setFilter(idx,"name","timeStamp"))
               */
-              dispatch(
-                addFilter(FeatureType[featureType as keyof typeof FeatureType])
-              );
+                  dispatch(
+                    addFilter(
+                      FeatureType[featureType as keyof typeof FeatureType]
+                    )
+                  );
+                }
+                break;
+              }
+
+              /* Several cases here. The point is that when in any of these cases, let featureTypeStrategy handle what actions to dispatch.
+              Right now only TransmissionFeatureTypeStrategy does a lot with this (others just use this to configure their pop-up), but this will make it possible to configure layers of different
+              feature types later.
+              */
+              case MapFeatureTypeState.NEEDS_POPUP_CHANGE:
+              case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
+              case MapFeatureTypeState.NEEDS_3D_ENABLED:
+              case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
+              case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+                /* Get the kepler layers list as well as an index to get the keplerLayer that holds the relevant feature type.*/
+                const keplerLayers = keplerState.map.visState.layers;
+                const layerIndex = keplerLayers.findIndex(
+                  (layer: {config: {dataId: string}}) =>
+                    layer.config.dataId === featureType
+                );
+                const keplerLayerOfFeatureType = keplerLayers[layerIndex];
+
+                /*Get a kepler filter of the feature type. For now we hardcode to get the transmissionPower filter*/
+                const keplerFilters = keplerState.map.visState.filters;
+                const keplerFilterOfFeatureType =
+                  keplerFilters[
+                    state.featuresByType[featureType].attributeStates[
+                      FeatureAttributeName.transmissionPower
+                    ].filterIndex!
+                  ];
+
+                /*Get the kepler list of fields of the feature type*/
+                const keplerFieldsOfFeatureType =
+                  keplerState.map.visState.datasets[featureType].fields;
+
+                /*Get the interactionConfig of kepler. This is used to change fieldsToShowOnPopup*/
+                const keplerInteractionConfigCopy = Object.assign(
+                  {},
+                  keplerState.map.visState.interactionConfig
+                );
+
+                keplerInteractionConfigCopy.tooltip.config.fieldsToShow[
+                  featureType
+                ] = featureTypeStrategy.fieldsToShowOnPopup;
+
+                featureTypeStrategy.dispatchLayerConfigurationActions({
+                  keplerLayerOfFeatureType,
+                  keplerFilterOfFeatureType,
+                  keplerFieldsOfFeatureType,
+                  keplerInteractionConfigCopy,
+                  featureTypeStateOfFeatureType,
+                  dispatch,
+                });
+                break;
+              }
             }
-
-            //dispatch layerConfigChange to change the label of the feature type as it shows on the map. Failure to do this will make the map display "new dataset" for the featuretype lable
-            const keplerLayers = keplerState.map.visState.layers;
-            const layerIndex = keplerLayers.findIndex(
-              (layer: {config: {dataId: string}}) =>
-                layer.config.dataId === featureType
-            );
-            const newLayerConfig = {
-              label: featureType,
-            };
-            dispatch(
-              layerConfigChange(keplerLayers[layerIndex], newLayerConfig)
-            );
-
-            const interactionConfigCopy =
-              keplerState.map.visState.interactionConfig;
-            interactionConfigCopy.tooltip.config.fieldsToShow[featureType] =
-              featureTypeStrategy.fieldsToShowOnPopup;
-            dispatch(interactionConfigChange(interactionConfigCopy));
           }
-        }
         break;
       }
 

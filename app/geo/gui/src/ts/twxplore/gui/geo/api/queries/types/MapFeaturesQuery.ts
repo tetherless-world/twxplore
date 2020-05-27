@@ -9,11 +9,38 @@ import { FeatureQuery, FeatureType } from "./../../graphqlGlobalTypes";
 // GraphQL query operation: MapFeaturesQuery
 // ====================================================
 
+export interface MapFeaturesQuery_features_geometry_parsedWkt_Line {
+  __typename: "Line" | "MultiLine" | "MultiPoint";
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_Point {
+  __typename: "Point";
+  x: number;
+  y: number;
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_Polygon {
+  __typename: "Polygon";
+  lines: number[][];
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon_polygons {
+  __typename: "Polygon";
+  lines: number[][];
+}
+
+export interface MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon {
+  __typename: "MultiPolygon";
+  polygons: MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon_polygons[];
+}
+
+export type MapFeaturesQuery_features_geometry_parsedWkt = MapFeaturesQuery_features_geometry_parsedWkt_Line | MapFeaturesQuery_features_geometry_parsedWkt_Point | MapFeaturesQuery_features_geometry_parsedWkt_Polygon | MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
+
 export interface MapFeaturesQuery_features_geometry {
   __typename: "ParsedGeometry";
   label: string | null;
-  wkt: string;
   uri: string;
+  parsedWkt: MapFeaturesQuery_features_geometry_parsedWkt;
 }
 
 export interface MapFeaturesQuery_features {
@@ -26,7 +53,6 @@ export interface MapFeaturesQuery_features {
   locality: string | null;
   postalCode: string | null;
   regions: string[];
-  frequencyUnit: string | null;
   transmissionPower: number | null;
   geometry: MapFeaturesQuery_features_geometry;
 }

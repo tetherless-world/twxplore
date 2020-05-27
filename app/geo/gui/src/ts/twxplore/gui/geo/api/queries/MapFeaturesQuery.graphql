@@ -8,12 +8,24 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
     locality
     postalCode
     regions
-    frequencyUnit
     transmissionPower
     geometry {
       label
-      wkt
       uri
+      parsedWkt {
+        ... on Point {
+          x
+          y
+        }
+        ... on Polygon {
+          lines
+        }
+        ... on MultiPolygon {
+          polygons {
+            lines
+          }
+        }
+      }
     }
   }
 }

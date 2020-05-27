@@ -8,13 +8,20 @@ import {rootReducer} from "./reducers/root/rootReducer";
 import {initialRootState} from "./states/root/initialRootState";
 import {composeWithDevTools} from "redux-devtools-extension";
 //import {ADD_MAP_FEATURES} from "./actions/map/AddMapFeaturesAction";
-import {BaseAction} from "redux-actions";
 import {RootState} from "./states/root/RootState";
 
 //import {ADD_MAP_FEATURES} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 
-const actionSanitizer = (action: BaseAction) => {
-  return {...action, payload: {}};
+const actionSanitizer = (action: any) => {
+  if (action.type.includes("CHANNEL")) {
+    return {...action, oldLayer: {}};
+  }
+  return {
+    ...action,
+    payload: {},
+    newConfig: action.newConfig ? action.newConfig : {},
+    newVisConfig: action.newVisConfig ? action.newVisConfig : {},
+  };
 };
 
 const composeEnhancers = (composeWithDevTools as any)({

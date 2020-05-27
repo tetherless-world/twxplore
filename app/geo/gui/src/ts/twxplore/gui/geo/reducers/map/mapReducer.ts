@@ -175,6 +175,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
             featuresByTypeOfType.featureTypeState =
               //Set FeatureTypeState of all FeatureTypes that are 'WAITING_FOR_LOAD' to 'NEEDS_FILTERS'
               MapFeatureTypeState.NEEDS_FILTERS;
+
             //Now that this FeatureType needs filters, give each attribute a filter idx using a counter
             Object.keys(attributeStatesOfFeatureType).map(attributeName => {
               attributeStatesOfFeatureType[
@@ -243,14 +244,12 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         setAllFilterIndexesNull(attributeStatesOfFeatureType);
 
         if (
-          //If the filters of the attributes of a FeatureType have been added/set
-          featuresByTypeOfType.featureTypeState ===
-            MapFeatureTypeState.FILTERS_ADDED ||
-          featuresByTypeOfType.featureTypeState ===
-            MapFeatureTypeState.FILTERS_SET
+          //If features of that type are present on the map
+          featuresByTypeOfType.featureTypeState !==
+          MapFeatureTypeState.ABSENT_ON_MAP
         ) {
           //Set the state of the featureTypeState to WAITING_FOR_LOAD
-          //because a query has started. Filters are going to be removed
+          //because a query has started. Filters and layers are going to be removed
           //and we need to wait for the queries to end before re-adding the filters.
           featuresByTypeOfType.featureTypeState =
             MapFeatureTypeState.WAITING_FOR_LOAD;
@@ -321,7 +320,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       //addFilter has been called on the type. Set featureTypeState to FILTERS_ADDED to indicate the process
       //for adding a filter for each filterable attribute of this feature type has begun
       result.featuresByType[addFilterAction.dataId].featureTypeState =
-        MapFeatureTypeState.FILTERS_ADDED;
+        MapFeatureTypeState.NEEDS_INITIAL_FILTER_SETTING;
       //Increment filterCounter on the redux state, because a filter has just been added.
       result.filterCounter += 1;
       console.debug("ADD_FILTER action completed");
@@ -333,7 +332,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const allFiltersSetAction = action as AllFiltersSetAction;
       result.featuresByType[
         allFiltersSetAction.payload.featureType
-      ].featureTypeState = MapFeatureTypeState.FILTERS_SET;
+      ].featureTypeState = MapFeatureTypeState.NEEDS_POPUP_CHANGE;
       console.debug("ALL_FILTERS_SET action completed");
       break;
     }
@@ -395,8 +394,91 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
 
       break;
     }
+
+    //THE MapFeatureTypeState.NEEDS_POPUP_CHANGE and MapFeatureTypeState.NEEDS_LNG_AND_LAT dispatch actions that use this case
+    case "@@kepler.gl/LAYER_CONFIG_CHANGE": {
+      const layerConfigChangeAction: any = action;
+      if (
+        layerConfigChangeAction.oldLayer === undefined ||
+        layerConfigChangeAction.newConfig === undefined
+      )
+        break;
+      const layerIdOfFeatureType: string =
+        layerConfigChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+
+      /*The layerConfigChangeAction is used for several different purposes (such as changing layer visibility), 
+      the below code is to check if we're currently in this case because the label of the layer is being changed. If so, that is our signal
+      that we are in the NEEDS_POPUP_CHANGE case and it is time to move forward and change the state */
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("label")) {
+        //If this layer is attached to the 'Transmission' FeatureType... then next step is to change the layer. Else, we're done.
+        if (
+          FeatureType[layerIdOfFeatureType as keyof typeof FeatureType] ===
+          FeatureType.Transmission
+        ) {
+          featuresByTypeOfFeatureType.featureTypeState =
+            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+        } else {
+          featuresByTypeOfFeatureType.featureTypeState =
+            MapFeatureTypeState.FINISHED_SETUP;
+        }
+      }
+      /*Checking to see if the action was used to change the 'columns' of the layer. If so, then it signifies 
+      that we are in MapFeatureTypeState.NEEDS_LNG_AND_LAT and it is time to move to NEEDS_3D_ENABLED*/
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("columns")) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.NEEDS_3D_ENABLED;
+      }
+
+      break;
+    }
+    /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
+    case "@@kepler.gl/LAYER_TYPE_CHANGE": {
+      const layerTypeChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerTypeChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+      featuresByTypeOfFeatureType.featureTypeState =
+        MapFeatureTypeState.NEEDS_LNG_AND_LAT;
+      break;
+    }
+    //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case
+    case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
+      const layerVisConfigChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerVisConfigChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+      if (
+        Object.keys(layerVisConfigChangeAction.newVisConfig).includes(
+          "enable3d"
+        )
+      ) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
+      }
+
+      break;
+    }
+
+    //MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE dispatches an action that uses this case.
+    case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
+      const layerVisualChannelChangeAction: any = action;
+      const layerIdOfFeatureType: string =
+        layerVisualChannelChangeAction.oldLayer.config.dataId;
+      let featuresByTypeOfFeatureType =
+        result.featuresByType[layerIdOfFeatureType];
+      featuresByTypeOfFeatureType.featureTypeState =
+        MapFeatureTypeState.FINISHED_SETUP;
+
+      break;
+    }
+
     default: {
       console.log("mapReducer: ignoring action type " + action.type);
+      break;
     }
   }
 

@@ -12,6 +12,8 @@ export enum FeatureAttributeName {
   frequencyString = "frequencyString",
   timestampString = "timestampString",
   transmissionPowerString = "transmissionPowerString",
+  x = "x",
+  y = "y",
 }
 
 export type FeatureAttributeKey = keyof typeof FeatureAttributeName;

@@ -6,6 +6,7 @@ import {MilitaryInstallationFeatureTypeStrategy} from "./PolygonFeatureTypeStrat
 import {TransmissionFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmissionFeatureTypeStrategy";
 import {TransmitterFeatureTypeStrategy} from "./PointFeatureTypeStrategy/TransmitterFeatureTypeStrategy";
 import {RootFeatureTypeStrategy} from "./RootFeatureTypeStrategy";
+import {PolicyFeatureTypeStrategy} from "./PointFeatureTypeStrategy/PolicyFeatureTypeStrategy";
 
 //type FeatureTypeKey = keyof typeof FeatureType;
 
@@ -32,9 +33,12 @@ export const getFeatureTypeStrategyByName = (featureTypeName: FeatureType) => {
     case FeatureType.Root: {
       return RootFeatureTypeStrategy.instance;
     }
+    case FeatureType.Policy: {
+      return PolicyFeatureTypeStrategy.instance;
+    }
 
     default: {
-      throw Error("Unrecognized Feature Type");
+      throw Error("Unrecognized Feature Type of type " + featureTypeName);
     }
   }
 };
