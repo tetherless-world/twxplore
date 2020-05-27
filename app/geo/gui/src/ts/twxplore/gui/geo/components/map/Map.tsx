@@ -116,24 +116,23 @@ const MapImpl: React.FunctionComponent = () => {
   ) => {
     switch (parsedWkt.__typename) {
       case "Point": {
-        let pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point;
+        const pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point;
         return [pointParsedWkt.x, pointParsedWkt.y];
       }
       case "Polygon": {
-        let polygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Polygon;
+        const polygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Polygon;
         return [_.chunk(polygonParsedWkt.lines[0], 2)];
       }
       case "MultiPolygon": {
-        let multiPollygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
+        const multiPolygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
         const MultiPolygonArray = [];
-        for (const polygon of multiPollygonParsedWkt.polygons) {
+        for (const polygon of multiPolygonParsedWkt.polygons) {
           MultiPolygonArray.push([_.chunk(polygon.lines[0], 2)]);
         }
         return MultiPolygonArray;
       }
       default: {
-        throw new Error("MISTAKES");
-        break;
+        throw new Error("Unhandled case in pairCoordiantes");
       }
     }
   };
