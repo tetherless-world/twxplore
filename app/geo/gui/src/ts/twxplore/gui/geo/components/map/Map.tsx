@@ -12,6 +12,9 @@ import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
   MapFeaturesQuery_features_geometry_parsedWkt_Point2D,
+  MapFeaturesQuery_features_geometry_parsedWkt,
+  MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
+  MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon,
   //MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -43,11 +46,10 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
-var wkt = require("terraformer-wkt-parser");
+//var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
   //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
-
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
   );
@@ -99,7 +101,7 @@ const MapImpl: React.FunctionComponent = () => {
             y: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .y,
-            //parsedWkt: feature.geometry.parsedWkt,
+            parsedWkt: feature.geometry.parsedWkt,
           }))
         )
       );
@@ -108,6 +110,32 @@ const MapImpl: React.FunctionComponent = () => {
     fetchPolicy: "network-only",
   });
 
+  const pairCoordinates = (
+    parsedWkt: MapFeaturesQuery_features_geometry_parsedWkt
+  ) => {
+    switch (parsedWkt.__typename) {
+      case "Point2D": {
+        let pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D;
+        return [pointParsedWkt.x, pointParsedWkt.y];
+      }
+      case "Polygon": {
+        let polygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Polygon;
+        return [_.chunk(polygonParsedWkt.lines[0], 2)];
+      }
+      case "MultiPolygon": {
+        let multiPollygonParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon;
+        const MultiPolygonArray = [];
+        for (const polygon of multiPollygonParsedWkt.polygons) {
+          MultiPolygonArray.push([_.chunk(polygon.lines[0], 2)]);
+        }
+        return MultiPolygonArray;
+      }
+      default: {
+        throw new Error("MISTAKES");
+        break;
+      }
+    }
+  };
   //This function checks if any of the featureByTypes are 'dirty'
   const hasDirtyFeatures = Object.values(FeatureType).some(
     featureType => state.featuresByType[featureType].dirty
@@ -163,21 +191,14 @@ const MapImpl: React.FunctionComponent = () => {
                 features: dirtyFeaturesOfFeatureType.map(feature => {
                   return {
                     type: "Feature",
-                    geometry: wkt.parse(feature.geometry.wkt),
-                    /*geometry: {
-                      type: feature.geometry.parsedWkt.__typename,
-                      coordinates: initialArray.reduce(function(
-                        result,
-                        value,
-                        index,
-                        array
-                      ) {
-                        if (index % 2 === 0)
-                          result.push(array.slice(index, index + 2));
-                        return result;
-                      },
-                      []),
-                    },*/
+                    //geometry: wkt.parse(feature.geometry.wkt),
+                    geometry: {
+                      type:
+                        feature.geometry.parsedWkt.__typename === "Point2D"
+                          ? "Point"
+                          : feature.geometry.parsedWkt.__typename,
+                      coordinates: pairCoordinates(feature.geometry.parsedWkt),
+                    },
                     properties: feature,
                   };
                 }),
@@ -192,7 +213,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: false},
+                options: {centerMap: true, readOnly: true},
               })
             );
           }
