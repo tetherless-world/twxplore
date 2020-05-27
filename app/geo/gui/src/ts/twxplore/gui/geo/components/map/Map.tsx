@@ -101,7 +101,6 @@ const MapImpl: React.FunctionComponent = () => {
             y: (feature.geometry
               .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
               .y,
-            parsedWkt: feature.geometry.parsedWkt,
           }))
         )
       );

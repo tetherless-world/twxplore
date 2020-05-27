@@ -39,7 +39,6 @@ export type MapFeaturesQuery_features_geometry_parsedWkt = MapFeaturesQuery_feat
 export interface MapFeaturesQuery_features_geometry {
   __typename: "ParsedGeometry";
   label: string | null;
-  wkt: string;
   uri: string;
   parsedWkt: MapFeaturesQuery_features_geometry_parsedWkt;
 }

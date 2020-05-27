@@ -11,7 +11,6 @@ query MapFeaturesQuery($query: FeatureQuery!, $limit: Int, $offset: Int) {
     transmissionPower
     geometry {
       label
-      wkt
       uri
       parsedWkt {
         ... on Point2D {
