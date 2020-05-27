@@ -436,6 +436,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
     case "@@kepler.gl/LAYER_TYPE_CHANGE": {
       const layerTypeChangeAction: any = action;
+      if (layerTypeChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerTypeChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
@@ -447,6 +448,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
       const layerVisConfigChangeAction: any = action;
+      if (layerVisConfigChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerVisConfigChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
@@ -466,6 +468,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
     //MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE dispatches an action that uses this case.
     case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
       const layerVisualChannelChangeAction: any = action;
+      if (layerVisualChannelChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerVisualChannelChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
