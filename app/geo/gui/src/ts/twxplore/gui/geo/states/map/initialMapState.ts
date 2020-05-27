@@ -53,7 +53,6 @@ const rootFeature: MapFeature = {
   geometry: {
     __typename: "ParsedGeometry",
     label: "",
-    wkt: "",
     uri: "",
     parsedWkt: {__typename: "Polygon", lines: []},
   },
