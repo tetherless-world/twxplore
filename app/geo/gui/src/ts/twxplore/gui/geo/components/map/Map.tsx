@@ -46,9 +46,7 @@ import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 const LIMIT = 500;
 const DEBUG = true;
 const DEBUG_FEATURES_MAX = 5000;
-//var wkt = require("terraformer-wkt-parser");
 const MapImpl: React.FunctionComponent = () => {
-  //const logger: Logger = React.useContext(LoggerContext);
   const dispatch = useDispatch();
   const state: MapState = useSelector(
     (rootState: RootState) => rootState.app.map
