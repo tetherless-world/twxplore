@@ -24,7 +24,7 @@ class GeoGraphQlSchemaDefinitionSpec extends PlaySpec {
            features(query: {}, limit: 10, offset: 0) {
                geometry {
                   parsedWkt {
-                    ... on Point2D {
+                    ... on Point {
                       x
                       y
                     }
