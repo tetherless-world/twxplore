@@ -18,7 +18,9 @@ object GeoGraphQlSchemaDefinition extends BaseGraphQlSchemaDefinition {
 
   implicit val TimestampRangeObjectType = deriveObjectType[GeoGraphQlSchemaContext, TimestampRange]()
 
-  implicit val ParsedWktPoint2DObjectType = deriveObjectType[GeoGraphQlSchemaContext, Point2D]()
+  implicit val ParsedWktPoint2DObjectType = deriveObjectType[GeoGraphQlSchemaContext, Point2D](
+    ObjectTypeName("Point")
+  )
   implicit val ParsedWktLineObjectType = deriveObjectType[GeoGraphQlSchemaContext, Line](
     // Optimize the representation to return a list of points
     ReplaceField("points", Field("points", ListType(FloatType), resolve = _.value.points.flatMap(point => List(point.x, point.y))))

@@ -3,6 +3,7 @@ import logging
 from typing import Optional, Generator, Tuple, List, Union
 
 from geo_cli.etl.pipeline.dsa.dsa_pipeline import DsaPipeline
+from geo_cli.etl.pipeline.osn.osn_pipeline import OsnPipeline
 from geo_cli.etl.pipeline.reverse_beacon.reverse_beacon_pipeline import ReverseBeaconPipeline
 from geo_cli.etl.pipeline.tiger_line.tiger_line_pipeline import TigerLinePipeline
 from geo_cli.etl.pipeline.uls.uls_pipeline import UlsPipeline
@@ -10,12 +11,13 @@ from geo_cli.model.feature import Feature
 
 
 class GeoCli:
-    __PIPELINES = {
+    __PIPELINES = (
         DsaPipeline(),
+        OsnPipeline(),
         ReverseBeaconPipeline(),
         TigerLinePipeline(),
-        UlsPipeline()
-    }
+        UlsPipeline(),
+    )
     __PIPELINES_BY_ID = {pipeline.id: pipeline for pipeline in __PIPELINES}
 
     def __init__(

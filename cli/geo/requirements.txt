@@ -17,6 +17,7 @@ pytest==5.3.5
 rdflib==4.2.2
 requests==2.23.0
 six==1.14.0
+tqdm==4.46.0
 urllib3==1.25.8
 wcwidth==0.1.8
 zipp==3.1.0
