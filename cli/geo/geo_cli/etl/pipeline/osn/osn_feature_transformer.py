@@ -75,7 +75,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                     ),
                                     label=f"Open Sky Network: ICAO transponder={icao24}, {'Call sign=' + callsign if callsign else ''}, {'On ground' if onground else 'Airborne'}",
                                     timestamp=lastcontact,
-                                    transmission_power=27.0, # dBW, max of various ADS-B 1090ES systems, see faa.gov table above
+                                    transmission_power=27, # dBW, max of various ADS-B 1090ES systems, see faa.gov table above
                                     type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                     uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
                                 )
