@@ -35,6 +35,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
           label: this.name,
         };
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
+        break;
       }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
         dispatch(layerTypeChange(keplerLayerOfFeatureType, "hexagon"));
