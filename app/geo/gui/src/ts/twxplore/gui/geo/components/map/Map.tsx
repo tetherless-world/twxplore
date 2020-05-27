@@ -97,12 +97,18 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPowerString: feature.transmissionPower
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
-            x: (feature.geometry
-              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
-              .x,
-            y: (feature.geometry
-              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
-              .y,
+            x:
+              feature.geometry.parsedWkt.__typename === "Point"
+                ? (feature.geometry
+                    .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
+                    .x
+                : undefined,
+            y:
+              feature.geometry.parsedWkt.__typename === "Point"
+                ? (feature.geometry
+                    .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
+                    .y
+                : undefined,
           }))
         )
       );
