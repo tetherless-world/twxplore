@@ -13,7 +13,7 @@ import {RootState} from "./states/root/RootState";
 //import {ADD_MAP_FEATURES} from "twxplore/gui/tree/actions/map/AddMapFeaturesAction";
 
 const actionSanitizer = (action: any) => {
-  if (action.type.includes("CHANNEL")) {
+  if (action.type.includes("CHANNEL") || action.type.includes("CONFIG")) {
     return {...action, oldLayer: {}};
   }
   return {
