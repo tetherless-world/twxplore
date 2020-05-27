@@ -11,10 +11,10 @@ import {MapState} from "../../states/map/MapState";
 import {
   MapFeaturesQuery,
   MapFeaturesQueryVariables,
-  MapFeaturesQuery_features_geometry_parsedWkt_Point2D,
   MapFeaturesQuery_features_geometry_parsedWkt,
   MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
   MapFeaturesQuery_features_geometry_parsedWkt_MultiPolygon,
+  MapFeaturesQuery_features_geometry_parsedWkt_Point,
   //MapFeaturesQuery_features_geometry_parsedWkt_Polygon,
 } from "../../api/queries/types/MapFeaturesQuery";
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -87,7 +87,11 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
             frequencyString: feature.frequency
-              ? (Math.floor(feature.frequency * 100) / 100).toString() + " "
+              ? (
+                  Math.floor((feature.frequency / 1000000) * 100) / 100
+                ).toString() +
+                " " +
+                "MHz"
               : undefined,
             timestampString: feature.timestamp
               ? new Date(feature.timestamp * 1000).toString()
@@ -96,10 +100,10 @@ const MapImpl: React.FunctionComponent = () => {
               ? feature.transmissionPower.toString() + " dB"
               : undefined,
             x: (feature.geometry
-              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
+              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
               .x,
             y: (feature.geometry
-              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D)
+              .parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point)
               .y,
           }))
         )
@@ -114,7 +118,7 @@ const MapImpl: React.FunctionComponent = () => {
   ) => {
     switch (parsedWkt.__typename) {
       case "Point": {
-        let pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D;
+        let pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point;
         return [pointParsedWkt.x, pointParsedWkt.y];
       }
       case "Polygon": {
