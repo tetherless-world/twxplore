@@ -6,7 +6,7 @@
         "name": "ParsedWkt",
         "possibleTypes": [
           {
-            "name": "Point2D"
+            "name": "Point"
           },
           {
             "name": "Line"

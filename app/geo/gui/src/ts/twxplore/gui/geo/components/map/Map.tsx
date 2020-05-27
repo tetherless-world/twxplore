@@ -113,7 +113,7 @@ const MapImpl: React.FunctionComponent = () => {
     parsedWkt: MapFeaturesQuery_features_geometry_parsedWkt
   ) => {
     switch (parsedWkt.__typename) {
-      case "Point2D": {
+      case "Point": {
         let pointParsedWkt = parsedWkt as MapFeaturesQuery_features_geometry_parsedWkt_Point2D;
         return [pointParsedWkt.x, pointParsedWkt.y];
       }
@@ -192,10 +192,7 @@ const MapImpl: React.FunctionComponent = () => {
                     type: "Feature",
                     //geometry: wkt.parse(feature.geometry.wkt),
                     geometry: {
-                      type:
-                        feature.geometry.parsedWkt.__typename === "Point2D"
-                          ? "Point"
-                          : feature.geometry.parsedWkt.__typename,
+                      type: feature.geometry.parsedWkt.__typename,
                       coordinates: pairCoordinates(feature.geometry.parsedWkt),
                     },
                     properties: feature,
