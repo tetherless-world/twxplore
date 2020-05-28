@@ -25,7 +25,6 @@ class OsnExtractor(_Extractor):
                     states_csv_tar_file_paths.append(states_csv_tar_file_path)
                     self._logger.info("%s exists, skipping download", states_csv_tar_file_path)
                     continue
-                continue  # Use the data we have
                 states_csv_tar_file_url = f"https://opensky-network.org/datasets/states/{day.year:02d}-{day.month:02d}-{day.day:02d}/{hour:02d}/{states_csv_tar_file_name}"
                 try:
                     self._logger.info("downloading %s to %s", states_csv_tar_file_url, states_csv_tar_file_path)

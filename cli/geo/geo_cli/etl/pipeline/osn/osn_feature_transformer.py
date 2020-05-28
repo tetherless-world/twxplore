@@ -1,10 +1,11 @@
 import csv
 import gzip
+from calendar import timegm
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Tuple
+from typing import Tuple, NamedTuple
 import tarfile
 import os.path
 
@@ -22,8 +23,33 @@ class OsnFeatureTransformer(_FeatureTransformer):
         "TRUE": True
     }
 
+    # https://anthonylouisdagostino.com/bounding-boxes-for-all-us-states/
+    # xmin	ymin	xmax	ymax
+    # New York:
+    # -79.762152	40.496103	-71.856214	45.01585
+    class __BoundingBox(NamedTuple):
+        # x is longitude, y is latitude
+        xmax: float
+        xmin: float
+        ymax: float
+        ymin: float
+
+        def contains(self, x: float, y: float):
+            if x > self.xmax:
+                return False
+            if x < self.xmin:
+                return False
+            if y > self.ymax:
+                return False
+            if y < self.ymin:
+                return False
+            return True
+
+    __NYS_BOUNDING_BOX = __BoundingBox(xmax = -71.856214, xmin = -79.762152, ymax = 45.01585, ymin = 40.496103)
+
     def transform(self, *, states_csv_tar_file_paths: Tuple[Path, ...]):
         features_by_icao24 = {}
+        feature_count = 0
         for states_csv_tar_file_path in states_csv_tar_file_paths:
             self._logger.info("processing %s", states_csv_tar_file_path)
             with tarfile.open(states_csv_tar_file_path) as states_csv_tar_file:
@@ -38,8 +64,8 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                 # time = datetime.utcfromtimestamp(float(row["time"]))
                                 # icao24: This column contains the 24-bit ICAO transponder ID which can be used to track specific airframes over different flights.
                                 icao24 = row["icao24"]
-                                # lat = float(row["lat"])
-                                # lon = float(row["lon"])
+                                lat = float(row["lat"])
+                                lon = float(row["lon"])
                                 # velocity: This column contains the speed over ground of the aircraft in meters per second.
                                 # velocity = float(row["velocity"])
                                 # heading: This column represents the direction of movement (track angle) as the clockwise angle from the geographic north.
@@ -63,6 +89,11 @@ class OsnFeatureTransformer(_FeatureTransformer):
                             except ValueError:
                                 continue
 
+                            if not self.__NYS_BOUNDING_BOX.contains(x=lon, y=lat):
+                                # self._logger.info("%.4f %.4f is not in New York State", lat, lon)
+                                continue
+                            # self._logger.info("%.4f %.4f is in New York State", lat, lon)
+
                             # https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC%2020-165.pdf
                             # https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast#Description
                             # Model an ADS-B 1090ES transponder
@@ -79,14 +110,30 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                     type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                     uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
                                 )
-                            existing_feature = features_by_icao24.get(icao24)
-                            if existing_feature is None:
-                                features_by_icao24[icao24] = feature
-                            elif feature.timestamp >= existing_feature.timestamp:
-                                features_by_icao24[icao24] = feature
+                            existing_features = features_by_icao24.setdefault(icao24, [])
+                            if not existing_features:
+                                existing_features.append(feature)
+                                feature_count += 1
+                                continue
+                            # Add this feature to the existing features if its timestamp is > or < 30 minutes from an existing feature
+                            def to_timestamp(datetime_: datetime) -> int:
+                                return timegm(datetime_.utctimetuple())
+                            feature_timestamp = to_timestamp(feature.timestamp)
+                            timestamp_delta_min = None
+                            for existing_feature in existing_features:
+                                existing_feature_timestamp = to_timestamp(existing_feature.timestamp)
+                                timestamp_delta = abs(existing_feature_timestamp - feature_timestamp)
+                                if timestamp_delta_min is None or timestamp_delta < timestamp_delta_min:
+                                    timestamp_delta_min = timestamp_delta
+                            # Usual delta between last contacts is ~10 seconds
+                            if timestamp_delta_min >= 5 * 60:  # 5 minutes in seconds
+                                existing_features.append(feature)
+                                feature_count += 1
 
-            self._logger.info("processed %s", states_csv_tar_file_path)
+            self._logger.info("processed %s (%d features total)", states_csv_tar_file_path, feature_count)
 
-        yield from features_by_icao24.values()
+        for features in features_by_icao24.values():
+            features.sort(key=lambda feature: feature.timestamp)
+            yield from features
 
 
