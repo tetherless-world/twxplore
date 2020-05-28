@@ -8,9 +8,7 @@ import {toggleLayerChange} from "../../actions/map/ToggleLayerChangeAction";
 
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
-  const handleLayerToggleClick = (featureType: FeatureType) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleLayerToggleClick = (featureType: FeatureType) => (event: any) => {
     dispatch(toggleLayerChange(featureType));
   };
 
