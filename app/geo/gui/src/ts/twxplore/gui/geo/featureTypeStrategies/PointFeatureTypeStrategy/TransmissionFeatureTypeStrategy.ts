@@ -8,7 +8,6 @@ import {
   layerConfigChange,
   layerVisualChannelConfigChange,
   interactionConfigChange,
-  //removeLayer,
 } from "kepler.gl/actions";
 import {DispatchLayerConfigurationActionsParameters} from "../DispatchLayerConfigurationActionsParameters";
 import {KeplerLayerType} from "../../states/map/KeplerLayerType";
