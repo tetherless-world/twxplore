@@ -23,15 +23,7 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   };
 
   return (
-    <Grid
-      item
-      container
-      alignItems={"center"}
-      spacing={2}
-      wrap="wrap"
-      direction="column"
-      xs
-    >
+    <React.Fragment>
       {Object.values(FeatureType).map(featureType => {
         const featureTypeStrategy = getFeatureTypeStrategyByName(featureType);
         if (!featureTypeStrategy.layerTypeToggleable) {
@@ -68,7 +60,7 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
           </Grid>
         );
       })}
-    </Grid>
+    </React.Fragment>
   );
 };
 

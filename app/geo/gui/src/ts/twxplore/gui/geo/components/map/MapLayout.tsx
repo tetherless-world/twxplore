@@ -151,15 +151,17 @@ const MapLayoutImpl: React.FunctionComponent = () => {
           <Grid
             container
             item
+            direction="column"
             spacing={0}
             justify={"flex-start"}
             className={classes.drawerGridContainer}
           >
-            <Grid item xs={12}>
+            <Grid item xs>
               <Typography align={"center"}>Filters</Typography>
             </Grid>
-
-            <FilterPanel />
+            <Grid container item direction="column">
+              <FilterPanel />
+            </Grid>
           </Grid>
 
           <Grid
@@ -170,11 +172,13 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             className={classes.drawerGridContainer}
             justify={"flex-start"}
           >
-            <Grid item xs={12}>
+            <Grid item xs>
               <Typography align={"center"}>Toggle Layer Visibility</Typography>
             </Grid>
 
-            <SelectionPanel />
+            <Grid item container direction="column">
+              <SelectionPanel />
+            </Grid>
           </Grid>
 
           <Grid
@@ -185,11 +189,21 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             className={classes.drawerGridContainer}
             justify={"flex-start"}
           >
-            <Grid>
+            <Grid item xs>
               <Typography align={"center"}>Toggle Layer Type</Typography>
             </Grid>
 
-            <ToggleLayerPanel />
+            <Grid
+              item
+              container
+              alignItems={"center"}
+              spacing={2}
+              wrap="wrap"
+              direction="column"
+              xs
+            >
+              <ToggleLayerPanel />
+            </Grid>
           </Grid>
         </Grid>
       </Drawer>

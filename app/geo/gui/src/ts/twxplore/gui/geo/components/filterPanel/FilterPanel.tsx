@@ -6,7 +6,6 @@ import {
   ExpansionPanelSummary,
   Typography,
   ExpansionPanelDetails,
-  Grid,
 } from "@material-ui/core";
 import {useSelector, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
@@ -35,7 +34,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   );
 
   return (
-    <Grid container item direction="column">
+    <React.Fragment>
       {Object.keys(state.featuresByType).map(featureType => {
         if (featureType == FeatureType.Root) {
           return <React.Fragment key={featureType} />;
@@ -59,7 +58,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
           </ExpansionPanel>
         );
       })}
-    </Grid>
+    </React.Fragment>
   );
 };
 export const FilterPanel = connect()(FilterPanelImpl);
