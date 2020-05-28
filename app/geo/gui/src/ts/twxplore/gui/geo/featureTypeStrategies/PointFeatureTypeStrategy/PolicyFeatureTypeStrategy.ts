@@ -19,4 +19,5 @@ export class PolicyFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.locality,
   ];
   readonly heightAttributeFor3DMap = null;
+  readonly layerTypeToggleable = false;
 }

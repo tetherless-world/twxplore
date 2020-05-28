@@ -135,4 +135,5 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.locality,
   ];
   readonly heightAttributeFor3DMap = FeatureAttributeName.transmissionPower;
+  readonly layerTypeToggleable = true;
 }

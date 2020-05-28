@@ -9,6 +9,7 @@ export interface FeatureTypeStrategy {
   readonly expandable: boolean;
   readonly fieldsToShowOnPopup: FeatureAttributeName[];
   readonly heightAttributeFor3DMap: FeatureAttributeName | null;
+  readonly layerTypeToggleable: boolean;
   getClickedQuery(clickedFeatureUri: string): FeatureQuery | null;
   dispatchLayerConfigurationActions(
     kwds: DispatchLayerConfigurationActionsParameters

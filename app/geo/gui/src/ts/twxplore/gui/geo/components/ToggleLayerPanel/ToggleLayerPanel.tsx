@@ -5,6 +5,7 @@ import {Grid, Button, Typography} from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 import {toggleLayerChange} from "../../actions/map/ToggleLayerChangeAction";
+import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
 
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -23,32 +24,36 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
       xs
     >
       {Object.values(FeatureType).map(featureType => {
-        return (
-          <Grid
-            item
-            container
-            justify={"center"}
-            alignItems={"center"}
-            spacing={1}
-            direction="row"
-            wrap="nowrap"
-            xs
-          >
-            <Grid item xs justify={"center"}>
-              <Typography noWrap align={"center"}>
-                {featureType}
-              </Typography>
+        const featureTypeStrategy = getFeatureTypeStrategyByName(featureType);
+        if (featureTypeStrategy.layerTypeToggleable) {
+          return (
+            <Grid
+              item
+              container
+              justify={"center"}
+              alignItems={"center"}
+              spacing={1}
+              direction="row"
+              wrap="nowrap"
+              xs
+            >
+              <Grid item xs justify={"center"}>
+                <Typography noWrap align={"center"}>
+                  {featureType}
+                </Typography>
+              </Grid>
+              <Grid item xs justify={"center"}>
+                <Button
+                  variant="contained"
+                  onClick={handleLayerToggleClick(featureType)}
+                >
+                  Toggle
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs justify={"center"}>
-              <Button
-                variant="contained"
-                onClick={handleLayerToggleClick(featureType)}
-              >
-                Toggle
-              </Button>
-            </Grid>
-          </Grid>
-        );
+          );
+        }
+        return <React.Fragment />;
       })}
     </Grid>
   );

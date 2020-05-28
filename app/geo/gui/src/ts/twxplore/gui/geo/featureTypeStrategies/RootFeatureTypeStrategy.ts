@@ -20,4 +20,5 @@ export class RootFeatureTypeStrategy implements FeatureTypeStrategy {
   readonly expandable = true;
   readonly fieldsToShowOnPopup = [];
   readonly heightAttributeFor3DMap = null;
+  readonly layerTypeToggleable = false;
 }
