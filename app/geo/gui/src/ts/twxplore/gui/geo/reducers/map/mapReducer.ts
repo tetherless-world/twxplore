@@ -430,10 +430,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           FeatureType.Transmission
         ) {
           featuresByTypeOfFeatureType.featureTypeState =
-            MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE;
+            MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
         } else {
           featuresByTypeOfFeatureType.featureTypeState =
-            MapFeatureTypeState.FINISHED_SETUP;
+            MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
         }
       }
       /*Checking to see if the action was used to change the 'columns' of the layer. If so, then it signifies 

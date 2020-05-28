@@ -146,7 +146,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
           );
           dispatch(
             layerConfigChange(keplerLayerOfFeatureType, {
-              color: [169, 203, 237],
+              color: [66, 101, 204],
             })
           );
         }

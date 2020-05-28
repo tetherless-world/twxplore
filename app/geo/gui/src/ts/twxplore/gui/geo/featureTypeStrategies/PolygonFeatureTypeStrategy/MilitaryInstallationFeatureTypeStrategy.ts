@@ -2,7 +2,7 @@ import {PolygonFeatureTypeStrategy} from "./PolygonFeatureTypeStrategy";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {DispatchLayerConfigurationActionsParameters} from "../DispatchLayerConfigurationActionsParameters";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
-import {layerConfigChange} from "kepler.gl/actions";
+import {layerConfigChange, layerVisConfigChange} from "kepler.gl/actions";
 
 export class MilitaryInstallationFeatureTypeStrategy extends PolygonFeatureTypeStrategy {
   dispatchLayerConfigurationActions(
@@ -18,7 +18,7 @@ export class MilitaryInstallationFeatureTypeStrategy extends PolygonFeatureTypeS
     switch (featureTypeStateOfFeatureType) {
       case MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE: {
         dispatch(
-          layerConfigChange(keplerLayerOfFeatureType, {
+          layerVisConfigChange(keplerLayerOfFeatureType, {
             strokeColor: [248, 248, 249],
           })
         );
