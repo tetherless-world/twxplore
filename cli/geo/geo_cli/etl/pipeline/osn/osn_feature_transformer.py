@@ -4,7 +4,7 @@ from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Tuple
+from typing import Tuple, NamedTuple
 import tarfile
 import os.path
 
@@ -22,6 +22,30 @@ class OsnFeatureTransformer(_FeatureTransformer):
         "TRUE": True
     }
 
+    # https://anthonylouisdagostino.com/bounding-boxes-for-all-us-states/
+    # xmin	ymin	xmax	ymax
+    # New York:
+    # -79.762152	40.496103	-71.856214	45.01585
+    class __BoundingBox(NamedTuple):
+        # x is longitude, y is latitude
+        xmax: float
+        xmin: float
+        ymax: float
+        ymin: float
+
+        def contains(self, x: float, y: float):
+            if x > self.xmax:
+                return False
+            if x < self.xmin:
+                return False
+            if y > self.ymax:
+                return False
+            if y < self.ymin:
+                return False
+            return True
+
+    __NYS_BOUNDING_BOX = __BoundingBox(xmax = -71.856214, xmin = -79.762152, ymax = 45.01585, ymin = 40.496103)
+
     def transform(self, *, states_csv_tar_file_paths: Tuple[Path, ...]):
         features_by_icao24 = {}
         for states_csv_tar_file_path in states_csv_tar_file_paths:
@@ -38,8 +62,8 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                 # time = datetime.utcfromtimestamp(float(row["time"]))
                                 # icao24: This column contains the 24-bit ICAO transponder ID which can be used to track specific airframes over different flights.
                                 icao24 = row["icao24"]
-                                # lat = float(row["lat"])
-                                # lon = float(row["lon"])
+                                lat = float(row["lat"])
+                                lon = float(row["lon"])
                                 # velocity: This column contains the speed over ground of the aircraft in meters per second.
                                 # velocity = float(row["velocity"])
                                 # heading: This column represents the direction of movement (track angle) as the clockwise angle from the geographic north.
@@ -63,6 +87,11 @@ class OsnFeatureTransformer(_FeatureTransformer):
                             except ValueError:
                                 continue
 
+                            if not self.__NYS_BOUNDING_BOX.contains(x=lon, y=lat):
+                                # self._logger.info("%.4f %.4f is not in New York State", lat, lon)
+                                continue
+                            # self._logger.info("%.4f %.4f is in New York State", lat, lon)
+
                             # https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC%2020-165.pdf
                             # https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast#Description
                             # Model an ADS-B 1090ES transponder
@@ -85,7 +114,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
                             elif feature.timestamp >= existing_feature.timestamp:
                                 features_by_icao24[icao24] = feature
 
-            self._logger.info("processed %s", states_csv_tar_file_path)
+            self._logger.info("processed %s (%d features total)", states_csv_tar_file_path, len(features_by_icao24))
 
         yield from features_by_icao24.values()
 
