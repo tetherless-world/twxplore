@@ -1,5 +1,6 @@
 import csv
 import gzip
+from calendar import timegm
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
@@ -48,6 +49,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
 
     def transform(self, *, states_csv_tar_file_paths: Tuple[Path, ...]):
         features_by_icao24 = {}
+        feature_count = 0
         for states_csv_tar_file_path in states_csv_tar_file_paths:
             self._logger.info("processing %s", states_csv_tar_file_path)
             with tarfile.open(states_csv_tar_file_path) as states_csv_tar_file:
@@ -108,14 +110,30 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                     type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
                                     uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
                                 )
-                            existing_feature = features_by_icao24.get(icao24)
-                            if existing_feature is None:
-                                features_by_icao24[icao24] = feature
-                            elif feature.timestamp >= existing_feature.timestamp:
-                                features_by_icao24[icao24] = feature
+                            existing_features = features_by_icao24.setdefault(icao24, [])
+                            if not existing_features:
+                                existing_features.append(feature)
+                                feature_count += 1
+                                continue
+                            # Add this feature to the existing features if its timestamp is > or < 30 minutes from an existing feature
+                            def to_timestamp(datetime_: datetime) -> int:
+                                return timegm(datetime_.utctimetuple())
+                            feature_timestamp = to_timestamp(feature.timestamp)
+                            timestamp_delta_min = None
+                            for existing_feature in existing_features:
+                                existing_feature_timestamp = to_timestamp(existing_feature.timestamp)
+                                timestamp_delta = abs(existing_feature_timestamp - feature_timestamp)
+                                if timestamp_delta_min is None or timestamp_delta < timestamp_delta_min:
+                                    timestamp_delta_min = timestamp_delta
+                            # Usual delta between last contacts is ~10 seconds
+                            if timestamp_delta_min >= 5 * 60:  # 5 minutes in seconds
+                                existing_features.append(feature)
+                                feature_count += 1
 
-            self._logger.info("processed %s (%d features total)", states_csv_tar_file_path, len(features_by_icao24))
+            self._logger.info("processed %s (%d features total)", states_csv_tar_file_path, feature_count)
 
-        yield from features_by_icao24.values()
+        for features in features_by_icao24.values():
+            features.sort(key=lambda feature: feature.timestamp)
+            yield from features
 
 
