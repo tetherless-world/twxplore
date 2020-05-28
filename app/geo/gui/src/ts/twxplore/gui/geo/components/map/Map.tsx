@@ -40,6 +40,7 @@ import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 import ReactResizeDetector from "react-resize-detector";
+import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -293,7 +294,7 @@ const MapImpl: React.FunctionComponent = () => {
                 const keplerFilterOfFeatureType =
                   keplerFilters[
                     state.featuresByType[featureType].attributeStates[
-                      featureTypeStrategy.heightAttributeFor3DMap!
+                      FeatureAttributeName.transmissionPower
                     ].filterIndex!
                   ];
 
