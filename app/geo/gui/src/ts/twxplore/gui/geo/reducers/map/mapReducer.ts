@@ -443,6 +443,11 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           MapFeatureTypeState.NEEDS_3D_ENABLED;
       }
 
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("color")) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.FINISHED_SETUP;
+      }
+
       break;
     }
     /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
@@ -477,6 +482,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
       }
 
+      if (
+        Object.keys(layerVisConfigChangeAction.newVisConfig).includes(
+          "colorRange"
+        )
+      ) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.FINISHED_SETUP;
+      }
       break;
     }
 
@@ -489,7 +502,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       let featuresByTypeOfFeatureType =
         result.featuresByType[layerIdOfFeatureType];
       featuresByTypeOfFeatureType.featureTypeState =
-        MapFeatureTypeState.FINISHED_SETUP;
+        MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
 
       break;
     }

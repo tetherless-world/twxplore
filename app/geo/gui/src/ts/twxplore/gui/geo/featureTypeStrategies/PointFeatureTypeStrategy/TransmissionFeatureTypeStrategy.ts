@@ -119,6 +119,40 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         );
         break;
       }
+      case MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE: {
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.HEXAGON) {
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {
+              colorRange: {
+                name: "ColorBrewer Blues-6",
+                type: "singlehue",
+                category: "ColorBrewer",
+                colors: [
+                  "#eff3ff",
+                  "#c6dbef",
+                  "#9ecae1",
+                  "#6baed6",
+                  "#3182bd",
+                  "#08519c",
+                ],
+              },
+            })
+          );
+        } else {
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {filled: true})
+          );
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {stroked: false})
+          );
+          dispatch(
+            layerConfigChange(keplerLayerOfFeatureType, {
+              color: [169, 203, 237],
+            })
+          );
+        }
+        break;
+      }
       default: {
         break;
       }
