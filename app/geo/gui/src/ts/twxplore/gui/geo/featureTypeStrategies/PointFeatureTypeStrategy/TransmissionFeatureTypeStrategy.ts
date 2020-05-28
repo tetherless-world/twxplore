@@ -11,6 +11,7 @@ import {
   //removeLayer,
 } from "kepler.gl/actions";
 import {DispatchLayerConfigurationActionsParameters} from "../DispatchLayerConfigurationActionsParameters";
+import {KeplerLayerType} from "../../states/map/KeplerLayerType";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
   dispatchLayerConfigurationActions(
@@ -22,6 +23,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
       keplerFieldsOfFeatureType,
       keplerInteractionConfigCopy,
       featureTypeStateOfFeatureType,
+      currentKeplerLayerTypeOfFeatureType,
       dispatch,
     } = kwds;
     //Check the featureTypeState of Transmissions
@@ -38,24 +40,47 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         break;
       }
       case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
-        dispatch(layerTypeChange(keplerLayerOfFeatureType, "hexagon"));
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.GEOJSON)
+          dispatch(
+            layerTypeChange(keplerLayerOfFeatureType, KeplerLayerType.HEXAGON)
+          );
+        else
+          dispatch(
+            layerTypeChange(keplerLayerOfFeatureType, KeplerLayerType.GEOJSON)
+          );
         break;
       }
       case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
-        const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
-          (keplerField: {id: string}) =>
-            keplerField.id === FeatureAttributeName.y
-        );
-        const lngFieldIdx = keplerFieldsOfFeatureType.findIndex(
-          (keplerField: {id: string}) =>
-            keplerField.id === FeatureAttributeName.x
-        );
-        const newLayerConfig = {
-          columns: {
-            lat: {value: FeatureAttributeName.y, fieldIdx: latFieldIdx},
-            lng: {value: FeatureAttributeName.x, fieldIdx: lngFieldIdx},
-          },
-        };
+        var newLayerConfig;
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.HEXAGON) {
+          const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName.y
+          );
+          const lngFieldIdx = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName.x
+          );
+          newLayerConfig = {
+            columns: {
+              lat: {value: FeatureAttributeName.y, fieldIdx: latFieldIdx},
+              lng: {value: FeatureAttributeName.x, fieldIdx: lngFieldIdx},
+            },
+          };
+        } else {
+          const _geojsonIndex = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName._geojson
+          );
+          newLayerConfig = {
+            columns: {
+              geojson: {
+                value: FeatureAttributeName._geojson,
+                fieldIdx: _geojsonIndex,
+              },
+            },
+          };
+        }
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
