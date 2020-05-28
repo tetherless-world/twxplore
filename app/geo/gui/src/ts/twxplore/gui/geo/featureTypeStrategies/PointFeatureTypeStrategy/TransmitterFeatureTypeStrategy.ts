@@ -28,6 +28,14 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
+      case MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE: {
+        dispatch(
+          layerConfigChange(keplerLayerOfFeatureType, {
+            color: [255, 0, 0],
+          })
+        );
+        break;
+      }
 
       default: {
         break;
@@ -43,4 +51,5 @@ export class TransmitterFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.locality,
   ];
   readonly heightAttributeFor3DMap = null;
+  readonly layerTypeToggleable = false;
 }

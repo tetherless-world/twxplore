@@ -12,16 +12,19 @@ export enum MapFeatureTypeState {
   NEEDS_POPUP_CHANGE = "needs popup change",
 
   //Used if wanting to change the type of the layer e.g from Point -> Hexagon
-  NEEDS_LAYER_CHANGE = "needs layer change",
+  NEEDS_LAYER_TYPE_CHANGE = "needs layer type change",
 
-  //Used LNG and LAT specified. (Used for some layer types only e.g. Point, Hexagon)
-  NEEDS_LNG_AND_LAT = "needs lng and lat",
+  //Used columns specified. Usually done after the layer type has just been changed. E.g. Polygons need _geojson, hexagons need lng and lat.
+  NEEDS_COLUMNS = "needs columns",
 
   //3d/height for this feature type needs to be enabled
   NEEDS_3D_ENABLED = "needs 3d enabled",
 
   //Needs an attribute to determine what to base height on
   NEEDS_HEIGHT_ATTRIBUTE = "needs height attribute",
+
+  //No more horrendous yellow. In this state, a color is set for the layer of the feature type.
+  NEEDS_LAYER_COLOR_CHANGE = "needs layer color change",
 
   //All setup for this feature type done. The filter component will now be rendered
   FINISHED_SETUP = "finished setup ",

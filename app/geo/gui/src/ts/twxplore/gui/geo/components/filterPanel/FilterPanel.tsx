@@ -35,7 +35,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
   );
 
   return (
-    <Grid container item direction="column">
+    <React.Fragment>
       {Object.keys(state.featuresByType).map(featureType => {
         if (featureType == FeatureType.Root) {
           return <React.Fragment key={featureType} />;
@@ -50,16 +50,18 @@ const FilterPanelImpl: React.FunctionComponent = () => {
               <Typography className={classes.heading}>{featureType}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <FilterComponent
-                featureType={
-                  FeatureType[featureType as keyof typeof FeatureType]
-                }
-              />
+              <Grid container item direction="column">
+                <FilterComponent
+                  featureType={
+                    FeatureType[featureType as keyof typeof FeatureType]
+                  }
+                />
+              </Grid>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         );
       })}
-    </Grid>
+    </React.Fragment>
   );
 };
 export const FilterPanel = connect()(FilterPanelImpl);

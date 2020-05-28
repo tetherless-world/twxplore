@@ -79,7 +79,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         }
         return (
           numericAttributeState.range && (
-            <Grid item xs={12} key={attributeName}>
+            <Grid item key={attributeName}>
               <Typography id="type" gutterBottom>
                 {attributeName}
               </Typography>
@@ -113,7 +113,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           return <React.Fragment />;
         }
         return (
-          <Grid item xs={12} key={attributeName}>
+          <Grid item key={attributeName}>
             <FormControl className={classes.formControl} key={attributeName}>
               <Typography id="type" gutterBottom>
                 {attributeName}
@@ -169,7 +169,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const dispatch = useDispatch();
 
   return (
-    <Grid item xs={12}>
+    <Grid item>
       {//for each attributeName that corresponds to an attribute state for an attribute of the FeatureType
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType

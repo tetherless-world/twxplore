@@ -7,6 +7,7 @@ import {getFeatureAttributeStrategyByName} from "../../attributeStrategies/funct
 import {MapFeature} from "./MapFeature";
 import {MapFeatureState} from "./MapFeatureState";
 import {ROOT_FEATURE_URI} from "./ROOT_FEATURE_URI";
+import {KeplerLayerType} from "./KeplerLayerType";
 
 const typesVisibility: {[index: string]: boolean} = {};
 Object.values(FeatureType).map(type => {
@@ -26,6 +27,7 @@ Object.values(FeatureType).map(featureType => {
     featureTypeState: MapFeatureTypeState.ABSENT_ON_MAP,
     attributeStates: {},
     visible: false,
+    currentKeplerLayerType: KeplerLayerType.GEOJSON,
   };
 
   //Populate the attribute state with null values for all properties.

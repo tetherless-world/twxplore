@@ -8,9 +8,9 @@ import {
   layerConfigChange,
   layerVisualChannelConfigChange,
   interactionConfigChange,
-  //removeLayer,
 } from "kepler.gl/actions";
 import {DispatchLayerConfigurationActionsParameters} from "../DispatchLayerConfigurationActionsParameters";
+import {KeplerLayerType} from "../../states/map/KeplerLayerType";
 export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   readonly name = FeatureType.Transmission;
   dispatchLayerConfigurationActions(
@@ -22,6 +22,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
       keplerFieldsOfFeatureType,
       keplerInteractionConfigCopy,
       featureTypeStateOfFeatureType,
+      currentKeplerLayerTypeOfFeatureType,
       dispatch,
     } = kwds;
     //Check the featureTypeState of Transmissions
@@ -37,25 +38,48 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
-      case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
-        dispatch(layerTypeChange(keplerLayerOfFeatureType, "hexagon"));
+      case MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE: {
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.GEOJSON)
+          dispatch(
+            layerTypeChange(keplerLayerOfFeatureType, KeplerLayerType.HEXAGON)
+          );
+        else
+          dispatch(
+            layerTypeChange(keplerLayerOfFeatureType, KeplerLayerType.GEOJSON)
+          );
         break;
       }
-      case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
-        const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
-          (keplerField: {id: string}) =>
-            keplerField.id === FeatureAttributeName.y
-        );
-        const lngFieldIdx = keplerFieldsOfFeatureType.findIndex(
-          (keplerField: {id: string}) =>
-            keplerField.id === FeatureAttributeName.x
-        );
-        const newLayerConfig = {
-          columns: {
-            lat: {value: FeatureAttributeName.y, fieldIdx: latFieldIdx},
-            lng: {value: FeatureAttributeName.x, fieldIdx: lngFieldIdx},
-          },
-        };
+      case MapFeatureTypeState.NEEDS_COLUMNS: {
+        var newLayerConfig;
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.HEXAGON) {
+          const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName.y
+          );
+          const lngFieldIdx = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName.x
+          );
+          newLayerConfig = {
+            columns: {
+              lat: {value: FeatureAttributeName.y, fieldIdx: latFieldIdx},
+              lng: {value: FeatureAttributeName.x, fieldIdx: lngFieldIdx},
+            },
+          };
+        } else {
+          const _geojsonIndex = keplerFieldsOfFeatureType.findIndex(
+            (keplerField: {id: string}) =>
+              keplerField.id === FeatureAttributeName._geojson
+          );
+          newLayerConfig = {
+            columns: {
+              geojson: {
+                value: FeatureAttributeName._geojson,
+                fieldIdx: _geojsonIndex,
+              },
+            },
+          };
+        }
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
@@ -94,6 +118,40 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         );
         break;
       }
+      case MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE: {
+        if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.HEXAGON) {
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {
+              colorRange: {
+                name: "ColorBrewer Blues-6",
+                type: "singlehue",
+                category: "ColorBrewer",
+                colors: [
+                  "#eff3ff",
+                  "#c6dbef",
+                  "#9ecae1",
+                  "#6baed6",
+                  "#3182bd",
+                  "#08519c",
+                ],
+              },
+            })
+          );
+        } else {
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {filled: true})
+          );
+          dispatch(
+            layerVisConfigChange(keplerLayerOfFeatureType, {stroked: false})
+          );
+          dispatch(
+            layerConfigChange(keplerLayerOfFeatureType, {
+              color: [66, 101, 204],
+            })
+          );
+        }
+        break;
+      }
       default: {
         break;
       }
@@ -110,4 +168,5 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
     FeatureAttributeName.locality,
   ];
   readonly heightAttributeFor3DMap = FeatureAttributeName.transmissionPower;
+  readonly layerTypeToggleable = true;
 }

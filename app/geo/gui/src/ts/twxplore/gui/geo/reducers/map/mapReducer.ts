@@ -37,6 +37,10 @@ import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateA
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
+import {
+  TOGGLE_LAYER_CHANGE,
+  ToggleLayerChangeAction,
+} from "../../actions/map/ToggleLayerChangeAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -348,6 +352,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
+    case TOGGLE_LAYER_CHANGE: {
+      const toggleLayerChangeAction = action as ToggleLayerChangeAction;
+      const toggledFeatureType = toggleLayerChangeAction.payload.featureType;
+      result.featuresByType[toggledFeatureType].featureTypeState =
+        MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE;
+      break;
+    }
+
     case "@@kepler.gl/REMOVE_FILTER": {
       console.debug("REMOVE_FILTER action being handled");
       //Decrement filterCounter on the redux state, because a filter has just been removed.
@@ -418,10 +430,10 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           FeatureType.Transmission
         ) {
           featuresByTypeOfFeatureType.featureTypeState =
-            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+            MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
         } else {
           featuresByTypeOfFeatureType.featureTypeState =
-            MapFeatureTypeState.FINISHED_SETUP;
+            MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
         }
       }
       /*Checking to see if the action was used to change the 'columns' of the layer. If so, then it signifies 
@@ -431,22 +443,32 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           MapFeatureTypeState.NEEDS_3D_ENABLED;
       }
 
+      if (Object.keys(layerConfigChangeAction.newConfig).includes("color")) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.FINISHED_SETUP;
+      }
+
       break;
     }
     /*MapFeatureTypeState.NEEDS_LAYER_CHANGE dispatches an action that use this  */
     case "@@kepler.gl/LAYER_TYPE_CHANGE": {
       const layerTypeChangeAction: any = action;
+      if (layerTypeChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerTypeChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
         result.featuresByType[layerIdOfFeatureType];
+
+      featuresByTypeOfFeatureType.currentKeplerLayerType =
+        layerTypeChangeAction.newType;
       featuresByTypeOfFeatureType.featureTypeState =
-        MapFeatureTypeState.NEEDS_LNG_AND_LAT;
+        MapFeatureTypeState.NEEDS_COLUMNS;
       break;
     }
     //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case
     case "@@kepler.gl/LAYER_VIS_CONFIG_CHANGE": {
       const layerVisConfigChangeAction: any = action;
+      if (layerVisConfigChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerVisConfigChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
@@ -460,18 +482,27 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
       }
 
+      if (
+        Object.keys(layerVisConfigChangeAction.newVisConfig).includes(
+          "colorRange"
+        )
+      ) {
+        featuresByTypeOfFeatureType.featureTypeState =
+          MapFeatureTypeState.FINISHED_SETUP;
+      }
       break;
     }
 
     //MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE dispatches an action that uses this case.
     case "@@kepler.gl/LAYER_VISUAL_CHANNEL_CHANGE": {
       const layerVisualChannelChangeAction: any = action;
+      if (layerVisualChannelChangeAction.oldLayer === undefined) break;
       const layerIdOfFeatureType: string =
         layerVisualChannelChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
         result.featuresByType[layerIdOfFeatureType];
       featuresByTypeOfFeatureType.featureTypeState =
-        MapFeatureTypeState.FINISHED_SETUP;
+        MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
 
       break;
     }

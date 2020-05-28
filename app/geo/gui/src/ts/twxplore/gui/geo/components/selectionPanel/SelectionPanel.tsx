@@ -8,7 +8,6 @@ import {
   Checkbox,
   FormHelperText,
   Theme,
-  Grid,
 } from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {useSelector, useDispatch, connect} from "react-redux";
@@ -57,37 +56,35 @@ const SelectionPanelImpl: React.FunctionComponent = () => {
 
   //const error = [gilad, jason, antoine].filter(v => v).length !== 2;
   return (
-    <Grid item container direction="column" className={classes.root}>
-      <FormControl className={classes.formControl}>
-        <FormGroup>
-          {Object.values(FeatureType).map(featureType => {
-            if (featureType == FeatureType.Root) {
-              return <React.Fragment key={featureType} />;
-            }
-            return (
-              <FormControlLabel
-                key={featureType}
-                control={
-                  <Checkbox
-                    checked={state.featuresByType[featureType].visible!}
-                    onChange={handleChange(featureType)}
-                    value={featureType}
-                    disabled={
-                      state.featuresByType[featureType].featureTypeState ===
-                      MapFeatureTypeState.ABSENT_ON_MAP
-                    }
-                  />
-                }
-                label={featureType}
-              />
-            );
-          })}
-        </FormGroup>
-        <FormHelperText>
-          Types chosen here will be visible on the map and invisible otherwise.
-        </FormHelperText>
-      </FormControl>
-    </Grid>
+    <FormControl className={classes.formControl}>
+      <FormGroup>
+        {Object.values(FeatureType).map(featureType => {
+          if (featureType == FeatureType.Root) {
+            return <React.Fragment key={featureType} />;
+          }
+          return (
+            <FormControlLabel
+              key={featureType}
+              control={
+                <Checkbox
+                  checked={state.featuresByType[featureType].visible!}
+                  onChange={handleChange(featureType)}
+                  value={featureType}
+                  disabled={
+                    state.featuresByType[featureType].featureTypeState ===
+                    MapFeatureTypeState.ABSENT_ON_MAP
+                  }
+                />
+              }
+              label={featureType}
+            />
+          );
+        })}
+      </FormGroup>
+      <FormHelperText>
+        Types chosen here will be visible on the map and invisible otherwise.
+      </FormHelperText>
+    </FormControl>
   );
 };
 export const SelectionPanel = connect()(SelectionPanelImpl);

@@ -1,9 +1,4 @@
-import {
-  addDataToMap,
-  removeFilter,
-  removeDataset,
-  togglePerspective,
-} from "kepler.gl/actions";
+import {addDataToMap, removeFilter, removeDataset} from "kepler.gl/actions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import * as featuresQueryDocument from "twxplore/gui/geo/api/queries/MapFeaturesQuery.graphql";
 import {RootState} from "../../states/root/RootState";
@@ -160,8 +155,6 @@ const MapImpl: React.FunctionComponent = () => {
     if (keplerState.map) {
       //Simulating clicking the root which starts the process of querying for the first visible feature type
       dispatch(clickRoot());
-      //Toggle the map to 3d perspective
-      dispatch(togglePerspective());
     }
   }
 
@@ -244,6 +237,8 @@ const MapImpl: React.FunctionComponent = () => {
               state.featuresByType[featureType].attributeStates;
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
+            let currentKeplerLayerTypeOfFeatureType =
+              state.featuresByType[featureType].currentKeplerLayerType;
             switch (featureTypeStateOfFeatureType) {
               //Check if filters need to be added for this FeatureType
               case MapFeatureTypeState.NEEDS_FILTERS: {
@@ -275,10 +270,11 @@ const MapImpl: React.FunctionComponent = () => {
               feature types later.
               */
               case MapFeatureTypeState.NEEDS_POPUP_CHANGE:
-              case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
+              case MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE:
               case MapFeatureTypeState.NEEDS_3D_ENABLED:
-              case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
-              case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
+              case MapFeatureTypeState.NEEDS_COLUMNS:
+              case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE:
+              case MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE: {
                 /* Get the kepler layers list as well as an index to get the keplerLayer that holds the relevant feature type.*/
                 const keplerLayers = keplerState.map.visState.layers;
                 const layerIndex = keplerLayers.findIndex(
@@ -316,6 +312,7 @@ const MapImpl: React.FunctionComponent = () => {
                   keplerFieldsOfFeatureType,
                   keplerInteractionConfigCopy,
                   featureTypeStateOfFeatureType,
+                  currentKeplerLayerTypeOfFeatureType,
                   dispatch,
                 });
                 break;
