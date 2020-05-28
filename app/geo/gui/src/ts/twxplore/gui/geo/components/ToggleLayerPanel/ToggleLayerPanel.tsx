@@ -34,39 +34,39 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
     >
       {Object.values(FeatureType).map(featureType => {
         const featureTypeStrategy = getFeatureTypeStrategyByName(featureType);
-        if (featureTypeStrategy.layerTypeToggleable) {
-          return (
-            <Grid
-              item
-              container
-              justify={"center"}
-              alignItems={"center"}
-              spacing={1}
-              direction="row"
-              wrap="nowrap"
-              xs
-            >
-              <Grid item xs justify={"center"}>
-                <Typography noWrap align={"center"}>
-                  {featureType}
-                </Typography>
-              </Grid>
-              <Grid item xs justify={"center"}>
-                <Button
-                  variant="contained"
-                  onClick={handleLayerToggleClick(featureType)}
-                  disabled={
-                    state.featuresByType[featureType].featureTypeState ===
-                    MapFeatureTypeState.ABSENT_ON_MAP
-                  }
-                >
-                  Toggle
-                </Button>
-              </Grid>
-            </Grid>
-          );
+        if (!featureTypeStrategy.layerTypeToggleable) {
+          return <React.Fragment />;
         }
-        return <React.Fragment />;
+        return (
+          <Grid
+            item
+            container
+            justify={"center"}
+            alignItems={"center"}
+            spacing={1}
+            direction="row"
+            wrap="nowrap"
+            xs
+          >
+            <Grid item xs justify={"center"}>
+              <Typography noWrap align={"center"}>
+                {featureType}
+              </Typography>
+            </Grid>
+            <Grid item xs justify={"center"}>
+              <Button
+                variant="contained"
+                onClick={handleLayerToggleClick(featureType)}
+                disabled={
+                  state.featuresByType[featureType].featureTypeState ===
+                  MapFeatureTypeState.ABSENT_ON_MAP
+                }
+              >
+                Toggle
+              </Button>
+            </Grid>
+          </Grid>
+        );
       })}
     </Grid>
   );
