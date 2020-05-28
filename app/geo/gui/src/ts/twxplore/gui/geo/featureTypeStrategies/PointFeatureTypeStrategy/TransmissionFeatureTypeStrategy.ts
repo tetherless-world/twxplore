@@ -89,6 +89,9 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
             enable3d: true,
           })
         );
+        dispatch(
+          layerVisConfigChange(keplerLayerOfFeatureType, {elevationScale: 80})
+        );
 
         break;
       }
