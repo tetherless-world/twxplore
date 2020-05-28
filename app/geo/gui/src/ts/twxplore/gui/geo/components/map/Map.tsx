@@ -209,7 +209,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: false},
+                options: {centerMap: true, readOnly: true},
               })
             );
           }
