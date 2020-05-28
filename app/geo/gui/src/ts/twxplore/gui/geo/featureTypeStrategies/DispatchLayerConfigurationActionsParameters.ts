@@ -8,6 +8,6 @@ export interface DispatchLayerConfigurationActionsParameters {
   keplerFieldsOfFeatureType: any;
   keplerInteractionConfigCopy: any;
   featureTypeStateOfFeatureType: MapFeatureTypeState;
-  keplerLayerTypeOfFeatureType: KeplerLayerType;
+  currentKeplerLayerTypeOfFeatureType: KeplerLayerType;
   dispatch: Dispatch<any>;
 }
