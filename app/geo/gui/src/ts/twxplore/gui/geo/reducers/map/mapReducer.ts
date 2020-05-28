@@ -453,6 +453,9 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         layerTypeChangeAction.oldLayer.config.dataId;
       let featuresByTypeOfFeatureType =
         result.featuresByType[layerIdOfFeatureType];
+
+      featuresByTypeOfFeatureType.currentKeplerLayerType =
+        layerTypeChangeAction.newType;
       featuresByTypeOfFeatureType.featureTypeState =
         MapFeatureTypeState.NEEDS_LNG_AND_LAT;
       break;
