@@ -40,7 +40,6 @@ import {addFilter} from "../../actions/map/AddFilterAction";
 import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 import ReactResizeDetector from "react-resize-detector";
-import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -216,7 +215,7 @@ const MapImpl: React.FunctionComponent = () => {
             dispatch(
               addDataToMap({
                 datasets,
-                options: {centerMap: true, readOnly: true},
+                options: {centerMap: true, readOnly: false},
               })
             );
           }
@@ -244,6 +243,8 @@ const MapImpl: React.FunctionComponent = () => {
               state.featuresByType[featureType].attributeStates;
             let featureTypeStateOfFeatureType =
               state.featuresByType[featureType].featureTypeState;
+            let currentKeplerLayerTypeOfFeatureType =
+              state.featuresByType[featureType].currentKeplerLayerType;
             switch (featureTypeStateOfFeatureType) {
               //Check if filters need to be added for this FeatureType
               case MapFeatureTypeState.NEEDS_FILTERS: {
@@ -292,7 +293,7 @@ const MapImpl: React.FunctionComponent = () => {
                 const keplerFilterOfFeatureType =
                   keplerFilters[
                     state.featuresByType[featureType].attributeStates[
-                      FeatureAttributeName.transmissionPower
+                      featureTypeStrategy.heightAttributeFor3DMap!
                     ].filterIndex!
                   ];
 
@@ -316,6 +317,7 @@ const MapImpl: React.FunctionComponent = () => {
                   keplerFieldsOfFeatureType,
                   keplerInteractionConfigCopy,
                   featureTypeStateOfFeatureType,
+                  currentKeplerLayerTypeOfFeatureType,
                   dispatch,
                 });
                 break;
