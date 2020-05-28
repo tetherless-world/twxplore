@@ -6,6 +6,7 @@ import {
   ExpansionPanelSummary,
   Typography,
   ExpansionPanelDetails,
+  Grid,
 } from "@material-ui/core";
 import {useSelector, connect} from "react-redux";
 import {MapState} from "../../states/map/MapState";
@@ -49,11 +50,13 @@ const FilterPanelImpl: React.FunctionComponent = () => {
               <Typography className={classes.heading}>{featureType}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <FilterComponent
-                featureType={
-                  FeatureType[featureType as keyof typeof FeatureType]
-                }
-              />
+              <Grid container item direction="column">
+                <FilterComponent
+                  featureType={
+                    FeatureType[featureType as keyof typeof FeatureType]
+                  }
+                />
+              </Grid>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         );
