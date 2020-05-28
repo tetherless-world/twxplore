@@ -9,6 +9,7 @@ import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatu
 import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
+import {togglePerspective} from "kepler.gl/actions";
 
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
     (rootState: RootState) => rootState.app.map
   );
   const handleLayerToggleClick = (featureType: FeatureType) => (event: any) => {
+    //Toggle the map to 3d perspective
+    dispatch(togglePerspective());
     dispatch(toggleLayerChange(featureType));
   };
 
