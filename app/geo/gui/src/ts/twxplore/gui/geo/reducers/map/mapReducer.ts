@@ -479,7 +479,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         )
       ) {
         featuresByTypeOfFeatureType.featureTypeState =
-          MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE;
+          MapFeatureTypeState.NEEDS_LAYER_COLOR_CHANGE;
       }
 
       if (
