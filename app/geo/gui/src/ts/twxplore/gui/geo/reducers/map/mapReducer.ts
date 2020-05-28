@@ -37,6 +37,10 @@ import {updateAttributeStatesOfFeatureType} from "../../reducerFunctions/updateA
 import {setAllFilterIndexesNull} from "../../reducerFunctions/setAllFilterIndexesNull";
 import {getFeatureFromStateFeaturesList} from "../../reducerFunctions/getFeatureFromStateFeaturesList";
 import {CLICK_ROOT} from "../../actions/map/ClickRootAction";
+import {
+  TOGGLE_LAYER_CHANGE,
+  ToggleLayerChangeAction,
+} from "../../actions/map/ToggleLayerChangeAction";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -345,6 +349,14 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
         throw Error("No root feature in features list!");
       }
       rootFeature.state = MapFeatureState.CLICKED;
+      break;
+    }
+
+    case TOGGLE_LAYER_CHANGE: {
+      const toggleLayerChangeAction = action as ToggleLayerChangeAction;
+      const toggledFeatureType = toggleLayerChangeAction.payload.featureType;
+      result.featuresByType[toggledFeatureType].featureTypeState =
+        MapFeatureTypeState.NEEDS_LAYER_CHANGE;
       break;
     }
 

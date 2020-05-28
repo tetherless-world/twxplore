@@ -1,10 +1,19 @@
 import * as React from "react";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 
 import {Grid, Button, Typography} from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
+import {toggleLayerChange} from "../../actions/map/ToggleLayerChangeAction";
+
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
+  const dispatch = useDispatch();
+  const handleLayerToggleClick = (featureType: FeatureType) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatch(toggleLayerChange(featureType));
+  };
+
   return (
     <Grid
       item
@@ -33,7 +42,10 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
               </Typography>
             </Grid>
             <Grid item xs justify={"center"}>
-              <Button variant="contained" onClick={}>
+              <Button
+                variant="contained"
+                onClick={handleLayerToggleClick(featureType)}
+              >
                 Toggle
               </Button>
             </Grid>
