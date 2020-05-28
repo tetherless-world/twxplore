@@ -20,6 +20,7 @@ import {connect} from "react-redux";
 import {FilterPanel} from "../filterPanel/FilterPanel";
 import {Icon, Grid} from "@material-ui/core";
 import {SelectionPanel} from "../selectionPanel/SelectionPanel";
+import {ToggleLayerPanel} from "../ToggleLayerPanel/ToggleLayerPanel";
 
 const drawerWidth = 240;
 
@@ -174,6 +175,21 @@ const MapLayoutImpl: React.FunctionComponent = () => {
             </Grid>
 
             <SelectionPanel />
+          </Grid>
+
+          <Grid
+            container
+            item
+            spacing={0}
+            direction="column"
+            className={classes.drawerGridContainer}
+            justify={"flex-start"}
+          >
+            <Grid>
+              <Typography align={"center"}>Toggle Layer Type</Typography>
+            </Grid>
+
+            <ToggleLayerPanel />
           </Grid>
         </Grid>
       </Drawer>
