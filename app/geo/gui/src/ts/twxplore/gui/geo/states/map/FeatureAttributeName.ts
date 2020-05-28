@@ -14,6 +14,7 @@ export enum FeatureAttributeName {
   transmissionPowerString = "transmissionPowerString",
   x = "x",
   y = "y",
+  _geojson = "_geojson",
 }
 
 export type FeatureAttributeKey = keyof typeof FeatureAttributeName;
