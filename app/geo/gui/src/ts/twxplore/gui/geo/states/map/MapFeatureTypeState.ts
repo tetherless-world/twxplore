@@ -14,8 +14,8 @@ export enum MapFeatureTypeState {
   //Used if wanting to change the type of the layer e.g from Point -> Hexagon
   NEEDS_LAYER_CHANGE = "needs layer change",
 
-  //Used LNG and LAT specified. (Used for some layer types only e.g. Point, Hexagon)
-  NEEDS_LNG_AND_LAT = "needs lng and lat",
+  //Used columns specified. Usually done after the layer type has just been changed. E.g. Polygons need _geojson, hexagons need lng and lat.
+  NEEDS_COLUMNS = "needs columns",
 
   //3d/height for this feature type needs to be enabled
   NEEDS_3D_ENABLED = "needs 3d enabled",

@@ -279,7 +279,7 @@ const MapImpl: React.FunctionComponent = () => {
               case MapFeatureTypeState.NEEDS_POPUP_CHANGE:
               case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
               case MapFeatureTypeState.NEEDS_3D_ENABLED:
-              case MapFeatureTypeState.NEEDS_LNG_AND_LAT:
+              case MapFeatureTypeState.NEEDS_COLUMNS:
               case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {
                 /* Get the kepler layers list as well as an index to get the keplerLayer that holds the relevant feature type.*/
                 const keplerLayers = keplerState.map.visState.layers;

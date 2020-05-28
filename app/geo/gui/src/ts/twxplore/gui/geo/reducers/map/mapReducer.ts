@@ -457,7 +457,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       featuresByTypeOfFeatureType.currentKeplerLayerType =
         layerTypeChangeAction.newType;
       featuresByTypeOfFeatureType.featureTypeState =
-        MapFeatureTypeState.NEEDS_LNG_AND_LAT;
+        MapFeatureTypeState.NEEDS_COLUMNS;
       break;
     }
     //MapFeatureTypeState.NEEDS_3D_ENABLED dispatches an action that uses this case

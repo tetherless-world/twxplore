@@ -50,7 +50,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
           );
         break;
       }
-      case MapFeatureTypeState.NEEDS_LNG_AND_LAT: {
+      case MapFeatureTypeState.NEEDS_COLUMNS: {
         var newLayerConfig;
         if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.HEXAGON) {
           const latFieldIdx = keplerFieldsOfFeatureType.findIndex(
