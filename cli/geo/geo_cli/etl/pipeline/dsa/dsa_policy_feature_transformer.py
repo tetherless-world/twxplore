@@ -107,7 +107,12 @@ class DsaPolicyFeatureTransformer(_DsaFeatureTransformer):
         locations_json_file_path = self._DSA_ONTOLOGIES_DIR_PATH / "locations.json"
         with open(locations_json_file_path) as locations_json_file:
             location_json_objects = json.load(locations_json_file)
-            location_json_objects_by_id = {location_json_object["id"]: location_json_object for location_json_object in location_json_objects}
+            location_json_objects_by_id = {}
+            for location_json_object in location_json_objects:
+                try:
+                    location_json_objects_by_id[location_json_object["id"]] = location_json_object
+                except KeyError:
+                    continue
 
         policies_json_file_path = self._DSA_ONTOLOGIES_DIR_PATH / "policies.json"
         with open(policies_json_file_path) as policies_json_file:
