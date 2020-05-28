@@ -1,14 +1,20 @@
 import * as React from "react";
-import {connect, useDispatch} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 
 import {Grid, Button, Typography} from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 import {toggleLayerChange} from "../../actions/map/ToggleLayerChangeAction";
 import {getFeatureTypeStrategyByName} from "../../featureTypeStrategies/getFeatureTypeStrategyByName";
+import {MapState} from "../../states/map/MapState";
+import {RootState} from "../../states/root/RootState";
+import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
+  const state: MapState = useSelector(
+    (rootState: RootState) => rootState.app.map
+  );
   const handleLayerToggleClick = (featureType: FeatureType) => (event: any) => {
     dispatch(toggleLayerChange(featureType));
   };
@@ -46,6 +52,10 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
                 <Button
                   variant="contained"
                   onClick={handleLayerToggleClick(featureType)}
+                  disabled={
+                    state.featuresByType[featureType].featureTypeState ===
+                    MapFeatureTypeState.ABSENT_ON_MAP
+                  }
                 >
                   Toggle
                 </Button>
