@@ -277,7 +277,7 @@ const MapImpl: React.FunctionComponent = () => {
               feature types later.
               */
               case MapFeatureTypeState.NEEDS_POPUP_CHANGE:
-              case MapFeatureTypeState.NEEDS_LAYER_CHANGE:
+              case MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE:
               case MapFeatureTypeState.NEEDS_3D_ENABLED:
               case MapFeatureTypeState.NEEDS_COLUMNS:
               case MapFeatureTypeState.NEEDS_HEIGHT_ATTRIBUTE: {

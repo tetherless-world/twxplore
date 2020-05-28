@@ -39,7 +39,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
         dispatch(layerConfigChange(keplerLayerOfFeatureType, newLayerConfig));
         break;
       }
-      case MapFeatureTypeState.NEEDS_LAYER_CHANGE: {
+      case MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE: {
         if (currentKeplerLayerTypeOfFeatureType === KeplerLayerType.GEOJSON)
           dispatch(
             layerTypeChange(keplerLayerOfFeatureType, KeplerLayerType.HEXAGON)

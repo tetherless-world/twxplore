@@ -24,7 +24,7 @@ export enum MapFeatureTypeState {
   NEEDS_HEIGHT_ATTRIBUTE = "needs height attribute",
 
   //No more horrendous yellow. In this state, a color is set for the layer of the feature type.
-  NEEDS_LAYER_COLOR_CHANGE = "needs layer color change"
+  NEEDS_LAYER_COLOR_CHANGE = "needs layer color change",
 
   //All setup for this feature type done. The filter component will now be rendered
   FINISHED_SETUP = "finished setup ",

@@ -356,7 +356,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       const toggleLayerChangeAction = action as ToggleLayerChangeAction;
       const toggledFeatureType = toggleLayerChangeAction.payload.featureType;
       result.featuresByType[toggledFeatureType].featureTypeState =
-        MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+        MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE;
       break;
     }
 
@@ -430,7 +430,7 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
           FeatureType.Transmission
         ) {
           featuresByTypeOfFeatureType.featureTypeState =
-            MapFeatureTypeState.NEEDS_LAYER_CHANGE;
+            MapFeatureTypeState.NEEDS_LAYER_TYPE_CHANGE;
         } else {
           featuresByTypeOfFeatureType.featureTypeState =
             MapFeatureTypeState.FINISHED_SETUP;
