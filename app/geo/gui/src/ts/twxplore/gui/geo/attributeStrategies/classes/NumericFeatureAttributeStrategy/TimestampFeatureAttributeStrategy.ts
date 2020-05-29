@@ -8,10 +8,10 @@ export class TimestampFeatureAttributeStrategy extends NumericFeatureAttributeSt
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
     const minDateString = new Date(
-      currentRangeOfAttributeOfFeatureType.min * 1000
+      currentRangeOfAttributeOfFeatureType.min
     ).toLocaleDateString("en-US");
     const maxDateString = new Date(
-      currentRangeOfAttributeOfFeatureType.max * 1000
+      currentRangeOfAttributeOfFeatureType.max
     ).toLocaleDateString("en-US");
 
     return "timestamp Range: " + minDateString + " - " + maxDateString;
