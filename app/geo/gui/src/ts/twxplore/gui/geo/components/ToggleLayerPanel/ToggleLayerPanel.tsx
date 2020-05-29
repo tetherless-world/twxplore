@@ -1,7 +1,7 @@
 import * as React from "react";
 import {connect, useDispatch, useSelector} from "react-redux";
 
-import {Grid, Button, Typography} from "@material-ui/core";
+import {Grid, Typography, FormControlLabel, Switch} from "@material-ui/core";
 import {FeatureType} from "../../api/graphqlGlobalTypes";
 
 import {toggleLayerChange} from "../../actions/map/ToggleLayerChangeAction";
@@ -10,6 +10,7 @@ import {MapState} from "../../states/map/MapState";
 import {RootState} from "../../states/root/RootState";
 import {MapFeatureTypeState} from "../../states/map/MapFeatureTypeState";
 import {togglePerspective} from "kepler.gl/actions";
+import {KeplerLayerType} from "../../states/map/KeplerLayerType";
 
 const ToggleLayerPanelImpl: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -46,16 +47,23 @@ const ToggleLayerPanelImpl: React.FunctionComponent = () => {
               </Typography>
             </Grid>
             <Grid item xs justify={"center"}>
-              <Button
-                variant="contained"
-                onClick={handleLayerToggleClick(featureType)}
-                disabled={
-                  state.featuresByType[featureType].featureTypeState ===
-                  MapFeatureTypeState.ABSENT_ON_MAP
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={
+                      state.featuresByType[featureType]
+                        .currentKeplerLayerType === KeplerLayerType.HEXAGON
+                    }
+                    onChange={handleLayerToggleClick(featureType)}
+                    name="3d toggle"
+                    disabled={
+                      state.featuresByType[featureType].featureTypeState ===
+                      MapFeatureTypeState.ABSENT_ON_MAP
+                    }
+                  />
                 }
-              >
-                Toggle
-              </Button>
+                label="Toggle 3D"
+              />
             </Grid>
           </Grid>
         );
