@@ -14,7 +14,7 @@ export class TimestampFeatureAttributeStrategy extends NumericFeatureAttributeSt
       currentRangeOfAttributeOfFeatureType.max
     ).toLocaleDateString("en-US");
 
-    return "timestamp Range: " + minDateString + " - " + maxDateString;
+    return "Timestamp range: " + minDateString + " - " + maxDateString;
   }
   static readonly instance = new TimestampFeatureAttributeStrategy();
   readonly name = FeatureAttributeName.timestamp;

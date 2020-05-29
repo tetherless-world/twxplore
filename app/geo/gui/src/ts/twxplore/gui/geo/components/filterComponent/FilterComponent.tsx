@@ -16,7 +16,7 @@ import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttribu
 import {FormControl, TextField, Grid} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
-import {attributeCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
+import {filterCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -193,7 +193,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     attributeName: string
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
-    dispatch(attributeCurrentValueChange(featureType, attributeName, newValue));
+    dispatch(filterCurrentValueChange(featureType, attributeName, newValue));
   };
   const handleChangeSelect = (
     event: React.ChangeEvent<{value: unknown}>,

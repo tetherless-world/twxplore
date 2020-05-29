@@ -16,6 +16,7 @@ export class TransmissionFeatureTypeStrategy extends PointFeatureTypeStrategy {
   dispatchLayerConfigurationActions(
     kwds: DispatchLayerConfigurationActionsParameters
   ): void {
+
     const {
       keplerLayerOfFeatureType,
       keplerFilterOfFeatureType,

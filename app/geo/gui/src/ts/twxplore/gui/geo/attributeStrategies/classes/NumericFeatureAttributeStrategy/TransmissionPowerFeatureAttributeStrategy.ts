@@ -2,18 +2,17 @@ import {FeatureAttributeName} from "../../../states/map/FeatureAttributeName";
 import {KeplerFilterType} from "../../../states/map/KeplerFilterType";
 import {NumericFeatureAttributeStrategy} from "./NumericFeatureAttributeStrategy";
 import {MapFeatureAttributeNumericRange} from "../../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
+import { transmissionPowerToString } from "../../../attributeConversionFunctions/transmissionPowerToString";
 
 export class TransmissionPowerFeatureAttributeStrategy extends NumericFeatureAttributeStrategy {
   getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
     return (
-      "transmissionPower Range: " +
-      currentRangeOfAttributeOfFeatureType.min +
-      " dB" +
+      "Transmission power range: " +
+     transmissionPowerToString(currentRangeOfAttributeOfFeatureType.min) +
       " - " +
-      currentRangeOfAttributeOfFeatureType.max +
-      " dB"
+      transmissionPowerToString(currentRangeOfAttributeOfFeatureType.max)
     );
   }
 
