@@ -16,6 +16,7 @@ import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttribu
 import {FormControl, TextField, Grid, Chip} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {attributeCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,7 +94,13 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 valueLabelDisplay="auto"
                 disabled={!numericAttributeState.fullRange!.max}
                 onChangeCommitted={(event: any, newValue: number | number[]) =>
-                  handleChangeSlider(event, newValue, filterIndexOfAttribute!)
+                  handleChangeSlider(
+                    event,
+                    newValue,
+                    filterIndexOfAttribute!,
+                    featureType,
+                    attributeName
+                  )
                 }
                 name={attributeName}
               />
@@ -173,9 +180,12 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const handleChangeSlider = (
     event: any,
     newValue: number | number[],
-    filterIndexOfAttribute: number
+    filterIndexOfAttribute: number,
+    featureType: string,
+    attributeName: string
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
+    dispatch(attributeCurrentValueChange(featureType, attributeName, newValue));
   };
   const handleChangeSelect = (
     event: React.ChangeEvent<{value: unknown}>,
