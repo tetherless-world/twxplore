@@ -3,7 +3,7 @@ export enum MapFeatureTypeState {
   ABSENT_ON_MAP = "absent on map",
   //This is the state given to Feature Types when they are present on the map and a query has started. All KeplerGl filters will be removed
   WAITING_FOR_LOAD = "waiting for load",
-  // There is no query currently running and this Feature Type is present on the map and filters haven't been adedd for it yet
+  // There is a query currently running and this Feature Type is present on the map and filters haven't been adedd for it yet
   NEEDS_FILTERS = "needs filters",
   //Filters for the feature type have been added but the filters have not been attached to attributes of that feature type yet.
   NEEDS_INITIAL_FILTER_SETTING = "needs initial filter setting",
