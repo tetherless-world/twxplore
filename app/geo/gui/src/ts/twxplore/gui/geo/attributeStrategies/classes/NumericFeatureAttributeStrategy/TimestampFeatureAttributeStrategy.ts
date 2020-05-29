@@ -7,7 +7,14 @@ export class TimestampFeatureAttributeStrategy extends NumericFeatureAttributeSt
   getAttributeChipLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
-    return "";
+    const minDateString = new Date(
+      currentRangeOfAttributeOfFeatureType.min * 1000
+    ).toLocaleDateString("en-US");
+    const maxDateString = new Date(
+      currentRangeOfAttributeOfFeatureType.max * 1000
+    ).toLocaleDateString("en-US");
+
+    return "timestamp Range: " + minDateString + " - " + maxDateString;
   }
   static readonly instance = new TimestampFeatureAttributeStrategy();
   readonly name = FeatureAttributeName.timestamp;
