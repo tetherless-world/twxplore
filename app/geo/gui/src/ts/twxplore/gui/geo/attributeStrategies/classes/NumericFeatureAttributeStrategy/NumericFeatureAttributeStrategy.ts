@@ -97,7 +97,7 @@ export abstract class NumericFeatureAttributeStrategy
     return;
   }
 
-  abstract getAttributeChipLabel(
+  abstract getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string;
   abstract readonly name: FeatureAttributeName;

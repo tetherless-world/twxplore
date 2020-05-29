@@ -32,7 +32,7 @@ export interface FeatureAttributeStrategy {
     filterIndexCounter: number
   ): void;
 
-  getAttributeChipLabel(
+  getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string;
 }

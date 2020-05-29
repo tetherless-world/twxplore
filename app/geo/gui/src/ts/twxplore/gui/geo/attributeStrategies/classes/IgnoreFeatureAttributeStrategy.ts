@@ -7,7 +7,7 @@ import {MapFeatureAttributeNumericRange} from "../../states/map/MapFeatureAttrib
 
 export class IgnoreFeatureAttributeStrategy
   implements FeatureAttributeStrategy {
-  getAttributeChipLabel(
+  getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
     return "";

@@ -152,7 +152,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     }
   };
 
-  const returnChipComponent = (
+  const returnRangeLabelComponent = (
     featureTypeState: MapFeatureTypeState,
     attributeStateOfAttributeOfFeatureType: MapNumericFeatureAttributeState,
     attributeName: string
@@ -167,13 +167,13 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         attributeStateOfAttributeOfFeatureType.currentRange
       ) {
         const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
-        const chipLabelForAttribute = featureAttributeStrategy.getAttributeChipLabel(
+        const rangeLabelForAttribute = featureAttributeStrategy.getAttributeRangeLabel(
           numericAttributeState.currentRange!
         );
         return (
           <Grid item>
             <Typography style={{width: drawerWidth - 80}}>
-              {chipLabelForAttribute}
+              {rangeLabelForAttribute}
             </Typography>
           </Grid>
         );
@@ -261,7 +261,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
         const attributeStateOfAttributeOfFeatureType =
           attributeStatesOfFeatureType[attributeName];
-        return returnChipComponent(
+        return returnRangeLabelComponent(
           featureTypeState,
           attributeStateOfAttributeOfFeatureType,
           attributeName

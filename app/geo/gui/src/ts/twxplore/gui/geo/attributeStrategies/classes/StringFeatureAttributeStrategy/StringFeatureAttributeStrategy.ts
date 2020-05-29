@@ -11,7 +11,7 @@ import {MapFeatureAttributeNumericRange} from "../../../states/map/MapFeatureAtt
 
 export abstract class StringFeatureAttributeStrategy
   implements FeatureAttributeStrategy {
-  getAttributeChipLabel(
+  getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
     return "";

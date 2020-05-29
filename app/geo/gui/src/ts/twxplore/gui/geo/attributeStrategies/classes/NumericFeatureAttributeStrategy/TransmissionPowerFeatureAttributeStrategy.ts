@@ -4,7 +4,7 @@ import {NumericFeatureAttributeStrategy} from "./NumericFeatureAttributeStrategy
 import {MapFeatureAttributeNumericRange} from "../../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 
 export class TransmissionPowerFeatureAttributeStrategy extends NumericFeatureAttributeStrategy {
-  getAttributeChipLabel(
+  getAttributeRangeLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
     return (
