@@ -36,6 +36,8 @@ import {ROOT_FEATURE_URI} from "../../states/map/ROOT_FEATURE_URI";
 import {Loader, Dimmer} from "semantic-ui-react";
 import ReactResizeDetector from "react-resize-detector";
 import {FeatureAttributeName} from "../../states/map/FeatureAttributeName";
+import { frequencyToString } from "../../attributeConversionFunctions/frequencyToString";
+import { transmissionPowerToString } from "../../attributeConversionFunctions/transmissionPowerToString";
 //import KeplerGlSchema from "kepler.gl/schemas";
 
 const LIMIT = 500;
@@ -80,17 +82,13 @@ const MapImpl: React.FunctionComponent = () => {
             transmissionPower: feature.transmissionPower,
             state: MapFeatureState.LOADED,
             frequencyString: feature.frequency
-              ? (
-                  Math.floor((feature.frequency / 1000000) * 100) / 100
-                ).toString() +
-                " " +
-                "MHz"
+              ? frequencyToString(feature.frequency)
               : undefined,
             timestampString: feature.timestamp
               ? new Date(feature.timestamp * 1000).toString()
               : undefined,
             transmissionPowerString: feature.transmissionPower
-              ? feature.transmissionPower.toString() + " dB"
+              ? transmissionPowerToString(feature.transmissionPower)
               : undefined,
             x:
               feature.geometry.parsedWkt.__typename === "Point"

@@ -41,6 +41,11 @@ import {
   TOGGLE_LAYER_CHANGE,
   ToggleLayerChangeAction,
 } from "../../actions/map/ToggleLayerChangeAction";
+import {
+  FILTER_CURRENT_VALUE_CHANGE,
+  FilterCurrentValueChangeAction,
+} from "../../actions/map/AttributeCurrentValueChange";
+import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 
 export const mapReducer = (state: MapState, action: BaseAction): MapState => {
   const result: MapState = Object.assign({}, state);
@@ -310,6 +315,20 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
+    case FILTER_CURRENT_VALUE_CHANGE: {
+      const attributeCurrentValueChangeAction = action as FilterCurrentValueChangeAction;
+      const featureType = attributeCurrentValueChangeAction.payload.featureType;
+      const attributeName =
+        attributeCurrentValueChangeAction.payload.attributeName;
+      const newValue = attributeCurrentValueChangeAction.payload
+        .newValue as number[];
+      const attributeStateOfAttributeOfFeatureType = result.featuresByType[
+        featureType
+      ].attributeStates[attributeName] as MapNumericFeatureAttributeState;
+      attributeStateOfAttributeOfFeatureType.currentRange!.min = newValue[0];
+      attributeStateOfAttributeOfFeatureType.currentRange!.max = newValue[1];
+      break;
+    }
     case ADD_FILTER: {
       /*
       This reducer focuses on initialzing the filterState of a type when it dooes not

@@ -3,9 +3,15 @@ import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {Dispatch} from "redux";
 import {FeatureAttributeStrategy} from "./FeatureAttributeStrategy";
+import {MapFeatureAttributeNumericRange} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 
 export class IgnoreFeatureAttributeStrategy
   implements FeatureAttributeStrategy {
+  getAttributeRangeLabel(
+    currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
+  ): string {
+    return "";
+  }
   updateAttributeStatesOfFeatureType(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;

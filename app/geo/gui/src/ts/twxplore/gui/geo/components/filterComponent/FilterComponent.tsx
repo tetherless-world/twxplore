@@ -16,7 +16,9 @@ import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttribu
 import {FormControl, TextField, Grid} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
+import {filterCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -41,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     noLabel: {
       marginTop: theme.spacing(3),
+    },
+    drawerGridContainer: {
+      width: drawerWidth,
     },
   })
 );
@@ -71,32 +76,36 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
-        if (
-          numericAttributeState.range!.min === null ||
-          numericAttributeState.range!.max === null
-        ) {
+        if (numericAttributeState.fullRange === undefined) {
           return <React.Fragment />;
         }
         return (
-          numericAttributeState.range && (
+          numericAttributeState.fullRange && (
             <Grid item key={attributeName}>
               <Typography id="type" gutterBottom>
                 {attributeName}
               </Typography>
               <Slider
+                style={{width: drawerWidth - 80}}
                 defaultValue={[
-                  numericAttributeState.range!.min,
-                  numericAttributeState.range!.max,
+                  numericAttributeState.fullRange!.min,
+                  numericAttributeState.fullRange!.max,
                 ]}
                 getAriaValueText={valuetext}
                 aria-labelledby="range-slider"
                 step={1}
-                min={numericAttributeState.range!.min}
-                max={numericAttributeState.range!.max}
+                min={numericAttributeState.fullRange!.min}
+                max={numericAttributeState.fullRange!.max}
                 valueLabelDisplay="auto"
-                disabled={!numericAttributeState.range!.max}
+                disabled={!numericAttributeState.fullRange!.max}
                 onChangeCommitted={(event: any, newValue: number | number[]) =>
-                  handleChangeSlider(event, newValue, filterIndexOfAttribute!)
+                  handleChangeSlider(
+                    event,
+                    newValue,
+                    filterIndexOfAttribute!,
+                    featureType,
+                    attributeName
+                  )
                 }
                 name={attributeName}
               />
@@ -119,7 +128,8 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 {attributeName}
               </Typography>
               <Autocomplete
-                className={classes.autoComplete}
+                className={classes.drawerGridContainer}
+                style={{width: drawerWidth - 80}}
                 multiple
                 id="tags-outlined"
                 options={stringAttributeState.values!}
@@ -142,12 +152,48 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     }
   };
 
+  const returnRangeLabelComponent = (
+    featureTypeState: MapFeatureTypeState,
+    attributeStateOfAttributeOfFeatureType: MapNumericFeatureAttributeState,
+    attributeName: string
+  ) => {
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
+    if (featureTypeState === MapFeatureTypeState.FINISHED_SETUP) {
+      if (
+        getFeatureAttributeStrategyByName(attributeName).typeOfAttribute ===
+          TypeOfFeatureAttribute.NUMBER &&
+        attributeStateOfAttributeOfFeatureType.currentRange
+      ) {
+        const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
+        const rangeLabelForAttribute = featureAttributeStrategy.getAttributeRangeLabel(
+          numericAttributeState.currentRange!
+        );
+        return (
+          <Grid item>
+            <Typography style={{width: drawerWidth - 80}}>
+              {rangeLabelForAttribute}
+            </Typography>
+          </Grid>
+        );
+      } else {
+        return <React.Fragment />;
+      }
+    } else {
+      return <React.Fragment />;
+    }
+  };
+
   const handleChangeSlider = (
     event: any,
     newValue: number | number[],
-    filterIndexOfAttribute: number
+    filterIndexOfAttribute: number,
+    featureType: string,
+    attributeName: string
   ) => {
     dispatch(setFilter(filterIndexOfAttribute, "value", newValue));
+    dispatch(filterCurrentValueChange(featureType, attributeName, newValue));
   };
   const handleChangeSelect = (
     event: React.ChangeEvent<{value: unknown}>,
@@ -169,7 +215,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const dispatch = useDispatch();
 
   return (
-    <Grid item>
+    <React.Fragment>
       {//for each attributeName that corresponds to an attribute state for an attribute of the FeatureType
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
@@ -211,7 +257,17 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           }
         }
       })}
-    </Grid>
+      {Object.keys(attributeStatesOfFeatureType).map(attributeName => {
+        //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
+        const attributeStateOfAttributeOfFeatureType =
+          attributeStatesOfFeatureType[attributeName];
+        return returnRangeLabelComponent(
+          featureTypeState,
+          attributeStateOfAttributeOfFeatureType,
+          attributeName
+        );
+      })}
+    </React.Fragment>
   );
 };
 export const FilterComponent = connect()(FilterComponentImpl);

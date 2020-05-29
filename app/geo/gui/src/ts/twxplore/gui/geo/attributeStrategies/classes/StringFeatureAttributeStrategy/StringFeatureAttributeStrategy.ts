@@ -7,9 +7,15 @@ import {KeplerFilterType} from "../../../states/map/KeplerFilterType";
 import {MapStringFeatureAttributeState} from "../../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
 import {setFilter} from "kepler.gl/actions";
 import {FeatureAttributeStrategy} from "../FeatureAttributeStrategy";
+import {MapFeatureAttributeNumericRange} from "../../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 
 export abstract class StringFeatureAttributeStrategy
   implements FeatureAttributeStrategy {
+  getAttributeRangeLabel(
+    currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
+  ): string {
+    return "";
+  }
   buildInitialFeatureAttributeState(
     attributeStatesOfFeatureType: {
       [featureAttributeName: string]: MapFeatureAttributeState;
