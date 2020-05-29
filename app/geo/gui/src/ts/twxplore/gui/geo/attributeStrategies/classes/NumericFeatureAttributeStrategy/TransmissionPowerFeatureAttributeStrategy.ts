@@ -10,10 +10,10 @@ export class TransmissionPowerFeatureAttributeStrategy extends NumericFeatureAtt
     return (
       "transmissionPower Range: " +
       currentRangeOfAttributeOfFeatureType.min +
-      "dB" +
+      " dB" +
       " - " +
       currentRangeOfAttributeOfFeatureType.max +
-      "dB"
+      " dB"
     );
   }
 
