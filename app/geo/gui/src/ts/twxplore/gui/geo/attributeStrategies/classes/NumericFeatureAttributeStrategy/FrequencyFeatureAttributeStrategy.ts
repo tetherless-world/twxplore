@@ -7,7 +7,25 @@ export class FrequencyFeatureAttributeStrategy extends NumericFeatureAttributeSt
   getAttributeChipLabel(
     currentRangeOfAttributeOfFeatureType: MapFeatureAttributeNumericRange
   ): string {
-    return "";
+    const minFrequencyString =
+      (
+        Math.floor((currentRangeOfAttributeOfFeatureType.min / 1000000) * 100) /
+        100
+      ).toString() +
+      " " +
+      "MHz";
+
+    const maxFrequencyString =
+      (
+        Math.floor((currentRangeOfAttributeOfFeatureType.max / 1000000) * 100) /
+        100
+      ).toString() +
+      " " +
+      "MHz";
+
+    return (
+      "frequency Range: " + minFrequencyString + " - " + maxFrequencyString
+    );
   }
   static readonly instance = new FrequencyFeatureAttributeStrategy();
   readonly name = FeatureAttributeName.frequency;
