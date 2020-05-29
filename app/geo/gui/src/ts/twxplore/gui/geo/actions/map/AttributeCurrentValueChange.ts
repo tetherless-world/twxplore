@@ -1,24 +1,24 @@
 import {Action} from "redux-actions";
 
-export type ATTRIBUTE_CURRENT_VALUE_CHANGE = "ATTRIBUTE_CURRENT_VALUE_CHANGE";
+export type FILTER_CURRENT_VALUE_CHANGE = "ATTRIBUTE_CURRENT_VALUE_CHANGE";
 
-export const ATTRIBUTE_CURRENT_VALUE_CHANGE: ATTRIBUTE_CURRENT_VALUE_CHANGE =
+export const FILTER_CURRENT_VALUE_CHANGE: FILTER_CURRENT_VALUE_CHANGE =
   "ATTRIBUTE_CURRENT_VALUE_CHANGE";
 
-export interface AttributeCurrentValueChangeAction
+export interface FilterCurrentValueChangeAction
   extends Action<{
     featureType: string;
     attributeName: string;
     newValue: number[] | number;
   }> {
-  type: ATTRIBUTE_CURRENT_VALUE_CHANGE;
+  type: FILTER_CURRENT_VALUE_CHANGE;
 }
 
-export const attributeCurrentValueChange = (
+export const filterCurrentValueChange = (
   featureType: string,
   attributeName: string,
   newValue: number[] | number
-): AttributeCurrentValueChangeAction => ({
+): FilterCurrentValueChangeAction => ({
   payload: {featureType, attributeName, newValue},
-  type: ATTRIBUTE_CURRENT_VALUE_CHANGE,
+  type: FILTER_CURRENT_VALUE_CHANGE,
 });

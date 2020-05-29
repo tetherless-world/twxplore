@@ -42,8 +42,8 @@ import {
   ToggleLayerChangeAction,
 } from "../../actions/map/ToggleLayerChangeAction";
 import {
-  ATTRIBUTE_CURRENT_VALUE_CHANGE,
-  AttributeCurrentValueChangeAction,
+  FILTER_CURRENT_VALUE_CHANGE,
+  FilterCurrentValueChangeAction,
 } from "../../actions/map/AttributeCurrentValueChange";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 
@@ -315,8 +315,8 @@ export const mapReducer = (state: MapState, action: BaseAction): MapState => {
       break;
     }
 
-    case ATTRIBUTE_CURRENT_VALUE_CHANGE: {
-      const attributeCurrentValueChangeAction = action as AttributeCurrentValueChangeAction;
+    case FILTER_CURRENT_VALUE_CHANGE: {
+      const attributeCurrentValueChangeAction = action as FilterCurrentValueChangeAction;
       const featureType = attributeCurrentValueChangeAction.payload.featureType;
       const attributeName =
         attributeCurrentValueChangeAction.payload.attributeName;
