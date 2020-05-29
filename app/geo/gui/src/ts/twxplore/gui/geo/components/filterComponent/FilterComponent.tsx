@@ -13,7 +13,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
-import {FormControl, TextField, Grid, Chip} from "@material-ui/core";
+import {FormControl, TextField, Grid} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {attributeCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
@@ -172,10 +172,9 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         );
         return (
           <Grid item>
-            <Chip
-              style={{width: drawerWidth - 80}}
-              label={chipLabelForAttribute}
-            />{" "}
+            <Typography style={{width: drawerWidth - 80}}>
+              {chipLabelForAttribute}
+            </Typography>
           </Grid>
         );
       } else {
