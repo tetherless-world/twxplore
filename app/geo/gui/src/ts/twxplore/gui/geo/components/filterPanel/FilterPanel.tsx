@@ -41,7 +41,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
           return <React.Fragment key={featureType} />;
         }
         return (
-          <ExpansionPanel key={featureType} className={classes.expansionPanel}>
+          <ExpansionPanel key={featureType} className={classes.root}>
             <ExpansionPanelSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
@@ -50,7 +50,7 @@ const FilterPanelImpl: React.FunctionComponent = () => {
               <Typography className={classes.heading}>{featureType}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Grid container item direction="column">
+              <Grid container item direction="column" spacing={2}>
                 <FilterComponent
                   featureType={
                     FeatureType[featureType as keyof typeof FeatureType]

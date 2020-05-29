@@ -58,6 +58,7 @@ const useDrawerStyles = makeStyles((theme: Theme) =>
     },
     drawerGridContainer: {
       flexGrow: 1,
+      width: drawerWidth,
     },
     drawerHeader: {
       display: "flex",
@@ -147,6 +148,7 @@ const MapLayoutImpl: React.FunctionComponent = () => {
           spacing={2}
           className={classes.drawerGridContainer}
           direction="column"
+          justify={"flex-start"}
         >
           <Grid
             container

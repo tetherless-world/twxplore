@@ -18,6 +18,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 import {attributeCurrentValueChange} from "../../actions/map/AttributeCurrentValueChange";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -42,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     noLabel: {
       marginTop: theme.spacing(3),
+    },
+    drawerGridContainer: {
+      width: drawerWidth,
     },
   })
 );
@@ -82,6 +86,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 {attributeName}
               </Typography>
               <Slider
+                style={{width: drawerWidth - 80}}
                 defaultValue={[
                   numericAttributeState.fullRange!.min,
                   numericAttributeState.fullRange!.max,
@@ -123,7 +128,8 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
                 {attributeName}
               </Typography>
               <Autocomplete
-                className={classes.autoComplete}
+                className={classes.drawerGridContainer}
+                style={{width: drawerWidth - 80}}
                 multiple
                 id="tags-outlined"
                 options={stringAttributeState.values!}
@@ -166,7 +172,10 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         );
         return (
           <Grid item>
-            <Chip label={chipLabelForAttribute} />{" "}
+            <Chip
+              style={{width: drawerWidth - 80}}
+              label={chipLabelForAttribute}
+            />{" "}
           </Grid>
         );
       } else {
@@ -207,7 +216,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
   const dispatch = useDispatch();
 
   return (
-    <Grid item>
+    <React.Fragment>
       {//for each attributeName that corresponds to an attribute state for an attribute of the FeatureType
       Object.keys(attributeStatesOfFeatureType).map(attributeName => {
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
@@ -259,7 +268,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
           attributeName
         );
       })}
-    </Grid>
+    </React.Fragment>
   );
 };
 export const FilterComponent = connect()(FilterComponentImpl);
