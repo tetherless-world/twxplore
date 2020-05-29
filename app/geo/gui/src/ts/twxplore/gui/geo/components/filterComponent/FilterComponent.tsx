@@ -13,7 +13,7 @@ import {FeatureType} from "../../api/graphqlGlobalTypes";
 import {TypeOfFeatureAttribute} from "../../states/map/TypeOfFeatureAttribute";
 import {MapNumericFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapNumericFeatureAttributeState";
 import {MapStringFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapStringFeatureAttributeState";
-import {FormControl, TextField, Grid} from "@material-ui/core";
+import {FormControl, TextField, Grid, Chip} from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {MapFeatureAttributeState} from "../../states/map/MapFeatureAttributeState/MapFeatureAttributeState";
 
@@ -72,29 +72,29 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
       case TypeOfFeatureAttribute.NUMBER: {
         const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
         if (
-          numericAttributeState.range!.min === null ||
-          numericAttributeState.range!.max === null
+          numericAttributeState.fullRange!.min === null ||
+          numericAttributeState.fullRange!.max === null
         ) {
           return <React.Fragment />;
         }
         return (
-          numericAttributeState.range && (
+          numericAttributeState.fullRange && (
             <Grid item key={attributeName}>
               <Typography id="type" gutterBottom>
                 {attributeName}
               </Typography>
               <Slider
                 defaultValue={[
-                  numericAttributeState.range!.min,
-                  numericAttributeState.range!.max,
+                  numericAttributeState.fullRange!.min,
+                  numericAttributeState.fullRange!.max,
                 ]}
                 getAriaValueText={valuetext}
                 aria-labelledby="range-slider"
                 step={1}
-                min={numericAttributeState.range!.min}
-                max={numericAttributeState.range!.max}
+                min={numericAttributeState.fullRange!.min}
+                max={numericAttributeState.fullRange!.max}
                 valueLabelDisplay="auto"
-                disabled={!numericAttributeState.range!.max}
+                disabled={!numericAttributeState.fullRange!.max}
                 onChangeCommitted={(event: any, newValue: number | number[]) =>
                   handleChangeSlider(event, newValue, filterIndexOfAttribute!)
                 }
@@ -139,6 +139,37 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
       default: {
         throw Error("Unhandled case for typeOf FeatureAttribute");
       }
+    }
+  };
+
+  const returnChipComponent = (
+    featureTypeState: MapFeatureTypeState,
+    attributeStateOfAttributeOfFeatureType: MapNumericFeatureAttributeState,
+    attributeName: string
+  ) => {
+    const featureAttributeStrategy = getFeatureAttributeStrategyByName(
+      attributeName
+    );
+    if (featureTypeState === MapFeatureTypeState.FINISHED_SETUP) {
+      if (
+        getFeatureAttributeStrategyByName(attributeName).typeOfAttribute ===
+          TypeOfFeatureAttribute.NUMBER &&
+        attributeStateOfAttributeOfFeatureType.currentRange
+      ) {
+        const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
+        const chipLabelForAttribute = featureAttributeStrategy.getAttributeChipLabel(
+          numericAttributeState.currentRange!
+        );
+        return (
+          <Grid item>
+            <Chip label={chipLabelForAttribute} />{" "}
+          </Grid>
+        );
+      } else {
+        return <React.Fragment />;
+      }
+    } else {
+      return <React.Fragment />;
     }
   };
 
@@ -210,6 +241,20 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
             return <React.Fragment key={attributeName} />;
           }
         }
+      })}
+      {Object.keys(attributeStatesOfFeatureType).map(attributeName => {
+        //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
+        const attributeStateOfAttributeOfFeatureType =
+          attributeStatesOfFeatureType[attributeName];
+        featureTypeState === MapFeatureTypeState.FINISHED_SETUP ? (
+          returnChipComponent(
+            featureTypeState,
+            attributeStateOfAttributeOfFeatureType,
+            attributeName
+          )
+        ) : (
+          <React.Fragment />
+        );
       })}
     </Grid>
   );
