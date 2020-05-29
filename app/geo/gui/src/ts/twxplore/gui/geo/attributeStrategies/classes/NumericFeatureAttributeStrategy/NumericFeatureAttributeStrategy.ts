@@ -34,6 +34,8 @@ export abstract class NumericFeatureAttributeStrategy
     let attributeStateOfAttributeOffFeatureType = attributeStatesOfFeatureType[
       attributeName
     ] as MapNumericFeatureAttributeState;
+
+    if (addedFeature[attributeKey] === null) return;
     //If this is the first time coming across this attribute for the addedFeature's FeatureType
     if (!attributeStateOfAttributeOffFeatureType.fullRange) {
       //Give the MapNumericAttributeState min/max the addedFeature's value for the attribute
@@ -77,18 +79,21 @@ export abstract class NumericFeatureAttributeStrategy
     stateOfAttribute: MapNumericFeatureAttributeState,
     dispatch: Dispatch<any>
   ): void {
-    const attributeName = this.name;
-    dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
-    dispatch(setFilter(filterIndexOfAttribute, "type", this.keplerFilterType));
-    stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
-    dispatch(
-      setFilter(filterIndexOfAttribute, "value", [
-        stateOfAttribute.fullRange!.min,
-        stateOfAttribute.fullRange!.max,
-      ])
-    );
-    dispatch(setFilter(filterIndexOfAttribute, "enlarged", false)); //disables any pop-up Kepler may bring up with the filter
-
+    if (stateOfAttribute.fullRange) {
+      const attributeName = this.name;
+      dispatch(setFilter(filterIndexOfAttribute, "name", attributeName));
+      dispatch(
+        setFilter(filterIndexOfAttribute, "type", this.keplerFilterType)
+      );
+      stateOfAttribute = stateOfAttribute as MapNumericFeatureAttributeState;
+      dispatch(
+        setFilter(filterIndexOfAttribute, "value", [
+          stateOfAttribute.fullRange!.min,
+          stateOfAttribute.fullRange!.max,
+        ])
+      );
+      dispatch(setFilter(filterIndexOfAttribute, "enlarged", false)); //disables any pop-up Kepler may bring up with the filter
+    }
     return;
   }
 

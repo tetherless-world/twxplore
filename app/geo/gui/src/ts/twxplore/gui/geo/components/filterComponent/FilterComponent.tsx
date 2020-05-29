@@ -71,10 +71,7 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
     switch (getFeatureAttributeStrategyByName(attributeName).typeOfAttribute) {
       case TypeOfFeatureAttribute.NUMBER: {
         const numericAttributeState = attributeStateOfAttributeOfFeatureType as MapNumericFeatureAttributeState;
-        if (
-          numericAttributeState.fullRange!.min === null ||
-          numericAttributeState.fullRange!.max === null
-        ) {
+        if (numericAttributeState.fullRange === undefined) {
           return <React.Fragment />;
         }
         return (
@@ -246,14 +243,10 @@ const FilterComponentImpl: React.FunctionComponent<{featureType: string}> = ({
         //Specify the attribute state to use by passing in the name of the attribute of the FeatureType
         const attributeStateOfAttributeOfFeatureType =
           attributeStatesOfFeatureType[attributeName];
-        featureTypeState === MapFeatureTypeState.FINISHED_SETUP ? (
-          returnChipComponent(
-            featureTypeState,
-            attributeStateOfAttributeOfFeatureType,
-            attributeName
-          )
-        ) : (
-          <React.Fragment />
+        return returnChipComponent(
+          featureTypeState,
+          attributeStateOfAttributeOfFeatureType,
+          attributeName
         );
       })}
     </Grid>

@@ -9,8 +9,8 @@ Unsure, if I should call this FeatureTypeAttributeState instead.
 Or maybe 'AttributeOfFeatureTypeState'
 */
 export interface MapNumericFeatureAttributeState {
-  fullRange?: MapFeatureAttributeNumericRange | null;
-  currentRange?: MapFeatureAttributeNumericRange | null;
+  fullRange?: MapFeatureAttributeNumericRange;
+  currentRange?: MapFeatureAttributeNumericRange;
   filterIndex: number | null;
 }
 
