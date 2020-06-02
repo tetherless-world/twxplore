@@ -108,7 +108,7 @@ class OsnFeatureTransformer(_FeatureTransformer):
                                     timestamp=lastcontact,
                                     transmission_power=27, # dBW, max of various ADS-B 1090ES systems, see faa.gov table above
                                     type=TWXPLORE_GEO_APP_ONTOLOGY.Transmission,
-                                    uri=TWXPLORE_GEO_APP_FEATURE[f"osn-icao24-{icao24}"]
+                                    uri=TWXPLORE_GEO_APP_FEATURE[f"osn-{icao24}-{float(row['lastcontact'])}"]
                                 )
                             existing_features = features_by_icao24.setdefault(icao24, [])
                             if not existing_features:
