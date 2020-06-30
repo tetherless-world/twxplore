@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Build and test
           command: |
-            sbt clean update package assembly test
+            sbt clean update package test
 #            cp lib/scala/geo/target/test-reports/*.xml ~/project/test-results/scala
       - store_test_results:
           path: test-results
