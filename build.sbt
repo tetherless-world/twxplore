@@ -50,15 +50,13 @@ resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
 lazy val root = project
-  .aggregate(geoApp, baseLib, geoLib)
-  .disablePlugins(AssemblyPlugin)
+  .aggregate(baseLib, geoLib)
   .settings(
     skip in publish := true
   )
 
 lazy val baseLib =
   (project in file("lib/scala/base"))
-    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         filters,
@@ -84,43 +82,13 @@ lazy val baseLib =
       name := "twxplore-base"
     )
 
-//lazy val cliLib = (project in file("lib/scala/cli"))
-//  .dependsOn(baseLib)
-//  .settings(
-//    libraryDependencies ++= Seq(
-//      "com.beust" % "jcommander" % "1.78",
-//      "edu.rpi.tw.twks" % "twks-direct-client" % twksVersion,
-//      "edu.rpi.tw.twks" % "twks-factory" % twksVersion,
-//      "org.slf4j" % "slf4j-simple" % slf4jVersion
-//    ),
-//    name := "twxplore-cli-lib",
-//    skip in publish := true
-//  )
-
-lazy val geoApp = (project in file("app/geo"))
-  .dependsOn(geoLib % "compile->compile;test->test")
-  .disablePlugins(AssemblyPlugin)
-  .enablePlugins(PlayScala)
-  .settings(
-    name := "geo-app",
-    routesGenerator := InjectedRoutesGenerator,
-    // Adds additional packages into Twirl
-    //TwirlKeys.templateImports += "com.example.controllers._"
-
-    // Adds additional packages into conf/routes
-    // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
-    skip in publish := true
-  )
-
 lazy val geoLib =
   (project in file("lib/scala/geo"))
     .dependsOn(baseLib % "compile->compile;test->test")
-    .disablePlugins(AssemblyPlugin)
     .settings(
       libraryDependencies ++= Seq(
         // For the WKT parser
         "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
       ),
-      name := "twxplore-geo-lib",
-      skip in publish := true
+      name := "twxplore-geo-lib"
     )
