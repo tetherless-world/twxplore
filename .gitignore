@@ -1,6 +1,6 @@
 dist/
+/.idea/
 /lerna-debug.log
-logs/
 node_modules/
 null/
 out/
@@ -8,5 +8,3 @@ package-lock.json
 /project/project/
 /root/
 target/
-.idea/
-/data/
