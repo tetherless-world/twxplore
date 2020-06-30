@@ -1,10 +1,5 @@
 version: 2
 jobs:
-#  docker:
-  #    machine: true
-  #    steps:
-  #      - checkout
-  #      - run: docker-compose build geo-app
   scala:
     working_directory: ~/project
     docker:
@@ -38,7 +33,6 @@ jobs:
           name: Build and test
           command: |
             sbt clean update package assembly test
-            cp app/geo/target/test-reports/*.xml ~/project/test-results/scala
 #            cp lib/scala/geo/target/test-reports/*.xml ~/project/test-results/scala
       - store_test_results:
           path: test-results
@@ -66,7 +60,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: gui-dependency-cache-v1-{{ checksum "package.json" }}-{{ checksum "app/geo/gui/package.json" }}-{{ checksum "lib/ts/base/package.json" }}
+          key: gui-dependency-cache-v1-{{ checksum "package.json" }}-{{ checksum "lib/ts/base/package.json" }}
       - run:
           name: Compare contents of root .prettierrc to one in base lib, instead of using symlinks
           command: cmp .prettierrc lib/ts/base/.prettierrc
@@ -75,7 +69,7 @@ jobs:
             npm install
             npm run lerna:bootstrap
       - save_cache:
-          key: gui-dependency-cache-v1-{{ checksum "package.json" }}-{{ checksum "app/geo/gui/package.json" }}-{{ checksum "lib/ts/base/package.json" }}
+          key: gui-dependency-cache-v1-{{ checksum "package.json" }}-{{ checksum "lib/ts/base/package.json" }}
           paths:
             - ./node_modules
             - ./lib/ts/base/node_modules
@@ -83,8 +77,6 @@ jobs:
           command: |
             cd lib/ts/base
             npm run build
-            cd ../../../app/geo/gui
-            npm run build-development
 workflows:
   version: 2
   build:
