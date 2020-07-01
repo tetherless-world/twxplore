@@ -1,4 +1,4 @@
-package io.github.tetherlessworld.twxplore.lib.base.models.domain
+package io.github.tetherlessworld.twxplore.lib.test.models.domain
 
 import io.github.tetherlessworld.scena.{Rdf, RdfReader, RdfWriter}
 import org.apache.jena.rdf.model.ModelFactory
