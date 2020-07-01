@@ -98,7 +98,7 @@ lazy val geoLib =
         // For the WKT parser
         "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
       ),
-      name := "twxplore-geo-lib"
+      name := "twxplore-geo"
     )
 
 lazy val testLib =
@@ -112,5 +112,5 @@ lazy val testLib =
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3",
         "org.slf4j" % "slf4j-simple" % slf4jVersion,
       ),
-      name := "twxplore-test-lib"
+      name := "twxplore-test"
     )
