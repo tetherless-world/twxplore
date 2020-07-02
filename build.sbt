@@ -6,8 +6,9 @@ version in ThisBuild := "1.0.0-SNAPSHOT"
 
 
 // Constants
-val playVersion = "2.8.0"
+val circeVersion = "0.12.3"
 val jenaVersion = "3.14.0"
+val playVersion = "2.8.0"
 val scenaVersion = "1.0.1-SNAPSHOT"
 val slf4jVersion = "1.7.25"
 val twksVersion = "1.0.5-SNAPSHOT"
@@ -62,11 +63,13 @@ lazy val baseLib =
         filters,
         guice,
         ws,
+        "com.beachape" %% "enumeratum-circe" % "1.6.1",
         "com.typesafe.play" %% "play" % playVersion,
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
         "edu.rpi.tw.twks" % "twks-rest-client" % twksVersion,
         organization.value %% "scena" % scenaVersion,
-        "io.circe" %% "circe-generic" % "0.12.3",
+        "io.circe" %% "circe-generic" % circeVersion,
+        "io.circe" %% "circe-parser" % circeVersion,
         "nl.grons" %% "metrics4-scala" % "4.1.1",
         "org.apache.jena" % "jena-geosparql" % jenaVersion,
         "org.sangria-graphql" %% "sangria" % "1.4.2",
