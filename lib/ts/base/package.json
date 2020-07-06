@@ -60,10 +60,9 @@
   "license": "Apache 2",
   "main": "dist/index.js",
   "scripts": {
-    "build": "../../../node_modules/.bin/webpack --mode production -p",
-    "build-development": "../../../node_modules/.bin/webpack --mode development",
-    "build-win32": "..\\..\\..\\node_modules\\.bin\\webpack --mode production -p",
-    "start": "../../../node_modules/.bin/webpack --mode development --info-verbosity verbose --watch"
+    "build": "webpack --mode production -p",
+    "build-development": "webpack --mode development",
+    "start": "webpack --mode development --info-verbosity verbose --watch"
   },
   "types": "dist/index.d.ts"
 }
