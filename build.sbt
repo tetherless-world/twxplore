@@ -50,12 +50,6 @@ parallelExecution in ThisBuild := false
 resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots")
 
 // Projects
-lazy val root = project
-  .aggregate(baseLib, geoLib, testLib)
-  .settings(
-    skip in publish := true
-  )
-
 lazy val baseLib =
   (project in file("lib/scala/base"))
     .settings(
