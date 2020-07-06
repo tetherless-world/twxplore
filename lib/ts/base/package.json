@@ -47,7 +47,6 @@
     "react-router-dom": "5.1.2",
     "ts-invariant": "^0.4.4"
   },
-  "license": "Apache 2",
   "files": [
     "dist",
     ".eslintignore",
@@ -58,6 +57,7 @@
     "webpack.config.base.js",
     "webpack.config.devServer.js"
   ],
+  "license": "Apache 2",
   "main": "dist/index.js",
   "scripts": {
     "build": "../../../node_modules/.bin/webpack --mode production -p",
