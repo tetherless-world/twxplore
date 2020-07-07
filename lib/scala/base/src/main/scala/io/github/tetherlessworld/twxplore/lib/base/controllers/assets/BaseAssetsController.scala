@@ -1,10 +1,10 @@
-package io.github.tetherlessworld.twxplore.lib.base.controllers.test
+package io.github.tetherlessworld.twxplore.lib.base.controllers.assets
 
 import controllers.Assets
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.InjectedController
 
-abstract class BaseTestController (assets: Assets) extends InjectedController {
+abstract class BaseAssetsController(assets: Assets) extends InjectedController {
   final def frontEndPath(path: String) = {
     if (path.endsWith(".css") || path.endsWith(".html") || path.endsWith(".ico") || path.endsWith(".js")) {
       // If the path has a file extension, assume it's a file and not a React URL
