@@ -1,6 +1,6 @@
 {
   "name": "@tetherless-world/twxplore-base",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "twxplore GUI library",
   "devDependencies": {
     "@graphql-codegen/cli": "^1.2.0",
@@ -9,9 +9,6 @@
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/eslint-plugin-tslint": "^2.17.0",
     "apollo": "^2.27.3",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "copy-webpack-plugin": "^4.6.0",
     "dts-bundle-webpack": "^1.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-prefer-arrow": "^1.1.7",
